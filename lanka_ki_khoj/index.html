@@ -340,6 +340,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.6rem;margin:.4rem 0 1.2rem}
 .vcell{display:flex;gap:.6rem;border:1px solid var(--rule);border-radius:.7rem;padding:.6rem;opacity:.5}
 .vcell.got{opacity:1;border-color:var(--haldi)}
+.vcell.ready{opacity:1;border-color:var(--tide)}
 .vicon{flex:0 0 auto;width:3.2rem;height:3.2rem}
 .vi .vglow{fill:rgba(212,160,23,.18);stroke:var(--haldi);stroke-width:1.2}
 .vi .vdark{fill:rgba(0,0,0,.25);stroke:var(--quiet);stroke-width:1.2}
@@ -1592,7 +1593,7 @@ function mapArt(night){
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
 function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
- katha:{},farq:{},vastu:{},tour:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
+ katha:{},farq:{},vastu:{},kahi:{},tour:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
@@ -1732,7 +1733,7 @@ function checkAch(){
   if(test[k]&&!save.ach[k])save.ach[k]="ready";
  });
 }
-function tally_up(){openPatra();openVastu();checkAch();persist();}
+function tally_up(){openPatra();openVastu();openKahi();checkAch();persist();}
 function catchUp(){
  earned=[];save.ach=save.ach||{};save.vastu=save.vastu||{};
  Object.keys(save.ach).forEach(k=>{if(save.ach[k]===true)save.ach[k]="lia";});
@@ -2471,6 +2472,67 @@ const DART={
   TD.fig(130,150,1.08,{v:79,nari:1,veil:1,veilc:"#f4a7c0",d:.3})+TD.vig,
 };
 
+/* ---------- kahi: stories that someone inside the story tells ---------- */
+const KKIND={rishi:"ऋषि",dev:"देवता",rakshasi:"राक्षसी",pashu:"पशु",rajkul:"राजकुल",vanar:"वानर",samudra:"प्रकृति"};
+const KAHI={
+ k_rishi:{n:"वह ऋषि जिसने पूरी रामकथा सुनाई",k:"rishi",to:"युधिष्ठिर को",
+  why:"अपनी पत्नी के हरण से टूटे हुए एक राजा को सहारा देने के लिए।",
+  x:"महाभारत के वनपर्व में युधिष्ठिर पूछते हैं कि क्या मुझसे ज़्यादा दुखी कोई हुआ है। तब ऋषि कहते हैं कि सुनो, तुमसे पहले भी एक आदमी के साथ यही हुआ था, और उसकी पत्नी भी उठा ली गई थी। इसके बाद वे पूरी रामकथा थोड़े में सुनाते हैं। यही कारण है कि उस पाठ में ब्योरे नहीं हैं, सिर्फ़ ढाँचा है, और सबसे ज़्यादा ठहराव इस बात पर है कि सहने वाले को आख़िर में रास्ता मिलता है। यानी वहाँ रामकथा जानकारी नहीं, दवा है।",
+  ref:"महाभारत, वनपर्व का रामोपाख्यान",cost:0,on:["mbh_short"]},
+ k_lanka:{n:"द्वार पर रोकने वाली",k:"rakshasi",to:"हनुमान को",
+  why:"हारने के बाद, बिना पूछे।",
+  x:"गिरने के बाद वह वह बात कहती है जो उसे बहुत पहले बताई गई थी। ब्रह्मा ने कहा था कि जिस दिन कोई वानर उसे बल से वश में कर ले, उसी दिन से राक्षसों का डर शुरू समझना। वह ख़ुद कहती है कि वह दिन तेरे दिखते ही आ गया, और ब्रह्मा की कही बात टलती नहीं। फिर वही उसे भीतर जाने देती है। पूरी रात में यह पहली भविष्यवाणी है, और वह दुश्मन के मुँह से आती है।",
+  ref:"सुंदरकांड, सर्ग 3",cost:0,on:["lankini"]},
+ k_sita:{n:"सीता, अपनी ही एक पुरानी याद",k:"rajkul",to:"हनुमान को",
+  why:"ताकि राम पहचान लें कि बात सचमुच उन्हीं तक से आई है।",
+  x:"वे उस दिन की बात सुनाती हैं जब एक कौआ उन्हें चोंच मार रहा था। राम ने कुश के बिछौने से एक तिनका उठाया, उस पर ब्रह्मास्त्र चढ़ाया और छोड़ दिया। वह तिनका तीनों लोक उसके पीछे लगा रहा, और न उसके पिता ने बचाया, न देवताओं ने। आख़िर वह लौटकर राम की ही शरण में आया, और अपनी दाईं आँख देकर जान बचाई। यह बात सिर्फ़ वे दोनों जानते थे, इसीलिए यही सबसे पक्की निशानी बनी।",
+  ref:"सुंदरकांड, सर्ग 38",cost:0,on:["kaua"]},
+ k_trijata:{n:"त्रिजटा का सपना",k:"rakshasi",to:"बाकी राक्षसियों को",
+  why:"ताने रोकने के लिए, और शायद डर के मारे भी।",
+  x:"वह नींद से हड़बड़ाकर उठती है और अपना सपना सुनाती है। उसमें रावण तेल में सना हुआ, नशे में चूर, पुष्पक से नीचे गिरा हुआ है, और उसे दक्षिण की ओर घसीटा जा रहा है, यानी यम की दिशा में। वह गधे या सूअर पर बैठा है और कीचड़ में धँसता जाता है, जबकि दूसरी तरफ़ राम की जीत दिख रही है। सुनाकर वह बाकियों को चुप करा देती है, और उस रात बग़ीचे के ताने वहीं थम जाते हैं।",
+  ref:"सुंदरकांड, सर्ग 27",cost:0,on:["trijata"]},
+ k_samudra:{n:"समुद्र, अपने पुराने क़र्ज़ की बात",k:"samudra",to:"मैनाक को",
+  why:"क्योंकि वह ख़ुद रोक नहीं सकता था, पर मदद करना चाहता था।",
+  x:"समुद्र सोचता है कि इस वानर को थकने नहीं देना चाहिए, क्योंकि इसी वंश के सगर ने उसे खुदवाकर बड़ा किया था। वह कहता है कि जो एहसान करे, उसका बदला लौटाना पुरानी रीत है। फिर वह मैनाक से कहता है कि ऊपर उठकर इस मेहमान को ठहरने की जगह दे। यानी रास्ते की पहली मदद किसी देवता के हुक्म से नहीं, एक पुराने एहसान से आती है।",
+  ref:"सुंदरकांड, सर्ग 1",cost:0,on:["sagar"]},
+ k_hanu:{n:"हनुमान, डाल पर बैठकर सुनाई गई कथा",k:"vanar",to:"सीता को, बिना सामने आए",
+  why:"ताकि वे इसे रावण का छल न समझें।",
+  x:"वे सीधे सामने नहीं आते। डाल पर बैठकर, धीमी और मीठी आवाज़ में, वे राम की पूरी कहानी सुनाने लगते हैं: दशरथ नाम का एक राजा था, फिर वन, फिर हरण, फिर सुग्रीव से मित्रता, और आख़िर में यह कि एक दूत ढूँढता हुआ लंका पहुँचा। यह इस पूरी रात का सबसे चतुर क़दम है, क्योंकि इसमें कोई माँग नहीं है, सिर्फ़ कथा है। सीता वही सुनती हैं, और तभी पहली बार ऊपर देखती हैं।",
+  ref:"सुंदरकांड, सर्ग 31",cost:0,on:["gaakar"]},
+ k_jambavan:{n:"जांबवान, हनुमान का अपना जन्म",k:"vanar",to:"हनुमान को",
+  why:"क्योंकि शाप के कारण वे अपना बल ख़ुद याद नहीं रख पाते।",
+  x:"किनारे पर जब सब हिम्मत हार चुके थे, तब जांबवान ने हनुमान को उन्हीं की कहानी सुनाई: किसके बेटे हो, बचपन में सूरज को फल समझकर पकड़ने गए थे, इंद्र का वज्र लगा, और तब वरदान मिला कि मृत्यु अपनी इच्छा से होगी। ऋषियों के हल्के शाप से वे अपना बल भूल जाते हैं, इसलिए यह सुनाना ज़रूरी था। सुनते ही वे बढ़ते गए। यानी समुद्र पार करने की ताक़त पहले से मौजूद थी, बस याद दिलाई गई।",
+  ref:"किष्किंधाकांड, सर्ग 66",cost:8,on:["jambavan_role"]},
+ k_shiv:{n:"शिव, पार्वती को",k:"dev",to:"पार्वती को",
+  why:"क्योंकि सुनने वाली को ब्योरा नहीं, सार चाहिए।",
+  x:"अध्यात्म रामायण और आनंद रामायण, दोनों में कथा शिव पार्वती को सुना रहे हैं। इसका असर सीधे कथा पर पड़ता है। जहाँ वाल्मीकि एक एक कमरा दिखाते हैं, वहाँ ये ग्रंथ पूरी रात एक सर्ग में समेट देते हैं, और हर दृश्य के पीछे एक और अर्थ चलता रहता है। द्वार पर रोकने वाली तक को पता है कि जनक के घर जन्मी योगमाया हैं। यानी सुनाने वाला बदलते ही वही कथा दूसरी चीज़ बन जाती है।",
+  ref:"अध्यात्म रामायण; आनंद रामायण, सारकांड",cost:6,on:["adhy_sita"]},
+ k_tota:{n:"वह तोता जो कथा सुनाता है",k:"pashu",to:"सामने बैठे लोगों को",
+  why:"क्योंकि मलयालम की उस परंपरा में कथा पंछी की ज़बानी कही जाती है।",
+  x:"किलिप्पाट्टु का मतलब ही है तोते का गीत। वहाँ रचयिता ख़ुद नहीं बोलता, वह पंछी से कहता है कि अब तुम कहो। इसका असर यह होता है कि पूरी कथा में एक आवाज़ मौजूद रहती है और हर पंक्ति सुनने वालों की तरफ़ मुड़ी रहती है। इसीलिए वहाँ लंबे वर्णन नहीं मिलते, लय मिलती है, और वाटिका आते ही वह लय धीमी पड़ जाती है।",
+  ref:"अध्यात्म रामायण किलिप्पाट्टु, एषुत्तच्छन",cost:6,on:["ezhu_vatika"]},
+ k_dadhimukh:{n:"दधिमुख की शिकायत",k:"vanar",to:"सुग्रीव को",
+  why:"बाग़ उजड़ने की फ़रियाद लेकर, पर नतीजा उलटा निकला।",
+  x:"वह सीधे किष्किंधा दौड़ा और पैरों में गिरकर सब कुछ कह दिया। सुग्रीव ने सुनते ही उलटा अर्थ निकाला: जो हारकर लौटते हैं वे ऐसा ऊधम नहीं करते, इसलिए काम हो गया है और यह हनुमान से ही हुआ होगा। सज़ा की जगह उसे समझाकर लौटा दिया गया। पूरी कथा में यह अकेली ऐसी ख़बर है जो किसी दूत के मुँह से नहीं, एक शिकायत के भीतर से निकलती है।",
+  ref:"सुंदरकांड, सर्ग 62 और 63",cost:0,on:["dadhimukh"]}
+};
+const kahiOpen=k=>!!(save.kahi&&save.kahi[k]);
+const kahiReach=k=>KAHI[k]&&KAHI[k].on.some(c=>save.cards[c]);
+const kahiCount=()=>Object.keys(KAHI).filter(kahiOpen).length;
+function openKahi(){
+ save.kahi=save.kahi||{};
+ Object.keys(KAHI).forEach(k=>{
+  if(save.kahi[k]||KAHI[k].cost>0)return;
+  if(kahiReach(k)){save.kahi[k]=true;earn(2,"kahi",KAHI[k].n);}
+ });
+}
+function buyKahi(k){
+ const K=KAHI[k];if(!K||kahiOpen(k))return;
+ if(!kahiReach(k)){note("यह तब खुलेगा जब आप उस पल तक पहुँचेंगे जहाँ यह कहा गया था।");return;}
+ if(!spend(K.cost)){note("इसके लिए "+K.cost+" मणि चाहिए।");return;}
+ save.kahi=save.kahi||{};save.kahi[k]=true;persist();
+ note(K.n+" अब खुल गया।");drawPatra();deepKahi(k);
+}
 /* ---------- the collection: boons, curses, weapons and tokens ---------- */
 const VKIND={var:"वरदान",shaap:"शाप",astra:"अस्त्र",nishani:"निशानी",vahan:"वाहन"};
 const VASTU={
@@ -4776,6 +4838,17 @@ function deepFarq(i){
  });
  showDeep(F.q,h);
 }
+function deepKahi(k){
+ const K=KAHI[k];if(!K)return;
+ const got=kahiOpen(k),reach=kahiReach(k);
+ showDeep(K.n,'<span class="vkind">'+(KKIND[K.k]||"कहने वाला")+"</span>"+
+  '<p><b>किसे सुनाया:</b> '+K.to+"</p>"+
+  '<p><b>क्यों:</b> '+K.why+"</p>"+
+  (got?"<p>"+K.x+"</p>"
+     :'<p class="quiet">'+(reach?"यह कथा अभी बंद है। पत्र में जाकर "+K.cost+" मणि से खोली जा सकती है।"
+                                 :"यह तब खुलेगी जब आप उस पल तक पहुँचेंगे जहाँ यह कही गई थी।")+"</p>")+
+  '<p class="quiet">'+K.ref+"</p>");
+}
 function deepPerson(k){
  const P=PATRA[k];if(!P)return;
  const from=(P.on||[]).filter(c=>CARDS[c]).map(c=>CARDS[c].t);
@@ -4856,7 +4929,8 @@ function drawPatra(){
     bar("उपलब्धियाँ",achCount(),Object.keys(ACH).length)+
     bar("खुली कथाएँ",kathaCount(),Object.keys(KATHA).length)+
     bar("पदवियाँ",padviCount(),PADVI.length)+
-    bar("संग्रह",vastuCount(),Object.keys(VASTU).length);
+    bar("संग्रह",vastuCount(),Object.keys(VASTU).length)+
+    bar("कही हुई कथाएँ",kahiCount(),Object.keys(KAHI).length);
  h+='<h2>रस</h2>';
  Object.keys(RASA).forEach(r=>{h+='<div class="tapme" data-rasa="'+r+'">'+bar(RASA[r],rc[r][0],rc[r][1],RASA_X[r])+"</div>";});
  h+='<h2>पदवियाँ</h2>';
@@ -4873,6 +4947,23 @@ function drawPatra(){
   });
   h+="</div>";
  });
+ h+='<h2>कही हुई कथाएँ</h2>';
+ h+='<p class="quiet">कथा के भीतर जो किसी ने किसी को सुनाई। '+Object.keys(KAHI).length+" में से "+kahiCount()+" खुली हैं।</p>";
+ h+='<div class="vgrid">';
+ Object.keys(KAHI).forEach(k=>{
+  const K=KAHI[k],got=kahiOpen(k),reach=kahiReach(k);
+  h+='<div class="vcell'+(got?" got tapme":(reach?" ready tapme":""))+'"'+((got||reach)?' data-kahi="'+k+'"':"")+">"+
+   '<svg class="vicon" viewBox="0 0 52 52">'+(VART.nishani||"")+"</svg>"+
+   '<div class="vbody"><b>'+((got||reach)?K.n:"अभी नहीं मिला")+"</b>"+
+   '<span class="vkind">'+(KKIND[K.k]||"")+"</span>"+
+   (got?"<p>"+K.x.slice(0,80)+"...</p><span class=\"vrow\">किसे सुनाया: "+K.to+"</span>"+
+        '<span class="more">पूरा पढ़ो</span>'
+      :reach?'<p class="quiet">यह कथा बंद है।</p>'+
+        (K.cost?'<button class="claim" data-kbuy="'+k+'">'+K.cost+" मणि देकर खोलो</button>":"")
+      :'<p class="quiet">यह उसी पल पर मिलेगी जहाँ यह कही गई थी।</p>')+
+   "</div></div>";
+ });
+ h+="</div>";
  h+='<h2>संग्रह</h2>';
  h+='<p class="quiet">वरदान, शाप, अस्त्र और निशानियाँ। '+Object.keys(VASTU).length+" में से "+vastuCount()+" मिलीं।</p>";
  h+='<div class="vgrid">';
@@ -4968,6 +5059,9 @@ function drawPatra(){
  const bh=document.getElementById("bhent");
  if(bh)bh.onclick=()=>{takeBhent();drawPatra();hud();};
  drawQuiz();
+ patraBox.querySelectorAll("[data-kbuy]").forEach(b=>{b.onclick=e=>{e.stopPropagation&&e.stopPropagation();buyKahi(b.dataset.kbuy);};});
+ patraBox.querySelectorAll("[data-kahi]").forEach(b=>{b.onclick=e=>{
+  if(e&&e.target&&e.target.dataset&&e.target.dataset.kbuy)return;deepKahi(b.dataset.kahi);};});
  patraBox.querySelectorAll("[data-rasa]").forEach(b=>{b.onclick=()=>deepRasa(b.dataset.rasa);});
  patraBox.querySelectorAll("[data-ach]").forEach(b=>{b.onclick=e=>{if(e&&e.target&&e.target.dataset&&e.target.dataset.claim)return;deepAch(b.dataset.ach);};});
  patraBox.querySelectorAll("[data-padvi]").forEach(b=>{b.onclick=e=>{if(e&&e.target&&e.target.dataset&&(e.target.dataset.wear||e.target.dataset.drop))return;deepPadvi(b.dataset.padvi);};});
