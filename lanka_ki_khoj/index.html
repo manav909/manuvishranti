@@ -3318,8 +3318,7 @@ function openReader(id,w,li,from){
    splitSay(S.say).about.map(t=>"<p>"+t+"</p>").join("")+"</div></div>":"")+
   '<p class="rsrc">यह ग्रंथ यहाँ रचा गया माना जाता है: '+(src.where||"जगह पक्की नहीं")+"</p>"+
   '<p class="rsrc">यह पाठ इसी ग्रंथ से है।'+
-   (src.u?' <a href="'+src.u+'" target="_blank" rel="noopener">मूल खोलकर पढ़ो</a>'+
-     (src.un?' <span class="rnote">'+src.un+"</span>":"")
+   (src.u?(src.un?' <span class="rnote">खुली प्रति मौजूद है: '+src.un+"</span>":' <span class="rnote">इसकी खुली प्रति मौजूद है।</span>')
     :src.pr?' खुली प्रति अभी नहीं मिली। हवाला इस छपी प्रति से मिलाया गया है: '+src.pr+"।"
     :" छपी प्रति से मिलान बाकी।")+"</p>"+
   '<div class="rbtns"><button class="rback">'+(readerFrom==="texts"?"ग्रंथों के नक्शे पर लौटो":"वापस वहीं लौटो जहाँ थे")+"</button>"+
@@ -3413,8 +3412,7 @@ function showText(k){
  const row=document.createElement("span");row.className="diobtns";
  const hit=readLayer(k);
  if(hit)row.appendChild(btn("पढ़ा हुआ पाठ खोलो","go",()=>openReader(hit.id,hit.w,hit.li,"texts")));
- if(S.u){const a=document.createElement("a");a.className="go ghost";a.href=S.u;a.target="_blank";
-  a.rel="noopener";a.textContent="मूल पाठ";row.appendChild(a);}
+ 
  row.appendChild(btn("कथा पर लौटो","go ghost",storyMap));
  sheet.appendChild(row);
  sheet.classList.add("open");
@@ -3814,14 +3812,14 @@ function fill(){
    const S=SRC[k];
    out+='<div class="note"><div class="who">'+S.n+"</div>"+
     '<div class="from">'+[S.who,S.lang,S.when].filter(Boolean).join(", ")+"</div>"+
-    (S.u?'<div class="from"><a href="'+S.u+'" target="_blank" rel="noopener">खोलकर पढ़ो</a></div>':'<div class="from">छपी प्रति से पढ़ो</div>')+"</div>";
+    '<div class="from">'+(S.u?"खुली प्रति मौजूद है":S.pr?"छपी प्रति: "+S.pr:"छपी प्रति से मिलाया गया")+"</div>"+"</div>";
   });
   if(gr.length) out+='<p class="shut-note">इनमें अभी बनावट तक मिलान हुआ है।</p>';
   gr.forEach(k=>{
    const S=SRC[k];
    out+='<div class="note"><div class="who">'+S.n+"</div>"+
     '<div class="from">'+[S.who,S.lang,S.when].filter(Boolean).join(", ")+"</div>"+
-    (S.u?'<div class="from"><a href="'+S.u+'" target="_blank" rel="noopener">खोलकर पढ़ो</a></div>':'<div class="from">छपी प्रति से पढ़ो</div>')+"</div>";
+    '<div class="from">'+(S.u?"खुली प्रति मौजूद है":S.pr?"छपी प्रति: "+S.pr:"छपी प्रति से मिलाया गया")+"</div>"+"</div>";
   });
  }else{
   const ids=Object.keys(CARDS).filter(c=>CARDS[c].l===tab);
@@ -3832,7 +3830,7 @@ function fill(){
    out+='<div class="note"><div class="who">'+C.t+'</div><p style="margin:.3rem 0 0">'+C.x+"</p>"+
     (w?'<div class="from">यह यहाँ मिली: '+w+"</div>":"")+
     '<div class="from">'+SRC[C.s].n+(C.ref?", "+C.ref:", हवाला अभी मिलाया नहीं गया")+
-    (SRC[C.s].u?' <a href="'+SRC[C.s].u+'" target="_blank" rel="noopener">खोलकर पढ़ो</a>':"")+"</div></div>";
+    "</div></div>";
   });
   const left=ids.length-mine.length;
   if(left)out+='<p class="shut-note">'+left+" बातें अभी बंद हैं। वे उन्हीं पलों में खुलेंगी जहाँ वे छिपी हैं।</p>";
