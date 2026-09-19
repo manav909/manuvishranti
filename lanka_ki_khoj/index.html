@@ -338,6 +338,13 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .vi .vline{fill:none;stroke:var(--haldi);stroke-width:1.6;stroke-linecap:round}
 .vi .vcrack{fill:none;stroke:var(--fire);stroke-width:1.6;stroke-linecap:round}
 .vbody{min-width:0}
+.tapme{cursor:pointer}
+.tapme:hover{border-color:var(--haldi)}
+.more{display:inline-block;margin-top:.3rem;font-size:.78rem;border:1px solid var(--rule);
+ border-radius:99px;padding:.02rem .55rem;color:var(--quiet)}
+.tapme:hover .more{border-color:var(--haldi);color:var(--haldi)}
+.deeptop{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.vicon.big{width:4.4rem;height:4.4rem}
 .vbody b{display:block;font-weight:400;font-family:"Rozha One",serif;font-size:1.05rem;color:var(--haldi)}
 .vkind{display:inline-block;font-size:.74rem;border:1px solid var(--rule);border-radius:99px;
  padding:.02rem .5rem;color:var(--quiet);margin:.2rem 0}
@@ -803,6 +810,16 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
     <span class="pcard-btns"><button class="diox" id="scrollShut">बंद</button></span>
    </div>
    <div class="pcard-body weave" id="weave"></div>
+  </div>
+ </div>
+ <div class="pcard" id="deep" hidden>
+  <div class="pcard-back" id="deepBack"></div>
+  <div class="pcard-box" role="dialog" aria-label="पूरा ब्योरा">
+   <div class="pcard-top">
+    <b id="deepName"></b>
+    <span class="pcard-btns"><button class="diox" id="deepShut">बंद</button></span>
+   </div>
+   <div class="pcard-body panel-like" id="deepBody"></div>
   </div>
  </div>
 </div>
@@ -2444,7 +2461,7 @@ document.getElementById("minSide").onclick=()=>{
  app.classList.toggle("sidemin");app.classList.remove("mapmin");foldLbl();fitLater();};
 let rz=0;
 addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{fullW=0;refit();},120);});
-addEventListener("keydown",e=>{if(e.key==="Escape"){if(scrollOpen())closeScroll();else if(cardOpen())closeCard();else if(panel==="reader")closeReader();else if(sheet.className.indexOf("open")>-1)shut();}});
+addEventListener("keydown",e=>{if(e.key==="Escape"){if(deepOpen())closeDeep();else if(scrollOpen())closeScroll();else if(cardOpen())closeCard();else if(panel==="reader")closeReader();else if(sheet.className.indexOf("open")>-1)shut();}});
 
 /* ---------- map build ---------- */
 
@@ -3906,6 +3923,48 @@ function openKatha(k){
  const bk=readerBox.querySelector(".rback");if(bk)bk.onclick=closeReader;
  closeCard();kept.reader=0;showPanel("reader");readerBox.scrollTop=0;
 }
+function deepOpen(){const c=document.getElementById("deep");return c&&!c.hidden;}
+function closeDeep(){const c=document.getElementById("deep");if(c)c.hidden=true;}
+function showDeep(name,html){
+ const c=document.getElementById("deep"),b=document.getElementById("deepBody"),n=document.getElementById("deepName");
+ if(!c||!b)return;
+ n.textContent=name;b.innerHTML=html;c.hidden=false;b.scrollTop=0;
+}
+function deepPerson(k){
+ const P=PATRA[k];if(!P)return;
+ const from=(P.on||[]).filter(c=>CARDS[c]).map(c=>CARDS[c].t);
+ showDeep(P.n,"<p>"+P.x+"</p>"+
+  (from.length?'<p class="quiet">इनसे भेंट यहाँ हुई: '+from.join("; ")+"</p>":""));
+}
+function deepVastu(k){
+ const V=VASTU[k];if(!V)return;
+ showDeep(V.n,'<div class="deeptop"><svg class="vicon big" viewBox="0 0 52 52">'+VART[V.k]+"</svg>"+
+  '<span class="vkind">'+VKIND[V.k]+"</span></div>"+
+  "<p>"+V.x+"</p>"+
+  '<p><b>किसके पास:</b> '+V.who+"</p>"+
+  '<p><b>कहाँ से मिला:</b> '+V.from+"</p>"+
+  '<p><b>कैसे काम आया:</b> '+V.use+"</p>"+
+  '<p><b>इस कथा में कितनी बार:</b> '+V.n_use+"</p>"+
+  '<p class="quiet">'+V.ref+"</p>");
+}
+function deepCard(c){
+ const C=CARDS[c];if(!C)return;
+ const src=SRC[C.s],w=whereFound(c);
+ showDeep(C.t,'<span class="vkind">'+(L[C.l]||"बात")+"</span><p>"+C.x+"</p>"+
+  (C.sl?'<div class="mool"><span class="mool-line">'+C.sl+'</span><span class="mool-arth">'+(C.slm||"")+"</span></div>":"")+
+  (w?'<p class="quiet">यह यहाँ मिली: '+w+"</p>":"")+
+  '<p class="quiet">'+(src?src.n:"")+(C.ref?", "+C.ref:"")+"</p>");
+}
+function deepPlace(id){
+ const P=PLACES[id];if(!P)return;
+ let rows="";
+ NIGHTS.forEach(N=>N.watches.forEach((w,i)=>{
+  const k=N.id+"-"+id+"-"+i;if(!SC[k])return;
+  const t=layersOf(k).length,d=Math.min(depthOf(k),t);
+  rows+='<p class="quiet"><b>'+N.name+", "+w.n+":</b> "+t+" में से "+d+" रूप पढ़े</p>";
+ }));
+ showDeep(P.n,"<p>"+P.t+"</p>"+(SEEN[id]?'<p class="quiet">'+SEEN[id]+"</p>":"")+rows);
+}
 function scrollOpen(){const c=document.getElementById("scroll");return c&&!c.hidden;}
 function openScroll(){
  if(quizLocked()){lockNote();return;}
@@ -3960,24 +4019,23 @@ function drawPatra(){
  h+='<div class="vgrid">';
  Object.keys(VASTU).forEach(k=>{
   const V=VASTU[k],got=vastuGot(k);
-  h+='<div class="vcell'+(got?" got":"")+'">'+
+  h+='<div class="vcell'+(got?" got tapme":"")+'"'+(got?' data-vastu="'+k+'"':"")+">"+
    '<svg class="vicon" viewBox="0 0 52 52">'+VART[V.k]+"</svg>"+
    '<div class="vbody"><b>'+(got?V.n:"अभी नहीं मिला")+"</b>"+
    '<span class="vkind">'+VKIND[V.k]+"</span>"+
-   (got?"<p>"+V.x+"</p>"+
+   (got?"<p>"+V.x.slice(0,80)+(V.x.length>80?"...":"")+"</p>"+
      '<span class="vrow">किसके पास: '+V.who+"</span>"+
-     '<span class="vrow">कहाँ से मिला: '+V.from+"</span>"+
-     '<span class="vrow">कैसे काम आया: '+V.use+"</span>"+
-     '<span class="vrow">इस कथा में कितनी बार: '+V.n_use+"</span>"+
-     '<span class="vrow quiet">'+V.ref+"</span>"
+     '<span class="more">पूरा पढ़ो</span>'
     :'<p class="quiet">यह उसी पल पर खुलेगा जहाँ इसका ज़िक्र आता है।</p>')+
    "</div></div>";
  });
  h+="</div>";
  h+='<h2>रास्ते के लोग</h2><div class="pgrid">';
- Object.keys(PATRA).forEach(k=>{const got=save.patra&&save.patra[k];
-  h+='<div class="pcell'+(got?" got":"")+'"><b>'+(got?PATRA[k].n:"अभी नहीं मिले")+"</b><span>"+
-     (got?PATRA[k].x:"किसी पल में इनसे भेंट बाकी है।")+"</span></div>";});
+ Object.keys(PATRA).forEach(k=>{const got=save.patra&&save.patra[k],P=PATRA[k];
+  h+='<div class="pcell'+(got?" got tapme":"")+'"'+(got?' data-person="'+k+'"':"")+'><b>'+
+     (got?P.n:"अभी नहीं मिले")+"</b><span>"+
+     (got?P.x.slice(0,80)+(P.x.length>80?"...":""):"किसी पल में इनसे भेंट बाकी है।")+"</span>"+
+     (got?'<span class="more">पूरा पढ़ो</span>':"")+"</div>";});
  h+="</div>";
  h+='<h2>उपलब्धियाँ</h2><div class="pgrid">';
  Object.keys(ACH).forEach(k=>{const st=save.ach&&save.ach[k],pc=Math.round(achPart(k)*100);
@@ -4051,6 +4109,8 @@ function drawPatra(){
  const bh=document.getElementById("bhent");
  if(bh)bh.onclick=()=>{takeBhent();drawPatra();hud();};
  drawQuiz();
+ patraBox.querySelectorAll("[data-person]").forEach(b=>{b.onclick=()=>deepPerson(b.dataset.person);});
+ patraBox.querySelectorAll("[data-vastu]").forEach(b=>{b.onclick=()=>deepVastu(b.dataset.vastu);});
  patraBox.querySelectorAll("[data-claim]").forEach(b=>{
   b.onclick=()=>{const k=b.dataset.claim;if(claimAch(k))note("इनाम मिला: "+ACH[k].n+"। +5 मणि।");drawPatra();hud();};
  });
@@ -4131,7 +4191,7 @@ function fill(){
    out+="<h3>"+N.name+"</h3>";
    N.watches.forEach((w,i)=>{
     const rows=w.spots.map(s=>{const k=N.id+"-"+s+"-"+i;const t=SC[k]?layersOf(k).length:1;const d=depthOf(k);
-      return PLACES[s].n+" ("+t+" में से "+Math.min(d,t)+" रूप)";}).join(", ");
+      return '<button class="link" data-place="'+s+'">'+PLACES[s].n+"</button> ("+t+" में से "+Math.min(d,t)+" रूप)";}).join(", ");
     out+='<p class="shut-note">'+w.n+": "+rows+"</p>";
    });
   });
@@ -4172,7 +4232,8 @@ function fill(){
   out+='<p class="shut-note">'+L[tab]+": "+ids.length+" में से "+mine.length+"</p>";
   mine.forEach(c=>{
    const C=CARDS[c],w=whereFound(c);
-   out+='<div class="note"><div class="who">'+C.t+'</div><p style="margin:.3rem 0 0">'+C.x+"</p>"+
+   out+='<div class="note tapme" data-card="'+c+'"><div class="who">'+C.t+'</div><p style="margin:.3rem 0 0">'+
+    C.x.slice(0,110)+(C.x.length>110?"...":"")+'</p><span class="more">पूरा पढ़ो</span>'+
     (C.sl?'<div class="mool"><span class="mool-line">'+C.sl+'</span><span class="mool-arth">'+(C.slm||"")+"</span></div>":"")+
     (w?'<div class="from">यह यहाँ मिली: '+w+"</div>":"")+
     '<div class="from">'+SRC[C.s].n+(C.ref?", "+C.ref:", हवाला अभी मिलाया नहीं गया")+
@@ -4183,6 +4244,8 @@ function fill(){
  }
  out+='<p class="shut-note"><button class="link" id="wipe">सब कुछ भूल जाओ</button></p>';
  body.innerHTML=out;
+ body.querySelectorAll("[data-card]").forEach(b=>{b.onclick=()=>deepCard(b.dataset.card);});
+ body.querySelectorAll("[data-place]").forEach(b=>{b.onclick=()=>deepPlace(b.dataset.place);});
  const w=document.getElementById("wipe");
  if(w)w.onclick=()=>{
   if(w.dataset.sure!=="1"){w.dataset.sure="1";w.textContent="पक्का? दोबारा दबाओ";
@@ -4196,6 +4259,8 @@ function fill(){
 
 document.getElementById("pcardShut").onclick=closeCard;
 document.getElementById("scrollShut").onclick=closeScroll;
+document.getElementById("deepShut").onclick=closeDeep;
+document.getElementById("deepBack").onclick=closeDeep;
 document.getElementById("scrollBack").onclick=closeScroll;
 document.getElementById("scrollBtn").onclick=openScroll;
 document.getElementById("pcardBack").onclick=closeCard;
