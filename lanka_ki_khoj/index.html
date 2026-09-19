@@ -155,6 +155,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .panel h1{font-family:"Rozha One",serif;font-weight:400;font-size:2.4rem;color:var(--haldi);margin:.2rem 0 .3rem;line-height:1.15}
 .panel h2{font-family:"Rozha One",serif;font-weight:400;font-size:1.45rem;margin:1.4rem 0 .3rem}
 .panel p{margin:0 0 .9rem}
+.recap{margin:.1rem 0 .5rem;font-size:.9rem;color:var(--quiet);border-left:2px solid var(--rule);padding-left:.6rem}
 .quiet{color:var(--quiet);font-style:italic}
 .gain{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;margin:.2rem 0 .9rem}
 .gain b{font-weight:400;font-family:"Rozha One",serif;color:var(--page);background:var(--haldi);
@@ -4581,7 +4582,11 @@ function turn(){
  if(run.w>=run.N.watches.length)return dawn();
  const at=markPoint();
  run.ghadi=0;
- step(run.N.watches[run.w].n+", पहली घड़ी");run.used=0;run.pickedHere=[];run.busy=false;run.focus=null;
+ step(run.N.watches[run.w].n+", पहली घड़ी");
+ if(run.w>0){                       /* one line of what the katha just did, so the thread stays in hand */
+  const prev=mainList(run.w-1).map(x=>SPINE[run.N.id+"-"+x+"-"+(run.w-1)]).filter(Boolean);
+  if(prev.length)el('<p class="recap"><b>अभी अभी:</b> '+prev[prev.length-1]+"</p>");
+ }run.used=0;run.pickedHere=[];run.busy=false;run.focus=null;
  stage.classList.remove("focus");hideDio();
  hud();paint();weather();flyTo(watchBox());
  drawTrail();
