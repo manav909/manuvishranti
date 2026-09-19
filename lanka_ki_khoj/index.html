@@ -346,6 +346,9 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .vi .vline{fill:none;stroke:var(--haldi);stroke-width:1.6;stroke-linecap:round}
 .vi .vcrack{fill:none;stroke:var(--fire);stroke-width:1.6;stroke-linecap:round}
 .vbody{min-width:0}
+.findbox{width:100%;box-sizing:border-box;background:var(--mark);border:1px solid var(--rule);
+ border-radius:.6rem;padding:.5rem .7rem;color:var(--ink);font:inherit;font-size:1rem;margin:.2rem 0 .8rem}
+.findbox:focus{outline:none;border-color:var(--haldi)}
 .tapme{cursor:pointer}
 .tapme:hover{border-color:var(--haldi)}
 .more{display:inline-block;margin-top:.3rem;font-size:.78rem;border:1px solid var(--rule);
@@ -4246,6 +4249,32 @@ function whereFound(c){                  /* which moment holds this find */
  });
  return out;
 }
+let findQ="";
+function drawFind(){
+ const box=document.getElementById("findout");if(!box)return;
+ const q=(findQ||"").trim();
+ if(q.length<2){box.innerHTML='<p class="shut-note">दो अक्षर या उससे ज़्यादा लिखो।</p>';return;}
+ const hit=[];
+ Object.keys(CARDS).forEach(c=>{const C=CARDS[c];
+  if(!save.cards[c])return;
+  if((C.t+" "+C.x).indexOf(q)>-1)hit.push({k:"बात",n:C.t,go:()=>deepCard(c)});});
+ Object.keys(PATRA).forEach(k=>{const P=PATRA[k];
+  if(!(save.patra&&save.patra[k]))return;
+  if((P.n+" "+P.x).indexOf(q)>-1)hit.push({k:"पात्र",n:P.n,go:()=>deepPerson(k)});});
+ Object.keys(VASTU).forEach(k=>{const V=VASTU[k];
+  if(!vastuGot(k))return;
+  if((V.n+" "+V.x+" "+V.who+" "+V.from).indexOf(q)>-1)hit.push({k:VKIND[V.k],n:V.n,go:()=>deepVastu(k)});});
+ Object.keys(PLACES).forEach(id=>{const P=PLACES[id];
+  if((P.n+" "+P.t+" "+(P.lore||"")).indexOf(q)>-1)hit.push({k:"जगह",n:P.n,go:()=>deepPlace(id)});});
+ Object.keys(SRC).forEach(k=>{const S=SRC[k];
+  if((S.n+" "+(S.lore||"")+" "+(S.who||"")+" "+(S.lang||"")).indexOf(q)>-1)
+   hit.push({k:"ग्रंथ",n:S.n,go:()=>deepGranth(k)});});
+ if(!hit.length){box.innerHTML='<p class="shut-note">कुछ नहीं मिला। हो सकता है वह बात अभी खुली न हो।</p>';return;}
+ box.innerHTML='<p class="shut-note">'+hit.length+" मिलीं</p>"+
+  hit.slice(0,40).map((h,i)=>'<div class="note tapme" data-hit="'+i+'"><div class="who">'+h.n+
+   '</div><span class="vkind">'+h.k+'</span><span class="more">पूरा पढ़ो</span></div>').join("");
+ box.querySelectorAll("[data-hit]").forEach(b=>{b.onclick=()=>hit[+b.dataset.hit].go();});
+}
 function fill(){
  pothi.innerHTML="";
  const tb=document.createElement("div");tb.className="tabs";pothi.appendChild(tb);
@@ -4253,9 +4282,14 @@ function fill(){
  tb.appendChild(btn("जगहें","tab"+(tab==="places"?" on":""),()=>{tab="places";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("फ़र्क़","tab"+(tab==="farq"?" on":"")+"",()=>{tab="farq";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("स्रोत","tab"+(tab==="src"?" on":""),()=>{tab="src";fill();pothi.scrollTop=0;}));
+ tb.appendChild(btn("खोजो","tab"+(tab==="find"?" on":""),()=>{tab="find";fill();pothi.scrollTop=0;}));
  const body=document.createElement("div");pothi.appendChild(body);
  let out="";
- if(tab==="places"){
+ if(tab==="find"){
+  out+='<p class="shut-note">जो भी याद हो उसका एक शब्द लिखो: किसी बात का, पात्र का, जगह का, ग्रंथ का या संग्रह की चीज़ का।</p>';
+  out+='<input class="findbox" id="findbox" type="text" placeholder="जैसे: गरुड़, मैनाक, वाटिका, ब्रह्मास्त्र" value="'+(findQ||"")+'">';
+  out+='<div id="findout"></div>';
+ }else if(tab==="places"){
   NIGHTS.forEach(N=>{
    out+="<h3>"+N.name+"</h3>";
    N.watches.forEach((w,i)=>{
@@ -4316,6 +4350,11 @@ function fill(){
  body.querySelectorAll("[data-farq]").forEach(b=>{b.onclick=()=>deepFarq(+b.dataset.farq);});
  body.querySelectorAll("[data-card]").forEach(b=>{b.onclick=()=>deepCard(b.dataset.card);});
  body.querySelectorAll("[data-place]").forEach(b=>{b.onclick=()=>deepPlace(b.dataset.place);});
+ const fb=document.getElementById("findbox");
+ if(fb){
+  fb.oninput=()=>{findQ=fb.value;drawFind();};
+  drawFind();
+ }
  const w=document.getElementById("wipe");
  if(w)w.onclick=()=>{
   if(w.dataset.sure!=="1"){w.dataset.sure="1";w.textContent="पक्का? दोबारा दबाओ";
