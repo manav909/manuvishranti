@@ -846,6 +846,7 @@ a{color:var(--tide)}
 .mk .cnt circle{fill:var(--page);stroke:var(--tide);stroke-width:.7}
 .mk .cnt text{font-family:"Rozha One",serif;font-size:3.1px;fill:var(--tide)}
 .mk.live{cursor:pointer}
+.mk.later{opacity:.32;filter:saturate(.3);cursor:pointer}
 .mk.live .drop{fill:var(--tide)}
 .mk.live .eye{fill:var(--page);opacity:1}
 .mk.live .num{fill:var(--tide);opacity:1;font-size:2.9px}
@@ -4404,6 +4405,7 @@ function paint(){
  Object.keys(PLACES).forEach(id=>{
   const m=marks[id],P=PLACES[id];if(!m)return;
   const inW=W&&W.spots.includes(id);
+  const nowOpen=!run||!W||ghadiSpots().includes(id)||run.pickedHere.includes(id);
   const giftLock=false;
   const used=run&&run.pickedHere.includes(id);
   const key=run?run.N.id+"-"+id+"-"+run.w:"";
@@ -4415,11 +4417,12 @@ function paint(){
   if(dF>0)flag=dF>=totF?" f-done":" f-part";
   let cls="mk"+flag;
   if(!inW)cls+=" hide";
+  else if(!nowOpen)cls+=" later";          /* this place belongs to the other ghadi */
   else if(giftLock)cls+=" giftlock";
   else if(used)cls+=(run&&run.focus===id?" live here":" used");
   else{cls+=" live"+(d>0&&d>=tot?" full":d>0?" part":"")+(P.gift?" gift":"");n++;numOf[id]=n;}
   m.setAttribute("class",cls);
-  m.setAttribute("tabindex",inW&&!used&&!giftLock?"0":"-1");
+  m.setAttribute("tabindex",inW&&nowOpen&&!used&&!giftLock?"0":"-1");
   m.setAttribute("role","button");
   m.setAttribute("aria-label",P.n);
   const nm=m.querySelector(".num"),lb=m.querySelector(".lbl");
@@ -4482,17 +4485,22 @@ function tap(id){
  const prog=(key&&SC[key])?(d===0?"अभी तक यहाँ नहीं गए":(d<tot?"यहाँ के "+tot+" रूपों में से "+d+" देखे":"यहाँ के सारे रूप देख लिए")):"";
  const left=run?(twoVisits()?2:1)-run.used:0;
  const here=run&&run.focus===id;
- const goNow=!!(run&&inW&&!used&&!giftLock&&left>0&&!run.busy);
+ const nowOpen=!run||!inW||ghadiSpots().includes(id)||used;
+ const goNow=!!(run&&inW&&nowOpen&&!used&&!giftLock&&(run.ghadi===0||left>0)&&!run.busy);
  let why="",word="यहाँ चलो";
  if(!goNow){
   if(!run){why="अभी कोई रात चल नहीं रही। कथा वाले पन्ने पर कोई हिस्सा चुनो, फिर यहाँ जाया जा सकेगा।";word="पहले कथा शुरू करो";}
   else if(here){why="तुम इसी जगह पर खड़े हो। आगे की बात कथा वाले पन्ने पर चल रही है।";word="तुम यहीं हो";}
   else if(giftLock){why="यह जगह अभी बंद है, आगे खुलेगी।";word="अभी बंद है";}
   else if(used){why="इस घड़ी तुम यहाँ हो आए। यही पल किसी और ग्रंथ में पढ़ना हो तो कथा वाले पन्ने पर उसका बटन है।";word="यहाँ हो आए";}
+  else if(inW&&!nowOpen&&run.ghadi===0){
+   why="पहली घड़ी कथा की है, और इस वक़्त कथा किसी और जगह चल रही है। वह पूरी होते ही यह जगह खुल जाएगी।";
+   word="दूसरी घड़ी में";}
+  else if(inW&&!nowOpen){why="यह जगह पहली घड़ी की थी, और वह बीत चुकी है।";word="वह घड़ी बीत गई";}
   else if(!inW){why="इस घड़ी यहाँ कुछ नहीं हो रहा। जहाँ कुछ हो रहा है, उन जगहों पर नक्शे में गिनती लगी है।";
    word=(function(){let seen=false;run.N.watches.forEach((w0,i0)=>{const k0=run.N.id+"-"+id+"-"+i0;
     if(SC[k0]&&depthOf(k0)>0)seen=true;});return seen?"यहाँ हो आए":"इस घड़ी बंद";})();}
-  else if(left<=0){why="इस घड़ी की तुम्हारी चुनी हुई जगह हो चुकी। कथा वाले पन्ने पर वक़्त आगे बढ़ाओ, अगली घड़ी में यह जगह खुल सकती है।";word="इस घड़ी और नहीं";}
+  else if(run.ghadi===1&&left<=0){why="इस घड़ी की तुम्हारी चुनी हुई जगह हो चुकी। कथा वाले पन्ने पर वक़्त आगे बढ़ाओ, अगली घड़ी में यह जगह खुल सकती है।";word="इस घड़ी और नहीं";}
   else{why="अभी यहाँ नहीं जाया जा सकता।";word="अभी बंद है";}
  }
  sheet.innerHTML='<div><b>'+(numOf[id]?numOf[id]+". ":"")+P.n+"</b><span>"+P.t+"</span>"+
