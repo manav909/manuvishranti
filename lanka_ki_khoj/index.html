@@ -37,7 +37,8 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
  overflow:hidden;text-overflow:ellipsis}
 .pips{display:flex;gap:.26rem;align-items:center;flex:0 0 auto}
 .pip{width:.5rem;height:.5rem;border-radius:50%;background:var(--rule)}
-.pip.past{background:var(--tide)}.pip.now{background:var(--haldi);box-shadow:0 0 0 3px rgba(154,106,9,.18)}
+.pip.past{background:var(--tide)}.pip.half{opacity:.72}
+.pip.now{background:var(--haldi);box-shadow:0 0 0 3px rgba(154,106,9,.18)}
 .tally{font-size:.82rem;color:var(--quiet);white-space:nowrap}
 #board{flex:1 1 auto;min-height:0;display:grid;
  grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,46%) minmax(0,1fr)}
@@ -4538,8 +4539,16 @@ function hud(){
   lamp.textContent=r>1?r+" इनाम तैयार":(readyCount()?"इनाम तैयार":"प्रहर की भेंट");}
  if(!run){nowLbl.textContent="शुरुआत";pips.innerHTML="";return;}
  const i=Math.min(run.w,run.N.watches.length-1);
- nowLbl.textContent=run.N.name+(run.w>=run.N.watches.length?"":", "+run.N.watches[i].n);
- pips.innerHTML=run.N.watches.map((w,j)=>'<span class="pip '+(j<run.w?"past":j===run.w?"now":"")+'"></span>').join("");
+ let tail="";
+ if(run.w<run.N.watches.length){
+  const m=mainList(run.w),left=m.filter(x=>!run.pickedHere.includes(x)).length;
+  tail=", "+run.N.watches[i].n+(run.ghadi===0
+   ?", पहली घड़ी"+(m.length>1?" ("+m.length+" में से "+(m.length-left)+" पड़ाव)":"")
+   :", दूसरी घड़ी");
+ }
+ nowLbl.textContent=run.N.name+tail;
+ pips.innerHTML=run.N.watches.map((w,j)=>'<span class="pip '+(j<run.w?"past":j===run.w?"now":"")+
+  (j===run.w&&run.ghadi===1?" half":"")+'"></span>').join("");
 }
 function start(id){
  const N=NIGHTS.find(n=>n.id===id);
