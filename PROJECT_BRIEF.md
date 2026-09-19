@@ -5,7 +5,8 @@ A static site. One self-contained HTML file per experience, no build step, no se
 Each experience lives in its own folder, so the root stays free for a home page later.
 
 Live experience: **लंका की खोज** at `/lanka_ki_khoj`, a Hindi discovery game built on the Sundar Kand,
-covering 19 texts, 25 places, 63 forms, 77 hidden findings, all with citations.
+covering 19 texts, 47 moments, 102 tellings, 125 hidden findings, 35 places, 24 people,
+20 boons, curses, weapons and tokens, 10 side by side differences and 4 playable nights, all with citations.
 
 ## Stack
 - Plain HTML + CSS + SVG + vanilla JS in a single file
@@ -39,7 +40,7 @@ shut kathas to their conditions, nights to the night or katha they wait on, text
 and it fails on any orphan, any dangling name, and any duplicate key.
 
 ## Test suite (run in the build container, not in the repo)
-28 check files covering: whole-project data integrity, language, camera, map thinning,
+31 check files covering: whole-project data integrity, language, camera, map thinning,
 panels, scroll anchoring, story cards, gift boxes, the woven scroll, the thread of the story,
 progress card, titles, adhikar gates, parakh questions, prahar gifts, repeat visits, layout.
 

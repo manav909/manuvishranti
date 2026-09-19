@@ -4044,6 +4044,18 @@ function deepPadvi(id){
  showDeep(P.n,'<span class="vkind">'+P.g+'</span><p>'+P.x+"</p>"+
   '<p class="quiet">'+(has?(save.title===id?"यही नाम अभी चल रहा है।":"यह मिल चुकी है। पत्र में जाकर इसे अपना नाम बनाया जा सकता है।"):"अभी नहीं मिली।")+"</p>");
 }
+function deepAbout(){
+ const forms=Object.keys(SC).reduce((n,k)=>n+layersOf(k).length,0);
+ showDeep("इस खेल के बारे में",
+  "<p>यह सुंदरकांड की एक रात है, असली भूगोल के नक्शे पर। आप एक जगह चुनते हैं, वहाँ की कथा पढ़ते हैं, और वक़्त आगे बढ़ा देते हैं। जो पल आप छोड़ देते हैं, वे उस रात छूट जाते हैं।</p>"+
+  "<p><b>इसमें क्या है:</b> "+Object.keys(SC).length+" पल, "+forms+" रूप, "+Object.keys(CARDS).length+" छिपी बातें, "+
+   Object.keys(PLACES).length+" जगहें, "+Object.keys(SRC).length+" ग्रंथ, "+Object.keys(PATRA).length+" पात्र, "+
+   Object.keys(VASTU).length+" वरदान, शाप, अस्त्र और निशानियाँ, "+FARQ.length+" फ़र्क़, और "+NIGHTS.length+" रातें।</p>"+
+  "<p><b>क्या सच है और क्या बनावट:</b> हर पाठ के नीचे उसका हवाला है, सर्ग या अध्याय के नाम के साथ। वाल्मीकि में प्रवेश साँझ ढलते होता है और सर्ग 41 से 55 का हिस्सा दिन में, यह ग्रंथ से पक्का है। पर जगहों का एक ही वक़्त पर आमने सामने होना इस खेल की बनावट है, कथा का नियम नहीं।</p>"+
+  "<p><b>जहाँ मूल की पंक्ति मिली</b>, वहाँ वह अपनी ही लिपि में दी है, नीचे सीधा अर्थ। जहाँ खुली प्रति नहीं मिली, वहाँ उस छपी प्रति का नाम लिखा है जिससे मिलान किया गया।</p>"+
+  "<p><b>यह खेल कहीं बाहर नहीं भेजता।</b> कोई लिंक नहीं, कोई नई खिड़की नहीं। जो पढ़ना है, यहीं पूरा लिखा है।</p>"+
+  '<p class="quiet">मनु विश्रांति</p>');
+}
 function deepRasa(r){
  if(!RASA[r])return;
  const mine=[],rest=[];
@@ -4366,6 +4378,7 @@ function fill(){
  tb.appendChild(btn("जगहें","tab"+(tab==="places"?" on":""),()=>{tab="places";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("फ़र्क़","tab"+(tab==="farq"?" on":"")+"",()=>{tab="farq";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("स्रोत","tab"+(tab==="src"?" on":""),()=>{tab="src";fill();pothi.scrollTop=0;}));
+ tb.appendChild(btn("इस खेल के बारे में","tab",deepAbout));
  tb.appendChild(btn("खोजो","tab"+(tab==="find"?" on":""),()=>{tab="find";fill();pothi.scrollTop=0;}));
  const body=document.createElement("div");pothi.appendChild(body);
  let out="";
