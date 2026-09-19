@@ -4623,6 +4623,12 @@ function offer(only){
   skip.onclick=()=>{f.remove();endWatch();};
   f.appendChild(skip);
  }
+ /* in the free ghadi, keep the list short: the unread ones first, the rest behind a button */
+ let hidden=[];
+ if(run.ghadi===1&&!only&&open.length>4){
+  open.sort((a,b)=>freshAt(b)-freshAt(a));
+  hidden=open.slice(4);open=open.slice(0,4);
+ }
  open.forEach(id=>{
   const nf=freshAt(id);
   const b=document.createElement("button");
@@ -4634,6 +4640,23 @@ function offer(only){
   b.onclick=()=>{f.remove();visit(id);};
   f.appendChild(b);
  });
+ if(hidden.length){
+  f.appendChild(btn("और "+hidden.length+" जगहें दिखाओ","do ghost",()=>{
+   hidden.forEach(id=>{
+    const nf=freshAt(id);
+    const b=document.createElement("button");
+    b.className="card-pick"+(PLACES[id].gift?" gift":"");
+    b.innerHTML='<span class="cp-no">'+(numOf[id]||"")+'</span><span class="cp-mid">'+
+     "<b>"+PLACES[id].n+"</b><span>"+PLACES[id].t+"</span>"+
+     '<span class="cp-left">'+(nf?nf+" रूप अभी बाकी":"यहाँ सब पढ़ा जा चुका")+"</span></span>"+
+     '<span class="cp-go">जाओ</span>';
+    b.onclick=()=>{f.remove();visit(id);};
+    f.appendChild(b);
+   });
+   const more=f.children&&[...f.children].find?[...f.children].find(c=>String(c.textContent).indexOf("और ")===0):null;
+   if(more&&more.remove)more.remove();
+  }));
+ }
  anchorFrom(at);
 }
 function endWatch(){                 /* the hour closes, and what you skipped is folded away */
