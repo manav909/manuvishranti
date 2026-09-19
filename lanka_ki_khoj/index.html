@@ -362,6 +362,8 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
  padding:.02rem .5rem;color:var(--quiet);margin:.2rem 0}
 .vbody p{margin:.2rem 0 .3rem;font-size:.9rem;line-height:1.7}
 .vrow{display:block;font-size:.82rem;color:var(--quiet);line-height:1.6}
+.vrow.done{color:var(--tide)}
+.vrow.todo{color:var(--haldi)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:.5rem;margin:.4rem 0 1rem}
 .pcell{border:1px solid var(--rule);border-radius:.6rem;padding:.4rem .6rem;opacity:.5}
 .pcell.got{opacity:1;border-color:var(--haldi)}
@@ -2500,14 +2502,17 @@ const KAHI={
   x:"वे सीधे सामने नहीं आते। डाल पर बैठकर, धीमी और मीठी आवाज़ में, वे राम की पूरी कहानी सुनाने लगते हैं: दशरथ नाम का एक राजा था, फिर वन, फिर हरण, फिर सुग्रीव से मित्रता, और आख़िर में यह कि एक दूत ढूँढता हुआ लंका पहुँचा। यह इस पूरी रात का सबसे चतुर क़दम है, क्योंकि इसमें कोई माँग नहीं है, सिर्फ़ कथा है। सीता वही सुनती हैं, और तभी पहली बार ऊपर देखती हैं।",
   ref:"सुंदरकांड, सर्ग 31",cost:0,on:["gaakar"]},
  k_jambavan:{n:"जांबवान, हनुमान का अपना जन्म",k:"vanar",to:"हनुमान को",
+  need:[()=>NEED.card("naap","छलाँग की गिनती वाली बात मिली हो"),()=>NEED.roop(12),()=>NEED.patra(6)],
   why:"क्योंकि शाप के कारण वे अपना बल ख़ुद याद नहीं रख पाते।",
   x:"किनारे पर जब सब हिम्मत हार चुके थे, तब जांबवान ने हनुमान को उन्हीं की कहानी सुनाई: किसके बेटे हो, बचपन में सूरज को फल समझकर पकड़ने गए थे, इंद्र का वज्र लगा, और तब वरदान मिला कि मृत्यु अपनी इच्छा से होगी। ऋषियों के हल्के शाप से वे अपना बल भूल जाते हैं, इसलिए यह सुनाना ज़रूरी था। सुनते ही वे बढ़ते गए। यानी समुद्र पार करने की ताक़त पहले से मौजूद थी, बस याद दिलाई गई।",
   ref:"किष्किंधाकांड, सर्ग 66",cost:8,on:["jambavan_role"]},
  k_shiv:{n:"शिव, पार्वती को",k:"dev",to:"पार्वती को",
+  need:[()=>NEED.card("adhy_agni","अध्यात्म वाली आग की बात पढ़ी हो"),()=>NEED.texts(5)],
   why:"क्योंकि सुनने वाली को ब्योरा नहीं, सार चाहिए।",
   x:"अध्यात्म रामायण और आनंद रामायण, दोनों में कथा शिव पार्वती को सुना रहे हैं। इसका असर सीधे कथा पर पड़ता है। जहाँ वाल्मीकि एक एक कमरा दिखाते हैं, वहाँ ये ग्रंथ पूरी रात एक सर्ग में समेट देते हैं, और हर दृश्य के पीछे एक और अर्थ चलता रहता है। द्वार पर रोकने वाली तक को पता है कि जनक के घर जन्मी योगमाया हैं। यानी सुनाने वाला बदलते ही वही कथा दूसरी चीज़ बन जाती है।",
   ref:"अध्यात्म रामायण; आनंद रामायण, सारकांड",cost:6,on:["adhy_sita"]},
  k_tota:{n:"वह तोता जो कथा सुनाता है",k:"pashu",to:"सामने बैठे लोगों को",
+  need:[()=>NEED.card("ezhu_vatika","मलयालम कथा की झलक पढ़ी हो"),()=>NEED.texts(4),()=>NEED.roop(10)],
   why:"क्योंकि मलयालम की उस परंपरा में कथा पंछी की ज़बानी कही जाती है।",
   x:"किलिप्पाट्टु का मतलब ही है तोते का गीत। वहाँ रचयिता ख़ुद नहीं बोलता, वह पंछी से कहता है कि अब तुम कहो। इसका असर यह होता है कि पूरी कथा में एक आवाज़ मौजूद रहती है और हर पंक्ति सुनने वालों की तरफ़ मुड़ी रहती है। इसीलिए वहाँ लंबे वर्णन नहीं मिलते, लय मिलती है, और वाटिका आते ही वह लय धीमी पड़ जाती है।",
   ref:"अध्यात्म रामायण किलिप्पाट्टु, एषुत्तच्छन",cost:6,on:["ezhu_vatika"]},
@@ -2526,9 +2531,12 @@ function openKahi(){
   if(kahiReach(k)){save.kahi[k]=true;earn(2,"kahi",KAHI[k].n);}
  });
 }
+function kahiNeed(k){const K=KAHI[k];return K&&K.need?adhikar(K.need):{ok:true,miss:[],all:[]};}
 function buyKahi(k){
  const K=KAHI[k];if(!K||kahiOpen(k))return;
  if(!kahiReach(k)){note("यह तब खुलेगा जब आप उस पल तक पहुँचेंगे जहाँ यह कहा गया था।");return;}
+ const ad=kahiNeed(k);
+ if(!ad.ok){note("अभी यह खुलने लायक नहीं: "+ad.miss[0].x+"।");return;}
  if(!spend(K.cost)){note("इसके लिए "+K.cost+" मणि चाहिए।");return;}
  save.kahi=save.kahi||{};save.kahi[k]=true;persist();
  note(K.n+" अब खुल गया।");drawPatra();deepKahi(k);
@@ -4845,8 +4853,10 @@ function deepKahi(k){
   '<p><b>किसे सुनाया:</b> '+K.to+"</p>"+
   '<p><b>क्यों:</b> '+K.why+"</p>"+
   (got?"<p>"+K.x+"</p>"
-     :'<p class="quiet">'+(reach?"यह कथा अभी बंद है। पत्र में जाकर "+K.cost+" मणि से खोली जा सकती है।"
-                                 :"यह तब खुलेगी जब आप उस पल तक पहुँचेंगे जहाँ यह कही गई थी।")+"</p>")+
+     :(reach?'<p class="quiet">यह कथा अभी बंद है।</p>'+
+        (K.need?kahiNeed(k).all.map(n=>'<p class="quiet">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+"</p>").join(""):"")+
+        '<p class="quiet">दाम: '+K.cost+" मणि</p>"
+       :'<p class="quiet">यह तब खुलेगी जब आप उस पल तक पहुँचेंगे जहाँ यह कही गई थी।</p>'))+
   '<p class="quiet">'+K.ref+"</p>");
 }
 function deepPerson(k){
@@ -4958,8 +4968,12 @@ function drawPatra(){
    '<span class="vkind">'+(KKIND[K.k]||"")+"</span>"+
    (got?"<p>"+K.x.slice(0,80)+"...</p><span class=\"vrow\">किसे सुनाया: "+K.to+"</span>"+
         '<span class="more">पूरा पढ़ो</span>'
-      :reach?'<p class="quiet">यह कथा बंद है।</p>'+
-        (K.cost?'<button class="claim" data-kbuy="'+k+'">'+K.cost+" मणि देकर खोलो</button>":"")
+      :reach?(function(){const ad=kahiNeed(k);
+         return '<p class="quiet">यह कथा बंद है।</p>'+
+          (ad.all.length?'<span class="vrow">इसके लिए चाहिए:</span>'+
+            ad.all.map(n=>'<span class="vrow '+(n.t()?"done":"todo")+'">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+"</span>").join(""):"")+
+          (K.cost?(ad.ok?'<button class="claim" data-kbuy="'+k+'">'+K.cost+" मणि देकर खोलो</button>"
+                        :'<span class="vrow quiet">'+K.cost+" मणि, पर पहले ऊपर वाली शर्तें</span>"):"");})()
       :'<p class="quiet">यह उसी पल पर मिलेगी जहाँ यह कही गई थी।</p>')+
    "</div></div>";
  });
