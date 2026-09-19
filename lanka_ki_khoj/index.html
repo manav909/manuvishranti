@@ -405,6 +405,9 @@ a{color:var(--tide)}
 .rwhere{color:var(--quiet);font-style:italic;margin:0 0 .2rem}
 .rtitle{font-family:"Rozha One",serif;font-weight:400;font-size:1.5rem;color:var(--haldi);margin:0 0 .5rem}
 .rtabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem}
+.rtour{font:inherit;font-size:.95rem;border-radius:99px;padding:.5rem 1.1rem;cursor:pointer;
+ border:1px solid var(--haldi);background:rgba(212,160,23,.12);color:var(--haldi);transition:.15s}
+.rtour:hover{background:rgba(212,160,23,.22)}
 .rtab{background:none;border:1px solid var(--rule);border-radius:99px;padding:.15rem .7rem;
  font:inherit;font-size:.88rem;color:var(--quiet);cursor:pointer}
 .rtab.on{border-color:var(--haldi);color:var(--ink)}
@@ -413,10 +416,26 @@ a{color:var(--tide)}
 .rsrc{color:var(--quiet);font-size:.9rem}
 .rmeta{color:var(--tide);font-size:.95rem;margin:0 0 .6rem}
 .tstrip{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}
-.tstep{background:var(--mark);border:1px solid var(--rule);border-radius:99px;padding:.22rem .7rem;
- font:inherit;font-size:.86rem;color:var(--quiet);cursor:pointer}
+.tstrip{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:.4rem;margin:.6rem 0;padding-bottom:.25rem;
+ scrollbar-width:none}
+.tstrip::-webkit-scrollbar{display:none}
+.tstep{flex:0 0 auto;display:inline-flex;align-items:center;gap:.4rem;background:var(--mark);
+ border:1px solid var(--rule);border-radius:99px;padding:.3rem .85rem;font:inherit;font-size:.86rem;
+ color:var(--quiet);cursor:pointer;transition:border-color .15s,color .15s,background .15s}
+.tstep::before{content:"";width:.42rem;height:.42rem;border-radius:99px;background:var(--rule)}
+.tstep.been::before{background:var(--tide)}
 .tstep.been{color:var(--ink)}
-.tstep.on{border-color:var(--haldi);color:var(--haldi)}
+.tstep:hover{border-color:var(--haldi);color:var(--haldi)}
+.tstep.on{border-color:var(--haldi);color:var(--haldi);background:rgba(212,160,23,.12)}
+.tstep.on::before{background:var(--haldi)}
+.tbtn{font:inherit;font-size:.95rem;border-radius:99px;padding:.5rem 1.1rem;cursor:pointer;
+ border:1px solid var(--rule);background:var(--mark);color:var(--ink);transition:.15s}
+.tbtn.go{background:var(--tide);border-color:var(--tide);color:#0c1a1a;font-weight:500}
+.tbtn.go:hover{filter:brightness(1.08)}
+.tbtn.ghost{color:var(--quiet)}
+.tbtn.ghost:hover{border-color:var(--haldi);color:var(--haldi)}
+.tbtn.done{opacity:.6;cursor:default}
+.tcount{margin:.5rem 0 0;font-size:.82rem;color:var(--quiet);text-align:right}
 .tart{border:1px solid var(--rule);border-radius:.7rem;background:var(--mark);padding:.4rem;margin:.5rem 0}
 .tart svg{display:block;width:100%;height:auto}
 .tname{font-family:"Rozha One",serif;font-weight:400;font-size:1.25rem;color:var(--haldi);margin:.4rem 0 .3rem}
@@ -1928,10 +1947,10 @@ const DETOUR={
   why:"बांग्ला की यह कथा घर के लोगों को सुनाने के लिए लिखी गई, इसलिए यहाँ से चार घरों के भीतर जाया जा सकता है।",
   ref:"कृत्तिवासी रामायण, सुंदरकांड",
   stops:[
-   {n:"पहला घर: बहस",art:"hut",say:["भीतर दो लोग धीमी आवाज़ में बहस कर रहे हैं।","एक कह रहा है कि राजा की ज़िद हम सबको ले डूबेगी, दूसरा उसे चुप करा रहा है।","डर इतना है कि बात भी बंद दरवाज़े के भीतर होती है।"]},
-   {n:"दूसरा घर: इंतज़ार",art:"lamp",say:["एक औरत दीया जलाकर बैठी है।","उसका आदमी पहरे पर गया है और अब तक लौटा नहीं।","वह बार बार दरवाज़े की तरफ़ देखती है, और फिर दीये की तरफ़।"]},
+   {n:"पहला घर: बहस",art:"argue",say:["भीतर दो लोग धीमी आवाज़ में बहस कर रहे हैं।","एक कह रहा है कि राजा की ज़िद हम सबको ले डूबेगी, दूसरा उसे चुप करा रहा है।","डर इतना है कि बात भी बंद दरवाज़े के भीतर होती है।"]},
+   {n:"दूसरा घर: इंतज़ार",art:"waiting",say:["एक औरत दीया जलाकर बैठी है।","उसका आदमी पहरे पर गया है और अब तक लौटा नहीं।","वह बार बार दरवाज़े की तरफ़ देखती है, और फिर दीये की तरफ़।"]},
    {n:"तीसरा घर: बच्चे",art:"kids",say:["तीन बच्चे सो रहे हैं, एक जाग रहा है।","जागने वाला अपनी दादी से पूछ रहा है कि आसमान में जो उड़ा, वह क्या था।","दादी कहती है कि सो जा, और ख़ुद जागती रहती है।"]},
-   {n:"चौथा घर: पूजा",art:"lamp",say:["एक कोने में दीया जलाकर कोई कुछ बुदबुदा रहा है।","राक्षसों के नगर में भी लोग वही माँगते हैं जो सब माँगते हैं: सब ठीक रहे।","कृत्तिवास यही दिखाकर उस नगर को दुश्मन नहीं, बस्ती बना देते हैं।"]}]},
+   {n:"चौथा घर: पूजा",art:"shrine",say:["एक कोने में दीया जलाकर कोई कुछ बुदबुदा रहा है।","राक्षसों के नगर में भी लोग वही माँगते हैं जो सब माँगते हैं: सब ठीक रहे।","कृत्तिवास यही दिखाकर उस नगर को दुश्मन नहीं, बस्ती बना देते हैं।"]}]},
  ranga_man:{n:"मन के भीतर",src:"ranganatha",at:["khabar-vatika-0"],
   why:"तेलुगु की यह कथा गाकर सुनाई जाती है, इसलिए वह बाहर कम और भीतर ज़्यादा जाती है। यहाँ से चार भीतरी पल देखे जा सकते हैं।",
   ref:"रंगनाथ रामायण, सुंदर कांडमु",
@@ -1945,7 +1964,7 @@ const DETOUR={
   ref:"रामचरितमानस, सुंदरकांड, विभीषण से भेंट",
   stops:[
    {n:"आँगन की तुलसी",art:"tulsi",say:["आँगन के बीच तुलसी का पौधा है, और उसके पास मिट्टी का दीया।","पूरे नगर में यह अकेली ऐसी चीज़ है जो हनुमान ने पहचानी।","इसी से उन्हें लगा कि यहाँ कोई अपना है।"]},
-   {n:"भीतर की आवाज़",art:"lamp",say:["भीतर से धीमी आवाज़ आ रही है, वही नाम बार बार।","तुलसीदास इसे चमत्कार की तरह नहीं, आदत की तरह लिखते हैं।","रोज़ का काम, रोज़ की तरह।"]},
+   {n:"भीतर की आवाज़",art:"chant",say:["भीतर से धीमी आवाज़ आ रही है, वही नाम बार बार।","तुलसीदास इसे चमत्कार की तरह नहीं, आदत की तरह लिखते हैं।","रोज़ का काम, रोज़ की तरह।"]},
    {n:"दो भाइयों की बात",art:"two",say:["विभीषण अपने बारे में कहते हैं कि मैं यहाँ ऐसे हूँ जैसे जीभ के बीच दाँत।","न कोई अपना, न कोई सुनने वाला।","इसी अकेलेपन के कारण एक वानर का आना उनके लिए बड़ी बात बन जाती है।"]},
    {n:"रास्ता बताना",art:"map",say:["जाते जाते वही बताते हैं कि वे अशोक वाटिका में हैं, और पहरा कैसा है।","यानी इस घर से सिर्फ़ ठहराव नहीं मिलता, आगे का रास्ता भी मिलता है।","मानस में खोज यहीं से सीधी हो जाती है।"]}]},
  torave_aag_tour:{n:"आग का चक्कर",src:"torave",at:["aag-chowk-1","aag-chhat-3"],
@@ -1963,7 +1982,7 @@ const DETOUR={
    {n:"सुनाने वाला कौन",art:"bird",say:["कथा शुरू ही तब होती है जब तोते से कहा जाता है कि अब तू सुना।","इसीलिए यहाँ हर बात में एक सुनाने वाले की आवाज़ है, कोई अनदेखा कवि नहीं।","सुनने वाले सामने बैठे हैं, और कथा उन्हीं से बात करती है।"]},
    {n:"फाटक का खंड",art:"gatearch",say:["द्वार पर रोकने वाली का नाम यहाँ लंका लक्ष्मी है।","उस पूरे खंड का नाम ही उसका छूटना है, यानी हार नहीं, मुक्ति।","इसलिए वह दृश्य डर का नहीं, राहत का बन जाता है।"]},
    {n:"गाने की चाल",art:"song",say:["किलिप्पाट्टु का मतलब ही है तोते का गीत, और वह एक ख़ास लय में चलता है।","इसीलिए लंबे वर्णन नहीं मिलते, बात लय में आगे बढ़ती जाती है।","पढ़ने के लिए नहीं, सुनने के लिए बनी कथा ऐसी ही होती है।"]},
-   {n:"वाटिका में ठहराव",art:"tree",say:["वाटिका आते ही लय धीमी हो जाती है।","यही वह जगह है जहाँ सुनाने वाला रुकता है और सुनने वाले चुप हो जाते हैं।","बाकी सब जल्दी बीतता है, यह हिस्सा नहीं।"]}]},
+   {n:"वाटिका में ठहराव",art:"grove",say:["वाटिका आते ही लय धीमी हो जाती है।","यही वह जगह है जहाँ सुनाने वाला रुकता है और सुनने वाले चुप हो जाते हैं।","बाकी सब जल्दी बीतता है, यह हिस्सा नहीं।"]}]},
  jain_vidya:{n:"विद्याधरों के बीच",src:"jain",at:["khoj-samudra-0","aag-mantri-2"],
   why:"इस कथा में कोई राक्षस नहीं है और कोई चमत्कार भी नहीं। यहाँ से चार जगह देखी जा सकती हैं जहाँ यह फ़र्क़ साफ़ दिखता है।",
   ref:"पउमचरिय, विमलसूरि",
@@ -1978,29 +1997,29 @@ const DETOUR={
   stops:[
    {n:"नीचे की दुनिया",art:"deep",say:["यह नगर नक्शे पर नहीं है। कथा इसे पाताल में रखती है।","वहाँ न दिन है न रात, और ऊपर की रात वहाँ नहीं पहुँचती।","इसीलिए इस पूरी कथा में वक़्त महीनों में नापा जाता है, प्रहरों में नहीं।"]},
    {n:"हज़ार सिर",art:"manyheads",say:["वहाँ का राजा हज़ार सिर वाला है, और वह लड़ता नहीं।","एक ताली से सेना उड़ जाती है, इसलिए कोई अस्त्र काम नहीं आता।","जब ताक़त बेकार हो जाती है, तब कथा दूसरी तरफ़ मुड़ती है।"]},
-   {n:"गाँव की देवी",art:"lamp",say:["फाटक पर बैठी देवी लड़ती नहीं, पानी पिलाती है।","यह ओड़िया गाँवों की अपनी दुनिया है, जहाँ देवी हर बस्ती की अपनी होती है।","इसीलिए यह कथा वहाँ की मिट्टी जैसी लगती है।"]},
+   {n:"गाँव की देवी",art:"gatedevi",say:["फाटक पर बैठी देवी लड़ती नहीं, पानी पिलाती है।","यह ओड़िया गाँवों की अपनी दुनिया है, जहाँ देवी हर बस्ती की अपनी होती है।","इसीलिए यह कथा वहाँ की मिट्टी जैसी लगती है।"]},
    {n:"अंत किसके हाथ",art:"bow",say:["आख़िर में धनुष सीता के हाथ आता है, और वह फूलों का है।","मारने के बाद भी बात ख़त्म नहीं होती, क्षमा माँगी जाती है।","लंका वाली रात का यह सबसे साफ़ उलटा सिरा है।"]}]},
  adhy_darshan:{n:"पहचान वाला चक्कर",src:"adhy",at:["khoj-vatika-1","aag-daal-1"],
   why:"इस कथा में हर दृश्य के पीछे एक और अर्थ चलता है। यहाँ से चार जगह देखी जा सकती हैं जहाँ वह अर्थ ऊपर आ जाता है।",
   ref:"अध्यात्म रामायण, सुंदरकांड",
   stops:[
    {n:"द्वार पर खुला भेद",art:"gatearch",say:["हारकर गिरी हुई लंका देवी वही बात कहती हैं जो पूरी कथा की जड़ है।","ब्रह्मा ने बहुत पहले बता दिया था कि जनक के घर जो जन्मेंगी, वे योगमाया हैं।","यानी भेद दुश्मन की तरफ़ से खुलता है, अपनों की तरफ़ से नहीं।"]},
-   {n:"पेड़ पर बैठा दूत",art:"tree",say:["यहाँ डाल पर बैठना छिपना कम, देखना ज़्यादा है।","हनुमान का काम लड़ना नहीं, पहचान कराना है।","इसीलिए वे पहले कथा सुनाते हैं, फिर सामने आते हैं।"]},
+   {n:"पेड़ पर बैठा दूत",art:"treewatch",say:["यहाँ डाल पर बैठना छिपना कम, देखना ज़्यादा है।","हनुमान का काम लड़ना नहीं, पहचान कराना है।","इसीलिए वे पहले कथा सुनाते हैं, फिर सामने आते हैं।"]},
    {n:"माया और बंदी",art:"ring",say:["इस कथा में जो वाटिका में बैठी हैं, वे बेबस नहीं हैं।","वे चाहें तो सब कुछ कर सकती हैं, पर वे रुकी हुई हैं, क्योंकि कथा को अपने रास्ते चलना है।","यही इस परंपरा का सबसे बड़ा मोड़ है।"]},
    {n:"आग भी देखकर जलती है",art:"fire",say:["लंका जलती है, पर विभीषण का घर बचा रह जाता है।","आग यहाँ अंधी नहीं है, वह चुनकर जलाती है।","इसी तरह इस कथा में कुछ भी अकारण नहीं होता।"]}]},
  eknath_bageeche:{n:"बाग़ों का चक्कर",src:"eknath",at:["khoj-vatika-1"],
   why:"मराठी की इस कथा में खोज एक बाग़ में नहीं, कई बाग़ों में चलती है, और हर बाग़ का नाम अलग लिया जाता है। यहाँ से चार बाग़ घूमे जा सकते हैं।",
   ref:"भावार्थ रामायण, एकनाथ, सुंदरकांड",
   stops:[
-   {n:"पहला बाग़",art:"tree",say:["पहला बाग़ फूलों का है, और वहाँ कोई नहीं मिलता।","कवि हर बाग़ का नाम लेकर बताते हैं, इसलिए खोज लंबी लगती है।","लंबी लगनी भी चाहिए, क्योंकि वह लंबी थी।"]},
-   {n:"पानी वाला बाग़",art:"water",say:["दूसरे बाग़ में बावड़ी और नहरें हैं।","रात में पानी पर रोशनी काँपती है और कुछ दिखता नहीं।","यहाँ भी वही बात लौटती है कि वे यहाँ नहीं हैं।"]},
-   {n:"फलों का बाग़",art:"herd",say:["तीसरे बाग़ में फलों के पेड़ हैं और पहरा ज़्यादा है।","पहरे का होना ही बताता है कि कुछ छिपाया जा रहा है।","खोज यहीं से सिकुड़कर एक तरफ़ मुड़ती है।"]},
-   {n:"आख़िरी बाग़",art:"alone",say:["आख़िरी बाग़ अशोक का है, और वहीं ठहराव आता है।","इतने बाग़ घूमने के बाद यह मिलना और बड़ा लगता है।","यही इस कथा का ढंग है: पाने से पहले चलना दिखाना।"]}]},
+   {n:"पहला बाग़",art:"flowergarden",say:["पहला बाग़ फूलों का है, और वहाँ कोई नहीं मिलता।","कवि हर बाग़ का नाम लेकर बताते हैं, इसलिए खोज लंबी लगती है।","लंबी लगनी भी चाहिए, क्योंकि वह लंबी थी।"]},
+   {n:"पानी वाला बाग़",art:"well",say:["दूसरे बाग़ में बावड़ी और नहरें हैं।","रात में पानी पर रोशनी काँपती है और कुछ दिखता नहीं।","यहाँ भी वही बात लौटती है कि वे यहाँ नहीं हैं।"]},
+   {n:"फलों का बाग़",art:"orchard",say:["तीसरे बाग़ में फलों के पेड़ हैं और पहरा ज़्यादा है।","पहरे का होना ही बताता है कि कुछ छिपाया जा रहा है।","खोज यहीं से सिकुड़कर एक तरफ़ मुड़ती है।"]},
+   {n:"आख़िरी बाग़",art:"grove",say:["आख़िरी बाग़ अशोक का है, और वहीं ठहराव आता है।","इतने बाग़ घूमने के बाद यह मिलना और बड़ा लगता है।","यही इस कथा का ढंग है: पाने से पहले चलना दिखाना।"]}]},
  adbhuta_shakti:{n:"शक्ति वाला चक्कर",src:"adbhuta",at:["khoj-vatika-1"],
   why:"इस कथा में अंत सीता के हाथ होता है, राम के नहीं। यहाँ से चार जगह देखी जा सकती हैं जहाँ यह पलटाव बनता है।",
   ref:"अद्भुत रामायण, सर्ग 23 से 25",
   stops:[
-   {n:"चुप बैठी हुई",art:"alone",say:["इस परंपरा में वाटिका का दृश्य दूसरी तरह पढ़ा जाता है।","जो चुप बैठी हैं, वे चाहें तो सब कुछ कर सकती हैं।","चुप्पी यहाँ कमज़ोरी नहीं, रुका हुआ बल है।"]},
+   {n:"चुप बैठी हुई",art:"grove",say:["इस परंपरा में वाटिका का दृश्य दूसरी तरह पढ़ा जाता है।","जो चुप बैठी हैं, वे चाहें तो सब कुछ कर सकती हैं।","चुप्पी यहाँ कमज़ोरी नहीं, रुका हुआ बल है।"]},
    {n:"दूसरा रावण",art:"manyheads",say:["लंका की लड़ाई के बाद एक और रावण सामने आता है, जिसके हज़ार मुँह हैं।","वह राम और लक्ष्मण को माया में बाँध देता है।","जब सबसे बड़ा भी हार जाता है, तब कथा दूसरी तरफ़ देखती है।"]},
    {n:"रूप बदलना",art:"flamebig",say:["तब सीता आगे बढ़ती हैं और अपना मनुष्य रूप छोड़ देती हैं।","महाकाली का रूप लेकर वे पल भर में उसके हज़ार सिर काट देती हैं।","यह दृश्य इसी ग्रंथ की पहचान है।"]},
    {n:"बाद की बात",art:"memory",say:["अंत में ब्रह्मा राम को समझाते हैं कि जो कुछ होता है, शक्ति के साथ ही होता है।","इसलिए यह कथा हार जीत की नहीं, साथ की है।","सत्ताईस सर्गों में यही तीन सर्ग सबसे ज़्यादा याद किए जाते हैं।"]}]},
@@ -2009,7 +2028,7 @@ const DETOUR={
   ref:"सप्तकांड रामायण, माधव कंदलि, सुंदरकांड",
   stops:[
    {n:"पार पहुँचना",art:"wing",say:["रास्ते की तीनों रुकावटें यहाँ बिना ठहरे निकल जाती हैं।","कवि ने ख़ुद लिखा है कि उन्होंने विस्तार छोड़कर सार लिया।","इसलिए उड़ान छोटी है, और ठहराव आगे है।"]},
-   {n:"चोटी पर खड़े होकर",art:"roof",say:["त्रिकूट की चोटी से नीचे पूरा नगर एक साथ दिखता है।","यही वह पल है जिसके लिए यह पूरा हिस्सा याद किया जाता है।","देखना यहाँ काम नहीं, घटना है।"]},
+   {n:"चोटी पर खड़े होकर",art:"peak",say:["त्रिकूट की चोटी से नीचे पूरा नगर एक साथ दिखता है।","यही वह पल है जिसके लिए यह पूरा हिस्सा याद किया जाता है।","देखना यहाँ काम नहीं, घटना है।"]},
    {n:"नीचे का नगर",art:"street",say:["दीवार, गलियाँ, महल, और उनके पीछे बाग़।","कवि गिनाते नहीं, दिखाते हैं, क्योंकि यह कथा घर में सुनाने के लिए लिखी गई थी।","सुनने वाला भी उसी चोटी पर खड़ा हो जाता है।"]},
    {n:"गाकर पढ़ा जाना",art:"song",say:["यह हिस्सा आज भी अलग से गाया जाता है।","चौदहवीं सदी में यह इसलिए लिखा गया था कि लोग अपनी ही बोली में कथा सुन सकें।","छह सौ साल बाद भी वही काम चल रहा है।"]}]}
 };
@@ -2074,6 +2093,78 @@ const TD={
  vig:'<rect x="0" y="0" width="320" height="180" fill="url(#tgVig)"/>'
 };
 const DART={
+ flowergarden:()=>TD.sky()+TD.stars(10)+TD.moon(268,30,8)+TD.ground(140,"#16251f")+
+  TD.wall(0,58,320,26)+
+  [30,96,164,232,292].map((x,i)=>'<g class="tsway" style="animation-delay:-'+(i*.8)+'s" transform="translate('+x+',140)">'+
+   '<path d="M0 0 v-30" stroke="#3f7a52" stroke-width="3"/>'+
+   '<circle cx="0" cy="-34" r="8" fill="'+["#f4a7c0","#f0c75a","#f4a7c0","#e8dcc0","#f0c75a"][i]+'"/>'+
+   '<circle cx="-9" cy="-26" r="5" fill="#3f7a52"/><circle cx="9" cy="-26" r="5" fill="#3f7a52"/></g>').join("")+
+  TD.lamp(160,80,.7)+TD.fig(200,152,.9,{d:.5,arm:1})+TD.vig,
+ orchard:()=>TD.sky()+TD.stars(9)+TD.ground(142,"#16251f")+
+  [56,146,236].map((x,i)=>'<g transform="translate('+x+',142)">'+
+   '<path d="M-5 0 v-34 h10 v34 Z" fill="#6b4a2a"/>'+
+   '<g class="tsway" style="animation-delay:-'+(i*1.1)+'s"><circle cx="0" cy="-48" r="26" fill="#2f6b4a"/>'+
+   '<circle cx="-14" cy="-56" r="6" fill="#e2703a"/><circle cx="12" cy="-44" r="6" fill="#e2703a"/>'+
+   '<circle cx="2" cy="-64" r="5" fill="#f0c75a"/></g></g>').join("")+
+  TD.fig(300,152,.85,{d:1.2})+TD.fig(104,152,.9,{d:.3,arm:1})+TD.vig,
+ grove:()=>TD.sky()+TD.stars(14)+TD.moon(64,34,10)+TD.ground(146,"#152420")+
+  TD.tree(250,148,1.1)+TD.tree(60,150,.8)+
+  '<g transform="translate(160,146)"><path d="M-6 0 v-44 h12 v44 Z" fill="#6b4a2a"/>'+
+  '<g class="tsway"><circle cx="0" cy="-60" r="30" fill="#2b5c48"/><circle cx="-24" cy="-46" r="18" fill="#26533f"/>'+
+  '<circle cx="24" cy="-46" r="18" fill="#26533f"/></g></g>'+
+  TD.fig(160,150,1,{sit:1,d:.4})+TD.fig(112,150,.8,{d:1.4})+TD.fig(212,150,.8,{d:2.1})+TD.vig,
+ peak:()=>TD.sky()+TD.stars(16)+TD.moon(258,30,10)+
+  '<path class="tfar" d="M0 112 q50 -34 96 -6 q40 -28 84 -4 q46 -24 140 -4 V180 H0 Z"/>'+
+  '<g opacity=".85">'+TD.wall(40,118,80,30)+TD.windows(40,118,80,30,3,1,.6)+
+  TD.wall(140,112,76,36)+TD.windows(140,112,76,36,3,1,1.4)+TD.wall(232,120,62,28)+"</g>"+
+  '<path d="M0 148 q60 -16 120 -2 q70 10 200 -6 V180 H0 Z" fill="#0f1826"/>'+
+  '<path d="M18 176 q26 -34 58 -30 q22 4 30 28 Z" fill="#1a2434"/>'+
+  TD.fig(52,150,1.15,{d:.3,arm:1})+TD.vig,
+ argue:()=>TD.sky()+TD.ground(140,"#182231")+
+  '<path class="tthatch" d="M40 96 l120 -44 l120 44 Z"/>'+TD.wall(64,96,192,48)+
+  '<rect x="86" y="104" width="148" height="40" rx="3" fill="#120e14"/>'+
+  TD.lamp(160,120,.85)+
+  '<g class="tfig" style="animation-delay:-.2s" transform="translate(122,144)">'+
+   '<path d="M0 0 v-26" stroke="#e8dcc0" stroke-width="5" stroke-linecap="round"/>'+
+   '<path d="M0 -17 l12 -6" stroke="#e8dcc0" stroke-width="3" stroke-linecap="round"/>'+
+   '<circle cx="0" cy="-31" r="5" fill="#e8dcc0"/></g>'+
+  '<g class="tfig" style="animation-delay:-1.3s" transform="translate(198,144)">'+
+   '<path d="M0 0 v-26" stroke="#cfd8e6" stroke-width="5" stroke-linecap="round"/>'+
+   '<path d="M0 -17 l-12 -4" stroke="#cfd8e6" stroke-width="3" stroke-linecap="round"/>'+
+   '<circle cx="0" cy="-31" r="5" fill="#cfd8e6"/></g>'+TD.vig,
+ waiting:()=>TD.sky()+TD.stars(10)+TD.ground(142,"#182231")+
+  '<path class="tthatch" d="M44 98 l116 -44 l116 44 Z"/>'+TD.wall(68,98,184,46)+
+  '<rect class="tdoorw" x="146" y="106" width="40" height="38" rx="2"/>'+
+  TD.lamp(112,120,.9)+TD.fig(112,144,.95,{sit:1,d:.4,arm:1})+
+  '<path class="tpathline" d="M166 148 q40 22 120 20"/>'+TD.vig,
+ shrine:()=>TD.sky()+TD.ground(142,"#182231")+TD.wall(60,62,200,80)+TD.windows(60,62,200,80,3,2,1.2)+
+  '<path class="tgoldy" d="M128 118 h64 l-8 -22 h-48 Z"/>'+
+  '<circle class="tglowbig" cx="160" cy="104" r="30"/>'+
+  TD.lamp(160,112,.8)+TD.fig(160,150,1,{sit:1,d:.3,arm:1})+TD.vig,
+ gatedevi:()=>TD.sky("tgDusk")+TD.ground(146,"#1d1620")+
+  '<path class="tstone" d="M40 146 v-52 h34 v52 Z"/><path class="tstone" d="M246 146 v-52 h34 v52 Z"/>'+
+  '<path class="tgoldy" d="M34 94 h252 v14 h-252 Z"/>'+
+  TD.fig(160,146,1.05,{d:.4,arm:1})+
+  '<path class="tpotw" d="M196 132 h26 l-5 14 h-16 Z"/>'+TD.lamp(96,120,.7)+TD.vig,
+ chant:()=>TD.sky()+TD.ground(140,"#182231")+TD.wall(48,60,224,80)+
+  '<rect x="96" y="80" width="128" height="60" rx="3" fill="#120e14"/>'+
+  '<circle class="tglowbig" cx="160" cy="108" r="34"/>'+TD.lamp(160,114,.8)+
+  TD.fig(160,146,1,{sit:1,d:.2})+
+  '<g class="tnote">'+[0,1,2].map(i=>'<circle cx="'+(214+i*26)+'" cy="'+(96-(i%2)*14)+'" r="4" style="animation-delay:-'+(i*.8)+'s"/>').join("")+"</g>"+TD.vig,
+ treewatch:()=>TD.sky()+TD.stars(12)+TD.moon(60,32,9)+TD.ground(148,"#152420")+
+  '<g transform="translate(170,148)"><path d="M-7 0 v-56 h14 v56 Z" fill="#6b4a2a"/>'+
+  '<g class="tsway"><circle cx="0" cy="-74" r="34" fill="#2b5c48"/><circle cx="-28" cy="-58" r="20" fill="#26533f"/>'+
+  '<circle cx="28" cy="-58" r="20" fill="#26533f"/></g>'+
+  '<g class="tfig" style="animation-delay:-.6s" transform="translate(6,-58)">'+
+   '<path d="M0 0 v-14" stroke="#e8dcc0" stroke-width="4" stroke-linecap="round"/>'+
+   '<circle cx="0" cy="-19" r="4.5" fill="#e8dcc0"/></g></g>'+
+  TD.fig(170,150,.95,{sit:1,d:.3})+TD.vig,
+ well:()=>TD.sky()+TD.stars(10)+TD.moon(60,34,8)+TD.ground(96,"#182130")+
+  '<path d="M28 96 h264 v84 h-264 Z" fill="url(#tgWater)"/>'+TD.ripple(112)+
+  '<path class="tstone" d="M28 96 h264 v10 h-264 Z"/><path class="tstone" d="M48 108 h224 v9 h-224 Z"/>'+
+  '<path class="tstone" d="M70 119 h180 v9 h-180 Z"/>'+
+  TD.fig(96,120,.95,{d:.3,arm:1})+TD.fig(214,120,.9,{d:1.6,arm:1})+
+  '<path class="tpotw" d="M126 110 h22 l-4 12 h-14 Z"/>'+TD.lamp(160,74,.8)+TD.vig,
  street:()=>TD.sky()+TD.stars(12)+TD.moon(268,30,9)+TD.hillsFar(96)+TD.ground(128,"#17202e")+
   TD.wall(6,58,86,70)+TD.windows(6,58,86,70,3,3,0)+TD.goldRoof(6,58,86)+
   TD.wall(108,44,104,84)+TD.windows(108,44,104,84,3,3,1.4)+TD.goldRoof(108,44,104)+
@@ -2098,12 +2189,6 @@ const DART={
   TD.windows(158,64,150,76,4,2,1.1)+
   TD.fig(52,86,.85,{sit:1,d:.4})+TD.fig(96,86,.8,{sit:1,d:1.7})+TD.fig(230,64,.9,{d:2.2,arm:1})+
   TD.lamp(70,74,.6)+TD.lamp(276,52,.6)+TD.vig,
- hut:()=>TD.sky()+TD.stars(8)+TD.ground(132,"#182231")+TD.tree(292,132,.8)+
-  '<path class="tthatch" d="M52 104 l108 -48 l108 48 Z"/>'+TD.wall(76,104,168,40)+
-  '<rect class="tdoorw" x="140" y="112" width="40" height="32" rx="2"/>'+
-  TD.lamp(160,124,.8)+TD.fig(120,144,.85,{d:.6,arm:1})+TD.fig(200,144,.85,{d:1.9})+TD.vig,
- lamp:()=>TD.sky()+TD.ground(128,"#161e2b")+TD.wall(40,60,240,68)+TD.windows(40,60,240,68,4,2,.5)+
-  TD.lamp(160,104,1.7)+TD.fig(120,150,1,{sit:1,d:.2,arm:1})+TD.smoke(200,96,3)+TD.vig,
  kids:()=>TD.sky()+TD.stars(11)+TD.ground(134,"#182231")+TD.wall(24,56,272,78)+
   TD.windows(24,56,272,78,4,2,2)+TD.lamp(58,104,.7)+
   TD.fig(96,152,.62,{sit:1,d:.1})+TD.fig(134,152,.6,{sit:1,d:.9})+TD.fig(172,152,.64,{sit:1,d:1.7})+
@@ -2184,9 +2269,6 @@ const DART={
   '<path d="M-30 -46 L-30 46" stroke="rgba(255,255,255,.5)" stroke-width="1.6"/>'+
   [0,1,2,3,4].map(i=>'<circle cx="'+(-26+i*14)+'" cy="'+(-40+i*20)+'" r="5" fill="#f4a7c0"/>').join("")+"</g>"+
   TD.fig(130,150,1.1,{d:.3,arm:1})+TD.vig,
- tree:()=>TD.sky()+TD.stars(12)+TD.moon(60,34,9)+TD.ground(148,"#182231")+
-  TD.tree(170,148,1.5)+TD.tree(64,150,.7)+TD.tree(278,150,.6)+
-  TD.fig(170,150,.95,{sit:1,d:.5})+TD.vig
 };
 
 /* ---------- the collection: boons, curses, weapons and tokens ---------- */
@@ -4389,9 +4471,11 @@ function drawTour(){
   st.say.map(t=>"<p>"+t+"</p>").join("")+
   '<p class="rsrc">'+D.ref+"</p>"+
   '<div class="rbtns">'+
-   (tour.i>0?'<button class="rprev">पीछे वाली जगह</button>':"")+
-   (tour.i<D.stops.length-1?'<button class="rnext">आगे वाली जगह</button>':"")+
-   '<button class="rback">चक्कर छोड़कर वहीं लौटो जहाँ थे</button></div></div>';
+   (tour.i>0?'<button class="tbtn ghost rprev">पीछे वाली जगह</button>':"")+
+   (tour.i<D.stops.length-1?'<button class="tbtn go rnext">आगे वाली जगह</button>':
+     '<button class="tbtn done" disabled>चक्कर पूरा हुआ</button>')+
+   '<button class="tbtn ghost rback">वहीं लौटो जहाँ थे</button></div>'+
+   '<p class="tcount">'+D.stops.length+" में से "+(tour.i+1)+"</p></div>";
  box.querySelectorAll("[data-stop]").forEach(b=>{b.onclick=()=>{tour.i=+b.dataset.stop;drawTour();};});
  const nx=box.querySelector(".rnext");if(nx)nx.onclick=()=>{tour.i++;drawTour();};
  const pv=box.querySelector(".rprev");if(pv)pv.onclick=()=>{tour.i--;drawTour();};
