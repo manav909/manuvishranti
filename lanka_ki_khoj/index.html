@@ -3082,6 +3082,16 @@ function openVastu(){
 }
 /* ---------- padvi: names a player earns and can wear ---------- */
 const PADVI=[
+ /* the journeys inside the tellings */
+ {id:"chakkari",g:"चक्कर",n:"चक्कर लगाने वाला",x:"तीन चक्कर पूरे घूमे",t:c=>c.chakkar>=3},
+ {id:"ghoomakkad",g:"चक्कर",n:"घुमक्कड़",x:"दस चक्कर पूरे घूमे",t:c=>c.chakkar>=10},
+ {id:"chakkarraj",g:"चक्कर",n:"सब रास्तों का जानकार",x:"सारे चक्कर घूम लिए",t:c=>c.chakkar>=c.chakkarAll},
+ /* what you gathered */
+ {id:"sangrahi",g:"संग्रह",n:"बटोरने वाला",x:"पाँच चीज़ें संग्रह में आईं",t:c=>c.vastu>=5},
+ {id:"sangrahak",g:"संग्रह",n:"संग्रह का रखवाला",x:"पंद्रह चीज़ें संग्रह में आईं",t:c=>c.vastu>=15},
+ /* the stories told inside the story */
+ {id:"shrota",g:"सुनने वाला",n:"ध्यान से सुनने वाला",x:"चार कही हुई कथाएँ खुलीं",t:c=>c.kahi>=4},
+ {id:"kathashrota",g:"सुनने वाला",n:"कथाओं का श्रोता",x:"सारी कही हुई कथाएँ खुलीं",t:c=>c.kahi>=c.kahiAll},
  /* the road you walk */
  {id:"rahi",g:"खोज",n:"राह का राही",x:"पाँच पल देख लिए",t:c=>c.roop>=5},
  {id:"khoji",g:"खोज",n:"रात का खोजी",x:"पच्चीस पल देख लिए",t:c=>c.roop>=25},
@@ -3128,6 +3138,9 @@ function counts(){
   ras:Object.keys(rc).filter(r=>rc[r][0]>0).length,
   kamai:save.mani||0,qright:save.qright||0,
   katha:kathaCount(),kathaAll:Object.keys(KATHA).length,
+  chakkar:Object.keys(save.tour||{}).length,chakkarAll:Object.keys(DETOUR).length,
+  vastu:vastuCount(),vastuAll:Object.keys(VASTU).length,
+  kahi:kahiCount(),kahiAll:Object.keys(KAHI).length,
   khoj:!!save.done.khoj,aag:!!save.done.aag,khabar:!!save.done.khabar};
 }
 function padviGot(){const c=counts();return PADVI.filter(p=>p.t(c)).map(p=>p.id);}
