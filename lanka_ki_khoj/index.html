@@ -329,6 +329,20 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .ptrack{display:block;height:8px;background:var(--rule);border-radius:99px;overflow:hidden}
 .ptrack i{display:block;height:100%;background:var(--tide);border-radius:99px;transition:width .5s ease}
 .pnote{display:block;font-size:.8rem;color:var(--quiet);margin-top:.15rem}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.6rem;margin:.4rem 0 1.2rem}
+.vcell{display:flex;gap:.6rem;border:1px solid var(--rule);border-radius:.7rem;padding:.6rem;opacity:.5}
+.vcell.got{opacity:1;border-color:var(--haldi)}
+.vicon{flex:0 0 auto;width:3.2rem;height:3.2rem}
+.vi .vglow{fill:rgba(212,160,23,.18);stroke:var(--haldi);stroke-width:1.2}
+.vi .vdark{fill:rgba(0,0,0,.25);stroke:var(--quiet);stroke-width:1.2}
+.vi .vline{fill:none;stroke:var(--haldi);stroke-width:1.6;stroke-linecap:round}
+.vi .vcrack{fill:none;stroke:var(--fire);stroke-width:1.6;stroke-linecap:round}
+.vbody{min-width:0}
+.vbody b{display:block;font-weight:400;font-family:"Rozha One",serif;font-size:1.05rem;color:var(--haldi)}
+.vkind{display:inline-block;font-size:.74rem;border:1px solid var(--rule);border-radius:99px;
+ padding:.02rem .5rem;color:var(--quiet);margin:.2rem 0}
+.vbody p{margin:.2rem 0 .3rem;font-size:.9rem;line-height:1.7}
+.vrow{display:block;font-size:.82rem;color:var(--quiet);line-height:1.6}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:.5rem;margin:.4rem 0 1rem}
 .pcell{border:1px solid var(--rule);border-radius:.6rem;padding:.4rem .6rem;opacity:.5}
 .pcell.got{opacity:1;border-color:var(--haldi)}
@@ -1330,7 +1344,7 @@ function mapArt(night){
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
 function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
- katha:{},farq:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
+ katha:{},farq:{},vastu:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
@@ -1470,9 +1484,9 @@ function checkAch(){
   if(test[k]&&!save.ach[k])save.ach[k]="ready";
  });
 }
-function tally_up(){openPatra();checkAch();persist();}
+function tally_up(){openPatra();openVastu();checkAch();persist();}
 function catchUp(){
- earned=[];save.ach=save.ach||{};
+ earned=[];save.ach=save.ach||{};save.vastu=save.vastu||{};
  Object.keys(save.ach).forEach(k=>{if(save.ach[k]===true)save.ach[k]="lia";});
  openPatra();checkAch();earned=[];persist();}
 function spend(n){if(purse()<n)return false;save.kharch=(save.kharch||0)+n;persist();return true;}
@@ -1719,6 +1733,74 @@ function watchBox(){
 }
 function fitAll(){return CAM(16,74.4,6,81.8);}
 
+/* ---------- the collection: boons, curses, weapons and tokens ---------- */
+const VKIND={var:"वरदान",shaap:"शाप",astra:"अस्त्र",nishani:"निशानी",vahan:"वाहन"};
+const VASTU={
+ surasa_var:{n:"सुरसा का वरदान",k:"var",who:"सुरसा, नागों की माता",from:"ब्रह्मा",
+  x:"जो भी सामने से जाए, उसे उनके मुँह में घुसे बिना आगे जाने की छूट नहीं।",
+  use:"इसी रात एक बार। हनुमान अंगूठे जितने छोटे होकर भीतर गए और बाहर आ गए, इसलिए वरदान भी रहा और रास्ता भी मिला।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 1",on:["surasa"]},
+ lankini_var:{n:"लंकिनी को कही गई बात",k:"var",who:"लंका की रक्षिका, जो ख़ुद नगरी है",from:"ब्रह्मा",
+  x:"जिस दिन कोई वानर उसे अपने बल से वश में कर ले, उसी दिन से राक्षसों का डर शुरू समझना।",
+  use:"इसी रात पूरी हुई। गिरने के बाद उसने ख़ुद यह बात बताई और रास्ता दे दिया।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 3, श्लोक 47",on:["lankini"]},
+ mainak_pankh:{n:"मैनाक के बचे हुए पंख",k:"var",who:"मैनाक पर्वत",from:"पवन, जिसने उसे बचाया",
+  x:"कृतयुग में पहाड़ों के पंख होते थे। इंद्र ने वज्र से सबके काट दिए, पर पवन ने मैनाक को पंख समेत समुद्र में छिपा दिया।",
+  use:"इसी रात एक बार। उसी एहसान के बदले वह ऊपर उठकर पवन के बेटे को ठहरने की जगह देता है।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 1",on:["mainak"]},
+ hanu_var:{n:"अपनी मर्ज़ी से मृत्यु",k:"var",who:"हनुमान",from:"इंद्र",
+  x:"वज्र लगने पर भी बच जाने पर इंद्र ने वरदान दिया कि मृत्यु उनकी अपनी इच्छा से ही होगी।",
+  use:"इस रात सीधे काम नहीं आया, पर इसी के भरोसे वे ब्रह्मास्त्र में बँधकर भी शांत रहे।",
+  n_use:"0",ref:"किष्किंधाकांड, सर्ग 66",on:["naap"]},
+ hanu_shaap:{n:"अपना बल भूल जाने वाला शाप",k:"shaap",who:"हनुमान",from:"ऋषि, बचपन की शरारतों पर",
+  x:"वे अपना बल अपने आप याद नहीं रख पाते। कोई याद दिलाए, तभी याद आता है।",
+  use:"इसी रात से पहले एक बार। जांबवान ने याद दिलाया, तभी वे समुद्र लाँघने लायक हुए।",
+  n_use:"1",ref:"किष्किंधाकांड, सर्ग 66",on:["jambavan_role"]},
+ tinka:{n:"कुश का तिनका",k:"astra",who:"राम",from:"अपने ही बिछौने से उठाया, ब्रह्मास्त्र चढ़ाकर",
+  x:"घास का एक तिनका, जिस पर ब्रह्मास्त्र चढ़ा दिया गया।",
+  use:"एक बार, चित्रकूट में। कौए के पीछे लगा, तीनों लोक घूमा, और आख़िर में उसकी दाईं आँख लेकर रुका।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 38",on:["kaua"]},
+ brahmastra_v:{n:"इंद्रजित का ब्रह्मास्त्र",k:"astra",who:"इंद्रजित",from:"ब्रह्मा",
+  x:"वह अस्त्र जिससे बाँधा जा सकता है, और जिसका बंधन किसी दूसरे बंधन के साथ नहीं ठहरता।",
+  use:"इसी रात एक बार। इसने बाँधा भी, और राक्षसों के रस्सी बाँधते ही अपने आप छूट भी गया।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 48",on:["brahmastra"]},
+ anguthi_v:{n:"राम की अँगूठी",k:"nishani",who:"राम",from:"अपने हाथ से दी",
+  x:"राम के नाम वाली अँगूठी, जो पहचान के लिए दी गई।",
+  use:"इसी रात एक बार। कहानी सुनाने के बाद उसे आगे डाला गया, और तभी भरोसा बना।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 36",on:["anguthi"]},
+ chudamani_v:{n:"चूड़ामणि",k:"nishani",who:"सीता",from:"पानी से निकली, इंद्र ने जनक को दी, जनक ने विवाह में",
+  x:"सिर में पहनी जाने वाली मणि, जिसे दस महीने कपड़े में छिपाकर रखा गया।",
+  use:"इसी रात एक बार। हनुमान के हाथ राम तक पहुँची, और राम उसे छाती से लगाकर रो पड़े।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 66",on:["chudamani"]},
+ pushpak:{n:"पुष्पक विमान",k:"vahan",who:"रावण के पास, पहले कुबेर का",from:"कुबेर से छीना गया",
+  x:"सोने की जालीदार खिड़कियों और रत्न जड़े खंभों वाला उड़ने वाला विमान।",
+  use:"इस रात उड़ा नहीं। बीच नगर में खड़ा रहा, और यही बताता रहा कि यहाँ सब कुछ किसी और से लिया हुआ है।",
+  n_use:"0",ref:"सुंदरकांड, सर्ग 7 और 8; छीनने की बात किष्किंधाकांड, सर्ग 43",on:["nagar"]},
+ lanka_shaap:{n:"लंका पर लगा शाप",k:"shaap",who:"लंका नगरी",from:"कुबेर से छीनने पर",
+  x:"यह नगरी शापग्रस्त कही जाती है। द्वार पर रोकने वाली ख़ुद इसे शापग्रस्त कहकर भीतर जाने देती है।",
+  use:"इसी रात दिखा। उसी रात नगर जला।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 3, श्लोक 51; कुबेर वाली बात महाभारत के रामोपाख्यान में",on:["kuber_shaap"]},
+ ravan_shaap:{n:"रावण पर लगी रोक",k:"shaap",who:"रावण",from:"ब्रह्मा",
+  x:"जो स्त्री अपनी मर्ज़ी से न आए, उसे वह छू नहीं सकता।",
+  use:"इसी रात दिखी। वाटिका में वह धमकाता है, अवधि देता है, पर हाथ नहीं लगाता।",
+  n_use:"1",ref:"उत्तरकांड में यह रोक बताई गई है; वाटिका वाला दृश्य सुंदरकांड, सर्ग 22",on:["avadhi"]}
+};
+const VART={
+ var:'<g class="vi"><circle class="vglow" cx="26" cy="26" r="15"/><path class="vline" d="M26 14 q8 12 0 22 q-8 -10 0 -22 Z"/><path class="vline" d="M14 26 q12 8 24 0 q-10 8 -24 0 Z"/></g>',
+ shaap:'<g class="vi"><circle class="vdark" cx="26" cy="26" r="15"/><path class="vcrack" d="M18 16 L28 26 L20 32 L34 40"/></g>',
+ astra:'<g class="vi"><circle class="vglow" cx="26" cy="26" r="15"/><path class="vline" d="M14 38 L38 14"/><path class="vline" d="M30 14 h8 v8"/></g>',
+ nishani:'<g class="vi"><circle class="vglow" cx="26" cy="26" r="15"/><circle class="vline" cx="26" cy="27" r="7" fill="none"/><path class="vline" d="M26 14 l4 6 h-8 Z"/></g>',
+ vahan:'<g class="vi"><circle class="vglow" cx="26" cy="26" r="15"/><path class="vline" d="M14 30 h24 l-6 6 h-12 Z"/><path class="vline" d="M20 30 v-8 h12 v8"/></g>'
+};
+const vastuGot=k=>VASTU[k]&&VASTU[k].on.some(c=>save.cards[c]);
+const vastuCount=()=>Object.keys(VASTU).filter(vastuGot).length;
+function openVastu(){
+ save.vastu=save.vastu||{};
+ Object.keys(VASTU).forEach(k=>{
+  if(save.vastu[k])return;
+  if(vastuGot(k)){save.vastu[k]=true;earn(3,"vastu",VASTU[k].n);}
+ });
+}
 /* ---------- padvi: names a player earns and can wear ---------- */
 const PADVI=[
  /* the road you walk */
@@ -3774,7 +3856,8 @@ function drawPatra(){
     bar("रास्ते के लोग",patraCount(),Object.keys(PATRA).length)+
     bar("उपलब्धियाँ",achCount(),Object.keys(ACH).length)+
     bar("खुली कथाएँ",kathaCount(),Object.keys(KATHA).length)+
-    bar("पदवियाँ",padviCount(),PADVI.length);
+    bar("पदवियाँ",padviCount(),PADVI.length)+
+    bar("संग्रह",vastuCount(),Object.keys(VASTU).length);
  h+='<h2>रस</h2>';
  Object.keys(RASA).forEach(r=>{h+=bar(RASA[r],rc[r][0],rc[r][1],RASA_X[r]);});
  h+='<h2>पदवियाँ</h2>';
@@ -3791,6 +3874,25 @@ function drawPatra(){
   });
   h+="</div>";
  });
+ h+='<h2>संग्रह</h2>';
+ h+='<p class="quiet">वरदान, शाप, अस्त्र और निशानियाँ। '+Object.keys(VASTU).length+" में से "+vastuCount()+" मिलीं।</p>";
+ h+='<div class="vgrid">';
+ Object.keys(VASTU).forEach(k=>{
+  const V=VASTU[k],got=vastuGot(k);
+  h+='<div class="vcell'+(got?" got":"")+'">'+
+   '<svg class="vicon" viewBox="0 0 52 52">'+VART[V.k]+"</svg>"+
+   '<div class="vbody"><b>'+(got?V.n:"अभी नहीं मिला")+"</b>"+
+   '<span class="vkind">'+VKIND[V.k]+"</span>"+
+   (got?"<p>"+V.x+"</p>"+
+     '<span class="vrow">किसके पास: '+V.who+"</span>"+
+     '<span class="vrow">कहाँ से मिला: '+V.from+"</span>"+
+     '<span class="vrow">कैसे काम आया: '+V.use+"</span>"+
+     '<span class="vrow">इस कथा में कितनी बार: '+V.n_use+"</span>"+
+     '<span class="vrow quiet">'+V.ref+"</span>"
+    :'<p class="quiet">यह उसी पल पर खुलेगा जहाँ इसका ज़िक्र आता है।</p>')+
+   "</div></div>";
+ });
+ h+="</div>";
  h+='<h2>रास्ते के लोग</h2><div class="pgrid">';
  Object.keys(PATRA).forEach(k=>{const got=save.patra&&save.patra[k];
   h+='<div class="pcell'+(got?" got":"")+'"><b>'+(got?PATRA[k].n:"अभी नहीं मिले")+"</b><span>"+
