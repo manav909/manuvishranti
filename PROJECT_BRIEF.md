@@ -30,8 +30,16 @@ covering 19 texts, 25 places, 63 forms, 77 hidden findings, all with citations.
 - Commit messages: plain ASCII, single quotes
 - Stage finals in outputs, then one paste-able command
 
+## The unbreakable rule
+Whenever anything is added, removed or renamed - a scene, a place, a character, a find, a line, a citation -
+every reference to it must be updated in the same edit. `linktest.js` enforces this and must be run every time.
+It walks every cross reference in both directions: moments to nights, places to pictures, finds to texts,
+people to finds, badges to their meters, differences to their rows, the thread to its moments,
+shut kathas to their conditions, nights to the night or katha they wait on, texts to their homes,
+and it fails on any orphan, any dangling name, and any duplicate key.
+
 ## Test suite (run in the build container, not in the repo)
-26 check files covering: whole-project data integrity, language, camera, map thinning,
+28 check files covering: whole-project data integrity, language, camera, map thinning,
 panels, scroll anchoring, story cards, gift boxes, the woven scroll, the thread of the story,
 progress card, titles, adhikar gates, parakh questions, prahar gifts, repeat visits, layout.
 
