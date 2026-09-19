@@ -3944,6 +3944,32 @@ function deepPadvi(id){
  showDeep(P.n,'<span class="vkind">'+P.g+'</span><p>'+P.x+"</p>"+
   '<p class="quiet">'+(has?(save.title===id?"यही नाम अभी चल रहा है।":"यह मिल चुकी है। पत्र में जाकर इसे अपना नाम बनाया जा सकता है।"):"अभी नहीं मिली।")+"</p>");
 }
+function deepRasa(r){
+ if(!RASA[r])return;
+ const mine=[],rest=[];
+ Object.keys(SC).forEach(k=>{
+  if(RAS[k]!==r)return;
+  const cut=k.lastIndexOf("-"),night=k.slice(0,k.indexOf("-"));
+  const id=k.slice(night.length+1,cut),w=+k.slice(cut+1);
+  const N=NIGHTS.find(n=>n.id===night);if(!N||!PLACES[id])return;
+  (depthOf(k)>0?mine:rest).push(PLACES[id].n+", "+N.watches[w].n);
+ });
+ showDeep(RASA[r],'<span class="vkind">रस</span><p>'+RASA_X[r]+"</p>"+
+  '<p><b>तुमने इस रस के जो पल जिए:</b></p>'+
+  (mine.length?mine.map(x=>'<p class="quiet">'+x+"</p>").join(""):'<p class="quiet">अभी एक भी नहीं।</p>')+
+  (rest.length?'<p class="quiet">इसी रस के '+rest.length+" पल अभी बाकी हैं।</p>":""));
+}
+function deepFarq(i){
+ const F=FARQ[i];if(!F)return;
+ let h='<span class="vkind">फ़र्क़</span>';
+ F.rows.forEach(r=>{
+  const [k,t,card]=r,got=!!save.cards[card]||!!(save.farq&&save.farq[i]);
+  h+='<p class="'+(got?"note-got":"note-shut")+'"><b>'+SRC[k].n+":</b> "+
+   (got?t:"अभी बंद। यह बात "+SRC[k].n+" वाले किसी पल में खुलेगी।")+"</p>";
+  if(got&&CARDS[card]&&CARDS[card].ref)h+='<p class="quiet">'+CARDS[card].ref+"</p>";
+ });
+ showDeep(F.q,h);
+}
 function deepPerson(k){
  const P=PATRA[k];if(!P)return;
  const from=(P.on||[]).filter(c=>CARDS[c]).map(c=>CARDS[c].t);
@@ -4026,7 +4052,7 @@ function drawPatra(){
     bar("पदवियाँ",padviCount(),PADVI.length)+
     bar("संग्रह",vastuCount(),Object.keys(VASTU).length);
  h+='<h2>रस</h2>';
- Object.keys(RASA).forEach(r=>{h+=bar(RASA[r],rc[r][0],rc[r][1],RASA_X[r]);});
+ Object.keys(RASA).forEach(r=>{h+='<div class="tapme" data-rasa="'+r+'">'+bar(RASA[r],rc[r][0],rc[r][1],RASA_X[r])+"</div>";});
  h+='<h2>पदवियाँ</h2>';
  h+='<p class="quiet">'+PADVI.length+" में से "+padviCount()+" मिलीं। मिली हुई पदवी को अपना नाम बनाया जा सकता है।</p>";
  const got=padviGot(),groups=[];
@@ -4136,6 +4162,7 @@ function drawPatra(){
  const bh=document.getElementById("bhent");
  if(bh)bh.onclick=()=>{takeBhent();drawPatra();hud();};
  drawQuiz();
+ patraBox.querySelectorAll("[data-rasa]").forEach(b=>{b.onclick=()=>deepRasa(b.dataset.rasa);});
  patraBox.querySelectorAll("[data-ach]").forEach(b=>{b.onclick=e=>{if(e&&e.target&&e.target.dataset&&e.target.dataset.claim)return;deepAch(b.dataset.ach);};});
  patraBox.querySelectorAll("[data-padvi]").forEach(b=>{b.onclick=e=>{if(e&&e.target&&e.target.dataset&&(e.target.dataset.wear||e.target.dataset.drop))return;deepPadvi(b.dataset.padvi);};});
  patraBox.querySelectorAll("[data-person]").forEach(b=>{b.onclick=()=>deepPerson(b.dataset.person);});
@@ -4227,7 +4254,7 @@ function fill(){
  }else if(tab==="farq"){
   out+='<p class="shut-note">एक ही पल, अलग अलग ग्रंथ।</p>';
   FARQ.forEach(F=>{
-   out+='<h2>'+F.q+"</h2>";
+   out+='<h2 class="tapme" data-farq="'+FARQ.indexOf(F)+'">'+F.q+' <span class="more">पूरा पढ़ो</span></h2>';
    F.rows.forEach(r=>{
     const [k,t,card]=r,got=!!save.cards[card]||!!(save.farq&&save.farq[FARQ.indexOf(F)]);
     out+='<p class="'+(got?"note-got":"note-shut")+'"><b>'+SRC[k].n+":</b> "+
@@ -4273,6 +4300,7 @@ function fill(){
  }
  out+='<p class="shut-note"><button class="link" id="wipe">सब कुछ भूल जाओ</button></p>';
  body.innerHTML=out;
+ body.querySelectorAll("[data-farq]").forEach(b=>{b.onclick=()=>deepFarq(+b.dataset.farq);});
  body.querySelectorAll("[data-card]").forEach(b=>{b.onclick=()=>deepCard(b.dataset.card);});
  body.querySelectorAll("[data-place]").forEach(b=>{b.onclick=()=>deepPlace(b.dataset.place);});
  const w=document.getElementById("wipe");
