@@ -372,6 +372,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .pcell b{display:block;font-family:"Rozha One",serif;font-weight:400;font-size:1rem;color:var(--haldi)}
 .pcell span{font-size:.84rem;color:var(--quiet);line-height:1.5}
 /* ---- the shelf you spend at ---- */
+.beat{margin:.12rem 0;font-size:.93rem;line-height:1.75;border-left:2px solid var(--haldi);padding-left:.6rem}
 .glance{margin:.2rem 0 .4rem;font-size:.92rem}
 .glance b{font-weight:400;color:var(--haldi);margin-right:.4rem}
 .quizbox{border:1px solid var(--rule);border-radius:.7rem;padding:.6rem .7rem;margin:.2rem 0 1rem}
@@ -5589,7 +5590,12 @@ function dawn(){
  if(got===deep&&!save.done[N.id]){save.done[N.id]=true;persist();
   el('<p class="found gift"><b>इनाम:</b> इस हिस्से का कोई कोना छूटा नहीं। अब हर घड़ी दो जगह जा सकते हो।</p>');}
  /* the night at a glance */
- el('<p class="ask">यह रात एक नज़र में</p>');
+ el('<p class="ask">इस रात की कथा, क्रम से</p>');
+ N.watches.forEach((w,i)=>{
+  const beats=w.spots.filter(x=>SPINE[N.id+"-"+x+"-"+i]);
+  beats.forEach(x=>el('<p class="beat"><b>'+PLACES[x].n+":</b> "+SPINE[N.id+"-"+x+"-"+i]+"</p>"));
+ });
+ el('<p class="ask">और तुम कहाँ कहाँ हो आए</p>');
  N.watches.forEach((w,i)=>{
   const been=(run.path||[]).filter(x=>x.w===i).map(x=>PLACES[x.id].n);
   el('<p class="glance"><b>'+w.n+"</b> "+(been.length?been.join(", "):"कहीं नहीं गए")+"</p>");
