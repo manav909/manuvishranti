@@ -598,7 +598,9 @@ a{color:var(--tide)}
 .dtree circle,.dtree2 circle{fill:#2f6b3f}.dtree2 circle{fill:#24543a}
 .dtrunk{fill:#4a3722}.dsh{fill:#000;opacity:.25}
 .dgold{fill:#c9a15a}.dgold2{fill:#b08947}.ddome{fill:#e0c070}
-.dpillar{fill:#8f6f3c}.dwin{fill:#2a1f14}.ddoor{fill:#2a1f14}.dmerlon{fill:#8f7a4e}
+.dpillar{fill:#8f6f3c}.djaali{stroke:rgba(90,60,10,.55);stroke-width:.5;fill:none}
+.dbell{fill:#ffd98a}
+.dwin{fill:#2a1f14}.ddoor{fill:#2a1f14}.dmerlon{fill:#8f7a4e}
 .dwall{fill:#8f7a4e}.dmud{fill:#a98b62}.dcloth{fill:#cdb489}
 .dpole{stroke:#6b5533;stroke-width:1.2;fill:none}.dflag{fill:#c0432f}
 .dlamp{fill:#ffcf6b}.dthrone{fill:#d8ae4e}
@@ -3736,8 +3738,12 @@ const D={
   '<path class="dgold" d="M'+(x-20*s)+' '+(y-30*s)+' l'+(20*s)+' '+(-13*s)+' l'+(20*s)+' '+(13*s)+' Z"/>'+
   '<path class="ddome" d="M'+(x-7*s)+' '+(y-43*s)+' a'+(7*s)+' '+(8*s)+' 0 0 1 '+(14*s)+' 0 Z"/>'+
   [-20,-10,10,20].map(o=>'<rect class="dpillar" x="'+(x+o*s)+'" y="'+(y-16*s)+'" width="'+(2.4*s)+'" height="'+(16*s)+'"/>').join("")+
-  [-14,0,14].map(o=>'<path class="dwin" d="M'+(x+o*s-3.4*s)+' '+y+' v'+(-7*s)+' a'+(3.4*s)+' '+(3.4*s)+' 0 0 1 '+(6.8*s)+' 0 v'+(7*s)+' Z"/>').join("")+
-  [-24,24].map(o=>'<g><path class="dpole" d="M'+(x+o*s)+' '+(y-18*s)+' v'+(-10*s)+'"/><path class="dflag" d="M'+(x+o*s)+' '+(y-28*s)+' l'+(9*s)+' '+(3*s)+' l'+(-9*s)+' '+(3*s)+' Z"/></g>').join("")+
+  [-14,0,14].map(o=>'<g><path class="dwin" d="M'+(x+o*s-3.4*s)+' '+y+' v'+(-7*s)+' a'+(3.4*s)+' '+(3.4*s)+' 0 0 1 '+(6.8*s)+' 0 v'+(7*s)+' Z"/>'+
+   '<path class="djaali" d="M'+(x+o*s-1.1*s)+' '+(y-1*s)+' v'+(-7.5*s)+' M'+(x+o*s+1.1*s)+' '+(y-1*s)+' v'+(-7.5*s)+
+   ' M'+(x+o*s-3.2*s)+' '+(y-4.5*s)+' h'+(6.4*s)+'"/></g>').join("")+
+  [-24,24].map(o=>'<g><path class="dpole" d="M'+(x+o*s)+' '+(y-18*s)+' v'+(-10*s)+'"/><path class="dflag" d="M'+(x+o*s)+' '+(y-28*s)+' l'+(9*s)+' '+(3*s)+' l'+(-9*s)+' '+(3*s)+' Z"/>'+
+   '<circle class="dbell" cx="'+(x+o*s+1.6*s)+'" cy="'+(y-22.5*s)+'" r="'+(.9*s)+'"/>'+
+   '<circle class="dbell" cx="'+(x+o*s-1.6*s)+'" cy="'+(y-20.5*s)+'" r="'+(.8*s)+'"/></g>').join("")+
   [-16,16].map(o=>'<circle class="dlamp" cx="'+(x+o*s)+'" cy="'+(y-22*s)+'" r="'+(1.6*s)+'"/>').join("")+"</g>",
  gate:(x,y,s)=>'<g class="dbuild"><path class="dwall" d="M'+(x-34*s)+' '+y+' v'+(-16*s)+' a'+(34*s)+' '+(20*s)+' 0 0 1 '+(68*s)+' 0 v'+(16*s)+' Z"/>'+
   '<path class="ddoor" d="M'+(x-8*s)+' '+y+' v'+(-14*s)+' a'+(8*s)+' '+(8*s)+' 0 0 1 '+(16*s)+' 0 v'+(14*s)+' Z"/>'+
