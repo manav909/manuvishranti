@@ -476,12 +476,12 @@ a{color:var(--tide)}
 .tflame{fill:#ffb347;animation:tlick 1.1s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}
 .tflame.b{fill:#ffe08a;animation-duration:.8s}
 .tsmoke circle{fill:rgba(190,190,200,.16);animation:tsmoke 6s linear infinite}
-.tsway{animation:tsway 5s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom center}
+.tsway{animation:tsway 5s ease-in-out infinite;transform-origin:center bottom}
 .tripple path{fill:none;stroke:rgba(190,230,230,.35);stroke-width:1.6;animation:tripple 5s linear infinite}
-.tfig{animation:tbreathe 4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom center}
+.tfig{animation:tbreathe 4s ease-in-out infinite;transform-origin:center bottom}
 .twalk{animation:twalk 7s linear infinite}
-.tsit{transform:translateY(6px) scaleY(.82)}
-.tbeast{animation:tstep 4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom center}
+
+.tbeast{animation:tstep 4s ease-in-out infinite}
 .tbub circle{fill:rgba(200,240,240,.5);animation:tbub 5s linear infinite}
 .ttick rect{fill:#f0c75a;animation:ttick 3s ease-in-out infinite}
 .tglowbig{fill:url(#tgLamp);animation:tflick 4s ease-in-out infinite}
@@ -2081,22 +2081,27 @@ const TD={
  hillsFar:(y)=>'<path class="tfar" d="M0 '+y+' q40 -26 78 -4 q34 -30 74 -2 q42 -26 84 -6 q40 -18 84 2 V180 H0 Z"/>',
  wall:(x,y,w,h,r)=>'<rect class="tstone" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+(r||3)+'"/>',
  goldRoof:(x,y,w)=>'<path class="tgoldy" d="M'+x+' '+y+' l'+(w/2)+' -'+(w*0.28).toFixed(1)+' l'+(w/2)+' '+(w*0.28).toFixed(1)+' Z"/>',
- windows:(x,y,w,h,cols,rows,delay)=>'<g class="twin">'+[...Array(cols*rows)].map((_,i)=>{
-  const c=i%cols,r=Math.floor(i/cols);
-  return '<rect x="'+(x+6+c*(w/cols))+'" y="'+(y+6+r*(h/rows))+'" width="'+(w/cols-7)+'" height="'+(h/rows-7)+
-   '" rx="1.5" style="animation-delay:-'+(((i*0.7)+(delay||0))%4).toFixed(2)+'s"/>';}).join("")+"</g>",
+ windows:(x,y,w,h,cols,rows,delay)=>{
+  const cw=Math.min(9,(w/cols)*0.42),ch=Math.min(11,(h/rows)*0.42);
+  const gx=(w-cols*cw)/(cols+1),gy=(h-rows*ch)/(rows+1);
+  return '<g class="twin">'+[...Array(cols*rows)].map((_,i)=>{
+   const c=i%cols,r=Math.floor(i/cols);
+   return '<rect x="'+(x+gx+c*(cw+gx)).toFixed(1)+'" y="'+(y+gy+r*(ch+gy)).toFixed(1)+
+    '" width="'+cw.toFixed(1)+'" height="'+ch.toFixed(1)+'" rx="1.2" style="animation-delay:-'+
+    (((i*0.7)+(delay||0))%4).toFixed(2)+'s"/>';}).join("")+"</g>";},
  lamp:(x,y,s)=>'<g class="tlamp" style="--s:'+(s||1)+'"><circle cx="'+x+'" cy="'+y+'" r="'+(16*(s||1))+'" fill="url(#tgLamp)"/>'+
   '<path d="M'+x+' '+(y-5*(s||1))+' q'+(4*(s||1))+' '+(5*(s||1))+' 0 '+(10*(s||1))+
   ' q-'+(4*(s||1))+' -'+(5*(s||1))+' 0 -'+(10*(s||1))+' Z" fill="#ffd27a"/></g>',
  fig:(x,y,s,o)=>{o=o||{};const h=(o.h||26)*s;
-  return '<g class="tfig'+(o.walk?" twalk":"")+(o.sit?" tsit":"")+'" style="animation-delay:-'+((o.d||0))+'s" transform="translate('+x+','+y+')">'+
+  return '<g transform="translate('+x+','+(y+(o.sit?5:0))+')"><g class="tfig'+(o.walk?" twalk":"")+
+   '" style="animation-delay:-'+((o.d||0))+'s">'+
    '<ellipse cx="0" cy="2" rx="'+(7*s)+'" ry="'+(2.4*s)+'" fill="rgba(0,0,0,.35)"/>'+
    '<path d="M0 0 v-'+h+'" stroke="'+(o.c||"#e8dcc0")+'" stroke-width="'+(4.2*s)+'" stroke-linecap="round"/>'+
    (o.arm?'<path d="M0 -'+(h*0.62).toFixed(1)+' l'+(7*s)+' -'+(4*s)+'" stroke="'+(o.c||"#e8dcc0")+
      '" stroke-width="'+(2.6*s)+'" stroke-linecap="round"/>':"")+
    '<circle cx="0" cy="-'+(h+5*s).toFixed(1)+'" r="'+(4.6*s)+'" fill="'+(o.c||"#e8dcc0")+'"/>'+
    (o.crown?'<path d="M-'+(5*s)+' -'+(h+10*s).toFixed(1)+' l'+(2.5*s)+' -'+(5*s)+' l'+(2.5*s)+' '+(3*s)+
-     ' l'+(2.5*s)+' -'+(3*s)+' l'+(2.5*s)+' '+(5*s)+' Z" fill="#f0c75a"/>':"")+"</g>";},
+     ' l'+(2.5*s)+' -'+(3*s)+' l'+(2.5*s)+' '+(5*s)+' Z" fill="#f0c75a"/>':"")+"</g></g>";},
  smoke:(x,y,n)=>'<g class="tsmoke">'+[...Array(n||4)].map((_,i)=>
   '<circle cx="'+(x+(i%2?10:-8))+'" cy="'+(y-i*14)+'" r="'+(9+i*3)+'" style="animation-delay:-'+(i*1.1).toFixed(1)+'s"/>').join("")+"</g>",
  fire:(x,y,s)=>'<g class="tfire" style="--s:'+(s||1)+'">'+
@@ -2116,10 +2121,10 @@ const TD={
 const DART={
  flowergarden:()=>TD.sky()+TD.stars(10)+TD.moon(268,30,8)+TD.ground(140,"#16251f")+
   TD.wall(0,58,320,26)+
-  [30,96,164,232,292].map((x,i)=>'<g class="tsway" style="animation-delay:-'+(i*.8)+'s" transform="translate('+x+',140)">'+
+  [30,96,164,232,292].map((x,i)=>'<g transform="translate('+x+',140)"><g class="tsway" style="animation-delay:-'+(i*.8)+'s">'+
    '<path d="M0 0 v-30" stroke="#3f7a52" stroke-width="3"/>'+
    '<circle cx="0" cy="-34" r="8" fill="'+["#f4a7c0","#f0c75a","#f4a7c0","#e8dcc0","#f0c75a"][i]+'"/>'+
-   '<circle cx="-9" cy="-26" r="5" fill="#3f7a52"/><circle cx="9" cy="-26" r="5" fill="#3f7a52"/></g>').join("")+
+   '<circle cx="-9" cy="-26" r="5" fill="#3f7a52"/><circle cx="9" cy="-26" r="5" fill="#3f7a52"/></g></g>').join("")+
   TD.lamp(160,80,.7)+TD.fig(200,152,.9,{d:.5,arm:1})+TD.vig,
  orchard:()=>TD.sky()+TD.stars(9)+TD.ground(142,"#16251f")+
   [56,146,236].map((x,i)=>'<g transform="translate('+x+',142)">'+
@@ -2145,14 +2150,14 @@ const DART={
   '<path class="tthatch" d="M40 96 l120 -44 l120 44 Z"/>'+TD.wall(64,96,192,48)+
   '<rect x="86" y="104" width="148" height="40" rx="3" fill="#120e14"/>'+
   TD.lamp(160,120,.85)+
-  '<g class="tfig" style="animation-delay:-.2s" transform="translate(122,144)">'+
+  '<g transform="translate(122,144)"><g class="tfig" style="animation-delay:-.2s">'+
    '<path d="M0 0 v-26" stroke="#e8dcc0" stroke-width="5" stroke-linecap="round"/>'+
    '<path d="M0 -17 l12 -6" stroke="#e8dcc0" stroke-width="3" stroke-linecap="round"/>'+
-   '<circle cx="0" cy="-31" r="5" fill="#e8dcc0"/></g>'+
-  '<g class="tfig" style="animation-delay:-1.3s" transform="translate(198,144)">'+
+   '<circle cx="0" cy="-31" r="5" fill="#e8dcc0"/></g></g>'+
+  '<g transform="translate(198,144)"><g class="tfig" style="animation-delay:-1.3s">'+
    '<path d="M0 0 v-26" stroke="#cfd8e6" stroke-width="5" stroke-linecap="round"/>'+
    '<path d="M0 -17 l-12 -4" stroke="#cfd8e6" stroke-width="3" stroke-linecap="round"/>'+
-   '<circle cx="0" cy="-31" r="5" fill="#cfd8e6"/></g>'+TD.vig,
+   '<circle cx="0" cy="-31" r="5" fill="#cfd8e6"/></g></g>'+TD.vig,
  waiting:()=>TD.sky()+TD.stars(10)+TD.ground(142,"#182231")+
   '<path class="tthatch" d="M44 98 l116 -44 l116 44 Z"/>'+TD.wall(68,98,184,46)+
   '<rect class="tdoorw" x="146" y="106" width="40" height="38" rx="2"/>'+
@@ -2176,9 +2181,9 @@ const DART={
   '<g transform="translate(170,148)"><path d="M-7 0 v-56 h14 v56 Z" fill="#6b4a2a"/>'+
   '<g class="tsway"><circle cx="0" cy="-74" r="34" fill="#2b5c48"/><circle cx="-28" cy="-58" r="20" fill="#26533f"/>'+
   '<circle cx="28" cy="-58" r="20" fill="#26533f"/></g>'+
-  '<g class="tfig" style="animation-delay:-.6s" transform="translate(6,-58)">'+
+  '<g transform="translate(6,-58)"><g class="tfig" style="animation-delay:-.6s">'+
    '<path d="M0 0 v-14" stroke="#e8dcc0" stroke-width="4" stroke-linecap="round"/>'+
-   '<circle cx="0" cy="-19" r="4.5" fill="#e8dcc0"/></g></g>'+
+   '<circle cx="0" cy="-19" r="4.5" fill="#e8dcc0"/></g></g></g>'+
   TD.fig(170,150,.95,{sit:1,d:.3})+TD.vig,
  well:()=>TD.sky()+TD.stars(10)+TD.moon(60,34,8)+TD.ground(96,"#182130")+
   '<path d="M28 96 h264 v84 h-264 Z" fill="url(#tgWater)"/>'+TD.ripple(112)+
@@ -2199,11 +2204,11 @@ const DART={
   TD.fig(96,120,.95,{d:.3,arm:1})+TD.fig(214,120,.9,{d:1.6,arm:1})+TD.lamp(160,74,.8)+TD.vig,
  herd:()=>TD.sky()+TD.stars(9)+TD.hillsFar(92)+TD.ground(126,"#161f2c")+TD.wall(0,52,320,74)+
   TD.windows(0,52,320,74,6,2,.8)+
-  [0,1,2].map(i=>'<g class="tbeast" style="animation-delay:-'+(i*1.4)+'s" transform="translate('+(66+i*94)+',134)">'+
+  [0,1,2].map(i=>'<g transform="translate('+(66+i*94)+',134)"><g class="tbeast" style="animation-delay:-'+(i*1.4)+'s">'+
    '<ellipse cx="0" cy="-16" rx="34" ry="22" fill="#4a4a58"/><circle cx="-30" cy="-22" r="14" fill="#55555f"/>'+
    '<path d="M-42 -20 q-10 12 -2 20" stroke="#55555f" stroke-width="5" fill="none" stroke-linecap="round"/>'+
    '<circle cx="-30" cy="-6" r="2.5" fill="#f0c75a"/>'+
-   '<path d="M-18 6 v10 M0 6 v10 M18 6 v10" stroke="#4a4a58" stroke-width="6" stroke-linecap="round"/></g>').join("")+
+   '<path d="M-18 6 v10 M0 6 v10 M18 6 v10" stroke="#4a4a58" stroke-width="6" stroke-linecap="round"/></g></g>').join("")+
   TD.lamp(160,66,.7)+TD.vig,
  roof:()=>TD.sky()+TD.stars(18)+TD.moon(250,34,11)+TD.ground(140,"#141c28")+
   TD.wall(10,86,132,54)+TD.goldRoof(10,86,132)+TD.wall(158,64,150,76)+TD.goldRoof(158,64,150)+
@@ -2227,8 +2232,8 @@ const DART={
   TD.fig(132,150,1.1,{crown:1,d:.3,arm:1})+TD.fig(196,150,1.15,{crown:1,d:1.4})+TD.vig,
  tulsi:()=>TD.sky()+TD.stars(9)+TD.ground(138,"#182231")+TD.wall(16,60,288,78)+TD.windows(16,60,288,78,5,2,1.9)+
   '<path class="tpotw" d="M142 128 h36 l-7 18 h-22 Z"/>'+
-  '<g class="tsway" transform="translate(160,128)"><circle cx="0" cy="-16" r="15" fill="#2f6b52"/>'+
-  '<circle cx="-11" cy="-7" r="9" fill="#2a5e48"/><circle cx="11" cy="-7" r="9" fill="#2a5e48"/></g>'+
+  '<g transform="translate(160,128)"><g class="tsway"><circle cx="0" cy="-16" r="15" fill="#2f6b52"/>'+
+  '<circle cx="-11" cy="-7" r="9" fill="#2a5e48"/><circle cx="11" cy="-7" r="9" fill="#2a5e48"/></g></g>'+
   TD.lamp(212,128,.75)+TD.fig(76,152,.9,{d:1.1})+TD.vig,
  two:()=>TD.sky()+TD.ground(134,"#161e2b")+TD.wall(34,54,252,80)+TD.windows(34,54,252,80,4,2,.9)+
   TD.lamp(160,96,1)+TD.fig(126,150,1.1,{d:.2,arm:1})+TD.fig(196,150,1.1,{d:1.5})+TD.vig,
@@ -2249,10 +2254,10 @@ const DART={
  flamebig:()=>TD.sky("tgDusk")+TD.ground(150,"#20141a")+TD.smoke(160,60,5)+TD.fire(160,104,1.9)+
   TD.fig(56,164,.8,{d:.7})+TD.fig(264,164,.8,{d:1.6})+TD.vig,
  bird:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#182231")+TD.tree(70,140,1)+TD.tree(272,142,.8)+
-  '<g class="tperch" transform="translate(170,92)"><ellipse cx="0" cy="0" rx="26" ry="17" fill="#2f7d52"/>'+
+  '<g transform="translate(170,92)"><g class="tperch"><ellipse cx="0" cy="0" rx="26" ry="17" fill="#2f7d52"/>'+
   '<circle cx="-22" cy="-8" r="10" fill="#37945f"/><path d="M-32 -8 l-9 4 l9 4 Z" fill="#f0c75a"/>'+
   '<circle cx="-25" cy="-10" r="2" fill="#0d1520"/>'+
-  '<path class="twing" d="M4 -4 q20 -14 34 2 q-20 10 -34 -2 Z" fill="#256b46"/></g>'+
+  '<path class="twing" d="M4 -4 q20 -14 34 2 q-20 10 -34 -2 Z" fill="#256b46"/></g></g>'+
   TD.fig(120,152,.9,{sit:1,d:.5})+TD.fig(220,152,.9,{sit:1,d:1.4})+TD.vig,
  gatearch:()=>TD.sky()+TD.stars(12)+TD.ground(146,"#151d2a")+
   '<path class="tstone" d="M56 146 v-48 a104 104 0 0 1 208 0 v48 Z"/>'+
@@ -2263,10 +2268,10 @@ const DART={
   '<g class="tnote">'+[0,1,2,3].map(i=>'<circle cx="'+(120+i*44)+'" cy="'+(96-(i%2)*18)+'" r="5" style="animation-delay:-'+(i*.7)+'s"/>').join("")+"</g>"+
   TD.fig(160,152,1,{sit:1,d:.2,arm:1})+TD.lamp(258,112,.7)+TD.vig,
  wing:()=>TD.sky()+TD.stars(16)+TD.moon(60,34,9)+TD.ground(150,"#141c28")+
-  '<g class="tflyer" transform="translate(180,86)">'+
+  '<g transform="translate(180,86)"><g class="tflyer">'+
   '<path class="twing" d="M0 0 q-46 -26 -74 6 q42 12 74 -6 Z" fill="#cfd8e6"/>'+
   '<path class="twing b" d="M0 0 q46 -26 74 6 q-42 12 -74 -6 Z" fill="#cfd8e6"/>'+
-  '<circle cx="0" cy="0" r="9" fill="#e8dcc0"/></g>'+TD.vig,
+  '<circle cx="0" cy="0" r="9" fill="#e8dcc0"/></g></g>'+TD.vig,
  crowdcalm:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#182231")+TD.wall(20,58,280,80)+TD.windows(20,58,280,80,5,2,1.2)+
   TD.fig(76,152,1,{d:.2})+TD.fig(132,152,.95,{d:1})+TD.fig(188,152,1.05,{d:1.8,arm:1})+TD.fig(244,152,.9,{d:2.5})+TD.vig,
  ring:()=>TD.sky()+TD.stars(10)+TD.hillsFar(104)+TD.ground(146,"#161e2b")+
@@ -2280,15 +2285,15 @@ const DART={
    '" style="animation-delay:-'+(i*.9).toFixed(1)+'s"/>').join("")+"</g>"+
   TD.ground(152,"#0d2129")+TD.lamp(160,70,1.1)+TD.fig(90,160,.85,{d:.6})+TD.fig(238,160,.8,{d:1.7})+TD.vig,
  manyheads:()=>TD.sky("tgDusk")+TD.ground(150,"#1d1620")+TD.wall(20,56,280,94)+TD.goldRoof(20,56,280)+
-  '<g class="tmany" transform="translate(160,120)">'+
+  '<g transform="translate(160,120)"><g class="tmany">'+
   [-2,-1,0,1,2].map(i=>'<circle cx="'+(i*26)+'" cy="'+(-34-Math.abs(i)*-6)+'" r="13" fill="#e8dcc0" style="animation-delay:-'+(Math.abs(i)*.5)+'s"/>').join("")+
-  '<path d="M0 -24 v30" stroke="#e8dcc0" stroke-width="10" stroke-linecap="round"/></g>'+
+  '<path d="M0 -24 v30" stroke="#e8dcc0" stroke-width="10" stroke-linecap="round"/></g></g>'+
   TD.lamp(60,100,.7)+TD.lamp(262,100,.7)+TD.vig,
  bow:()=>TD.sky("tgDusk")+TD.ground(148,"#1d1620")+TD.tree(52,148,.8)+
-  '<g class="tbow" transform="translate(190,96)">'+
+  '<g transform="translate(190,96)"><g class="tbow">'+
   '<path d="M-30 -46 q40 46 0 92" stroke="#7fbf9a" stroke-width="4" fill="none" stroke-linecap="round"/>'+
   '<path d="M-30 -46 L-30 46" stroke="rgba(255,255,255,.5)" stroke-width="1.6"/>'+
-  [0,1,2,3,4].map(i=>'<circle cx="'+(-26+i*14)+'" cy="'+(-40+i*20)+'" r="5" fill="#f4a7c0"/>').join("")+"</g>"+
+  [0,1,2,3,4].map(i=>'<circle cx="'+(-26+i*14)+'" cy="'+(-40+i*20)+'" r="5" fill="#f4a7c0"/>').join("")+"</g></g>"+
   TD.fig(130,150,1.1,{d:.3,arm:1})+TD.vig,
 };
 
