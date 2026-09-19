@@ -164,6 +164,14 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .scrollbtn{background:none;border:1px solid var(--haldi);border-radius:99px;color:var(--haldi);
  padding:.1rem .8rem;font:inherit;font-size:.84rem;cursor:pointer;white-space:nowrap;margin-right:.4rem}
 .scrollbtn:hover{background:var(--haldi);color:var(--page)}
+@media print{
+ body>*{display:none!important}
+ body.printing #scroll{display:block!important;position:static;padding:0}
+ body.printing #scroll .pcard-back,body.printing #scroll .pcard-btns{display:none!important}
+ body.printing #scroll .pcard-box{box-shadow:none;border:none;max-height:none;width:auto}
+ body.printing #weave{overflow:visible;color:#000}
+ body.printing #weave h2,body.printing #weave .w-where{color:#000}
+}
 .weave{font-size:1.06rem;line-height:1.95}
 .weave h2{font-family:"Rozha One",serif;font-weight:400;font-size:1.5rem;color:var(--haldi);
  margin:1.4rem 0 .5rem;text-align:center}
@@ -807,7 +815,8 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
   <div class="pcard-box" role="dialog" aria-label="तुम्हारा सुंदरकांड">
    <div class="pcard-top">
     <b>तुम्हारा सुंदरकांड</b>
-    <span class="pcard-btns"><button class="diox" id="scrollShut">बंद</button></span>
+    <span class="pcard-btns"><button class="diox" id="scrollPrint">छापो</button>
+    <button class="diox" id="scrollShut">बंद</button></span>
    </div>
    <div class="pcard-body weave" id="weave"></div>
   </div>
@@ -2243,6 +2252,10 @@ function weaveDoc(){
   (top[1]?", और उसके साथ "+top[1]:"")+"। "+
   (topRas?"जो रस सबसे ज़्यादा ठहरा, वह "+RASA[topRas]+" था।":"")+"</p>";
  out+="<p>यह वही कथा है जो सबने सुनी है, पर इस तरह सिर्फ़ तुमने सुनी है।</p>";
+ const met=Object.keys(PATRA).filter(k=>save.patra&&save.patra[k]).map(k=>PATRA[k].n);
+ const held=Object.keys(VASTU).filter(vastuGot).map(k=>VASTU[k].n);
+ if(met.length)out+="<h2>रास्ते में जो मिले</h2><p>"+met.join(", ")+"।</p>";
+ if(held.length)out+="<h2>जो बटोरा</h2><p>"+held.join(", ")+"।</p>";
  if(refs.length)out+='<p class="w-refs">हवाले: '+refs.join("; ")+"।</p>";
  return out;
 }
@@ -4316,6 +4329,12 @@ function fill(){
 
 document.getElementById("pcardShut").onclick=closeCard;
 document.getElementById("scrollShut").onclick=closeScroll;
+document.getElementById("scrollPrint").onclick=()=>{
+ document.body.classList.add("printing");
+ note("छपाई का पन्ना खुल रहा है। पोथी वैसी ही छपेगी जैसी दिख रही है।");
+ setTimeout(()=>{try{window.print();}catch(e){}
+  setTimeout(()=>document.body.classList.remove("printing"),200);},60);
+};
 document.getElementById("deepShut").onclick=closeDeep;
 document.getElementById("deepBack").onclick=closeDeep;
 document.getElementById("scrollBack").onclick=closeScroll;
