@@ -372,6 +372,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .pcell b{display:block;font-family:"Rozha One",serif;font-weight:400;font-size:1rem;color:var(--haldi)}
 .pcell span{font-size:.84rem;color:var(--quiet);line-height:1.5}
 /* ---- the shelf you spend at ---- */
+.beattag{font-size:.72rem;color:var(--haldi);border:1px solid var(--haldi);border-radius:99px;padding:.02rem .4rem;margin-left:.25rem}
 .beat{margin:.12rem 0;font-size:.93rem;line-height:1.75;border-left:2px solid var(--haldi);padding-left:.6rem}
 .glance{margin:.2rem 0 .4rem;font-size:.92rem}
 .glance b{font-weight:400;color:var(--haldi);margin-right:.4rem}
@@ -5908,7 +5909,11 @@ function deepPlace(id){
   const t=layersOf(k).length,d=Math.min(depthOf(k),t);
   rows+='<p class="quiet"><b>'+N.name+", "+w.n+":</b> "+t+" में से "+d+" रूप पढ़े</p>";
  }));
+ let beat="";
+ NIGHTS.forEach(N=>N.watches.forEach((w,i)=>{const k=N.id+"-"+id+"-"+i;
+  if(SPINE[k])beat+='<p class="beat"><b>'+N.name+", "+w.n+":</b> "+SPINE[k]+"</p>";}));
  showDeep(P.n,"<p>"+P.t+"</p>"+(P.lore?"<p>"+P.lore+"</p>":"")+
+  (beat?'<p class="quiet">कथा इस जगह से होकर गुज़रती है:</p>'+beat:"")+
   (SEEN[id]?'<p class="quiet">'+SEEN[id]+"</p>":"")+rows);
 }
 function scrollOpen(){const c=document.getElementById("scroll");return c&&!c.hidden;}
@@ -6197,7 +6202,9 @@ function fill(){
    out+="<h3>"+N.name+"</h3>";
    N.watches.forEach((w,i)=>{
     const rows=w.spots.map(s=>{const k=N.id+"-"+s+"-"+i;const t=SC[k]?layersOf(k).length:1;const d=depthOf(k);
-      return '<button class="link" data-place="'+s+'">'+PLACES[s].n+"</button> ("+t+" में से "+Math.min(d,t)+" रूप)";}).join(", ");
+      return '<button class="link" data-place="'+s+'">'+PLACES[s].n+"</button>"+
+       (SPINE[k]?'<span class="beattag">कथा यहीं से</span>':"")+
+       " ("+t+" में से "+Math.min(d,t)+" रूप)";}).join(", ");
     out+='<p class="shut-note">'+w.n+": "+rows+"</p>";
    });
   });
