@@ -198,6 +198,15 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .coin{border:1px solid var(--haldi);border-radius:99px;padding:.02rem .5rem;color:var(--haldi);margin-right:.4rem}
 .pick.buy{border-color:var(--haldi);color:var(--haldi)}
 .chose{color:var(--tide)}
+.about{border:1px dashed var(--rule);border-radius:.7rem;margin:.3rem 0 .8rem;overflow:hidden}
+.aboutlid{display:flex;align-items:center;justify-content:space-between;gap:.5rem;width:100%;
+ background:none;border:none;font:inherit;cursor:pointer;padding:.4rem .7rem;text-align:left}
+.aboutlid b{font-weight:400;font-size:.92rem;color:var(--quiet)}
+.abouttag{font-size:.78rem;border:1px solid var(--rule);border-radius:99px;padding:.04rem .55rem;color:var(--quiet)}
+.aboutlid:hover b,.aboutlid:hover .abouttag{color:var(--haldi);border-color:var(--haldi)}
+.aboutbody{padding:0 .8rem .5rem;color:var(--quiet);font-size:.94rem}
+.aboutbody p{margin:0 0 .5rem;line-height:1.75}
+.about.shut .aboutbody{display:none}
 .elsew{border:1px dashed var(--rule);border-radius:.7rem;margin:.5rem 0 .8rem;overflow:hidden}
 .elsewlid{display:flex;align-items:center;justify-content:space-between;gap:.5rem;width:100%;
  background:none;border:none;font:inherit;cursor:pointer;padding:.45rem .7rem;text-align:left}
@@ -954,10 +963,11 @@ const NIGHTS=[
 const SC={
  "khoj-akash-0":{say:["तुम हवा में हो। नीचे पानी है, और पानी पर एक बहुत बड़ी परछाईं दौड़ रही है।",
   "रास्ते में तीन आती हैं। सोने का एक पहाड़, जो पानी से उठकर कहता है कि रुक जाओ। एक नाग स्त्री, जिसका मुँह आसमान जितना खुलता है। और एक, जो नीचे से परछाईं पकड़कर खींचती है।",
-  "पहला पुराना एहसान लौटाने आया था, दूसरी परखने, तीसरी निगलने।"],cards:["mainak","surasa","simhika","chhaya"],more:[{src:"kandali",say:["असम की इस कथा में यही उड़ान बहुत थोड़े में कही जाती है। कवि ने ख़ुद लिखा है कि उन्होंने विस्तार छोड़कर सार लिया, इसलिए यहाँ रास्ते की तीनों रुकावटें एक के बाद एक, बिना ठहरे निकल जाती हैं।",
+  "पहला पुराना एहसान लौटाने आया था, दूसरी परखने, तीसरी निगलने।"],cards:["mainak","surasa","simhika","chhaya"],more:[{src:"kandali",say:["रास्ते की तीनों रुकावटें यहाँ एक के बाद एक, बिना ठहरे निकल जाती हैं।",
  "पहाड़ उठता है और रुकने को कहता है, पर रुकना नहीं होता। फिर मुँह खोलकर कोई रास्ता रोकती है, और वह जीतकर नहीं, छोटे होकर निकल जाते हैं। फिर नीचे से परछाईं खिंचती है, और वह भी पीछे छूट जाती है।",
- "यहाँ का असली ठहराव आगे आता है, जब पार पहुँचकर त्रिकूट की चोटी से नीचे नगर दिखता है। वह हिस्सा आज भी अलग से गाकर पढ़ा जाता है, और उसका नाम ही है हनुमान का लंका दर्शन।",
- "यह चौदहवीं सदी की रचना है, राजा महामाणिक्य के कहने पर, ताकि लोग अपनी ही बोली में कथा सुन सकें। इसका ढंग दरबारी नहीं, घरेलू है।"],cards:["kandali_udaan"]},
+ "पार पहुँचते ही हवा बदल जाती है। नीचे पानी ख़त्म होता है और एक पहाड़ी किनारा शुरू होता है, जिसके पीछे नगर छिपा हुआ है।",
+ "असली ठहराव वहीं आता है, चोटी पर खड़े होकर नीचे देखने में। वह हिस्सा आज भी अलग से गाकर पढ़ा जाता है, और उसका नाम ही है हनुमान का लंका दर्शन।",
+ "यह चौदहवीं सदी की रचना है, राजा महामाणिक्य के कहने पर, ताकि लोग अपनी ही बोली में कथा सुन सकें। इसका ढंग दरबारी नहीं, घरेलू है। कवि ने ख़ुद लिखा है कि उन्होंने विस्तार छोड़कर सार लिया।"],cards:["kandali_udaan"]},
  {src:"mbh",say:["यह कथा किसी और बड़ी कथा के भीतर सुनाई जा रही है। एक ऋषि उदास बैठे राजा को समझाने के लिए कहते हैं, सुनो, तुमसे पहले भी एक आदमी ने अपनी पत्नी खोई थी।",
  "इसलिए यहाँ ब्योरे नहीं हैं। समुद्र लाँघना, लंका पहुँचना, सीता को ढूँढना और लौट आना, यह सब कुछ पंक्तियों में निपट जाता है।",
  "जो बात यहाँ सबसे ज़्यादा ठहरती है, वह यह है कि दुख सबको मिलता है, और सहने वाले को आख़िर में रास्ता भी मिलता है।"],cards:["mbh_short"]}]},
@@ -1913,6 +1923,26 @@ const W_CARD={chh:["यह बात कम लोग जानते हैं�
  man:["मन की बात यह थी।","भीतर जो चल रहा था, वह यह था।","और मन में यह ठहरा हुआ था।"],
  gr:["दूसरे ग्रंथ में यही बात यों आती है।","एक और कथा इसी जगह यह कहती है।","इसी पल पर दूसरी परंपरा यह जोड़ती है।"]};
 function pick(a,n){return a[n%a.length];}
+const ABOUT=/(सदी की रचना|सदी में लिखी|सदी की है|के कहने पर|द्विपद छंद|छंद में|गाकर सुनाई|गाकर पढ़ा|अध्यायों का है|सर्गों का है|इसका सुंदरकांड|पहले ही अध्याय का नाम|सुनाने वाला कोई आदमी नहीं|इसका ढंग|कवि ने ख़ुद लिखा|अनुवाद है|संस्करण)/;
+function splitSay(lines){                /* the moment first, the book's own story apart */
+ const story=[],about=[];
+ (lines||[]).forEach(t=>{(ABOUT.test(t)?about:story).push(t);});
+ return story.length?{story:story,about:about}:{story:lines||[],about:[]};
+}
+function aboutStrip(name,lines,host){
+ if(!lines.length)return;
+ const box=document.createElement("div");box.className="about shut";
+ const lid=document.createElement("button");lid.className="aboutlid";lid.type="button";
+ const b=document.createElement("b");b.textContent=name+" के बारे में";
+ const tag=document.createElement("span");tag.className="abouttag";tag.textContent="देखो";
+ lid.appendChild(b);lid.appendChild(tag);
+ const body=document.createElement("div");body.className="aboutbody";
+ body.innerHTML=lines.map(t=>"<p>"+t+"</p>").join("");
+ lid.onclick=()=>{const shut=box.classList.contains("shut");
+  box.classList.toggle("shut",!shut);tag.textContent=shut?"बंद करो":"देखो";};
+ box.appendChild(lid);box.appendChild(body);
+ (host||curStep||story).appendChild(box);
+}
 function bigWords(t){const o={};String(t).replace(/[।,:;()]/g," ").split(/\s+/).forEach(w=>{if(w.length>3)o[w]=1;});return o;}
 function echoes(a,b){                    /* does b mostly repeat a */
  const A=bigWords(a),B=Object.keys(bigWords(b));
@@ -1939,7 +1969,7 @@ function weaveDoc(){
    let para=lead?lead+" ":"";
    seen.forEach((S,li)=>{
     const g=SRC[S.src||"vr"].n;
-    const lines=(S.say||[]).join(" ");
+    const lines=splitSay(S.say).story.join(" ");
     if(li===0)para+=lines+' <i>'+pick(W_SAYS,n+li).replace("{g}",g)+"</i> ";
     else para+='<br><span class="w-also"><i>'+pick(W_ALSO,n+li).replace("{g}",g)+"</i> "+lines+"</span> ";
     used[g]=(used[g]||0)+1;
@@ -2698,8 +2728,10 @@ function visit(id){
  stage.classList.add("focus");
  arrive(id);showDio(id);
  el('<p class="chose">तुम '+PLACES[id].n+" की ओर गए।</p>");
- say(S.say);
+ const cut=splitSay(S.say);
+ say(cut.story);
  el('<p class="w-src">'+SRC[S.src||"vr"].n+"</p>");
+ aboutStrip(SRC[S.src||"vr"].n,cut.about);
  earned=[];
  save.texts=save.texts||{};
  const src0=S.src||"vr";
@@ -3255,7 +3287,10 @@ function openReader(id,w,li,from){
   '<h2 class="rtitle">'+src.n+"</h2>"+
   '<p class="rmeta">'+[src.who,src.lang,src.when].filter(Boolean).join(", ")+"</p>"+
   '<div class="rtabs">'+tabs+"</div>"+
-  (S.say||[]).map(t=>"<p>"+t+"</p>").join("")+
+  splitSay(S.say).story.map(t=>"<p>"+t+"</p>").join("")+
+  (splitSay(S.say).about.length?'<div class="about shut" id="rabout"><button class="aboutlid" type="button">'+
+   "<b>"+src.n+' के बारे में</b><span class="abouttag">देखो</span></button><div class="aboutbody">'+
+   splitSay(S.say).about.map(t=>"<p>"+t+"</p>").join("")+"</div></div>":"")+
   '<p class="rsrc">यह ग्रंथ यहाँ रचा गया माना जाता है: '+(src.where||"जगह पक्की नहीं")+"</p>"+
   '<p class="rsrc">यह पाठ इसी ग्रंथ से है।'+
    (src.u?' <a href="'+src.u+'" target="_blank" rel="noopener">मूल खोलकर पढ़ो</a>'+
