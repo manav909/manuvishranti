@@ -412,6 +412,28 @@ a{color:var(--tide)}
 .rnote{display:block;font-size:.8rem;color:var(--quiet);margin-top:.1rem}
 .rsrc{color:var(--quiet);font-size:.9rem}
 .rmeta{color:var(--tide);font-size:.95rem;margin:0 0 .6rem}
+.tstrip{display:flex;flex-wrap:wrap;gap:.4rem;margin:.5rem 0}
+.tstep{background:var(--mark);border:1px solid var(--rule);border-radius:99px;padding:.22rem .7rem;
+ font:inherit;font-size:.86rem;color:var(--quiet);cursor:pointer}
+.tstep.been{color:var(--ink)}
+.tstep.on{border-color:var(--haldi);color:var(--haldi)}
+.tart{border:1px solid var(--rule);border-radius:.7rem;background:var(--mark);padding:.4rem;margin:.5rem 0}
+.tart svg{display:block;width:100%;height:auto}
+.tname{font-family:"Rozha One",serif;font-weight:400;font-size:1.25rem;color:var(--haldi);margin:.4rem 0 .3rem}
+.dwall{fill:rgba(212,160,23,.14);stroke:var(--rule)}
+.dpath,.dline,.dstep{fill:none;stroke:var(--rule);stroke-width:2;stroke-linecap:round}
+.dlamp{fill:var(--haldi)}
+.dpond{fill:rgba(106,168,168,.18);stroke:var(--tide)}
+.dbeast{fill:rgba(255,255,255,.07);stroke:var(--rule)}
+.droof{fill:rgba(212,160,23,.18);stroke:var(--rule)}
+.ddoor{fill:rgba(0,0,0,.3);stroke:var(--rule)}
+.dglow{fill:rgba(212,160,23,.14);stroke:none}
+.dflame{fill:var(--haldi)}
+.dhead{fill:rgba(255,255,255,.1);stroke:var(--rule)}
+.dtick{fill:rgba(212,160,23,.5)}
+.dcrown{fill:var(--haldi)}
+.dpot{fill:rgba(180,90,60,.35);stroke:var(--rule)}
+.dleaf{fill:rgba(106,168,168,.4);stroke:var(--tide)}
 .twoup{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.6rem 0 1rem}
 @media (max-width:640px){.twoup{grid-template-columns:1fr}}
 .tcol{border:1px solid var(--rule);border-radius:.7rem;padding:.6rem .8rem;background:var(--mark)}
@@ -799,6 +821,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
     <div id="story" class="panel"></div>
     <div id="pothi" class="panel" hidden></div>
     <div id="reader" class="panel" hidden></div>
+    <div id="chakkar" class="panel" hidden></div>
    </div>
   </section>
  </main>
@@ -1461,7 +1484,7 @@ function mapArt(night){
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
 function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
- katha:{},farq:{},vastu:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
+ katha:{},farq:{},vastu:{},tour:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
@@ -1618,8 +1641,9 @@ const app=document.getElementById("app"),
  tally=document.getElementById("tally"),tabsBar=document.getElementById("tabs");
 
 /* ---------- panels: one at a time, each with its own scroll ---------- */
-const PANE={story:story,pothi:pothi,reader:readerBox};
-const PANE_N={story:"कथा",pothi:"खोजी की पोथी",reader:"पढ़ाई"};
+const tourBox=document.getElementById("chakkar");
+const PANE={story:story,pothi:pothi,reader:readerBox,chakkar:tourBox};
+const PANE_N={story:"कथा",pothi:"खोजी की पोथी",reader:"पढ़ाई",chakkar:"चक्कर"};
 let panel="story",kept={},lastPanel="story";
 function tabs(){
  if(!tabsBar)return;
@@ -1850,6 +1874,61 @@ function watchBox(){
 }
 function fitAll(){return CAM(16,74.4,6,81.8);}
 
+/* ---------- detours: a journey inside the telling ---------- */
+const DETOUR={
+ kamba_gali:{n:"गलियों का चक्कर",src:"kamba",at:["aag-nagar-0","khoj-nagar-1"],
+  why:"कंबन नगर को गिनाते नहीं, चलकर दिखाते हैं। इसलिए यहाँ से उनकी लंका में चार जगह घूमी जा सकती हैं।",
+  ref:"कंब रामायण, सुंदर कांडम्, नगर ढूँढने वाला हिस्सा",
+  stops:[
+   {n:"बाज़ार की गली",art:"street",say:["दुकानों के आगे कपड़े टँगे हैं और मोती तौले जा रहे हैं।","यहाँ कोई लड़ाई की बात नहीं कर रहा। सब अपने अपने काम में हैं, जैसे किसी भी शहर में होता है।","कवि यही दिखाना चाहते हैं कि जिस नगर को जलना है, वह अभी जी रहा है।"]},
+   {n:"पानी की बावड़ी",art:"water",say:["सीढ़ियों वाली एक बावड़ी, जिसमें औरतें घड़े भर रही हैं।","पानी पर दीयों की परछाईं काँप रही है।","एक बच्चा सीढ़ी से पानी में पत्थर फेंक रहा है, और किसी को कोई जल्दी नहीं है।"]},
+   {n:"हाथियों की कतार",art:"herd",say:["महल के पीछे हाथी बँधे हैं, हर एक के गले में घंटियाँ।","इनकी ताक़त गिनाने के लिए कवि एक भी संख्या नहीं देते, बस उनका हिलना दिखाते हैं।","इसी कतार के पीछे से वह रास्ता जाता है जो बाग़ की तरफ़ मुड़ता है।"]},
+   {n:"छत पर रात",art:"roof",say:["ऊपर छतों पर लोग सो रहे हैं, कुछ जाग रहे हैं।","कहीं कोई गा रहा है, कहीं कोई अपने आदमी का इंतज़ार कर रहा है।","यहीं से पूरा नगर एक साथ दिखता है, और यही वह जगह है जहाँ से हनुमान गुज़रते हैं।"]}]},
+ kritti_ghar:{n:"घरों की बातें",src:"krittivasa",at:["khoj-aamghar-1"],
+  why:"बांग्ला की यह कथा घर के लोगों को सुनाने के लिए लिखी गई, इसलिए यहाँ से चार घरों के भीतर जाया जा सकता है।",
+  ref:"कृत्तिवासी रामायण, सुंदरकांड",
+  stops:[
+   {n:"पहला घर: बहस",art:"hut",say:["भीतर दो लोग धीमी आवाज़ में बहस कर रहे हैं।","एक कह रहा है कि राजा की ज़िद हम सबको ले डूबेगी, दूसरा उसे चुप करा रहा है।","डर इतना है कि बात भी बंद दरवाज़े के भीतर होती है।"]},
+   {n:"दूसरा घर: इंतज़ार",art:"lamp",say:["एक औरत दीया जलाकर बैठी है।","उसका आदमी पहरे पर गया है और अब तक लौटा नहीं।","वह बार बार दरवाज़े की तरफ़ देखती है, और फिर दीये की तरफ़।"]},
+   {n:"तीसरा घर: बच्चे",art:"kids",say:["तीन बच्चे सो रहे हैं, एक जाग रहा है।","जागने वाला अपनी दादी से पूछ रहा है कि आसमान में जो उड़ा, वह क्या था।","दादी कहती है कि सो जा, और ख़ुद जागती रहती है।"]},
+   {n:"चौथा घर: पूजा",art:"lamp",say:["एक कोने में दीया जलाकर कोई कुछ बुदबुदा रहा है।","राक्षसों के नगर में भी लोग वही माँगते हैं जो सब माँगते हैं: सब ठीक रहे।","कृत्तिवास यही दिखाकर उस नगर को दुश्मन नहीं, बस्ती बना देते हैं।"]}]},
+ ranga_man:{n:"मन के भीतर",src:"ranganatha",at:["khabar-vatika-0"],
+  why:"तेलुगु की यह कथा गाकर सुनाई जाती है, इसलिए वह बाहर कम और भीतर ज़्यादा जाती है। यहाँ से चार भीतरी पल देखे जा सकते हैं।",
+  ref:"रंगनाथ रामायण, सुंदर कांडमु",
+  stops:[
+   {n:"गिनती",art:"count",say:["सबसे पहले दिन गिने जाते हैं। कितने बीते, कितने बचे।","गिनती पूरी होते ही वही सवाल लौटता है कि ख़बर पहुँची होगी या नहीं।","कवि यहाँ रोना नहीं दिखाते, हिसाब दिखाते हैं।"]},
+   {n:"पुरानी बात",art:"memory",say:["फिर एक पुरानी बात याद आती है, किसी आम दिन की।","उसी दिन की याद सबसे ज़्यादा भारी पड़ती है, क्योंकि उसमें कुछ ख़ास नहीं था।","यही इस कथा का ढंग है: बड़ी बातों से नहीं, छोटी यादों से दुख दिखाना।"]},
+   {n:"अपने आप से बात",art:"alone",say:["फिर वे ख़ुद से कहती हैं कि अभी नहीं टूटना है।","यह किसी को सुनाकर नहीं कहा जाता, इसलिए इसमें कोई दिखावा नहीं है।","इसी एक वाक्य के बल पर रात कट जाती है।"]},
+   {n:"मंदोदरी की नसीहत",art:"queen",say:["इसी कथा में एक और भीतरी पल है, पर वह दूसरी तरफ़ का है।","मंदोदरी रावण से कहती हैं कि जो बहू बेटी जैसी हो उसे मत छेड़ो, यह रास्ता ठीक नहीं।","दो औरतें, दो तरफ़, और दोनों वही बात जानती हैं।"]}]},
+ manas_bhakti:{n:"नाम वाला कोना",src:"manas",at:["khoj-ghar-2"],
+  why:"मानस में यह घर इसलिए दिखता है कि वहाँ नाम लिया जा रहा है। यहाँ से उसी घर के भीतर चार जगह देखी जा सकती हैं।",
+  ref:"रामचरितमानस, सुंदरकांड, विभीषण से भेंट",
+  stops:[
+   {n:"आँगन की तुलसी",art:"tulsi",say:["आँगन के बीच तुलसी का पौधा है, और उसके पास मिट्टी का दीया।","पूरे नगर में यह अकेली ऐसी चीज़ है जो हनुमान ने पहचानी।","इसी से उन्हें लगा कि यहाँ कोई अपना है।"]},
+   {n:"भीतर की आवाज़",art:"lamp",say:["भीतर से धीमी आवाज़ आ रही है, वही नाम बार बार।","तुलसीदास इसे चमत्कार की तरह नहीं, आदत की तरह लिखते हैं।","रोज़ का काम, रोज़ की तरह।"]},
+   {n:"दो भाइयों की बात",art:"two",say:["विभीषण अपने बारे में कहते हैं कि मैं यहाँ ऐसे हूँ जैसे जीभ के बीच दाँत।","न कोई अपना, न कोई सुनने वाला।","इसी अकेलेपन के कारण एक वानर का आना उनके लिए बड़ी बात बन जाती है।"]},
+   {n:"रास्ता बताना",art:"map",say:["जाते जाते वही बताते हैं कि वे अशोक वाटिका में हैं, और पहरा कैसा है।","यानी इस घर से सिर्फ़ ठहराव नहीं मिलता, आगे का रास्ता भी मिलता है।","मानस में खोज यहीं से सीधी हो जाती है।"]}]}
+};
+const DART={
+ street:'<g>'+[0,1,2].map(i=>'<rect class="dwall" x="'+(20+i*95)+'" y="70" width="70" height="80" rx="4"/>').join("")+
+  '<path class="dpath" d="M0 150 h320"/><circle class="dlamp" cx="160" cy="60" r="6"/></g>',
+ water:'<g><path class="dpond" d="M40 120 h240 v30 h-240 Z"/><path class="dstep" d="M60 120 h200 M80 110 h160 M100 100 h120"/><circle class="dlamp" cx="160" cy="70" r="6"/></g>',
+ herd:'<g>'+[0,1,2].map(i=>'<ellipse class="dbeast" cx="'+(70+i*90)+'" cy="120" rx="34" ry="24"/>').join("")+
+  '<path class="dpath" d="M0 150 h320"/></g>',
+ roof:'<g><rect class="dwall" x="30" y="90" width="120" height="60" rx="4"/><rect class="dwall" x="170" y="70" width="120" height="80" rx="4"/><circle class="dlamp" cx="90" cy="70" r="5"/><circle class="dlamp" cx="230" cy="50" r="5"/></g>',
+ hut:'<g><path class="droof" d="M60 100 l100 -45 l100 45 Z"/><rect class="dwall" x="90" y="100" width="140" height="50" rx="3"/><rect class="ddoor" x="145" y="115" width="30" height="35"/></g>',
+ lamp:'<g><circle class="dglow" cx="160" cy="105" r="34"/><path class="dflame" d="M160 88 q10 14 0 26 q-10 -12 0 -26 Z"/><path class="dwall" d="M130 120 h60 v12 h-60 Z"/></g>',
+ kids:'<g>'+[0,1,2,3].map(i=>'<circle class="dhead" cx="'+(70+i*60)+'" cy="'+(110+(i%2)*14)+'" r="12"/>').join("")+
+  '<path class="dpath" d="M30 145 h260"/></g>',
+ count:'<g>'+[0,1,2,3,4,5].map(i=>'<rect class="dtick" x="'+(60+i*36)+'" y="'+(120-(i<4?0:0))+'" width="6" height="30"/>').join("")+
+  '<path class="dpath" d="M40 155 h240"/></g>',
+ memory:'<g><circle class="dglow" cx="160" cy="105" r="40"/><path class="dline" d="M120 105 q40 -34 80 0 q-40 34 -80 0 Z"/></g>',
+ alone:'<g><circle class="dhead" cx="160" cy="92" r="16"/><path class="dline" d="M160 108 v34"/><path class="dpath" d="M60 150 h200"/></g>',
+ queen:'<g><circle class="dhead" cx="160" cy="92" r="16"/><path class="dcrown" d="M144 76 l6 -12 l10 10 l10 -10 l6 12 Z"/><path class="dline" d="M160 108 v34"/></g>',
+ tulsi:'<g><path class="dpot" d="M140 130 h40 l-6 20 h-28 Z"/><path class="dleaf" d="M160 128 q-16 -22 0 -34 q16 12 0 34 Z"/><circle class="dlamp" cx="200" cy="140" r="5"/></g>',
+ two:'<g><circle class="dhead" cx="130" cy="96" r="14"/><circle class="dhead" cx="195" cy="96" r="14"/><path class="dline" d="M130 110 v30 M195 110 v30"/></g>',
+ map:'<g><rect class="dwall" x="70" y="80" width="180" height="70" rx="4"/><path class="dline" d="M90 140 q40 -40 80 -10 q30 20 60 -20"/><circle class="dlamp" cx="230" cy="110" r="5"/></g>'
+};
 /* ---------- the collection: boons, curses, weapons and tokens ---------- */
 const VKIND={var:"वरदान",shaap:"शाप",astra:"अस्त्र",nishani:"निशानी",vahan:"वाहन"};
 const VASTU={
@@ -3103,6 +3182,11 @@ function visit(id){
  say(cut.story);
  el('<p class="w-src">'+SRC[S.src||"vr"].n+"</p>");
  aboutStrip(SRC[S.src||"vr"].n,cut.about);
+ detoursAt(key,S.src||"vr").forEach(dk=>{
+  const D=DETOUR[dk],f=el("","fork");
+  f.appendChild(btn("इस कथा के भीतर चक्कर लगाओ: "+D.n+(save.tour&&save.tour[dk]?" (घूम चुके)":""),"do",
+   ()=>startTour(dk,null)));
+ });
  earned=[];
  save.texts=save.texts||{};
  const src0=S.src||"vr";
@@ -3706,6 +3790,9 @@ function openReader(id,w,li,from){
    (src.u?(src.un?' <span class="rnote">खुली प्रति मौजूद है: '+src.un+"</span>":' <span class="rnote">इसकी खुली प्रति मौजूद है।</span>')
     :src.pr?' खुली प्रति अभी नहीं मिली। हवाला इस छपी प्रति से मिलाया गया है: '+src.pr+"।"
     :" छपी प्रति से मिलान बाकी।")+"</p>"+
+  (detoursAt(key,S.src||"vr").length?'<div class="rbtns">'+
+   detoursAt(key,S.src||"vr").map(dk=>'<button class="rtour" data-tour="'+dk+'">इस कथा के भीतर चक्कर लगाओ: '+
+    DETOUR[dk].n+"</button>").join("")+"</div>":"")+
   '<div class="rbtns"><button class="rback">'+(readerFrom==="texts"?"ग्रंथों के नक्शे पर लौटो":"वापस वहीं लौटो जहाँ थे")+"</button>"+
   (src.la?'<button class="rhome">इस ग्रंथ का घर नक्शे पर देखो</button>':"")+"</div></div>";
  didAct();
@@ -3713,6 +3800,7 @@ function openReader(id,w,li,from){
  box.scrollTop=0;requestAnimationFrame(()=>{box.scrollTop=0;});
  box.querySelectorAll(".rtab").forEach(b=>b.onclick=()=>openReader(id,w,+b.dataset.li));
  const bk=box.querySelector(".rback");if(bk)bk.onclick=closeReader;
+ box.querySelectorAll("[data-tour]").forEach(b=>{b.onclick=()=>startTour(b.dataset.tour,{kind:"reader",id:id,w:w,li:li});});
  const hm=box.querySelector(".rhome");if(hm)hm.onclick=()=>{closeReader();textsMap(S.src||"vr");};
  save.texts=save.texts||{};
  earned=[];
@@ -4013,6 +4101,51 @@ function sideBySide(id,w,a,b){         /* one moment, two tellings, side by side
  const bk=readerBox.querySelector(".rback");if(bk)bk.onclick=closeReader;
  didAct();kept.reader=0;showPanel("reader");readerBox.scrollTop=0;
 }
+let tour=null;
+function detoursAt(key,src){
+ return Object.keys(DETOUR).filter(k=>DETOUR[k].src===src&&DETOUR[k].at.indexOf(key)>-1);
+}
+function startTour(k,backTo){
+ const D=DETOUR[k];if(!D)return;
+ tour={k:k,i:0,back:backTo||null,seen:{}};
+ save.tour=save.tour||{};
+ drawTour();
+}
+function drawTour(){
+ const box=document.getElementById("chakkar");if(!box||!tour)return;
+ const D=DETOUR[tour.k],st=D.stops[tour.i];
+ tour.seen[tour.i]=true;
+ let strip="";
+ D.stops.forEach((x,i)=>{strip+='<button class="tstep'+(i===tour.i?" on":"")+(tour.seen[i]?" been":"")+
+  '" data-stop="'+i+'">'+x.n+"</button>";});
+ box.innerHTML='<div class="rin">'+
+  '<p class="rwhere">'+SRC[D.src].n+" के भीतर एक चक्कर</p>"+
+  '<h2 class="rtitle">'+D.n+"</h2>"+
+  '<p class="rmeta">'+D.why+"</p>"+
+  '<div class="tstrip">'+strip+"</div>"+
+  '<div class="tart"><svg viewBox="0 0 320 170">'+(DART[st.art]||"")+"</svg></div>"+
+  "<h3 class=\"tname\">"+st.n+"</h3>"+
+  st.say.map(t=>"<p>"+t+"</p>").join("")+
+  '<p class="rsrc">'+D.ref+"</p>"+
+  '<div class="rbtns">'+
+   (tour.i>0?'<button class="rprev">पीछे वाली जगह</button>':"")+
+   (tour.i<D.stops.length-1?'<button class="rnext">आगे वाली जगह</button>':"")+
+   '<button class="rback">चक्कर छोड़कर वहीं लौटो जहाँ थे</button></div></div>';
+ box.querySelectorAll("[data-stop]").forEach(b=>{b.onclick=()=>{tour.i=+b.dataset.stop;drawTour();};});
+ const nx=box.querySelector(".rnext");if(nx)nx.onclick=()=>{tour.i++;drawTour();};
+ const pv=box.querySelector(".rprev");if(pv)pv.onclick=()=>{tour.i--;drawTour();};
+ const bk=box.querySelector(".rback");if(bk)bk.onclick=endTour;
+ if(Object.keys(tour.seen).length===D.stops.length&&!save.tour[tour.k]){
+  save.tour[tour.k]=true;earn(4,"chakkar",D.n);
+ }
+ didAct();showPanel("chakkar");box.scrollTop=0;
+}
+function endTour(){
+ const back=tour&&tour.back;tour=null;
+ if(back&&back.kind==="reader")openReader(back.id,back.w,back.li);
+ else showPanel("story");
+}
+function tourOpen(){const c=document.getElementById("chakkar");return c&&!c.hidden;}
 function openKatha(k){
  if(quizLocked()){lockNote();return;}
  const K=KATHA[k];if(!K)return;
