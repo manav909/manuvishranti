@@ -479,7 +479,7 @@ a{color:var(--tide)}
 .tsway{animation:tsway 5s ease-in-out infinite;transform-origin:center bottom}
 .tripple path{fill:none;stroke:rgba(190,230,230,.35);stroke-width:1.6;animation:tripple 5s linear infinite}
 .tfig{animation:tbreathe 4s ease-in-out infinite;transform-origin:center bottom}
-.twalk{animation:twalk 7s linear infinite}
+.dwalkline{animation:twalk 9s linear infinite}
 
 .tbeast{animation:tstep 4s ease-in-out infinite}
 .tbub circle{fill:rgba(200,240,240,.5);animation:tbub 5s linear infinite}
@@ -2092,16 +2092,13 @@ const TD={
  lamp:(x,y,s)=>'<g class="tlamp" style="--s:'+(s||1)+'"><circle cx="'+x+'" cy="'+y+'" r="'+(16*(s||1))+'" fill="url(#tgLamp)"/>'+
   '<path d="M'+x+' '+(y-5*(s||1))+' q'+(4*(s||1))+' '+(5*(s||1))+' 0 '+(10*(s||1))+
   ' q-'+(4*(s||1))+' -'+(5*(s||1))+' 0 -'+(10*(s||1))+' Z" fill="#ffd27a"/></g>',
- fig:(x,y,s,o)=>{o=o||{};const h=(o.h||26)*s;
-  return '<g transform="translate('+x+','+(y+(o.sit?5:0))+')"><g class="tfig'+(o.walk?" twalk":"")+
-   '" style="animation-delay:-'+((o.d||0))+'s">'+
-   '<ellipse cx="0" cy="2" rx="'+(7*s)+'" ry="'+(2.4*s)+'" fill="rgba(0,0,0,.35)"/>'+
-   '<path d="M0 0 v-'+h+'" stroke="'+(o.c||"#e8dcc0")+'" stroke-width="'+(4.2*s)+'" stroke-linecap="round"/>'+
-   (o.arm?'<path d="M0 -'+(h*0.62).toFixed(1)+' l'+(7*s)+' -'+(4*s)+'" stroke="'+(o.c||"#e8dcc0")+
-     '" stroke-width="'+(2.6*s)+'" stroke-linecap="round"/>':"")+
-   '<circle cx="0" cy="-'+(h+5*s).toFixed(1)+'" r="'+(4.6*s)+'" fill="'+(o.c||"#e8dcc0")+'"/>'+
-   (o.crown?'<path d="M-'+(5*s)+' -'+(h+10*s).toFixed(1)+' l'+(2.5*s)+' -'+(5*s)+' l'+(2.5*s)+' '+(3*s)+
-     ' l'+(2.5*s)+' -'+(3*s)+' l'+(2.5*s)+' '+(5*s)+' Z" fill="#f0c75a"/>':"")+"</g></g>";},
+ fig:(x,y,s,o)=>{                       /* the same people as the main pictures */
+  o=o||{};
+  const kind=o.kind||(o.crown?"ravan":(o.nari?"nari":"nar"));
+  const sc=(s||1)*2.1;                  /* detour scenes are wider, so people stand taller */
+  if(o.sit)return D.sit(x,y,sc,{kind:kind});
+  return D.person(x,y,sc,(o.d||0)*2,{kind:kind,act:o.walk?"walk":"stand",face:o.face===undefined?1:o.face});
+ },
  smoke:(x,y,n)=>'<g class="tsmoke">'+[...Array(n||4)].map((_,i)=>
   '<circle cx="'+(x+(i%2?10:-8))+'" cy="'+(y-i*14)+'" r="'+(9+i*3)+'" style="animation-delay:-'+(i*1.1).toFixed(1)+'s"/>').join("")+"</g>",
  fire:(x,y,s)=>'<g class="tfire" style="--s:'+(s||1)+'">'+
@@ -2150,14 +2147,7 @@ const DART={
   '<path class="tthatch" d="M40 96 l120 -44 l120 44 Z"/>'+TD.wall(64,96,192,48)+
   '<rect x="86" y="104" width="148" height="40" rx="3" fill="#120e14"/>'+
   TD.lamp(160,120,.85)+
-  '<g transform="translate(122,144)"><g class="tfig" style="animation-delay:-.2s">'+
-   '<path d="M0 0 v-26" stroke="#e8dcc0" stroke-width="5" stroke-linecap="round"/>'+
-   '<path d="M0 -17 l12 -6" stroke="#e8dcc0" stroke-width="3" stroke-linecap="round"/>'+
-   '<circle cx="0" cy="-31" r="5" fill="#e8dcc0"/></g></g>'+
-  '<g transform="translate(198,144)"><g class="tfig" style="animation-delay:-1.3s">'+
-   '<path d="M0 0 v-26" stroke="#cfd8e6" stroke-width="5" stroke-linecap="round"/>'+
-   '<path d="M0 -17 l-12 -4" stroke="#cfd8e6" stroke-width="3" stroke-linecap="round"/>'+
-   '<circle cx="0" cy="-31" r="5" fill="#cfd8e6"/></g></g>'+TD.vig,
+  TD.fig(120,144,.78,{d:.2,arm:1})+TD.fig(200,144,.78,{d:1.3,face:-1,nari:1})+TD.vig,
  waiting:()=>TD.sky()+TD.stars(10)+TD.ground(142,"#182231")+
   '<path class="tthatch" d="M44 98 l116 -44 l116 44 Z"/>'+TD.wall(68,98,184,46)+
   '<rect class="tdoorw" x="146" y="106" width="40" height="38" rx="2"/>'+
@@ -2181,9 +2171,7 @@ const DART={
   '<g transform="translate(170,148)"><path d="M-7 0 v-56 h14 v56 Z" fill="#6b4a2a"/>'+
   '<g class="tsway"><circle cx="0" cy="-74" r="34" fill="#2b5c48"/><circle cx="-28" cy="-58" r="20" fill="#26533f"/>'+
   '<circle cx="28" cy="-58" r="20" fill="#26533f"/></g>'+
-  '<g transform="translate(6,-58)"><g class="tfig" style="animation-delay:-.6s">'+
-   '<path d="M0 0 v-14" stroke="#e8dcc0" stroke-width="4" stroke-linecap="round"/>'+
-   '<circle cx="0" cy="-19" r="4.5" fill="#e8dcc0"/></g></g></g>'+
+  "</g>"+D.person(176,92,1.1,0,{kind:"nar",act:"stand"})+
   TD.fig(170,150,.95,{sit:1,d:.3})+TD.vig,
  well:()=>TD.sky()+TD.stars(10)+TD.moon(60,34,8)+TD.ground(96,"#182130")+
   '<path d="M28 96 h264 v84 h-264 Z" fill="url(#tgWater)"/>'+TD.ripple(112)+
@@ -2209,7 +2197,7 @@ const DART={
    '<path d="M-42 -20 q-10 12 -2 20" stroke="#55555f" stroke-width="5" fill="none" stroke-linecap="round"/>'+
    '<circle cx="-30" cy="-6" r="2.5" fill="#f0c75a"/>'+
    '<path d="M-18 6 v10 M0 6 v10 M18 6 v10" stroke="#4a4a58" stroke-width="6" stroke-linecap="round"/></g></g>').join("")+
-  TD.lamp(160,66,.7)+TD.vig,
+  TD.lamp(160,66,.7)+TD.fig(300,150,.8,{d:.6})+TD.vig,
  roof:()=>TD.sky()+TD.stars(18)+TD.moon(250,34,11)+TD.ground(140,"#141c28")+
   TD.wall(10,86,132,54)+TD.goldRoof(10,86,132)+TD.wall(158,64,150,76)+TD.goldRoof(158,64,150)+
   TD.windows(158,64,150,76,4,2,1.1)+
@@ -2246,7 +2234,7 @@ const DART={
  gold:()=>TD.sky("tgDusk")+TD.ground(140,"#20141a")+TD.wall(24,62,272,78)+
   '<path class="tgoldy" d="M24 62 h272 v14 h-272 Z"/>'+
   '<g class="tdrip">'+[0,1,2,3,4].map(i=>'<path d="M'+(56+i*52)+' 76 v38" style="animation-delay:-'+(i*.8)+'s"/>').join("")+"</g>"+
-  TD.fire(286,120,.6)+TD.smoke(70,60,3)+TD.vig,
+  TD.fire(286,120,.6)+TD.smoke(70,60,3)+TD.fig(110,156,.8,{walk:1,d:.4})+TD.vig,
  crowdrun:()=>TD.sky("tgDusk")+TD.ground(136,"#20141a")+TD.wall(0,54,320,82)+TD.windows(0,54,320,82,6,2,.6)+
   TD.fire(292,110,.8)+TD.smoke(250,70,3)+
   TD.fig(56,154,1,{walk:1,d:0})+TD.fig(110,158,1.1,{walk:1,d:.5,arm:1})+TD.fig(166,152,.85,{walk:1,d:1})+
@@ -2271,7 +2259,7 @@ const DART={
   '<g transform="translate(180,86)"><g class="tflyer">'+
   '<path class="twing" d="M0 0 q-46 -26 -74 6 q42 12 74 -6 Z" fill="#cfd8e6"/>'+
   '<path class="twing b" d="M0 0 q46 -26 74 6 q-42 12 -74 -6 Z" fill="#cfd8e6"/>'+
-  '<circle cx="0" cy="0" r="9" fill="#e8dcc0"/></g></g>'+TD.vig,
+  '<circle cx="0" cy="0" r="9" fill="#e8dcc0"/></g></g>'+TD.fig(60,158,.8,{d:.9})+TD.vig,
  crowdcalm:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#182231")+TD.wall(20,58,280,80)+TD.windows(20,58,280,80,5,2,1.2)+
   TD.fig(76,152,1,{d:.2})+TD.fig(132,152,.95,{d:1})+TD.fig(188,152,1.05,{d:1.8,arm:1})+TD.fig(244,152,.9,{d:2.5})+TD.vig,
  ring:()=>TD.sky()+TD.stars(10)+TD.hillsFar(104)+TD.ground(146,"#161e2b")+
@@ -2285,9 +2273,9 @@ const DART={
    '" style="animation-delay:-'+(i*.9).toFixed(1)+'s"/>').join("")+"</g>"+
   TD.ground(152,"#0d2129")+TD.lamp(160,70,1.1)+TD.fig(90,160,.85,{d:.6})+TD.fig(238,160,.8,{d:1.7})+TD.vig,
  manyheads:()=>TD.sky("tgDusk")+TD.ground(150,"#1d1620")+TD.wall(20,56,280,94)+TD.goldRoof(20,56,280)+
-  '<g transform="translate(160,120)"><g class="tmany">'+
-  [-2,-1,0,1,2].map(i=>'<circle cx="'+(i*26)+'" cy="'+(-34-Math.abs(i)*-6)+'" r="13" fill="#e8dcc0" style="animation-delay:-'+(Math.abs(i)*.5)+'s"/>').join("")+
-  '<path d="M0 -24 v30" stroke="#e8dcc0" stroke-width="10" stroke-linecap="round"/></g></g>'+
+  D.person(160,150,2.6,0,{kind:"ravan"})+
+  '<g transform="translate(160,92)"><g class="tmany">'+
+  [-2,-1,1,2].map(i=>'<circle cx="'+(i*24)+'" cy="'+(-6+Math.abs(i)*5)+'" r="10" fill="#c98f6a" stroke="#8a5c40" style="animation-delay:-'+(Math.abs(i)*.5)+'s"/>').join("")+"</g></g>"+
   TD.lamp(60,100,.7)+TD.lamp(262,100,.7)+TD.vig,
  bow:()=>TD.sky("tgDusk")+TD.ground(148,"#1d1620")+TD.tree(52,148,.8)+
   '<g transform="translate(190,96)"><g class="tbow">'+
