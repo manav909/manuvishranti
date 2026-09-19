@@ -286,7 +286,8 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .do.read{border-color:var(--fire);color:var(--fire)}
 .do.buy{border-color:var(--haldi);color:var(--haldi)}
 .do.shut,.do[disabled]{color:var(--quiet);border-style:dashed;cursor:not-allowed}
-.do.seen{opacity:.75}
+.do.seen{opacity:.7}
+.do .hint{display:block;font-size:.82rem;color:var(--quiet);margin-top:.15rem}
 /* ---- the progress card ---- */
 .pcard{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:1rem}
 .pcard[hidden]{display:none}
@@ -1278,7 +1279,11 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
  const C=CARDS[c];if(!C)return;
  const src=SRC[C.s],nm=src?src.n:"";
  let ref=C.ref||"";
- if(nm&&ref.indexOf(nm)===0)ref=ref.slice(nm.length).replace(/^[,\s]+/,"");
+ if(nm){
+  if(ref.indexOf(nm)===0)ref=ref.slice(nm.length).replace(/^[,\s]+/,"");
+  const head=nm.split(",")[0].trim();
+  if(head&&ref.indexOf(head)===0)ref=ref.slice(head.length).replace(/^[,\s]+/,"");
+ }
  const kind=C.l||"chh";
  const box=document.createElement("div");
  box.className="gift shut g-"+kind;
@@ -2700,18 +2705,28 @@ function visit(id){
  const src0=S.src||"vr";
  if(!save.texts[src0]){save.texts[src0]=true;earn(5,"granth",SRC[src0].n);}
  const sceneTxt=(S.say||[]).join(" ");
+ const hereSrc={};L.forEach(x=>{hereSrc[x.src||"vr"]=1;});
  (S.cards||[]).forEach(c=>{if(!save.cards[c]){save.cards[c]=true;earn(2,"baat");
-  if(!echoes(sceneTxt,CARDS[c].x))foundBox(c,"एक बात मिली");}});
+  const C=CARDS[c];
+  if(echoes(sceneTxt,C.x))return;                 /* already said in this scene */
+  if(C.l==="gr"&&hereSrc[C.s])return;             /* that text is one tap away, no need to tease */
+  foundBox(c,"एक बात मिली");}});
  if(depthOf(key)<d+1)earn(1,"roop");
  save.seen[key]=true;save.depth[key]=d+1;
  tally_up();gainNote();
- if(L.length>1){
-
+ const others=L.map((x,i)=>({x:x,i:i})).filter(o=>o.i!==d);
+ if(others.length){
   const rf=el("","fork");
-  L.forEach((x,i)=>{
-   const nm=SRC[x.src||"vr"].n;
-   const tag=i===d?" (यही अभी पढ़ा)":(depthOf(key)>i?" (पढ़ा हुआ)":"");
-   rf.appendChild(btn("यही पल "+nm+" में पढ़ो"+tag,"do read",()=>openReader(id,run.w,i)));
+  others.forEach(o=>{
+   const nm=SRC[o.x.src||"vr"].n;
+   const read=depthOf(key)>o.i;
+   const hint=(o.x.cards||[]).map(c=>CARDS[c]).find(C=>C&&C.l==="gr");
+   const b=document.createElement("button");
+   b.className="do read"+(read?" seen":"");
+   b.innerHTML="यही पल "+nm+" में पढ़ो"+(read?" (पढ़ा हुआ)":"")+
+    (hint?'<span class="hint">'+hint.t+"</span>":"");
+   b.onclick=()=>openReader(id,run.w,o.i);
+   rf.appendChild(b);
   });
  }
  run.busy=false;paint();
