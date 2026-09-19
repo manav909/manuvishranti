@@ -467,6 +467,8 @@ a{color:var(--tide)}
 .tgoldy{fill:url(#tgGold)}
 .tthatch{fill:#6b4f2a;stroke:#4a361c}
 .tdoorw{fill:#120e14;stroke:#3b4a61}
+.tstall{fill:#8a5a2a;stroke:#5c3a1c}
+.tstall.b{fill:#6b4a3a}
 .tpotw{fill:#8a4a2c;stroke:#5c3520}
 .tpathline{fill:none;stroke:rgba(240,199,90,.5);stroke-width:2.4;stroke-dasharray:7 7}
 .twin rect{fill:#ffcf7a;opacity:.85;animation:twinflick 4s ease-in-out infinite}
@@ -581,11 +583,11 @@ a{color:var(--tide)}
 .dlamp{fill:#ffcf6b}.dthrone{fill:#d8ae4e}
 .dflame{fill:#e2592c}.dflame2{fill:#f0a83a}.dem{fill:#ffcf6b}
 .dsmoke ellipse{fill:#c8c2b8;opacity:.3}
-.dskin{fill:#c08a58}.dskinr{fill:#6d5750}.dskind{fill:#ecd9a8}
-.dtorso{fill:#7a5a3a}.dtorsor{fill:#4f3f3a}.dtorsod{fill:#c9b07a}.dtorsog{fill:#cbb488}
-.ddhoti{fill:#e3d6ba}.dsari{fill:#b5452f}.drakcloth{fill:#5d3a2e}.dking{fill:#6d2f2a}
+.dskin{fill:var(--skin,#c08a58)}.dskinr{fill:#6d5750}.dskind{fill:#ecd9a8}
+.dtorso{fill:var(--cloth,#7a5a3a)}.dtorsor{fill:#4f3f3a}.dtorsod{fill:#c9b07a}.dtorsog{fill:#cbb488}
+.ddhoti{fill:var(--cloth2,#e3d6ba)}.dsari{fill:var(--cloth2,#b5452f)}.drakcloth{fill:#5d3a2e}.dking{fill:#6d2f2a}
 .dganrobe{fill:#d9e2ea}.dapsaracloth{fill:#c9752f}.ddevrobe{fill:#e8dcbc}.drishirobe{fill:#cf8b3a}
-.dhair{fill:#171208}.dhairr{fill:#2b1410}.djata{fill:#d9d3c4}
+.dhair{fill:var(--hair,#171208)}.dhairr{fill:#2b1410}.djata{fill:#d9d3c4}
 .dcrown{fill:#e0c070}.dsash{stroke:#c9a15a;stroke-width:1.4;fill:none}
 .dbelt{stroke:#c9a15a;stroke-width:1.6;fill:none}.djanev{stroke:#efe8d6;stroke-width:1;fill:none}
 .dspear,.dstaff{stroke:#6b5533;stroke-width:1.4;fill:none}
@@ -600,7 +602,7 @@ a{color:var(--tide)}
 .dleafdrop{stroke:#8fae7a;stroke-width:2;fill:none;stroke-linecap:round;opacity:.7}.dveena{stroke:#8d6a2f;stroke-width:1.8;fill:none}
 .dveenab{fill:#8d6a2f}.dbangle{fill:none;stroke:#e0c070;stroke-width:1.2}
 .dhalo{fill:none;stroke:#ffd96b;stroke-width:1.4;opacity:.85}
-.dlimb{stroke:#c08a58;stroke-width:2.1;fill:none;stroke-linecap:round}
+.dlimb{stroke:var(--skin,#c08a58);stroke-width:2.1;fill:none;stroke-linecap:round}
 .dlimbr{stroke:#6d5750;stroke-width:2.6;fill:none;stroke-linecap:round}
 .dlimbg{stroke:#ecd9a8;stroke-width:2;fill:none;stroke-linecap:round}
 .dlimbd{stroke:#ecd9a8;stroke-width:1.9;fill:none;stroke-linecap:round}
@@ -2092,12 +2094,36 @@ const TD={
  lamp:(x,y,s)=>'<g class="tlamp" style="--s:'+(s||1)+'"><circle cx="'+x+'" cy="'+y+'" r="'+(16*(s||1))+'" fill="url(#tgLamp)"/>'+
   '<path d="M'+x+' '+(y-5*(s||1))+' q'+(4*(s||1))+' '+(5*(s||1))+' 0 '+(10*(s||1))+
   ' q-'+(4*(s||1))+' -'+(5*(s||1))+' 0 -'+(10*(s||1))+' Z" fill="#ffd27a"/></g>',
- fig:(x,y,s,o)=>{                       /* the same people as the main pictures */
+ /* people: every one has their own skin, cloth, hair and work */
+ SKIN:["#c08a58","#a06a3c","#8a5a30","#d2a06a","#b07a4a","#96602f","#e0b487"],
+ CLOTH:["#7a5a3a","#3f5d6b","#6b3a4a","#4a5a3a","#6b5a2a","#5a3f6b","#2f5d52"],
+ CLOTH2:["#e3d6ba","#c9a26a","#b5452f","#d8b26a","#8fb0a2","#c98aa0","#e8c98a","#9fb6cf"],
+ HAIR:["#171208","#2b1a10","#3a2a18","#0f0d08","#4a3a22","#6b6157"],
+ fig:(x,y,s,o)=>{                       /* the same people as the main pictures, never the same twice */
   o=o||{};
+  const v=(o.v===undefined?((x*7+y*3)|0):o.v);
   const kind=o.kind||(o.crown?"ravan":(o.nari?"nari":"nar"));
-  const sc=(s||1)*2.1;                  /* detour scenes are wider, so people stand taller */
-  if(o.sit)return D.sit(x,y,sc,{kind:kind});
-  return D.person(x,y,sc,(o.d||0)*2,{kind:kind,act:o.walk?"walk":"stand",face:o.face===undefined?1:o.face});
+  const sc=(s||1)*(o.child?1.35:2.1);
+  const mix=(n,k)=>{let h=Math.imul(v+1+k*911,2654435761);h^=h>>>13;h=Math.imul(h,1597334677)>>>0;return h%n;};
+  const style=' style="--skin:'+(o.skin||TD.SKIN[mix(TD.SKIN.length,1)])+
+   ';--cloth:'+(o.cloth||TD.CLOTH[mix(TD.CLOTH.length,2)])+
+   ';--cloth2:'+(o.cloth2||TD.CLOTH2[mix(TD.CLOTH2.length,3)])+
+   ';--hair:'+(o.hair||TD.HAIR[mix(TD.HAIR.length,4)])+'"';
+  const body=o.sit?D.sit(x,y,sc,{kind:kind})
+   :D.person(x,y,sc,(o.d||0)*2,{kind:kind,act:o.walk?"walk":"stand",face:o.face===undefined?1:o.face});
+  let extra="";
+  const H=y-(o.sit?24:34)*(sc/2.1);      /* about head height */
+  if(o.turban)extra+='<path d="M'+(x-5.2*s)+' '+(H+1)+' q'+(5.2*s)+' -'+(7*s)+' '+(10.4*s)+' 0 Z" fill="'+
+   (o.turbanc||"#d9b46a")+'"/>';
+  if(o.veil)extra+='<path d="M'+(x-6*s)+' '+(H+2)+' q'+(6*s)+' -'+(9*s)+' '+(12*s)+' 0 l-'+(1.5*s)+' '+(13*s)+
+   ' h-'+(9*s)+' Z" fill="'+(o.veilc||"#c98aa0")+'" opacity=".92"/>';
+  if(o.pot)extra+='<ellipse cx="'+x+'" cy="'+(H-6*s)+'" rx="'+(6*s)+'" ry="'+(4.6*s)+'" fill="#8a4a2c"/>'+
+   '<path d="M'+(x-6*s)+' '+(H-6*s)+' q'+(6*s)+' '+(7*s)+' '+(12*s)+' 0 Z" fill="#a35a34"/>';
+  if(o.basket)extra+='<path d="M'+(x+7*s)+' '+(y-16*s)+' h'+(12*s)+' l-'+(2*s)+' '+(8*s)+' h-'+(8*s)+' Z" fill="#a8832f"/>';
+  if(o.staff)extra+='<path d="M'+(x+(o.face===-1?-8:8)*s)+' '+(y+1)+' v-'+(30*s)+'" stroke="#7a5a32" stroke-width="'+(1.8*s)+'" stroke-linecap="round"/>';
+  if(o.spear)extra+='<path d="M'+(x+(o.face===-1?-9:9)*s)+' '+(y+1)+' v-'+(38*s)+'" stroke="#8a8f99" stroke-width="'+(1.6*s)+'"/>'+
+   '<path d="M'+(x+(o.face===-1?-9:9)*s)+' '+(y-38*s)+' l'+(2.4*s)+' '+(5*s)+' h-'+(4.8*s)+' Z" fill="#c9ced6"/>';
+  return '<g'+style+">"+body+extra+"</g>";
  },
  smoke:(x,y,n)=>'<g class="tsmoke">'+[...Array(n||4)].map((_,i)=>
   '<circle cx="'+(x+(i%2?10:-8))+'" cy="'+(y-i*14)+'" r="'+(9+i*3)+'" style="animation-delay:-'+(i*1.1).toFixed(1)+'s"/>').join("")+"</g>",
@@ -2122,74 +2148,81 @@ const DART={
    '<path d="M0 0 v-30" stroke="#3f7a52" stroke-width="3"/>'+
    '<circle cx="0" cy="-34" r="8" fill="'+["#f4a7c0","#f0c75a","#f4a7c0","#e8dcc0","#f0c75a"][i]+'"/>'+
    '<circle cx="-9" cy="-26" r="5" fill="#3f7a52"/><circle cx="9" cy="-26" r="5" fill="#3f7a52"/></g></g>').join("")+
-  TD.lamp(160,80,.7)+TD.fig(200,152,.9,{d:.5,arm:1})+TD.vig,
+  TD.lamp(160,80,.7)+TD.fig(200,152,.9,{v:89,nari:1,veil:1,basket:1,d:.5})+TD.vig,
  orchard:()=>TD.sky()+TD.stars(9)+TD.ground(142,"#16251f")+
   [56,146,236].map((x,i)=>'<g transform="translate('+x+',142)">'+
    '<path d="M-5 0 v-34 h10 v34 Z" fill="#6b4a2a"/>'+
    '<g class="tsway" style="animation-delay:-'+(i*1.1)+'s"><circle cx="0" cy="-48" r="26" fill="#2f6b4a"/>'+
    '<circle cx="-14" cy="-56" r="6" fill="#e2703a"/><circle cx="12" cy="-44" r="6" fill="#e2703a"/>'+
    '<circle cx="2" cy="-64" r="5" fill="#f0c75a"/></g></g>').join("")+
-  TD.fig(300,152,.85,{d:1.2})+TD.fig(104,152,.9,{d:.3,arm:1})+TD.vig,
+  TD.fig(298,152,.82,{v:14,skin:"#96602f",basket:1,d:1.2,face:-1})+TD.fig(104,152,.9,{v:41,turban:1,staff:1,d:.3})+TD.vig,
  grove:()=>TD.sky()+TD.stars(14)+TD.moon(64,34,10)+TD.ground(146,"#152420")+
   TD.tree(250,148,1.1)+TD.tree(60,150,.8)+
   '<g transform="translate(160,146)"><path d="M-6 0 v-44 h12 v44 Z" fill="#6b4a2a"/>'+
   '<g class="tsway"><circle cx="0" cy="-60" r="30" fill="#2b5c48"/><circle cx="-24" cy="-46" r="18" fill="#26533f"/>'+
   '<circle cx="24" cy="-46" r="18" fill="#26533f"/></g></g>'+
-  TD.fig(160,150,1,{sit:1,d:.4})+TD.fig(112,150,.8,{d:1.4})+TD.fig(212,150,.8,{d:2.1})+TD.vig,
+  TD.fig(160,150,1,{v:2,sit:1,nari:1,veil:1,veilc:"#b9805f",d:.4})+
+  TD.fig(108,150,.82,{v:37,kind:"rakshasi",spear:1,d:1.4})+
+  TD.fig(216,150,.8,{v:52,kind:"rakshasi",face:-1,d:2.1})+TD.vig,
  peak:()=>TD.sky()+TD.stars(16)+TD.moon(258,30,10)+
   '<path class="tfar" d="M0 112 q50 -34 96 -6 q40 -28 84 -4 q46 -24 140 -4 V180 H0 Z"/>'+
   '<g opacity=".85">'+TD.wall(40,118,80,30)+TD.windows(40,118,80,30,3,1,.6)+
   TD.wall(140,112,76,36)+TD.windows(140,112,76,36,3,1,1.4)+TD.wall(232,120,62,28)+"</g>"+
   '<path d="M0 148 q60 -16 120 -2 q70 10 200 -6 V180 H0 Z" fill="#0f1826"/>'+
   '<path d="M18 176 q26 -34 58 -30 q22 4 30 28 Z" fill="#1a2434"/>'+
-  TD.fig(52,150,1.15,{d:.3,arm:1})+TD.vig,
+  TD.fig(52,150,1.12,{v:31,d:.3})+TD.vig,
  argue:()=>TD.sky()+TD.ground(140,"#182231")+
   '<path class="tthatch" d="M40 96 l120 -44 l120 44 Z"/>'+TD.wall(64,96,192,48)+
   '<rect x="86" y="104" width="148" height="40" rx="3" fill="#120e14"/>'+
   TD.lamp(160,120,.85)+
-  TD.fig(120,144,.78,{d:.2,arm:1})+TD.fig(200,144,.78,{d:1.3,face:-1,nari:1})+TD.vig,
+  TD.fig(120,144,.78,{v:4,d:.2})+TD.fig(200,144,.78,{v:17,d:1.3,face:-1,nari:1,veil:1})+TD.vig,
  waiting:()=>TD.sky()+TD.stars(10)+TD.ground(142,"#182231")+
   '<path class="tthatch" d="M44 98 l116 -44 l116 44 Z"/>'+TD.wall(68,98,184,46)+
   '<rect class="tdoorw" x="146" y="106" width="40" height="38" rx="2"/>'+
-  TD.lamp(112,120,.9)+TD.fig(112,144,.95,{sit:1,d:.4,arm:1})+
+  TD.lamp(112,120,.9)+TD.fig(112,144,.95,{v:6,sit:1,nari:1,veil:1,d:.4})+
   '<path class="tpathline" d="M166 148 q40 22 120 20"/>'+TD.vig,
  shrine:()=>TD.sky()+TD.ground(142,"#182231")+TD.wall(60,62,200,80)+TD.windows(60,62,200,80,3,2,1.2)+
   '<path class="tgoldy" d="M128 118 h64 l-8 -22 h-48 Z"/>'+
   '<circle class="tglowbig" cx="160" cy="104" r="30"/>'+
-  TD.lamp(160,112,.8)+TD.fig(160,150,1,{sit:1,d:.3,arm:1})+TD.vig,
+  TD.lamp(160,112,.8)+TD.fig(160,150,1,{v:12,sit:1,kind:"rishi",d:.3})+TD.vig,
  gatedevi:()=>TD.sky("tgDusk")+TD.ground(146,"#1d1620")+
   '<path class="tstone" d="M40 146 v-52 h34 v52 Z"/><path class="tstone" d="M246 146 v-52 h34 v52 Z"/>'+
   '<path class="tgoldy" d="M34 94 h252 v14 h-252 Z"/>'+
-  TD.fig(160,146,1.05,{d:.4,arm:1})+
+  TD.fig(160,146,1.05,{v:18,nari:1,veil:1,veilc:"#d8b26a",d:.4})+
   '<path class="tpotw" d="M196 132 h26 l-5 14 h-16 Z"/>'+TD.lamp(96,120,.7)+TD.vig,
  chant:()=>TD.sky()+TD.ground(140,"#182231")+TD.wall(48,60,224,80)+
   '<rect x="96" y="80" width="128" height="60" rx="3" fill="#120e14"/>'+
   '<circle class="tglowbig" cx="160" cy="108" r="34"/>'+TD.lamp(160,114,.8)+
-  TD.fig(160,146,1,{sit:1,d:.2})+
+  TD.fig(160,146,1,{v:22,sit:1,kind:"rishi",d:.2})+
   '<g class="tnote">'+[0,1,2].map(i=>'<circle cx="'+(214+i*26)+'" cy="'+(96-(i%2)*14)+'" r="4" style="animation-delay:-'+(i*.8)+'s"/>').join("")+"</g>"+TD.vig,
  treewatch:()=>TD.sky()+TD.stars(12)+TD.moon(60,32,9)+TD.ground(148,"#152420")+
   '<g transform="translate(170,148)"><path d="M-7 0 v-56 h14 v56 Z" fill="#6b4a2a"/>'+
   '<g class="tsway"><circle cx="0" cy="-74" r="34" fill="#2b5c48"/><circle cx="-28" cy="-58" r="20" fill="#26533f"/>'+
   '<circle cx="28" cy="-58" r="20" fill="#26533f"/></g>'+
   "</g>"+D.person(176,92,1.1,0,{kind:"nar",act:"stand"})+
-  TD.fig(170,150,.95,{sit:1,d:.3})+TD.vig,
+  TD.fig(170,150,.95,{v:83,sit:1,nari:1,veil:1,d:.3})+TD.vig,
  well:()=>TD.sky()+TD.stars(10)+TD.moon(60,34,8)+TD.ground(96,"#182130")+
   '<path d="M28 96 h264 v84 h-264 Z" fill="url(#tgWater)"/>'+TD.ripple(112)+
   '<path class="tstone" d="M28 96 h264 v10 h-264 Z"/><path class="tstone" d="M48 108 h224 v9 h-224 Z"/>'+
   '<path class="tstone" d="M70 119 h180 v9 h-180 Z"/>'+
-  TD.fig(96,120,.95,{d:.3,arm:1})+TD.fig(214,120,.9,{d:1.6,arm:1})+
+  TD.fig(96,120,.92,{v:7,nari:1,pot:1,d:.3})+TD.fig(214,120,.9,{v:15,skin:"#d2a06a",nari:1,veil:1,face:-1,d:1.6})+
   '<path class="tpotw" d="M126 110 h22 l-4 12 h-14 Z"/>'+TD.lamp(160,74,.8)+TD.vig,
  street:()=>TD.sky()+TD.stars(12)+TD.moon(268,30,9)+TD.hillsFar(96)+TD.ground(128,"#17202e")+
   TD.wall(6,58,86,70)+TD.windows(6,58,86,70,3,3,0)+TD.goldRoof(6,58,86)+
   TD.wall(108,44,104,84)+TD.windows(108,44,104,84,3,3,1.4)+TD.goldRoof(108,44,104)+
   TD.wall(226,64,88,64)+TD.windows(226,64,88,64,3,2,2.6)+
   TD.lamp(100,106,.9)+TD.lamp(222,110,.75)+
-  TD.fig(70,150,1,{walk:1,d:0})+TD.fig(150,156,1.15,{walk:1,d:1.2,arm:1})+TD.fig(240,148,.9,{walk:1,d:2.1})+TD.vig,
+  '<path class="tstall" d="M40 128 h74 l-6 -14 h-62 Z"/><path class="tstall b" d="M206 130 h70 l-6 -14 h-58 Z"/>'+
+  TD.fig(64,150,.95,{v:3,turban:1,basket:1,d:.2})+
+  TD.fig(150,156,1.1,{v:11,walk:1,d:1.2,nari:1,veil:1})+
+  TD.fig(238,148,.9,{v:19,walk:1,d:2.1,face:-1})+
+  TD.fig(288,152,.7,{v:27,child:1,d:.8,walk:1})+TD.vig,
  water:()=>TD.sky()+TD.stars(10)+TD.moon(60,34,8)+TD.ground(96,"#182130")+
   '<path d="M28 96 h264 v84 h-264 Z" fill="url(#tgWater)"/>'+TD.ripple(112)+
   '<path class="tstone" d="M28 96 h264 v10 h-264 Z"/><path class="tstone" d="M48 108 h224 v9 h-224 Z"/>'+
   '<path class="tstone" d="M70 119 h180 v9 h-180 Z"/>'+
-  TD.fig(96,120,.95,{d:.3,arm:1})+TD.fig(214,120,.9,{d:1.6,arm:1})+TD.lamp(160,74,.8)+TD.vig,
+  TD.fig(96,120,.92,{v:5,nari:1,pot:1,d:.3})+TD.fig(214,120,.88,{v:13,nari:1,pot:1,face:-1,d:1.6})+
+  TD.fig(160,128,.6,{v:21,child:1,d:1.1})+TD.lamp(160,74,.8)+TD.vig,
  herd:()=>TD.sky()+TD.stars(9)+TD.hillsFar(92)+TD.ground(126,"#161f2c")+TD.wall(0,52,320,74)+
   TD.windows(0,52,320,74,6,2,.8)+
   [0,1,2].map(i=>'<g transform="translate('+(66+i*94)+',134)"><g class="tbeast" style="animation-delay:-'+(i*1.4)+'s">'+
@@ -2197,56 +2230,60 @@ const DART={
    '<path d="M-42 -20 q-10 12 -2 20" stroke="#55555f" stroke-width="5" fill="none" stroke-linecap="round"/>'+
    '<circle cx="-30" cy="-6" r="2.5" fill="#f0c75a"/>'+
    '<path d="M-18 6 v10 M0 6 v10 M18 6 v10" stroke="#4a4a58" stroke-width="6" stroke-linecap="round"/></g></g>').join("")+
-  TD.lamp(160,66,.7)+TD.fig(300,150,.8,{d:.6})+TD.vig,
+  TD.lamp(160,66,.7)+TD.fig(298,150,.78,{v:9,turban:1,staff:1,d:.6,face:-1})+
+  TD.fig(18,150,.72,{v:23,turban:1,d:1.7})+TD.vig,
  roof:()=>TD.sky()+TD.stars(18)+TD.moon(250,34,11)+TD.ground(140,"#141c28")+
   TD.wall(10,86,132,54)+TD.goldRoof(10,86,132)+TD.wall(158,64,150,76)+TD.goldRoof(158,64,150)+
   TD.windows(158,64,150,76,4,2,1.1)+
-  TD.fig(52,86,.85,{sit:1,d:.4})+TD.fig(96,86,.8,{sit:1,d:1.7})+TD.fig(230,64,.9,{d:2.2,arm:1})+
+  TD.fig(52,86,.85,{v:2,sit:1,d:.4})+TD.fig(96,86,.8,{v:14,sit:1,nari:1,veil:1,d:1.7})+
+  TD.fig(230,64,.88,{v:26,d:2.2,face:-1})+
   TD.lamp(70,74,.6)+TD.lamp(276,52,.6)+TD.vig,
  kids:()=>TD.sky()+TD.stars(11)+TD.ground(134,"#182231")+TD.wall(24,56,272,78)+
   TD.windows(24,56,272,78,4,2,2)+TD.lamp(58,104,.7)+
-  TD.fig(96,152,.62,{sit:1,d:.1})+TD.fig(134,152,.6,{sit:1,d:.9})+TD.fig(172,152,.64,{sit:1,d:1.7})+
-  TD.fig(224,150,1,{d:2.4,arm:1})+TD.vig,
+  TD.fig(96,152,.7,{v:1,child:1,sit:1,d:.1})+TD.fig(132,152,.66,{v:8,child:1,sit:1,d:.9})+
+  TD.fig(168,152,.72,{v:16,child:1,sit:1,d:1.7})+
+  TD.fig(226,150,.95,{v:29,nari:1,veil:1,veilc:"#b9b2a4",staff:1,face:-1,d:2.4})+TD.vig,
  count:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#151d2a")+TD.tree(44,140,.9)+TD.tree(286,140,.75)+
   '<g class="ttick">'+[...Array(10)].map((_,i)=>'<rect x="'+(96+i*13)+'" y="96" width="5" height="26" rx="1" style="animation-delay:-'+(i*.3)+'s"/>').join("")+"</g>"+
-  TD.fig(160,150,1.05,{sit:1,d:.4})+TD.vig,
+  TD.fig(160,150,1.05,{v:57,sit:1,nari:1,veil:1,d:.4})+TD.vig,
  memory:()=>TD.sky("tgDusk")+TD.ground(140,"#1d1620")+TD.tree(60,140,.8)+
   '<circle class="tglowbig" cx="200" cy="82" r="44"/>'+
-  TD.fig(200,140,1.05,{sit:1,d:.2})+TD.lamp(120,104,.6)+TD.vig,
+  TD.fig(200,140,1.05,{v:35,sit:1,nari:1,veil:1,d:.2})+TD.lamp(120,104,.6)+TD.vig,
  alone:()=>TD.sky()+TD.stars(16)+TD.moon(66,36,10)+TD.ground(142,"#141c28")+TD.tree(268,142,1)+
-  TD.fig(150,146,1.2,{sit:1,d:.5})+TD.vig,
+  TD.fig(150,146,1.18,{v:43,sit:1,nari:1,veil:1,veilc:"#a8968a",d:.5})+TD.vig,
  queen:()=>TD.sky("tgDusk")+TD.ground(136,"#1e1622")+TD.wall(30,48,260,88)+TD.goldRoof(30,48,260)+
   TD.windows(30,48,260,88,4,2,1.3)+TD.lamp(86,100,.8)+TD.lamp(238,100,.8)+
-  TD.fig(132,150,1.1,{crown:1,d:.3,arm:1})+TD.fig(196,150,1.15,{crown:1,d:1.4})+TD.vig,
+  TD.fig(132,150,1.05,{v:10,nari:1,veil:1,veilc:"#e8c98a",d:.3})+
+  TD.fig(200,150,1.15,{v:0,kind:"ravan",face:-1,d:1.4})+TD.vig,
  tulsi:()=>TD.sky()+TD.stars(9)+TD.ground(138,"#182231")+TD.wall(16,60,288,78)+TD.windows(16,60,288,78,5,2,1.9)+
   '<path class="tpotw" d="M142 128 h36 l-7 18 h-22 Z"/>'+
   '<g transform="translate(160,128)"><g class="tsway"><circle cx="0" cy="-16" r="15" fill="#2f6b52"/>'+
   '<circle cx="-11" cy="-7" r="9" fill="#2a5e48"/><circle cx="11" cy="-7" r="9" fill="#2a5e48"/></g></g>'+
-  TD.lamp(212,128,.75)+TD.fig(76,152,.9,{d:1.1})+TD.vig,
+  TD.lamp(212,128,.75)+TD.fig(76,152,.9,{v:29,nari:1,veil:1,pot:1,d:1.1})+TD.vig,
  two:()=>TD.sky()+TD.ground(134,"#161e2b")+TD.wall(34,54,252,80)+TD.windows(34,54,252,80,4,2,.9)+
-  TD.lamp(160,96,1)+TD.fig(126,150,1.1,{d:.2,arm:1})+TD.fig(196,150,1.1,{d:1.5})+TD.vig,
+  TD.lamp(160,96,1)+TD.fig(126,150,1.08,{v:6,kind:"rishi",d:.2})+TD.fig(198,150,1.1,{v:44,turban:1,face:-1,d:1.5})+TD.vig,
  map:()=>TD.sky()+TD.stars(12)+TD.moon(272,32,9)+TD.hillsFar(100)+TD.ground(132,"#161f2c")+
   '<path class="tpathline" d="M20 154 q60 -40 120 -18 q54 16 74 -22 q16 -30 84 -22"/>'+
-  TD.tree(56,154,.7)+TD.tree(238,150,.6)+TD.fig(120,150,.95,{d:.4,arm:1})+TD.vig,
+  TD.tree(56,154,.7)+TD.tree(238,150,.6)+TD.fig(120,150,.95,{v:47,turban:1,staff:1,d:.4})+TD.vig,
  fire:()=>TD.sky("tgDusk")+TD.ground(132,"#20141a")+TD.wall(18,58,120,74)+TD.windows(18,58,120,74,3,2,.4)+
   TD.wall(168,48,140,84)+TD.goldRoof(168,48,140)+TD.smoke(196,46,4)+
-  TD.fire(84,116,1)+TD.fire(240,110,.7)+TD.fig(148,154,.9,{walk:1,d:.9})+TD.vig,
+  TD.fire(84,116,1)+TD.fire(240,110,.7)+TD.fig(148,154,.9,{v:61,walk:1,turban:1,d:.9})+TD.vig,
  gold:()=>TD.sky("tgDusk")+TD.ground(140,"#20141a")+TD.wall(24,62,272,78)+
   '<path class="tgoldy" d="M24 62 h272 v14 h-272 Z"/>'+
   '<g class="tdrip">'+[0,1,2,3,4].map(i=>'<path d="M'+(56+i*52)+' 76 v38" style="animation-delay:-'+(i*.8)+'s"/>').join("")+"</g>"+
-  TD.fire(286,120,.6)+TD.smoke(70,60,3)+TD.fig(110,156,.8,{walk:1,d:.4})+TD.vig,
+  TD.fire(286,120,.6)+TD.smoke(70,60,3)+TD.fig(110,156,.82,{v:67,walk:1,nari:1,veil:1,d:.4})+TD.vig,
  crowdrun:()=>TD.sky("tgDusk")+TD.ground(136,"#20141a")+TD.wall(0,54,320,82)+TD.windows(0,54,320,82,6,2,.6)+
   TD.fire(292,110,.8)+TD.smoke(250,70,3)+
-  TD.fig(56,154,1,{walk:1,d:0})+TD.fig(110,158,1.1,{walk:1,d:.5,arm:1})+TD.fig(166,152,.85,{walk:1,d:1})+
-  TD.fig(214,156,.7,{walk:1,d:1.5})+TD.vig,
+  TD.fig(56,154,1,{v:33,walk:1,d:0,turban:1})+TD.fig(110,158,1.05,{v:41,walk:1,nari:1,veil:1,d:.5})+
+  TD.fig(166,152,.85,{v:47,walk:1,d:1,face:-1})+TD.fig(214,156,.75,{v:53,child:1,walk:1,d:1.5})+TD.vig,
  flamebig:()=>TD.sky("tgDusk")+TD.ground(150,"#20141a")+TD.smoke(160,60,5)+TD.fire(160,104,1.9)+
-  TD.fig(56,164,.8,{d:.7})+TD.fig(264,164,.8,{d:1.6})+TD.vig,
+  TD.fig(56,164,.8,{v:21,walk:1,d:.7})+TD.fig(266,164,.82,{v:59,skin:"#8a5a30",nari:1,veil:1,face:-1,d:1.6})+TD.vig,
  bird:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#182231")+TD.tree(70,140,1)+TD.tree(272,142,.8)+
   '<g transform="translate(170,92)"><g class="tperch"><ellipse cx="0" cy="0" rx="26" ry="17" fill="#2f7d52"/>'+
   '<circle cx="-22" cy="-8" r="10" fill="#37945f"/><path d="M-32 -8 l-9 4 l9 4 Z" fill="#f0c75a"/>'+
   '<circle cx="-25" cy="-10" r="2" fill="#0d1520"/>'+
   '<path class="twing" d="M4 -4 q20 -14 34 2 q-20 10 -34 -2 Z" fill="#256b46"/></g></g>'+
-  TD.fig(120,152,.9,{sit:1,d:.5})+TD.fig(220,152,.9,{sit:1,d:1.4})+TD.vig,
+  TD.fig(120,152,.9,{v:13,sit:1,kind:"rishi",d:.5})+TD.fig(222,152,.88,{v:49,sit:1,nari:1,veil:1,d:1.4})+TD.vig,
  gatearch:()=>TD.sky()+TD.stars(12)+TD.ground(146,"#151d2a")+
   '<path class="tstone" d="M56 146 v-48 a104 104 0 0 1 208 0 v48 Z"/>'+
   '<path class="tgoldy" d="M56 98 a104 104 0 0 1 208 0 v10 a104 104 0 0 0 -208 0 Z"/>'+
@@ -2254,24 +2291,27 @@ const DART={
   TD.lamp(80,96,.7)+TD.lamp(240,96,.7)+TD.fig(160,146,.95,{d:.3,arm:1})+TD.vig,
  song:()=>TD.sky()+TD.stars(14)+TD.ground(142,"#182231")+TD.tree(40,142,.8)+
   '<g class="tnote">'+[0,1,2,3].map(i=>'<circle cx="'+(120+i*44)+'" cy="'+(96-(i%2)*18)+'" r="5" style="animation-delay:-'+(i*.7)+'s"/>').join("")+"</g>"+
-  TD.fig(160,152,1,{sit:1,d:.2,arm:1})+TD.lamp(258,112,.7)+TD.vig,
+  TD.fig(160,152,1,{v:11,sit:1,kind:"rishi",d:.2})+TD.lamp(258,112,.7)+TD.vig,
  wing:()=>TD.sky()+TD.stars(16)+TD.moon(60,34,9)+TD.ground(150,"#141c28")+
   '<g transform="translate(180,86)"><g class="tflyer">'+
   '<path class="twing" d="M0 0 q-46 -26 -74 6 q42 12 74 -6 Z" fill="#cfd8e6"/>'+
   '<path class="twing b" d="M0 0 q46 -26 74 6 q-42 12 -74 -6 Z" fill="#cfd8e6"/>'+
-  '<circle cx="0" cy="0" r="9" fill="#e8dcc0"/></g></g>'+TD.fig(60,158,.8,{d:.9})+TD.vig,
+  '<circle cx="0" cy="0" r="9" fill="#e8dcc0"/></g></g>'+TD.fig(60,158,.82,{v:71,turban:1,d:.9})+TD.vig,
  crowdcalm:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#182231")+TD.wall(20,58,280,80)+TD.windows(20,58,280,80,5,2,1.2)+
-  TD.fig(76,152,1,{d:.2})+TD.fig(132,152,.95,{d:1})+TD.fig(188,152,1.05,{d:1.8,arm:1})+TD.fig(244,152,.9,{d:2.5})+TD.vig,
+  TD.fig(76,152,1,{v:24,turban:1,spear:1,d:.2})+TD.fig(132,152,.95,{v:31,nari:1,veil:1,d:1})+
+  TD.fig(188,152,1.05,{v:38,turban:1,d:1.8,face:-1})+TD.fig(244,152,.9,{v:45,child:1,d:2.5})+TD.vig,
  ring:()=>TD.sky()+TD.stars(10)+TD.hillsFar(104)+TD.ground(146,"#161e2b")+
   TD.wall(226,72,88,74)+TD.windows(226,72,88,74,3,2,1.1)+TD.tree(40,150,.7)+
   '<circle class="tglowbig" cx="160" cy="92" r="40"/>'+
   '<circle class="tring" cx="160" cy="92" r="24" fill="none"/>'+
   '<circle class="tring b" cx="160" cy="92" r="15" fill="none"/>'+
-  TD.fig(70,152,.9,{d:.4,arm:1})+TD.vig,
+  TD.fig(70,152,.9,{v:73,kind:"rishi",d:.4})+TD.vig,
  deep:()=>'<rect x="0" y="0" width="320" height="180" fill="url(#tgWater)"/>'+
   '<g class="tbub">'+[...Array(10)].map((_,i)=>'<circle cx="'+(20+i*31)+'" cy="'+(150-(i%4)*22)+'" r="'+(2+(i%3))+
    '" style="animation-delay:-'+(i*.9).toFixed(1)+'s"/>').join("")+"</g>"+
-  TD.ground(152,"#0d2129")+TD.lamp(160,70,1.1)+TD.fig(90,160,.85,{d:.6})+TD.fig(238,160,.8,{d:1.7})+TD.vig,
+  TD.ground(152,"#0d2129")+TD.lamp(160,70,1.1)+
+  TD.fig(90,160,.85,{v:26,kind:"rakshasa",spear:1,d:.6})+
+  TD.fig(240,160,.8,{v:63,kind:"rakshasi",face:-1,d:1.7})+TD.vig,
  manyheads:()=>TD.sky("tgDusk")+TD.ground(150,"#1d1620")+TD.wall(20,56,280,94)+TD.goldRoof(20,56,280)+
   D.person(160,150,2.6,0,{kind:"ravan"})+
   '<g transform="translate(160,92)"><g class="tmany">'+
@@ -2282,7 +2322,7 @@ const DART={
   '<path d="M-30 -46 q40 46 0 92" stroke="#7fbf9a" stroke-width="4" fill="none" stroke-linecap="round"/>'+
   '<path d="M-30 -46 L-30 46" stroke="rgba(255,255,255,.5)" stroke-width="1.6"/>'+
   [0,1,2,3,4].map(i=>'<circle cx="'+(-26+i*14)+'" cy="'+(-40+i*20)+'" r="5" fill="#f4a7c0"/>').join("")+"</g></g>"+
-  TD.fig(130,150,1.1,{d:.3,arm:1})+TD.vig,
+  TD.fig(130,150,1.08,{v:79,nari:1,veil:1,veilc:"#f4a7c0",d:.3})+TD.vig,
 };
 
 /* ---------- the collection: boons, curses, weapons and tokens ---------- */
