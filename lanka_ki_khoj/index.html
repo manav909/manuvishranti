@@ -3581,6 +3581,13 @@ const PATRA={
  surekha:{n:"सुरेखा",x:"ओड़िया की विलंका रामायण में पाताल की दूसरी लंका की असुरी। वह माया का रूप धरकर सामने आती है और पहचानने से पहले ही हनुमान को निगल लेती है, फिर हज़ार सिर वाले रावण के सामने उगल देती है। पूरा दरबार हँसता है, और छूटते ही वे रानियों के नाक कान काट देते हैं। हँसी वहीं ख़त्म हो जाती है।",on:["sarala_lanka"]}
 };
 const ACH={
+ char_chakkar:{n:"चार परंपराओं का चक्कर",x:"चार अलग ग्रंथों के भीतर के चक्कर पूरे घूमे।",
+  p:()=>Object.keys(save.tour||{}).length/4},
+ saat_samundar:{n:"सात समंदर पार",x:"भारत के बाहर की चार कथाओं का पाठ खोला।",
+  p:()=>["ramakien","kakawin","reamker","yama","lao","hikayat","maranao","tibbati","taili"]
+    .filter(k=>save.texts&&save.texts[k]).length/4},
+ sunne_wala:{n:"कथा के भीतर की कथाएँ",x:"छह कही हुई कथाएँ खोलीं।",p:()=>kahiCount()/6},
+ poora_sangrah:{n:"भरा हुआ संग्रह",x:"संग्रह की हर चीज़ पा ली।",p:()=>vastuCount()/Object.keys(VASTU).length},
  teen_granth:{n:"तीन ग्रंथ, एक पल",x:"किसी एक पल को तीन अलग ग्रंथों में पढ़ा।",
   p:()=>deepestMoment()/3},
  poori_raat:{n:"पूरी रात",x:"पहली रात का कोई कोना नहीं छोड़ा।",p:()=>nightPart("khoj")},
