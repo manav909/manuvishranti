@@ -4532,11 +4532,27 @@ function start(id){
  anchorFrom(0);            /* this night begins at its own first line */
  build();weather();turn();
 }
+function mainList(w){               /* the places where the katha itself is, that hour */
+ const W=run.N.watches[w];if(!W)return [];
+ const onSpine=W.spots.filter(x=>SPINE[run.N.id+"-"+x+"-"+w]);
+ return onSpine.length?onSpine:[W.spots[0]];
+}
+function mainOf(w){const m=mainList(w);return m[0];}
+function ghadiSpots(){              /* what this half hour offers */
+ const W=run.N.watches[run.w];if(!W)return [];
+ const m=mainList(run.w);
+ return run.ghadi===0?m.filter(x=>!run.pickedHere.includes(x))
+                     :W.spots.filter(x=>m.indexOf(x)<0);
+}
+function ghadiName(){
+ return run.N.watches[run.w].n+(run.ghadi===0?", पहली घड़ी":", दूसरी घड़ी");
+}
 function turn(){
  if(run.w>=run.N.watches.length)return dawn();
  const at=markPoint();
- step(run.N.watches[run.w].n);
- run.used=0;run.pickedHere=[];run.busy=false;run.focus=null;stage.classList.remove("focus");hideDio();
+ run.ghadi=0;
+ step(run.N.watches[run.w].n+", पहली घड़ी");run.used=0;run.pickedHere=[];run.busy=false;run.focus=null;
+ stage.classList.remove("focus");hideDio();
  hud();paint();weather();flyTo(watchBox());
  drawTrail();
  offer();
@@ -4550,7 +4566,7 @@ function freshAt(id,w){                  /* is anything still unread there in th
 function offer(only){
  const at=markPoint();
  const W=run.N.watches[run.w];
- let open=W.spots.filter(x=>!run.pickedHere.includes(x));
+ let open=ghadiSpots().filter(x=>!run.pickedHere.includes(x));
  if(only==="fresh")open=open.filter(x=>freshAt(x)>0);
  if(only==="seen")open=open.filter(x=>freshAt(x)===0);
  const left=(twoVisits()?2:1)-run.used;
@@ -4560,8 +4576,23 @@ function offer(only){
   el('<p class="quiet">इन जगहों पर कुछ बचा हुआ है।</p>');
  else{
   }
- el('<p class="ask">अब कहाँ जाओगे?</p>');
+ if(run.ghadi===0){
+  const m=mainList(run.w).length;
+  el('<p class="quiet">पहली घड़ी कथा की है। इस प्रहर कथा '+(m>1?"इन "+m+" जगहों":"यहीं")+
+   " से होकर गुज़रती है, इसलिए ये छूटती नहीं।</p>");
+  el('<p class="ask">चलो, वहीं चलते हैं।</p>');
+ }else{
+  el('<p class="quiet">दूसरी घड़ी तुम्हारी है। उसी वक़्त ये जगहें भी चल रही हैं, और इनमें से एक चुनी जा सकती है।</p>');
+  el('<p class="ask">अब कहाँ जाओगे?</p>');
+ }
  const f=el("","fork");
+ if(run.ghadi===1){
+  const skip=document.createElement("button");
+  skip.className="do go";skip.type="button";
+  skip.textContent="इस घड़ी कहीं नहीं जाना, वक़्त आगे बढ़ाओ";
+  skip.onclick=()=>{f.remove();endWatch();};
+  f.appendChild(skip);
+ }
  open.forEach(id=>{
   const nf=freshAt(id);
   const b=document.createElement("button");
@@ -4575,15 +4606,30 @@ function offer(only){
  });
  anchorFrom(at);
 }
+function endWatch(){                 /* the hour closes, and what you skipped is folded away */
+ const W=run.N.watches[run.w];
+ const at2=markPoint();
+ const mainHere=mainList(run.w);
+ const missedIds=W.spots.filter(x=>mainHere.indexOf(x)<0&&!run.pickedHere.includes(x));
+ const thread=missedIds.filter(x=>SPINE[run.N.id+"-"+x+"-"+run.w]);
+ thread.forEach(x=>{run.gone=run.gone||[];run.gone.push(run.N.id+"-"+x+"-"+run.w);});
+ const missed=missedIds.filter(x=>!SPINE[run.N.id+"-"+x+"-"+run.w]).map(x=>PLACES[x].n);
+ if(missed.length)run.lost=run.lost.concat(missed);
+ if(missedIds.length)elsewhere(thread,missed,run.w);
+ run.focus=null;stage.classList.remove("focus");hideDio();run.w++;turn();anchorFrom(at2);
+}
 function visit(id){
  if(quizLocked()){lockNote();return;}
  if(!run){note("अभी कोई रात चल नहीं रही। कथा वाले पन्ने पर कोई हिस्सा चुनो।");return;}
  if(run.busy)return;
  if(run.pickedHere.includes(id)){note("इस घड़ी तुम "+PLACES[id].n+" हो आए।");return;}
- if((twoVisits()?2:1)-run.used<=0){
+ if(run.ghadi===1&&(twoVisits()?2:1)-run.used<=0){
   note("इस घड़ी तुम्हारी चुनी हुई जगह हो चुकी। कथा वाले पन्ने पर वक़्त आगे बढ़ाओ।");return;}
  if(!run.N.watches[run.w]||!run.N.watches[run.w].spots.includes(id)){
   note("इस घड़ी "+PLACES[id].n+" में कुछ नहीं हो रहा।");return;}
+ if(!ghadiSpots().includes(id)){
+  note(run.ghadi===0?"पहली घड़ी में कथा किसी और जगह चल रही है। पहले वहाँ चलो।"
+                    :"वह जगह पहली घड़ी की थी, और वह बीत चुकी है।");return;}
  run.busy=true;shut();
  story.querySelectorAll(".fork").forEach(x=>x.remove());
  const at=markPoint();
@@ -4593,7 +4639,8 @@ function visit(id){
  const L=layersOf(key),d=Math.min(depthOf(key),L.length-1),S=L[d];
  didAct();
  run.path.push({id:id,w:run.w});
- run.pickedHere.push(id);run.used++;run.went.push(PLACES[id].n);run.focus=id;
+ run.pickedHere.push(id);if(run.ghadi===1)run.used++;   /* the katha ghadi is free */
+ run.went.push(PLACES[id].n);run.focus=id;
  paint();
  const near=Math.max(.5,Math.min(cam[2]*.28,1.4));
  flyTo(around(id,Math.min(cam[2]*1.15,cam[2]+2)),1);
@@ -4654,21 +4701,26 @@ function visit(id){
   });
  }
  run.busy=false;paint();
- const rest=W.spots.filter(x=>!run.pickedHere.includes(x));
- const freshRest=rest.filter(x=>freshAt(x)>0).length, seenRest=rest.length-freshRest;
- const more=(twoVisits()?2:1)-run.used>0&&rest.length>0;
+ const rest=ghadiSpots().filter(x=>!run.pickedHere.includes(x));
+ const more=run.ghadi===1&&(twoVisits()?2:1)-run.used>0&&rest.length>0;
  el('<p class="ask">अब क्या करोगे?</p>');
  const f=el("","fork");
  if(more)f.appendChild(btn("इसी घड़ी एक और जगह देखो","do",()=>{f.remove();offer();}));
- f.appendChild(btn("वक़्त आगे बढ़ाओ","do go",()=>{f.remove();
-  const at2=markPoint();
-  const missedIds=W.spots.filter(x=>!run.pickedHere.includes(x));
-  const thread=missedIds.filter(x=>SPINE[run.N.id+"-"+x+"-"+run.w]);
-  thread.forEach(x=>{run.gone=run.gone||[];run.gone.push(run.N.id+"-"+x+"-"+run.w);});
-  const missed=missedIds.filter(x=>!SPINE[run.N.id+"-"+x+"-"+run.w]).map(x=>PLACES[x].n);
-  if(missed.length)run.lost=run.lost.concat(missed);
-  if(missedIds.length)elsewhere(thread,missed,run.w);
-  run.focus=null;stage.classList.remove("focus");hideDio();run.w++;turn();anchorFrom(at2);}));
+ if(run.ghadi===0&&ghadiSpots().length){
+  f.appendChild(btn("कथा आगे चलती है, साथ चलो","do go",()=>{f.remove();
+   const atn=markPoint();run.busy=false;offer();anchorFrom(atn);}));
+  anchorFrom(at);return;
+ }
+ if(run.ghadi===0){
+  f.appendChild(btn("दूसरी घड़ी में चलो","do go",()=>{f.remove();
+   const atg=markPoint();
+   run.ghadi=1;run.used=0;run.busy=false;run.focus=null;
+   stage.classList.remove("focus");hideDio();
+   step(run.N.watches[run.w].n+", दूसरी घड़ी");
+   hud();paint();offer();anchorFrom(atg);}));
+  anchorFrom(at);return;
+ }
+ f.appendChild(btn("वक़्त आगे बढ़ाओ","do go",()=>{f.remove();endWatch();}));
  anchorFrom(at);
 }
 
