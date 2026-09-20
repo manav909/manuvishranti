@@ -1210,6 +1210,19 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  @keyframes sparks{0%{transform:translateY(0);opacity:.2}35%{opacity:.9}
   100%{transform:translateY(-44px);opacity:0}}
 }
+
+/* the sea catches the light, and the city wakes at night */
+@media (prefers-reduced-motion:no-preference){
+ .shimmer path{stroke-dasharray:2.4 3.6;animation:shimmer 9s linear infinite}
+ .shimmer path:nth-child(2){animation-duration:12s}
+ .shimmer path:nth-child(3){animation-duration:7.5s}
+ @keyframes shimmer{from{stroke-dashoffset:0}to{stroke-dashoffset:-24}}
+ #app[data-sky="night"] .citylights circle,#app[data-sky="dusk"] .citylights circle{
+  animation:citylight 4.6s ease-in-out infinite}
+ .citylights .cl1{animation-delay:-1.6s}
+ .citylights .cl2{animation-delay:-3.1s}
+ @keyframes citylight{0%,100%{opacity:.12}50%{opacity:.4}}
+}
 </style>
 </head>
 <body>
@@ -2588,6 +2601,11 @@ function mapArt(night){
   <path d="${LINE([[7.4,79.0],[7.1,79.6],[7.2,80.1]])}"/>
   <path d="${LINE([[5.6,80.0],[5.3,80.7],[5.4,81.3]])}"/>
  </g>
+ <g class="shimmer" stroke="var(--wave)" stroke-width=".28" fill="none" opacity=".5">
+  <path d="${LINE([[9.2,78.0],[8.9,78.8],[9.0,79.6],[8.7,80.4]])}"/>
+  <path d="${LINE([[6.4,79.2],[6.1,80.0],[6.2,80.8],[5.9,81.5]])}"/>
+  <path d="${LINE([[11.0,80.4],[10.7,81.1],[10.8,81.8]])}"/>
+ </g>
  <g filter="url(#soft)" opacity=".45" fill="var(--shade)">
   <path d="${LINE(COAST_IN)} Z" transform="translate(1.4,2)"/>
   <path d="${LINE(COAST_LK)} Z" transform="translate(1.4,2)"/>
@@ -2601,6 +2619,10 @@ function mapArt(night){
  </g>
  <path d="${LINE(CITY)} Z" fill="none" stroke="var(--walldark)" stroke-width="1.6" transform="translate(.5,.7)"/>
  <path d="${LINE(CITY)} Z" fill="var(--roof)" fill-opacity=".22" stroke="var(--wall)" stroke-width="1.1"/>
+ <g class="citylights" filter="url(#soft)">
+  ${[[7.92,80.70],[7.86,80.80],[7.80,80.88],[7.74,80.74],[7.96,80.84]].map((q,i)=>{const a=PX(q[0],q[1]);
+   return '<circle class="cl'+(i%3)+'" cx="'+a[0].toFixed(2)+'" cy="'+a[1].toFixed(2)+'" r="'+(1.1+(i%3)*.5).toFixed(2)+'" fill="var(--lamp)" opacity=".0"/>';}).join("")}
+ </g>
  <g stroke="var(--street)" stroke-width=".35" opacity=".8" fill="none">
   <path d="${LINE([[7.90,80.68],[7.84,80.78],[7.80,80.86]])}"/>
   <path d="${LINE([[7.75,80.72],[7.82,80.80],[7.88,80.84]])}"/>
