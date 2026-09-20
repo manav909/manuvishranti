@@ -23,7 +23,15 @@ covering 41 tellings from India and beyond, 6 playable nights, 100 moments, 291 
 - A role carries its own places no one else can see, its own people, its own detour, its own
   collectible, its own badge, its own two titles, its own eye at every kind of place, its own
   reckoning at dawn, its own leaning in the questions, and its own colour across the whole game
-- The katha ghadi never bends to the role. `roletest.js` enforces that and the exclusivity
+- It also carries: an aim for every night, a parting line for every rasa, a closing line for the
+  morning, a rank ladder of seven, a name for the player, a pointer planted on its own places,
+  a first night the list puts on top, the page the notebook opens on, and the register the game
+  speaks in (शास्त्री, साधक and राजा are addressed as आप, the rest as तुम)
+- The shape of a moment changes too: the warrior gets a reckoning, the scholar a citation, the
+  katha lover the other tellings, the child something to enjoy, the king the decision, the seeker
+  a pause, the traveller what to look at
+- Around 200 lines are written for the roles and no line is shared between two of them
+- The katha ghadi never bends to the role. `roletest.js` enforces all of it
 
 ## The look
 - Time of day drives everything: the map light, the panel palette, the motes in the air, the rim light
