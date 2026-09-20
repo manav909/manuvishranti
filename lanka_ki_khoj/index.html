@@ -1026,6 +1026,8 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .avcanopy{fill:color-mix(in srgb,var(--rt) 45%,var(--mark));stroke:var(--rt);stroke-width:1.2}
 .avcrown{fill:#e0a93c}
 .rolewait{border:1px solid var(--rt);border-radius:1rem;padding:.6rem .7rem;background:color-mix(in srgb,var(--rt) 10%,var(--page))}
+.rolestats{display:flex;flex-wrap:wrap;gap:.4rem;margin:.2rem 0 .5rem}
+.rolestats span{font-size:.78rem;color:var(--rt);border:1px solid var(--rt);border-radius:99px;padding:.06rem .6rem}
 .rolehero{display:flex;gap:.9rem;align-items:center;margin:.2rem 0 .6rem}
 .rolehead h1{margin:0}
 .rolehead p{margin:.1rem 0 0;color:var(--quiet);font-size:.92rem}
@@ -3956,53 +3958,34 @@ function roleCount(r){                /* how many places of this night lie on th
 }
 function roleDetail(r){
  const R=ROLE[r],open=roleOpen(r),at=markPoint();
+ const own=roleOwn(r),road=previewRoad(r);
+ const tours=Object.keys(DETOUR).filter(k=>DETOUR[k].only===r);
+ const thing=Object.keys(VASTU).filter(k=>VASTU[k].only===r)[0];
+ const folk=Object.keys(PATRA).filter(k=>PATRA[k].only===r)[0];
+ const mud=Object.keys((save.roleDone&&save.roleDone[r])||{}).length;
  story.innerHTML="";curStep=null;
  el('<div class="rolehero" style="--rt:'+R.tint+'">'+roleAvatar(r,true)+
   '<div class="rolehead"><h1>'+R.n+"</h1><p>"+R.t+"</p></div></div>");
- el("<p>"+R.x+"</p>");
- el('<p class="ask">इस भूमिका में तुम क्या करोगे</p>');
  el('<p class="rolebar">'+R.say+"</p>");
- el("<p><b>कहाँ कहाँ ले जाएगी:</b> "+roleWhere(r).join(", ")+"। पूरे खेल में ऐसी "+roleCount(r)+" जगहें हैं।</p>");
- {const own=roleOwn(r);
-  if(own.length){
-   el('<p class="ask">सिर्फ़ इसी भूमिका की जगहें</p>');
-   el('<p class="quiet">ये '+own.length+" जगहें और किसी भूमिका के नक्शे पर आती ही नहीं।</p>");
-   own.forEach(id=>el('<p class="beat"><b>'+PLACES[id].n+":</b> "+PLACES[id].t+"</p>"));
-  }}
- const some=Object.keys(R.lens||{}).slice(0,3).map(c=>R.lens[c]);
- el("<p><b>वहाँ पहुँचकर यह सुनाई देगा:</b></p>");
- some.forEach(x=>el('<p class="beat">'+x+"</p>"));
- {const tours=Object.keys(DETOUR).filter(k=>DETOUR[k].only===r);
-  const folk=Object.keys(PATRA).filter(k=>PATRA[k].only===r);
-  const things=Object.keys(VASTU).filter(k=>VASTU[k].only===r);
-  const badge=Object.keys(ACH).filter(k=>ACH[k].only===r);
-  const names=ROLEPADVI.filter(x=>x.role===r);
-  el('<p class="ask">और सिर्फ़ इसी को क्या मिलेगा</p>');
-  if(tours.length)el("<p><b>अपने चक्कर:</b> "+tours.map(k=>DETOUR[k].n+" ("+DETOUR[k].stops.length+" पड़ाव)").join(", ")+"</p>");
-  if(folk.length)el("<p><b>जिनसे यही मिलेगी:</b> "+folk.map(k=>PATRA[k].n).join(", ")+"</p>");
-  if(things.length)el("<p><b>संग्रह में सिर्फ़ इसकी:</b> "+things.map(k=>VASTU[k].n).join(", ")+"</p>");
-  if(badge.length)el("<p><b>अपना बैज:</b> "+badge.map(k=>ACH[k].n+" ("+ACH[k].x+")").join(", ")+"</p>");
-  if(names.length)el("<p><b>अपनी पदवियाँ:</b> "+names.map(x=>x.n+" ("+x.x+")").join(", ")+"</p>");}
- {const done=Object.keys((save.roleDone&&save.roleDone[r])||{});
-  if(done.length)el("<p><b>इस भूमिका की मुद्राएँ:</b> "+done.map(id=>{
-   const N=NIGHTS.find(n=>n.id===id);return N?N.name:id;}).join(", ")+"।</p>");
-  else el('<p class="quiet">इस भूमिका में अभी कोई रात पूरी नहीं हुई। हर रात पूरी करने पर इसकी अपनी मुद्रा मिलती है।</p>');}
- el('<p class="quiet">कथा का धागा इससे नहीं बदलता। पहली घड़ी में वही पड़ाव सबको मिलते हैं, बदलती सिर्फ़ तुम्हारी नज़र और दूसरी घड़ी की राह है। खेल का रंग भी इसी भूमिका का हो जाएगा।</p>');
+ el('<div class="rolestats"><span>'+road.length+" पड़ाव</span><span>"+own.length+
+  " जगहें सिर्फ़ इसकी</span><span>"+(mud?mud+" मुद्रा":"नई राह")+"</span></div>");
+ own.slice(0,3).forEach(id=>el('<p class="beat"><b>'+PLACES[id].n+":</b> "+PLACES[id].t+"</p>"));
+ if(tours.length)el('<p class="beat"><b>'+DETOUR[tours[0]].n+":</b> "+
+  DETOUR[tours[0]].stops.map(x=>x.n).join(", ")+"</p>");
+ if(folk)el('<p class="beat"><b>'+PATRA[folk].n+":</b> इनसे सिर्फ़ इसी भूमिका में भेंट होती है।</p>");
+ if(thing)el('<p class="beat"><b>'+VASTU[thing].n+":</b> संग्रह में सिर्फ़ यही भूमिका इसे रख पाती है।</p>");
  const f=el("","fork");
  const other=save.journey&&save.journey.role&&save.journey.role!==r;
- if(open&&other)el('<p class="quiet">तुम्हारी पिछली यात्रा '+ROLE[save.journey.role].n+
-  " की है। नई भूमिका चुनते ही वह मिट जाएगी, क्योंकि अभी एक ही यात्रा सँभलती है। खाता बनने के बाद हर भूमिका की यात्रा अलग रहेगी।</p>");
+ if(open&&other)el('<p class="quiet">पिछली यात्रा '+ROLE[save.journey.role].n+" की है, और नई शुरू करते ही वह मिट जाएगी।</p>");
  if(open)f.appendChild(btn(other?"पुरानी यात्रा छोड़कर यही शुरू करो":"यही भूमिका चुनो","do go",()=>{
   if(other){save=blankSave();}
   preview=null;save.role=r;save.rolePicked=true;save.journey=null;persist();roleTint();
   closeCard();fill();hud();paint();note(R.n+" होकर चलोगे।");front();}));
- else{
-  el('<p class="ask">यह भूमिका अभी बंद है</p>');
-  adhikar(R.need).all.forEach(n=>el('<p class="'+(n.t()?"beat":"quiet")+'">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+"</p>"));
- }
+ else adhikar(R.need).all.forEach(n=>el('<p class="'+(n.t()?"beat":"quiet")+'">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+"</p>"));
  f.appendChild(btn("बाकी भूमिकाएँ देखो","do",()=>{clearPreview();roleScreen();}));
  anchorFrom(at);
 }
+
 function exitScreen(){
  const at=markPoint();
  run=null;story.innerHTML="";curStep=null;shut();
@@ -4010,10 +3993,9 @@ function exitScreen(){
  el('<div class="rolehero" style="--rt:'+R.tint+'">'+roleAvatar(journeyRole(),true)+
   '<div class="rolehead"><h1>यात्रा से बाहर</h1><p>'+R.n+" की यात्रा, "+journeyStats()+"</p></div></div>");
  el("<p>भूमिका बीच यात्रा में नहीं बदलती, क्योंकि पूरी राह उसी नज़र से बनी है। पर यात्रा से बाहर निकला जा सकता है।</p>");
- el('<p class="ask">दो रास्ते हैं</p>');
- el("<p><b>यहीं रोक दो:</b> सब कुछ जहाँ है वहीं रहेगा और तुम इसी भूमिका में लौट सकोगे। यह इसी डिवाइस में सँभलता है।</p>");
- el("<p><b>यह यात्रा छोड़ दो:</b> यह सब मिट जाएगा और तुम नई भूमिका से नई शुरुआत करोगे।</p>");
- el('<p class="quiet">अभी सहेजना सिर्फ़ इसी डिवाइस में होता है। खाता बनाने वाली सुविधा आने के बाद हर भूमिका की अपनी यात्रा अलग सँभलेगी, और उनमें से किसी में भी लौटा जा सकेगा।</p>');
+ el("<p><b>यहीं रोक दो:</b> सब जहाँ है वहीं रहेगा और तुम इसी भूमिका में लौट सकोगे।</p>");
+ el("<p><b>यह यात्रा छोड़ दो:</b> यह सब मिट जाएगा और तुम नई भूमिका से शुरू करोगे।</p>");
+ el('<p class="quiet">अभी सहेजना सिर्फ़ इसी डिवाइस में होता है। खाता बनने के बाद हर भूमिका की यात्रा अलग सँभलेगी।</p>');
  const f=el("","fork");
  f.appendChild(btn("यहीं रोक दो, बाद में लौटूँगा","do go",()=>{
   save.journey={role:journeyRole(),live:false};persist();note("यात्रा रुकी हुई है, जब चाहो लौट आना।");roleScreen();}));
