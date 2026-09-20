@@ -6468,7 +6468,17 @@ function visit(id){
  const cut=splitSay(S.say);
  say(myRole()==="balak"?cut.story.slice(0,3):cut.story);   /* a child gets it shorter */
  el('<p class="w-src">'+SRC[S.src||"vr"].n+"</p>");
- {const blk=roleBlock(id,key);if(blk)el(blk);
+ {const blk=roleBlock(id,key);
+  if(blk){                        /* folded away: one tap for those who want it */
+   const b=document.createElement("div");b.className="tease shut";
+   const lid=document.createElement("button");lid.className="teaselid";lid.type="button";
+   const head=({yoddha:"हिसाब",shastri:"हवाला",kathapremi:"और कौन कहता है",balak:"मज़े की बात",
+     raja:"नीति की नज़र",sadhak:"ठहराव",yatri:"देखने लायक"})[myRole()]||"और";
+   lid.innerHTML="<b>"+head+"</b><span>खोलो</span>";
+   const body=document.createElement("div");body.className="teasebody";body.innerHTML=blk;
+   lid.onclick=()=>{b.classList.toggle("shut");};
+   b.appendChild(lid);b.appendChild(body);story.appendChild(b);
+  }
   const cl=(RCLOSE[myRole()]||{})[RAS[key]];
   if(cl)el('<p class="rolebar close">'+cl+"</p>");}
  aboutStrip(SRC[S.src||"vr"].n,cut.about);
