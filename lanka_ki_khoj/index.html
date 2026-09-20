@@ -1073,6 +1073,20 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .rdglow{animation:rdbreathe 3.4s ease-in-out infinite}
  @keyframes rdbreathe{0%,100%{opacity:.12}50%{opacity:.3}}
 }
+
+/* the pointers a role plants on its own places */
+.rpin{fill:var(--tide);stroke:none}
+.rpin2{stroke:var(--tide);stroke-width:1.2;fill:none;stroke-linecap:round}
+.raura{opacity:.35}
+@media (prefers-reduced-motion:no-preference){
+ .mk .rmark{transform-box:fill-box;transform-origin:50% 100%}
+ .mk.here .rmark{animation:pinbob 2.8s ease-in-out infinite}
+ @keyframes pinbob{0%,100%{translate:0 0}50%{translate:0 -2.6px}}
+ .mk .raura{animation:pinaura 2.6s ease-out infinite}
+ @keyframes pinaura{0%{r:3.4;opacity:.45}70%{r:8;opacity:0}100%{r:8;opacity:0}}
+ .mk.live:hover .rmark{animation:pinpop .45s cubic-bezier(.2,.9,.25,1) both}
+ @keyframes pinpop{0%{transform:scale(1)}45%{transform:scale(1.28)}100%{transform:scale(1)}}
+}
 </style>
 </head>
 <body>
@@ -3744,6 +3758,17 @@ const RAV={
   '<circle class="avhead" cx="34" cy="37" r="6.4"/>'+
   '<path class="avcrown" d="M28 31 l2 -5 l4 4 l4 -4 l2 5 Z"/></g>'
 };
+/* ---------- every role plants its own kind of pointer ---------- */
+const RPIN={
+ jigyasu:'<circle class="rpin" cx="0" cy="-10" r="3.2"/><path class="rpin2" d="M0 -6.6 v3.2"/>',
+ yatri:'<path class="rpin2" d="M0 -3 v-9"/><path class="rpin" d="M0 -12 l4.6 2 l-4.6 2 Z"/>',
+ kathapremi:'<path class="rpin" d="M-4 -12 h8 v7 h-8 Z"/><path class="rpin2" d="M0 -12 v7 M-2.6 -9.6 h2 M1 -9.6 h2"/>',
+ balak:'<path class="rpin" d="M-3.4 -9 q3.4 -4 6.8 0 q-3.4 3 -6.8 0 Z"/><path class="rpin2" d="M0 -6 v3"/>',
+ yoddha:'<path class="rpin2" d="M0 -2 v-11"/><path class="rpin" d="M-3 -9.4 h6"/><path class="rpin" d="M0 -13 l1.6 2 h-3.2 Z"/>',
+ shastri:'<path class="rpin" d="M-4.4 -11 h8.8 v4.4 h-8.8 Z"/><path class="rpin2" d="M-2.6 -9 h5.4 M-2.6 -7.4 h3.4"/>',
+ sadhak:'<circle class="rpin" cx="0" cy="-9.6" r="2.6"/><circle class="rpin2 raura" cx="0" cy="-9.6" r="5.4"/>',
+ raja:'<path class="rpin" d="M-4 -8 l1.6 -4.6 l2.4 2.4 l2.4 -2.4 l1.6 4.6 Z"/><path class="rpin2" d="M-4 -6.6 h8"/>'
+};
 /* ---------- roles: who you walk this night as ---------- */
 const ROLE={
  jigyasu:{n:"जिज्ञासु",t:"सब थोड़ा थोड़ा, और छिपी बातों के इशारे",
@@ -3921,6 +3946,16 @@ function rolePreview(r){
         y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys);
   flyTo([x0-6,y0-6,(x1-x0)+12,(y1-y0)+12],1.18);
  }
+}
+function previewPeek(id){          /* a look inside a place, without entering the night */
+ const P=PLACES[id];if(!P)return;
+ showDio(id);
+ sheetFor(id,'<p class="quiet">'+(PLACES[id].only?"यह जगह सिर्फ़ "+ROLE[PLACES[id].only].n+" को मिलती है।":"यह जगह सबको मिलती है।")+"</p>");
+}
+function sheetFor(id,extra){
+ if(!sheet)return;
+ sheet.className="sheet open";
+ sheet.innerHTML='<h3>'+PLACES[id].n+"</h3><p>"+PLACES[id].t+"</p>"+(extra||"");
 }
 function previewRoad(r){          /* the places this role walks, in the order the night walks them */
  const out=[];
@@ -5500,6 +5535,7 @@ function build(){
   g+='<g class="mk" id="mk_'+id+'" data-place="'+id+'" transform="translate('+P.x.toFixed(2)+','+P.y.toFixed(2)+')">'+
     '<ellipse class="sh" cy=".6" rx="2.6" ry="1"/>'+
     '<circle class="halo" cy="-8.6" r="4"/>'+
+    '<g class="rmark" opacity="0"></g>'+
     '<g class="flagg"><path class="fpole" d="M4.6 -9.6 v-7.4"/><path class="fcloth" d="M4.6 -17 l6.4 2.2 l-6.4 2.4 Z"/></g>'+
     '<g class="body">'+
       '<path class="drop" d="M0 0 C-3.3 -4.2 -5 -6.2 -5 -8.6 A5 5 0 0 1 5 -8.6 C5 -6.2 3.3 -4.2 0 0 Z"/>'+
@@ -5514,7 +5550,10 @@ function build(){
  marks={};
  svg.querySelectorAll("[data-place]").forEach(n=>{
   const id=n.dataset.place;marks[id]=n;
+  n.addEventListener("mouseenter",()=>{if(preview)previewPeek(id);});
+  n.addEventListener("focus",()=>{if(preview)previewPeek(id);});
   n.addEventListener("click",()=>{
+   if(preview){previewPeek(id);return;}
    if(n.dataset.off)return;
    if(+n.dataset.fold>0&&cam[2]>14){shut();flyTo([PLACES[id].x-cam[2]*.22,PLACES[id].y-cam[3]*.22,cam[2]*.44,cam[3]*.44],1);return;}
    tap(id);
@@ -5571,6 +5610,12 @@ function paint(){
  Object.keys(PLACES).forEach(id=>{
   const m=marks[id],P=PLACES[id];if(!m)return;
   if(preview){                    /* looking at a role: its road glows, the rest fades */
+   const g=m.querySelector&&m.querySelector(".rmark");
+   if(g){
+    const solo=PLACES[id].only===preview;
+    if(g.innerHTML!==undefined)g.innerHTML=solo?(RPIN[preview]||""):"";
+    if(g.setAttribute)g.setAttribute("opacity",solo?"1":"0");
+   }
    const mineP=!PLACES[id].only||PLACES[id].only===preview;
    const onRoad=mineP&&previewRoad(preview).indexOf(id)>-1;
    let c="mk"+(onRoad?" live"+(PLACES[id].only===preview?" here":""):" later");
