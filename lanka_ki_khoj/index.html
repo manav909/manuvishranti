@@ -1090,6 +1090,24 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .mk.live:hover .rmark{animation:pinpop .45s cubic-bezier(.2,.9,.25,1) both}
  @keyframes pinpop{0%{transform:scale(1)}45%{transform:scale(1.28)}100%{transform:scale(1)}}
 }
+
+/* teasers on the role page: a line you can open */
+.tease{border:1px solid var(--rule);border-radius:.8rem;margin:.3rem 0;overflow:hidden;box-shadow:0 2px 0 var(--rule)}
+.teaselid{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;width:100%;
+ background:linear-gradient(180deg,color-mix(in srgb,var(--tide) 10%,var(--page)) 0%,var(--page) 70%);
+ border:none;font:inherit;color:var(--ink);text-align:left;padding:.5rem .7rem;cursor:pointer}
+.teaselid b{font-family:"Rozha One",serif;font-size:1.02rem;color:var(--tide)}
+.teaselid span{font-size:.8rem;color:var(--quiet)}
+.teasebody{padding:0 .7rem .6rem;font-size:.92rem;line-height:1.8}
+.tease.shut .teasebody{display:none}
+.peekrow{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin:.3rem 0 0}
+.peekmark{font-size:.72rem;color:var(--tide);border:1px solid var(--tide);border-radius:99px;padding:.02rem .5rem}
+.peeknight{font-size:.74rem;color:var(--quiet)}
+@media (prefers-reduced-motion:no-preference){
+ .tease{transition:box-shadow .16s ease,border-color .16s ease}
+ .tease:hover{border-color:var(--tide);box-shadow:0 10px 22px -16px var(--tide)}
+ .tease:not(.shut) .teasebody{animation:deal .3s cubic-bezier(.2,.9,.25,1) both}
+}
 </style>
 </head>
 <body>
@@ -3961,8 +3979,8 @@ function previewPeek(id){          /* a look inside a place, without entering th
  NIGHTS.forEach(N=>N.watches.forEach((w,i)=>{if(SC[N.id+"-"+id+"-"+i]&&nights.indexOf(N.name)<0)nights.push(N.name);}));
  sheetFor(id,
   (lens?'<p class="rolebar">'+lens+"</p>":"")+
-  (nights.length?'<p class="quiet">'+nights.join(", ")+"</p>":"")+
-  '<p class="quiet">'+(P.only?"यह जगह सिर्फ़ "+ROLE[P.only].n+" को मिलती है।":"यह जगह सबको मिलती है।")+"</p>");
+  '<p class="peekrow">'+(P.only?'<span class="peekmark">'+ROLE[P.only].n+"</span>":"")+
+  (nights.length?'<span class="peeknight">'+nights.join(", ")+"</span>":"")+"</p>");
 }
 function sheetFor(id,extra){
  if(!sheet)return;
@@ -4007,19 +4025,30 @@ function roleDetail(r){
  const own=roleOwn(r),road=previewRoad(r);
  const tours=Object.keys(DETOUR).filter(k=>DETOUR[k].only===r);
  const thing=Object.keys(VASTU).filter(k=>VASTU[k].only===r)[0];
- const folk=Object.keys(PATRA).filter(k=>PATRA[k].only===r)[0];
+ const folk=Object.keys(PATRA).filter(k=>PATRA[k].only===r);
  const mud=Object.keys((save.roleDone&&save.roleDone[r])||{}).length;
  story.innerHTML="";curStep=null;
  el('<div class="rolehero" style="--rt:'+R.tint+'">'+roleAvatar(r,true)+
   '<div class="rolehead"><h1>'+R.n+"</h1><p>"+R.t+"</p></div></div>");
  el('<p class="rolebar">'+R.say+"</p>");
  el('<div class="rolestats"><span>'+road.length+" पड़ाव</span><span>"+own.length+
-  " जगहें सिर्फ़ इसकी</span><span>"+(mud?mud+" मुद्रा":"नई राह")+"</span></div>");
- own.slice(0,3).forEach(id=>el('<p class="beat"><b>'+PLACES[id].n+":</b> "+PLACES[id].t+"</p>"));
- if(tours.length)el('<p class="beat"><b>'+DETOUR[tours[0]].n+":</b> "+
-  DETOUR[tours[0]].stops.map(x=>x.n).join(", ")+"</p>");
- if(folk)el('<p class="beat"><b>'+PATRA[folk].n+":</b> इनसे सिर्फ़ इसी भूमिका में भेंट होती है।</p>");
- if(thing)el('<p class="beat"><b>'+VASTU[thing].n+":</b> संग्रह में सिर्फ़ यही भूमिका इसे रख पाती है।</p>");
+  " छिपे ठिकाने</span><span>"+mud+"/"+NIGHTS.length+" मुद्रा</span></div>");
+ /* the teasers: a line you can open, not a list you must read */
+ const teas=[];
+ own.forEach(id=>teas.push({n:PLACES[id].n,t:PLACES[id].t,x:PLACES[id].lore}));
+ if(tours.length)teas.push({n:DETOUR[tours[0]].n,t:DETOUR[tours[0]].stops.length+" पड़ावों का रास्ता",
+  x:DETOUR[tours[0]].why+" "+DETOUR[tours[0]].stops.map(x=>x.n).join(", ")+"।"});
+ if(folk.length)teas.push({n:PATRA[folk[0]].n,t:"इनसे भेंट होगी",x:PATRA[folk[0]].x});
+ if(thing)teas.push({n:VASTU[thing].n,t:"यह हाथ आएगा",x:VASTU[thing].x});
+ teas.forEach(o=>{
+  const b=document.createElement("div");b.className="tease shut";
+  const lid=document.createElement("button");lid.className="teaselid";lid.type="button";
+  lid.innerHTML="<b>"+o.n+"</b><span>"+o.t+"</span>";
+  const body=document.createElement("div");body.className="teasebody";
+  body.innerHTML="<p>"+(o.x||"")+"</p>";
+  lid.onclick=()=>{b.classList.toggle("shut");};
+  b.appendChild(lid);b.appendChild(body);story.appendChild(b);
+ });
  const f=el("","fork");
  const other=save.journey&&save.journey.role&&save.journey.role!==r;
  if(open&&other)el('<p class="quiet">पिछली यात्रा '+ROLE[save.journey.role].n+" की है, और नई शुरू करते ही वह मिट जाएगी।</p>");
