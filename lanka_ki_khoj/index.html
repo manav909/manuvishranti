@@ -6032,6 +6032,10 @@ function paint(){
    if(l&&l.setAttribute)l.setAttribute("opacity",onRoad?"1":"0");
    return;
   }
+  {const g2=m.querySelector&&m.querySelector(".rmark");   /* your own places keep your own mark in play too */
+   if(g2){const solo=PLACES[id].only===myRole();
+    if(g2.innerHTML!==undefined)g2.innerHTML=solo?(RPIN[myRole()]||""):"";
+    if(g2.setAttribute)g2.setAttribute("opacity",solo?"1":"0");}}
   const inW=W&&W.spots.includes(id)&&mineOnly(id);
   const nowOpen=!run||!W||ghadiSpots().includes(id)||run.pickedHere.includes(id);
   const giftLock=false;
