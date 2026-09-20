@@ -6291,8 +6291,12 @@ function start(id){
  story.innerHTML="";curStep=null;dropAnchor();story.scrollTo({top:0});shut();
  step("");
  el('<h2>'+N.name+"</h2>");
- el('<p class="quiet">'+N.about+"</p>");
- el('<p class="rolebar"><b>'+ROLE[myRole()].n+":</b> "+ROLE[myRole()].say+"</p>");
+ {const first=(save.nights[id]||0)<=1;              /* the long lines are for the first time only */
+  if(first)el('<p class="quiet">'+N.about+"</p>");
+  save.terms=save.terms||{};
+  const rk="role:"+myRole();
+  if(!save.terms[rk]){save.terms[rk]=true;persist();
+   el('<p class="rolebar"><b>'+ROLE[myRole()].n+":</b> "+ROLE[myRole()].say+"</p>");}}
  {const aim=(RAIM[myRole()]||{})[N.id];
   if(aim)el('<p class="aim">'+aim+"</p>");}
  gloss("kand");gloss("prahar");gloss("ghadi");
