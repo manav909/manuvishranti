@@ -4334,7 +4334,10 @@ const myRole=()=>(save.role&&ROLE[save.role])?save.role:"jigyasu";
 function roleTint(){
  const R=ROLE[myRole()];if(!R)return;
  if(!app||!app.style||typeof app.style.setProperty!=="function")return;
- const dark=typeof matchMedia==="function"&&matchMedia("(prefers-color-scheme:dark)").matches;
+ /* the hour on screen decides the shade, not the phone setting */
+ const sky=(app.dataset&&app.dataset.sky)||"";
+ const dark=sky?(sky==="night"||sky==="dusk")
+  :(typeof matchMedia==="function"&&matchMedia("(prefers-color-scheme:dark)").matches);
  app.style.setProperty("--tide",dark?R.dark:R.tint);
  app.style.setProperty("--haldi",dark?R.dark:R.tint);
 }
@@ -6068,7 +6071,7 @@ function weather(){
   }}
 
  const t0=({dawn:"dawn",morning:"dawn",noon:"day",day:"day",dusk:"dusk",night:"night"})[w.sky]||"night";
- if(app&&app.dataset&&app.dataset.sky!==t0)app.dataset.sky=t0;
+ if(app&&app.dataset&&app.dataset.sky!==t0){app.dataset.sky=t0;roleTint();}
  const gr=document.getElementById("grade");
  if(gr){const t=({dawn:"dawn",morning:"dawn",noon:"day",day:"day",dusk:"dusk",night:"night"})[w.sky]||"night";
   if(gr.className!=="grade "+t)gr.className="grade "+t;}
