@@ -3918,6 +3918,28 @@ function quizPool(){
   return true;
  });
 }
+function roleAsks(q){                       /* does this question belong to the road your role walks */
+ const R=ROLE[myRole()];if(!R)return true;
+ if(q.id.indexOf("place:")===0){
+  const key=q.id.slice(6),pid=key.slice(key.indexOf("-")+1,key.lastIndexOf("-"));
+  return (R.cats||[]).indexOf(catOf(pid))>-1;
+ }
+ if(q.id.indexOf("card:")===0){
+  const c=q.id.slice(5),C=CARDS[c];if(!C)return false;
+  if(myRole()==="shastri")return !!C.sl||(C.ref||"").indexOf("सर्ग")>-1;
+  if(myRole()==="kathapremi")return C.l==="gr";
+  if(myRole()==="sadhak")return C.l==="man";
+  let where=null;
+  Object.keys(SC).forEach(k=>layersOf(k).forEach(L=>{if((L.cards||[]).indexOf(c)>-1&&!where)where=k;}));
+  if(!where)return false;
+  const pid=where.slice(where.indexOf("-")+1,where.lastIndexOf("-"));
+  return (R.cats||[]).indexOf(catOf(pid))>-1;
+ }
+ if(q.id.indexOf("patra:")===0)return myRole()==="raja"||myRole()==="yoddha"||myRole()==="jigyasu";
+ if(q.id.indexOf("lang:")===0||q.id.indexOf("who:")===0)
+  return myRole()==="shastri"||myRole()==="kathapremi"||myRole()==="jigyasu";
+ return true;
+}
 function quizLeft(){
  save.qdone=save.qdone||{};
  return quizPool().filter(q=>!save.qdone[q.id]);
@@ -3940,7 +3962,9 @@ function quizNext(){
   save.qdone={};save.qround=(save.qround||0)+1;persist();   /* a new round: now a wrong answer costs */
   left=pool;
  }
- const q=left[Math.floor(Math.random()*left.length)];
+ const mine=left.filter(roleAsks);          /* your role asks its own kind of question first */
+ const bag=mine.length?mine:left;
+ const q=bag[Math.floor(Math.random()*bag.length)];
  const others=q.pool.filter(x=>x!==q.ans);
  const picks=[];
  while(picks.length<3&&others.length){picks.push(others.splice(Math.floor(Math.random()*others.length),1)[0]);}
