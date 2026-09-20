@@ -1230,6 +1230,13 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 #app[data-night="vidya"]{--sea:#0f2420;--sea2:#16362f;--land:#233a2f;--land2:#2e4a3b;--wave:#4f9a86;--grove:#2c5142}
 #app[data-night="aag"]{--wave:#b0713f}
 #app{transition:background .9s ease,color .9s ease}
+
+/* a dark edge in front of every scene, so the picture has a near and a far */
+.dfore path{fill:#060a10;opacity:.55}
+@media (prefers-reduced-motion:no-preference){
+ .dio.open .dfore{animation:foredrift 26s ease-in-out infinite 1s;transform-box:view-box;transform-origin:50% 100%}
+ @keyframes foredrift{0%,100%{transform:scale(1.04) translateX(2.4px)}50%{transform:scale(1.04) translateX(-2.4px)}}
+}
 </style>
 </head>
 <body>
@@ -6924,6 +6931,11 @@ function paintDio(name,art,note,hotArt){
  box.innerHTML='<div class="diopic"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" aria-label="'+name+'">'+
   DEFS+
   '<g class="dparx">'+art()+"</g>"+
+  '<g class="dfore" pointer-events="none">'+
+   '<path d="M0 180 q18 -16 34 -2 q12 -14 26 -1 q14 -12 26 2 v3 H0 Z"/>'+
+   '<path d="M320 180 q-16 -18 -32 -4 q-12 -13 -26 0 v6 h58 Z"/>'+
+   '<path d="M0 0 q26 6 40 26 q-22 -6 -40 -2 Z"/>'+
+  "</g>"+
   '<rect class="dhaze" x="0" y="0" width="320" height="180"/>'+
   '<rect class="dvig" x="0" y="0" width="320" height="180"/>'+
   "</svg></div>"+
