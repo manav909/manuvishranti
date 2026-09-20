@@ -1024,6 +1024,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .avwing{fill:var(--rt)}
 .avcanopy{fill:color-mix(in srgb,var(--rt) 45%,var(--mark));stroke:var(--rt);stroke-width:1.2}
 .avcrown{fill:#e0a93c}
+.rolewait{border:1px solid var(--rt);border-radius:1rem;padding:.6rem .7rem;background:color-mix(in srgb,var(--rt) 10%,var(--page))}
 .rolehero{display:flex;gap:.9rem;align-items:center;margin:.2rem 0 .6rem}
 .rolehead h1{margin:0}
 .rolehead p{margin:.1rem 0 0;color:var(--quiet);font-size:.92rem}
@@ -2163,7 +2164,7 @@ function mapArt(night){
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
 function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
- katha:{},farq:{},vastu:{},kahi:{},tour:{},role:"jigyasu",rolePicked:false,qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
+ katha:{},farq:{},vastu:{},kahi:{},tour:{},role:"jigyasu",rolePicked:false,journey:null,qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
@@ -3426,6 +3427,15 @@ const ROLE={
    ()=>({x:"दस चीज़ें संग्रह में आई हों",t:()=>vastuCount()>=10,p:()=>vastuCount()/10})],
   say:"आज तुम दरबार की तरफ़ से देख रहे हो, जहाँ हर बात का एक नियम है।"}
 };
+const journeyOn=()=>!!(save.journey&&save.journey.live);
+const journeyRole=()=>(save.journey&&save.journey.role)||myRole();
+function journeyMark(){                /* once a night begins, the role is settled */
+ save.journey={role:myRole(),live:true};persist();
+}
+function journeyStats(){
+ const forms=Object.keys(SC).reduce((n,k)=>n+Math.min(depthOf(k),layersOf(k).length),0);
+ return forms+" रूप, "+cardCount()+" बातें, "+purse()+" मणि";
+}
 const roleOpen=r=>!ROLE[r]||!ROLE[r].need||adhikar(ROLE[r].need).ok;
 const myRole=()=>(save.role&&ROLE[save.role])?save.role:"jigyasu";
 function roleTint(){
@@ -3474,8 +3484,13 @@ function roleDetail(r){
  some.forEach(x=>el('<p class="beat">'+x+"</p>"));
  el('<p class="quiet">कथा का धागा इससे नहीं बदलता। पहली घड़ी में वही पड़ाव सबको मिलते हैं, बदलती सिर्फ़ तुम्हारी नज़र और दूसरी घड़ी की राह है। खेल का रंग भी इसी भूमिका का हो जाएगा।</p>');
  const f=el("","fork");
- if(open)f.appendChild(btn("यही भूमिका चुनो","do go",()=>{
-  save.role=r;save.rolePicked=true;persist();roleTint();note(R.n+" होकर चलोगे।");front();}));
+ const other=save.journey&&save.journey.role&&save.journey.role!==r;
+ if(open&&other)el('<p class="quiet">तुम्हारी पिछली यात्रा '+ROLE[save.journey.role].n+
+  " की है। नई भूमिका चुनते ही वह मिट जाएगी, क्योंकि अभी एक ही यात्रा सँभलती है। खाता बनने के बाद हर भूमिका की यात्रा अलग रहेगी।</p>");
+ if(open)f.appendChild(btn(other?"पुरानी यात्रा छोड़कर यही शुरू करो":"यही भूमिका चुनो","do go",()=>{
+  if(other){save=blankSave();}
+  save.role=r;save.rolePicked=true;save.journey=null;persist();roleTint();
+  closeCard();fill();hud();paint();note(R.n+" होकर चलोगे।");front();}));
  else{
   el('<p class="ask">यह भूमिका अभी बंद है</p>');
   adhikar(R.need).all.forEach(n=>el('<p class="'+(n.t()?"beat":"quiet")+'">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+"</p>"));
@@ -3483,12 +3498,42 @@ function roleDetail(r){
  f.appendChild(btn("बाकी भूमिकाएँ देखो","do",roleScreen));
  anchorFrom(at);
 }
+function exitScreen(){
+ const at=markPoint();
+ run=null;story.innerHTML="";curStep=null;shut();
+ const R=ROLE[journeyRole()];
+ el('<div class="rolehero" style="--rt:'+R.tint+'">'+roleAvatar(journeyRole(),true)+
+  '<div class="rolehead"><h1>यात्रा से बाहर</h1><p>'+R.n+" की यात्रा, "+journeyStats()+"</p></div></div>");
+ el("<p>भूमिका बीच यात्रा में नहीं बदलती, क्योंकि पूरी राह उसी नज़र से बनी है। पर यात्रा से बाहर निकला जा सकता है।</p>");
+ el('<p class="ask">दो रास्ते हैं</p>');
+ el("<p><b>यहीं रोक दो:</b> सब कुछ जहाँ है वहीं रहेगा और तुम इसी भूमिका में लौट सकोगे। यह इसी डिवाइस में सँभलता है।</p>");
+ el("<p><b>यह यात्रा छोड़ दो:</b> यह सब मिट जाएगा और तुम नई भूमिका से नई शुरुआत करोगे।</p>");
+ el('<p class="quiet">अभी सहेजना सिर्फ़ इसी डिवाइस में होता है। खाता बनाने वाली सुविधा आने के बाद हर भूमिका की अपनी यात्रा अलग सँभलेगी, और उनमें से किसी में भी लौटा जा सकेगा।</p>');
+ const f=el("","fork");
+ f.appendChild(btn("यहीं रोक दो, बाद में लौटूँगा","do go",()=>{
+  save.journey={role:journeyRole(),live:false};persist();note("यात्रा रुकी हुई है, जब चाहो लौट आना।");roleScreen();}));
+ f.appendChild(btn("यह यात्रा छोड़ दो","do",()=>{
+  const keep=myRole();
+  save=blankSave();save.role=keep;save.rolePicked=false;save.journey=null;persist();
+  closeCard();fill();hud();paint();note("यात्रा छोड़ दी गई।");roleScreen();}));
+ f.appendChild(btn("रहने दो, वापस खेल में","do",()=>front()));
+ anchorFrom(at);
+}
 function roleScreen(){
  const at=markPoint();
  if(mode==="texts")storyMap();
  run=null;story.innerHTML="";curStep=null;shut();
  el('<h1>तुम कौन होकर चलोगे</h1>');
- el("<p>यह चुनाव पूरे खेल का रंग, तुम्हारी राह और तुम्हारी नज़र तय करता है। कथा सबको पूरी मिलती है, फ़र्क़ यह है कि तुम उसमें क्या देखोगे।</p>");
+ el("<p>यह चुनाव पूरे खेल का रंग, तुम्हारी राह और तुम्हारी नज़र तय करता है। कथा सबको पूरी मिलती है, फ़र्क़ यह है कि तुम उसमें क्या देखोगे। एक बार यात्रा शुरू होने के बाद भूमिका नहीं बदलती।</p>");
+ if(save.journey&&save.journey.role){
+  const J=ROLE[save.journey.role];
+  el('<div class="rolehero rolewait" style="--rt:'+J.tint+'">'+roleAvatar(save.journey.role,true)+
+   '<div class="rolehead"><h1>'+(save.journey.live?"चलती हुई यात्रा":"रुकी हुई यात्रा")+"</h1><p>"+
+   J.n+", "+journeyStats()+"</p></div></div>");
+  const jf=el("","fork");
+  jf.appendChild(btn("इसी यात्रा में लौटो","do go",()=>{
+   save.role=save.journey.role;save.rolePicked=true;save.journey.live=true;persist();roleTint();front();}));
+ }
  const grid=document.createElement("div");grid.className="rolegrid";
  Object.keys(ROLE).forEach(r=>{
   const R=ROLE[r],open=roleOpen(r);
@@ -3499,6 +3544,7 @@ function roleScreen(){
    '<span class="roleline">'+R.t+"</span>"+
    '<span class="roletag">'+(open?(save.role===r&&save.rolePicked?"यही चल रही है":"देखो"):"बंद")+"</span>";
   b.onclick=()=>roleDetail(r);
+  if(save.journey&&save.journey.role===r&&!save.journey.live)b.className+=" mine";
   grid.appendChild(b);
  });
  story.appendChild(grid);
@@ -5013,7 +5059,7 @@ function hud(){
 }
 function start(id){
  const N=NIGHTS.find(n=>n.id===id);
- save.nights[id]=(save.nights[id]||0)+1;persist();
+ save.nights[id]=(save.nights[id]||0)+1;journeyMark();persist();
  if(mode==="texts")storyMap();
  run={N,w:0,went:[],lost:[],gone:[],used:0,pickedHere:[],busy:false,path:[]};
  story.innerHTML="";curStep=null;dropAnchor();story.scrollTo({top:0});shut();
@@ -6124,7 +6170,8 @@ function front(){
  {const R=ROLE[myRole()];
   el('<p class="rolebar"><b>तुम्हारी भूमिका:</b> '+R.n+" — "+R.t+"</p>");
   const rf=el("","fork");
-  rf.appendChild(btn("भूमिका बदलो","do",pickRole));}
+  if(journeyOn())rf.appendChild(btn("यात्रा से बाहर निकलो","do",exitScreen));
+  else rf.appendChild(btn("भूमिका बदलो","do",roleScreen));}
  el('<p class="ask">कहाँ से शुरू करोगे?</p>');
  const f=el("","fork");
  NIGHTS.forEach(N=>{
