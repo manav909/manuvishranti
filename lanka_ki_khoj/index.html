@@ -4109,6 +4109,14 @@ const TERMS={
  ras:["रस","किसी दृश्य का मिज़ाज। डर वाला, हिम्मत वाला, दुख वाला, अचरज वाला, हँसी वाला, या शांत।"],
  kand:["कांड","रामायण सात हिस्सों में बँटी है, और हर हिस्से को कांड कहते हैं। यह खेल पाँचवें हिस्से, सुंदरकांड का है।"]
 };
+function glossSrc(id){              /* the first time a book speaks, say whose book it is */
+ const S=SRC[id];if(!S)return;
+ save.terms=save.terms||{};
+ const k="src:"+id;if(save.terms[k])return;
+ save.terms[k]=true;persist();
+ const bits=[S.who,S.lang,S.when].filter(Boolean).join(", ");
+ el('<p class="gloss"><b>'+S.n+":</b> "+(bits||"इस कथा की एक और किताब")+"।</p>");
+}
 function gloss(k){                  /* said once, the first time the word turns up */
  const T=TERMS[k];if(!T)return;
  save.terms=save.terms||{};
@@ -6431,7 +6439,7 @@ function visit(id){
  stage.classList.add("focus");
  arrive(id);showDio(id);
  el('<p class="chose">तुम '+PLACES[id].n+" की ओर गए।</p>");
- gloss("granth");gloss("mani");
+ gloss("granth");gloss("mani");glossSrc(S.src||"vr");
  const cut=splitSay(S.say);
  say(myRole()==="balak"?cut.story.slice(0,3):cut.story);   /* a child gets it shorter */
  el('<p class="w-src">'+SRC[S.src||"vr"].n+"</p>");
