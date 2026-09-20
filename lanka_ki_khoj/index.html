@@ -312,6 +312,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
  border:1px solid var(--rule);border-radius:.8rem;padding:.7rem .9rem;font:inherit;font-size:1.02rem;
  color:var(--ink);min-height:3rem}
 .do:hover{border-color:var(--haldi);color:var(--haldi)}
+.do.pick{box-shadow:0 0 0 1px var(--tide),0 10px 22px -14px var(--tide)}
 .do.go{background:var(--tide);border-color:var(--tide);color:var(--page)}
 .do.go:hover{background:var(--haldi);border-color:var(--haldi);color:var(--page)}
 .do.read{border-color:var(--fire);color:var(--fire)}
@@ -4225,6 +4226,8 @@ function journeyStats(){
  const forms=Object.keys(SC).reduce((n,k)=>n+Math.min(depthOf(k),layersOf(k).length),0);
  return forms+" रूप, "+cardCount()+" बातें, "+purse()+" मणि";
 }
+const RFIRST={jigyasu:"khoj",yatri:"khoj",kathapremi:"khabar",balak:"khoj",
+ yoddha:"aag",shastri:"khabar",sadhak:"khoj",raja:"aag"};
 const roleOpen=r=>!ROLE[r]||!ROLE[r].need||adhikar(ROLE[r].need).ok;
 const myRole=()=>(save.role&&ROLE[save.role])?save.role:"jigyasu";
 function roleTint(){
@@ -7440,12 +7443,15 @@ function front(){
   else rf.appendChild(btn("भूमिका बदलो","do",roleScreen));}
  el('<p class="ask">कहाँ से शुरू करोगे?</p>');
  const f=el("","fork");
- NIGHTS.forEach(N=>{
+ const first=RFIRST[myRole()];
+ const order=NIGHTS.slice().sort((a,b)=>(b.id===first?1:0)-(a.id===first?1:0));
+ order.forEach(N=>{
   const ok=(!N.needs||save.nights[N.needs])&&(!N.katha||(save.katha&&save.katha[N.katha]));
+  const mark=(N.id===first&&ok&&!save.nights[N.id])?" ← यहीं से शुरू करना ठीक रहेगा":"";
   const mine=Object.keys(SC).filter(k=>k.indexOf(N.id+"-")===0);
   const deep=mine.reduce((n,k)=>n+layersOf(k).length,0);
   const got=mine.reduce((n,k)=>n+Math.min(depthOf(k),layersOf(k).length),0);
-  f.appendChild(ok?btn(N.name+" ("+deep+" रूपों में से "+got+" देखे)","do go",()=>start(N.id))
+  f.appendChild(ok?btn(N.name+" ("+deep+" रूपों में से "+got+" देखे)"+mark,"do go"+(mark?" pick":""),()=>start(N.id))
                  :btn(N.name+(N.katha&&!(save.katha&&save.katha[N.katha])
                     ?", यह तब खुलेगी जब "+KATHA[N.katha].n+" पढ़ ली जाए"
                     :", पिछला हिस्सा एक बार जीने पर खुलेगा"),"do shut"));
