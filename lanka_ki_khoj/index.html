@@ -155,6 +155,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .panel h1{font-family:"Rozha One",serif;font-weight:400;font-size:2.4rem;color:var(--haldi);margin:.2rem 0 .3rem;line-height:1.15}
 .panel h2{font-family:"Rozha One",serif;font-weight:400;font-size:1.45rem;margin:1.4rem 0 .3rem}
 .panel p{margin:0 0 .9rem}
+.rolebar{margin:.1rem 0 .55rem;font-size:.92rem;color:var(--tide);border-left:3px solid var(--tide);padding-left:.6rem}
 .recap{margin:.1rem 0 .5rem;font-size:.9rem;color:var(--quiet);border-left:2px solid var(--rule);padding-left:.6rem}
 .quiet{color:var(--quiet);font-style:italic}
 .gain{display:flex;flex-wrap:wrap;gap:.3rem;align-items:center;margin:.2rem 0 .9rem}
@@ -1995,7 +1996,7 @@ function mapArt(night){
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
 function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
- katha:{},farq:{},vastu:{},kahi:{},tour:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
+ katha:{},farq:{},vastu:{},kahi:{},tour:{},role:"jigyasu",qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
@@ -3066,6 +3067,81 @@ const DART={
   TD.fig(130,150,1.08,{v:79,nari:1,veil:1,veilc:"#f4a7c0",d:.3})+TD.vig,
 };
 
+/* ---------- roles: who you walk this night as ---------- */
+const ROLE={
+ jigyasu:{n:"जिज्ञासु",t:"सब थोड़ा थोड़ा, और छिपी बातों के इशारे",
+  x:"जो हर तरफ़ देखना चाहता है। यह भूमिका किसी एक तरफ़ नहीं झुकती, इसलिए हर घड़ी में सबसे ज़्यादा बचा हुआ रास्ता सामने रखती है।",
+  tint:"#236f68",dark:"#5fb3aa",likes:["chh"],kinds:[],
+  say:"आज तुम सिर्फ़ देखने निकले हो, और देखना भी एक काम है।"},
+ yatri:{n:"यात्री",t:"जगहें, बनावट, बाज़ार और घाट",
+  x:"जिसे कथा से पहले जगह दिखती है। यह भूमिका उन कोनों की तरफ़ ले जाती है जहाँ नगर ख़ुद बोलता है: दीवारें, गलियाँ, बाग़ और पानी।",
+  tint:"#2f6f9a",dark:"#7fbfe0",likes:["chh"],kinds:["nagar","ghar","aamghar","chowki","pangrih","pushpak","sarovar","lankakinara","uttardwar","toran","chaitya"],
+  say:"आज तुम इस नगर को देखने आए हो, और यह नगर देखने लायक है।"},
+ kathapremi:{n:"कथा प्रेमी",t:"वही पल दूसरे ग्रंथों में",
+  x:"जिसे यह जानना अच्छा लगता है कि यही बात कहीं और कैसे कही गई। यह भूमिका हर जगह उस परत को पहले खोलती है जो किसी दूसरे ग्रंथ से आई हो।",
+  tint:"#9a6a09",dark:"#e0a93c",likes:["gr"],kinds:[],
+  say:"आज तुम एक ही रात को कई ज़बानों में सुनने आए हो।"},
+ balak:{n:"बालक",t:"छोटी सीधी बात, पशु पक्षी और अचरज",
+  x:"जिसे लंबी बात से ज़्यादा अचरज चाहिए। यह भूमिका उन जगहों को आगे रखती है जहाँ कुछ होता हुआ दिखता है, और भारी हिस्सों को पीछे।",
+  tint:"#3f7a3a",dark:"#8cc97f",likes:["chh"],kinds:["daal","kona","vatika","sarovar","mainakp","surasap","sinhikap","devlok","madhuvan"],
+  say:"आज तुम एक बड़ी कहानी में घूमने आए हो, और डरने की कोई बात नहीं।"},
+ yoddha:{n:"योद्धा",t:"लड़ाइयाँ, अस्त्र, वरदान और गिनती",
+  x:"जिसे यह जानना है कि कौन कब भिड़ा और किस चीज़ से। यह भूमिका तोरण, चौक, दरबार और मैदान की तरफ़ ले जाती है।",
+  tint:"#a5311f",dark:"#e06a58",likes:["chh"],kinds:["toran","chowk","sabha","mantri","chhat","maidan","nikumbhila","s_hazar","s_maya","j_darbar","v_maidan"],
+  say:"आज तुम गिनने आए हो कि कौन आया, किससे भिड़ा, और क्या लेकर लौटा।"},
+ shastri:{n:"शास्त्री",t:"मूल पंक्तियाँ, सर्ग और हवाले",
+  x:"जिसे पाठ चाहिए, कहानी बाद में। यह भूमिका उन बातों को पहले लाती है जिनके साथ मूल की पंक्ति या सर्ग का हवाला जुड़ा है।",
+  tint:"#3d4f8a",dark:"#9bb0ee",likes:["gr","man"],kinds:[],
+  need:[()=>NEED.texts(7),()=>({x:"पचीस छिपी बातें मिली हों",t:()=>cardCount()>=25,p:()=>cardCount()/25})],
+  say:"आज तुम पाठ मिलाने आए हो, इसलिए हर बात के नीचे उसका हवाला देखना।"},
+ sadhak:{n:"साधक",t:"मन, भक्ति और दर्शन वाली परतें",
+  x:"जिसे घटना से ज़्यादा उसका अर्थ चाहिए। यह भूमिका मन वाली परतों और कही हुई कथाओं की तरफ़ ले जाती है।",
+  tint:"#6b4fa0",dark:"#c0a8ef",likes:["man"],kinds:["vatika","shibir","sarovar","devlok","chaitya","j_vidya","s_brahma"],
+  need:[()=>({x:"तीन रसों के पल देखे हों",t:()=>{const rc=rasaCount();return Object.keys(rc).filter(r=>rc[r][0]>0).length>=3;},
+    p:()=>{const rc=rasaCount();return Object.keys(rc).filter(r=>rc[r][0]>0).length/3;}}),()=>NEED.roop(18)],
+  say:"आज तुम यह देखने आए हो कि इस रात के भीतर क्या चल रहा है।"},
+ raja:{n:"राजा",t:"दरबार, नीति, दूत का अधिकार और फ़ैसले",
+  x:"जिसे यह देखना है कि फ़ैसले कैसे लिए जाते हैं और कौन किससे क्या कहता है। यह भूमिका दरबारों और बैठकों की तरफ़ ले जाती है।",
+  tint:"#8a5b2b",dark:"#d9a46a",likes:["chh","man"],kinds:["sabha","mantri","darbar","shibir","kishkindha","v_darbar","s_darbar","j_darbar","mahal"],
+  need:[()=>({x:"एक रात पूरी की हो",t:()=>!!(save.done.khoj||save.done.aag||save.done.khabar),
+    p:()=>(save.done.khoj||save.done.aag||save.done.khabar)?1:0}),
+   ()=>({x:"दस चीज़ें संग्रह में आई हों",t:()=>vastuCount()>=10,p:()=>vastuCount()/10})],
+  say:"आज तुम दरबार की तरफ़ से देख रहे हो, जहाँ हर बात का एक नियम है।"}
+};
+const roleOpen=r=>!ROLE[r]||!ROLE[r].need||adhikar(ROLE[r].need).ok;
+const myRole=()=>(save.role&&ROLE[save.role])?save.role:"jigyasu";
+function roleTint(){
+ const R=ROLE[myRole()];if(!R)return;
+ if(!app||!app.style||typeof app.style.setProperty!=="function")return;
+ const dark=typeof matchMedia==="function"&&matchMedia("(prefers-color-scheme:dark)").matches;
+ app.style.setProperty("--tide",dark?R.dark:R.tint);
+ app.style.setProperty("--haldi",dark?R.dark:R.tint);
+}
+function roleRank(id){                /* how much this place suits the role you picked */
+ const R=ROLE[myRole()];if(!R)return 0;
+ return (R.kinds||[]).indexOf(id)>-1?1:0;
+}
+function pickRole(){
+ const at=markPoint();
+ story.innerHTML="";curStep=null;
+ el('<h1>तुम कौन होकर चलोगे</h1>');
+ el("<p>यही तय करेगा कि दूसरी घड़ी में तुम्हें क्या पहले दिखे और खेल किस रंग में चले। कथा सबको पूरी मिलेगी, यह सिर्फ़ तुम्हारी नज़र चुनने की बात है।</p>");
+ const f=el("","fork");
+ Object.keys(ROLE).forEach(r=>{
+  const R=ROLE[r],open=roleOpen(r);
+  const b=document.createElement("button");
+  b.className="card-pick"+(myRole()===r?" gift":"");b.type="button";
+  b.innerHTML='<span class="cp-no" style="color:'+R.tint+'">●</span><span class="cp-mid"><b>'+R.n+"</b>"+
+   "<span>"+R.t+"</span>"+
+   '<span class="cp-left">'+(open?R.x:adhikar(R.need).all.map(n=>(n.t()?"हो गया: ":"बाकी: ")+n.x).join(" • "))+"</span></span>"+
+   '<span class="cp-go">'+(open?"यही":"बंद")+"</span>";
+  if(open)b.onclick=()=>{save.role=r;persist();roleTint();note(R.n+" होकर चलोगे।");front();};
+  else b.onclick=()=>note("यह भूमिका अभी बंद है। "+adhikar(R.need).miss.map(n=>n.x).join(", ")+"।");
+  f.appendChild(b);
+ });
+ f.appendChild(btn("रहने दो, वापस चलो","do go",()=>front()));
+ anchorFrom(at);
+}
 /* ---------- kahi: stories that someone inside the story tells ---------- */
 const KKIND={rishi:"ऋषि",dev:"देवता",rakshasi:"राक्षसी",pashu:"पशु",rajkul:"राजकुल",vanar:"वानर",samudra:"प्रकृति"};
 const KAHI={
@@ -4578,6 +4654,7 @@ function start(id){
  step("");
  el('<h2>'+N.name+"</h2>");
  el('<p class="quiet">'+N.about+"</p>");
+ el('<p class="rolebar"><b>'+ROLE[myRole()].n+":</b> "+ROLE[myRole()].say+"</p>");
  anchorFrom(0);            /* this night begins at its own first line */
  build();weather();turn();
 }
@@ -4650,7 +4727,7 @@ function offer(only){
  /* in the free ghadi, keep the list short: the unread ones first, the rest behind a button */
  let hidden=[];
  if(run.ghadi===1&&!only&&open.length>4){
-  open.sort((a,b)=>freshAt(b)-freshAt(a));
+  open.sort((a,b)=>(roleRank(b)-roleRank(a))||(freshAt(b)-freshAt(a)));
   hidden=open.slice(4);open=open.slice(0,4);
  }
  open.forEach(id=>{
@@ -4661,7 +4738,7 @@ function offer(only){
    '<b>'+PLACES[id].n+"</b><span>"+PLACES[id].t+"</span>"+
    '<span class="cp-left">'+(run.ghadi===0
      ?"कथा का "+ORD[mainList(run.w).indexOf(id)]+" पड़ाव"+(nf?", "+nf+" रूप बाकी":"")
-     :(nf?nf+" रूप अभी बाकी":"यहाँ सब पढ़ा जा चुका"))+"</span></span>"+
+     :(roleRank(id)?"तुम्हारी राह, ":"")+(nf?nf+" रूप अभी बाकी":"यहाँ सब पढ़ा जा चुका"))+"</span></span>"+
    '<span class="cp-go">जाओ</span>';
   b.onclick=()=>{f.remove();visit(id);};
   f.appendChild(b);
@@ -5657,6 +5734,10 @@ function front(){
  flyTo(CAM(16.4,74.0,5.4,82.4));
  el('<h1>लंका की खोज</h1>');
  el('<p>लंका में एक रात। एक ही वक़्त पर कई जगहों पर कुछ हो रहा है, और तुम हर घड़ी एक ही जगह चुन सकते हो।</p>');
+ {const R=ROLE[myRole()];
+  el('<p class="rolebar"><b>तुम्हारी भूमिका:</b> '+R.n+" — "+R.t+"</p>");
+  const rf=el("","fork");
+  rf.appendChild(btn("भूमिका बदलो","do",pickRole));}
  el('<p class="ask">कहाँ से शुरू करोगे?</p>');
  const f=el("","fork");
  NIGHTS.forEach(N=>{
@@ -6324,7 +6405,7 @@ document.getElementById("lamp").onclick=()=>{
  hud();
  note(got.length?got.join("। ")+"। थैली में "+purse()+"।":"अभी कुछ तैयार नहीं है।");
 };
-catchUp();foldLbl();tabs();showPanel("story");miniBuild();front();fitLater();
+catchUp();foldLbl();tabs();showPanel("story");miniBuild();roleTint();front();fitLater();
 </script>
 </body>
 </html>
