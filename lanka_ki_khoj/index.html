@@ -4410,7 +4410,10 @@ function roleDetail(r){
  if(open)f.appendChild(btn(other?"पुरानी यात्रा छोड़कर यही शुरू करो":"यही भूमिका चुनो","do go",()=>{
   preview=null;roadHTML="";switchRole(r);
   note(R.n+" होकर चलोगे।"+(other?" पिछली यात्रा अपनी जगह रखी है।":""));front();}));
- else adhikar(R.need).all.forEach(n=>el('<p class="'+(n.t()?"beat":"quiet")+'">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+"</p>"));
+ else{const ad=adhikar(R.need);
+  el('<p class="ask">यह भूमिका '+Math.round(Math.min(1,ad.p)*100)+"% खुल चुकी है</p>");
+  ad.all.forEach(n=>el('<p class="'+(n.t()?"beat":"quiet")+'">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+
+   (n.t()?"":" ("+Math.round(Math.min(1,(typeof n.p==="function"?n.p():0))*100)+"%)")+"</p>"));}
  f.appendChild(btn("बाकी भूमिकाएँ देखो","do",()=>{clearPreview();roleScreen();}));
  anchorFrom(at);
 }
