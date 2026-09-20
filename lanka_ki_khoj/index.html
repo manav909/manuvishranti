@@ -2779,7 +2779,7 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
   '<span class="fsrc">'+nm+(ref?", "+ref:"")+"</span>";
  const where=document.createElement("div");where.className="giftwhere";
  const wtxt=document.createElement("span");
- wtxt.textContent="यह अब खोजी की पोथी में रखी है, "+(L[kind]||"बातें")+" वाले पन्ने पर।";
+ wtxt.textContent="यह अब "+whoAmI()+" की पोथी में रखी है, "+(L[kind]||"बातें")+" वाले पन्ने पर।";
  const go=document.createElement("button");go.className="claim";go.type="button";
  go.textContent="पोथी में खोलो";
  go.onclick=()=>{tab=kind;showPanel("pothi");fill();pothi.scrollTop=0;};
@@ -2878,14 +2878,14 @@ const app=document.getElementById("app"),
 /* ---------- panels: one at a time, each with its own scroll ---------- */
 const tourBox=document.getElementById("chakkar");
 const PANE={story:story,pothi:pothi,reader:readerBox,chakkar:tourBox};
-const PANE_N={story:"कथा",pothi:"खोजी की पोथी",reader:"पढ़ाई",chakkar:"चक्कर"};
+const PANE_N={story:"कथा",pothi:"पोथी",reader:"पढ़ाई",chakkar:"चक्कर"};
 let panel="story",kept={},lastPanel="story";
 function tabs(){
  if(!tabsBar)return;
  tabsBar.innerHTML="";
  ["story","pothi"].concat(panel==="reader"||readerBox.innerHTML?["reader"]:[])
-  .forEach(k=>{const b=btn(PANE_N[k],"chip"+(panel===k?" on":""),()=>showPanel(k));tabsBar.appendChild(b);});
- tabsBar.appendChild(btn("खोजी का पत्र","chip card-chip"+(cardOpen()?" on":""),openCard));
+  .forEach(k=>{const b=btn(k==="pothi"?whoAmI()+" की पोथी":PANE_N[k],"chip"+(panel===k?" on":""),()=>showPanel(k));tabsBar.appendChild(b);});
+ tabsBar.appendChild(btn(whoAmI()+" का पत्र","chip card-chip"+(cardOpen()?" on":""),openCard));
 }
 function showPanel(k){
  if(!PANE[k])return;
@@ -4226,6 +4226,9 @@ function journeyStats(){
  const forms=Object.keys(SC).reduce((n,k)=>n+Math.min(depthOf(k),layersOf(k).length),0);
  return forms+" रूप, "+cardCount()+" बातें, "+purse()+" मणि";
 }
+const RWHO={jigyasu:"खोजी",yatri:"राही",kathapremi:"श्रोता",balak:"नन्हा खोजी",
+ yoddha:"सिपाही",shastri:"पाठक",sadhak:"साधक",raja:"दूत"};
+const whoAmI=()=>RWHO[myRole()]||"खोजी";
 const RTAB={jigyasu:"chh",yatri:"places",kathapremi:"gr",balak:"chh",
  yoddha:"chh",shastri:"src",sadhak:"man",raja:"farq"};
 const RDAWN={
