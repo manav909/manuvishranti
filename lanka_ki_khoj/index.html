@@ -7540,11 +7540,15 @@ function dawn(){
    (!x.katha||(save.katha&&save.katha[x.katha])));
   if(nx){const aim=(RAIM[myRole()]||{})[nx.id];
    if(aim)el('<p class="aim"><b>आगे:</b> '+nx.name+"। "+aim+"</p>");}}
- el('<p class="ask">इस रात की कथा, क्रम से</p>');
- N.watches.forEach((w,i)=>{
-  const beats=w.spots.filter(x=>SPINE[N.id+"-"+x+"-"+i]);
-  beats.forEach(x=>el('<p class="beat"><b>'+PLACES[x].n+":</b> "+SPINE[N.id+"-"+x+"-"+i]+"</p>"));
- });
+ {const b=document.createElement("div");b.className="tease shut";
+  const lid=document.createElement("button");lid.className="teaselid";lid.type="button";
+  let rows="",n=0;
+  N.watches.forEach((w,i)=>w.spots.filter(x=>SPINE[N.id+"-"+x+"-"+i]).forEach(x=>{
+   n++;rows+='<p class="beat"><b>'+PLACES[x].n+":</b> "+SPINE[N.id+"-"+x+"-"+i]+"</p>";}));
+  lid.innerHTML="<b>इस रात की कथा, क्रम से</b><span>"+n+" पड़ाव</span>";
+  const body=document.createElement("div");body.className="teasebody";body.innerHTML=rows;
+  lid.onclick=()=>{b.classList.toggle("shut");};
+  b.appendChild(lid);b.appendChild(body);story.appendChild(b);}
  el('<p class="ask">और तुम कहाँ कहाँ हो आए</p>');
  N.watches.forEach((w,i)=>{
   const been=(run.path||[]).filter(x=>x.w===i).map(x=>PLACES[x.id].n);
