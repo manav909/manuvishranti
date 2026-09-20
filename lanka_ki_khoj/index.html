@@ -155,6 +155,8 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .panel h1{font-family:"Rozha One",serif;font-weight:400;font-size:2.4rem;color:var(--haldi);margin:.2rem 0 .3rem;line-height:1.15}
 .panel h2{font-family:"Rozha One",serif;font-weight:400;font-size:1.45rem;margin:1.4rem 0 .3rem}
 .panel p{margin:0 0 .9rem}
+.aim{margin:.15rem 0 .6rem;padding:.45rem .7rem;border:1px dashed var(--tide);border-radius:.7rem;
+ font-size:.96rem;color:var(--ink);background:color-mix(in srgb,var(--tide) 8%,transparent)}
 .rolebar.close{border-left-style:dotted;opacity:.92}
 .rolebar{margin:.1rem 0 .55rem;font-size:.92rem;color:var(--tide);border-left:3px solid var(--tide);padding-left:.6rem}
 .recap{margin:.1rem 0 .5rem;font-size:.9rem;color:var(--quiet);border-left:2px solid var(--rule);padding-left:.6rem}
@@ -4034,6 +4036,57 @@ function roleBlock(id,key){          /* the shape of the card changes with who y
    return left?'<p class="quiet">यहाँ अभी '+left+" रूप और बाकी हैं।</p>":"";
  }
 }
+/* ---------- what each role is actually after, night by night ---------- */
+const RAIM={
+ jigyasu:{khoj:"आज की एक ही ज़िद: जितने कोने खुल सकें, खोल लो।",
+  aag:"आज देखो कि एक अकेले के आने से पूरा नगर कैसे बदल गया।",
+  khabar:"आज यह मिलाओ कि जो देखा था और जो कहा गया, उनमें कितना फ़र्क़ है।",
+  vilanka:"आज उस कथा में घुसो जो बाकी सब के ख़त्म होने के बाद शुरू होती है।",
+  shakti:"आज देखो कि जीत के बाद भी क्या बचा रह जाता है।",
+  vidya:"आज देखो कि बिना किसी चमत्कार के यही रात कैसी दिखती है।"},
+ yatri:{khoj:"आज इस नगर का नक्शा अपने दिमाग़ में बना लो, बाहर से भीतर तक।",
+  aag:"आज देखो कि जिस नगर को तुमने रात में देखा था, दिन में उसका क्या हुआ।",
+  khabar:"आज वह रास्ता याद रखो जिससे लौटना है, और जो पीछे छूटा वह भी।",
+  vilanka:"आज एक ऐसी जगह देखो जो नक्शे पर नहीं है, पाताल की लंका।",
+  shakti:"आज समुद्र पार के उस दूसरे नगर तक जाओ।",
+  vidya:"आज उसी लंका को देखो जहाँ रहने वाले राक्षस नहीं हैं।"},
+ kathapremi:{khoj:"आज एक ही रात को जितनी ज़बानों में सुन सको, सुनो।",
+  aag:"आज यह देखो कि आग की कथा हर परंपरा में कैसे बदल जाती है।",
+  khabar:"आज देखो कि ख़बर सुनाने का ढंग हर कथा में अलग है।",
+  vilanka:"आज उस कथा को सुनो जो सिर्फ़ ओड़िशा में कही जाती है।",
+  shakti:"आज उस कथा को सुनो जिसमें अंत सीता के हाथ है।",
+  vidya:"आज वह कथा सुनो जिसमें पूँछ में आग लगती ही नहीं।"},
+ balak:{khoj:"आज की बात: जितने अजीब और मज़ेदार दृश्य मिलें, सब देख लो।",
+  aag:"आज देखो कि एक बंदर ने पूरे नगर को कैसे हिला दिया।",
+  khabar:"आज सबसे अच्छी ख़बर पहुँचानी है, और रास्ते में मज़ा भी करना है।",
+  vilanka:"आज ज़मीन के नीचे वाली दुनिया देखने चलो।",
+  shakti:"आज देखो कि सबसे बहादुर कौन निकला।",
+  vidya:"आज देखो कि वही कहानी बिना जादू के कैसी लगती है।"},
+ yoddha:{khoj:"आज गिनो कि कहाँ कहाँ पहरा है और कहाँ से निकला जा सकता है।",
+  aag:"आज गिनो कि कौन कब आया, किस हथियार से, और कितनी देर टिका।",
+  khabar:"आज देखो कि जीतकर लौटना और हारकर लौटना कैसे अलग दिखते हैं।",
+  vilanka:"आज उस लड़ाई में उतरो जिसमें कोई सामने ही नहीं आता।",
+  shakti:"आज देखो कि जब अस्त्र बेकार हो जाएँ तब क्या बचता है।",
+  vidya:"आज देखो कि वही लड़ाइयाँ बिना वरदानों के कैसी होती हैं।"},
+ shastri:{khoj:"आज हर पल का हवाला जमा करो, सर्ग सहित।",
+  aag:"आज दो पाठों को आमने सामने रखो और गिनती मिलाओ।",
+  khabar:"आज उस हिस्से तक पहुँचो जहाँ कवि ख़ुद बोलता है।",
+  vilanka:"आज देखो कि एक लोक कथा कैसे पूरे कांड जितनी हो जाती है।",
+  shakti:"आज शाक्त परंपरा का वह पाठ देखो जो और कहीं नहीं है।",
+  vidya:"आज जैन परंपरा के उस पाठ को पढ़ो जो हर बात का कारण बताता है।"},
+ sadhak:{khoj:"आज बाहर से ज़्यादा भीतर देखो, हर पड़ाव पर।",
+  aag:"आज देखो कि क्रोध कहाँ तक काम आता है और कहाँ से भारी पड़ता है।",
+  khabar:"आज बिना कुछ माँगे लौटना देखो।",
+  vilanka:"आज देखो कि छल के सामने संयम कैसे टिकता है।",
+  shakti:"आज देखो कि रुका हुआ बल जब चलता है तो क्या होता है।",
+  vidya:"आज उस कथा में ठहरो जिसमें किसी से नफ़रत नहीं है।"},
+ raja:{khoj:"आज देखो कि एक दूत किस अधिकार से भीतर जाता है।",
+  aag:"आज देखो कि दरबार के फ़ैसले किस क्रम से बदलते गए।",
+  khabar:"आज देखो कि ख़बर मिलने पर राजा सबसे पहले क्या पूछता है।",
+  vilanka:"आज देखो कि एक राज्य छल से कैसे गिरता है।",
+  shakti:"आज देखो कि सबसे बड़ी जीत के बाद भी दरबार क्यों नहीं बैठ पाता।",
+  vidya:"आज उस दरबार को देखो जहाँ दूत बाँधा ही नहीं जाता।"}
+};
 /* ---------- roles: who you walk this night as ---------- */
 const ROLE={
  jigyasu:{n:"जिज्ञासु",t:"सब थोड़ा थोड़ा, और छिपी बातों के इशारे",
@@ -6109,6 +6162,8 @@ function start(id){
  el('<h2>'+N.name+"</h2>");
  el('<p class="quiet">'+N.about+"</p>");
  el('<p class="rolebar"><b>'+ROLE[myRole()].n+":</b> "+ROLE[myRole()].say+"</p>");
+ {const aim=(RAIM[myRole()]||{})[N.id];
+  if(aim)el('<p class="aim">'+aim+"</p>");}
  anchorFrom(0);            /* this night begins at its own first line */
  build();weather();turn();
 }
