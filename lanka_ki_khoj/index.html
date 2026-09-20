@@ -1005,6 +1005,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  opacity:.45}
 .rolename{font-family:"Rozha One",serif;font-size:1.1rem;color:var(--rt)}
 .roleline{font-size:.8rem;color:var(--quiet);line-height:1.45;text-align:center}
+.rolemud{font-size:.74rem;color:var(--haldi)}
 .roletag{font-size:.74rem;color:var(--rt);border:1px solid var(--rt);border-radius:99px;padding:.02rem .55rem;margin-top:.2rem}
 .rolecard.locked{filter:saturate(.25);opacity:.72}
 .rolecard.mine{border-color:var(--rt);box-shadow:0 0 0 1px var(--rt),0 10px 24px -14px var(--rt)}
@@ -2164,7 +2165,7 @@ function mapArt(night){
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
 function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
- katha:{},farq:{},vastu:{},kahi:{},tour:{},role:"jigyasu",rolePicked:false,journey:null,qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
+ katha:{},farq:{},vastu:{},kahi:{},tour:{},role:"jigyasu",rolePicked:false,journey:null,roleDone:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
@@ -3482,6 +3483,10 @@ function roleDetail(r){
  const some=Object.keys(R.lens||{}).slice(0,3).map(c=>R.lens[c]);
  el("<p><b>वहाँ पहुँचकर यह सुनाई देगा:</b></p>");
  some.forEach(x=>el('<p class="beat">'+x+"</p>"));
+ {const done=Object.keys((save.roleDone&&save.roleDone[r])||{});
+  if(done.length)el("<p><b>इस भूमिका की मुद्राएँ:</b> "+done.map(id=>{
+   const N=NIGHTS.find(n=>n.id===id);return N?N.name:id;}).join(", ")+"।</p>");
+  else el('<p class="quiet">इस भूमिका में अभी कोई रात पूरी नहीं हुई। हर रात पूरी करने पर इसकी अपनी मुद्रा मिलती है।</p>');}
  el('<p class="quiet">कथा का धागा इससे नहीं बदलता। पहली घड़ी में वही पड़ाव सबको मिलते हैं, बदलती सिर्फ़ तुम्हारी नज़र और दूसरी घड़ी की राह है। खेल का रंग भी इसी भूमिका का हो जाएगा।</p>');
  const f=el("","fork");
  const other=save.journey&&save.journey.role&&save.journey.role!==r;
@@ -3540,8 +3545,10 @@ function roleScreen(){
   const b=document.createElement("button");
   b.className="rolecard"+(open?"":" locked")+(save.role===r&&save.rolePicked?" mine":"");
   b.type="button";if(b.style&&b.style.setProperty)b.style.setProperty("--rt",R.tint);
+  const mud=Object.keys((save.roleDone&&save.roleDone[r])||{}).length;
   b.innerHTML=roleAvatar(r)+'<span class="rolename">'+R.n+"</span>"+
    '<span class="roleline">'+R.t+"</span>"+
+   (mud?'<span class="rolemud">'+mud+" मुद्रा</span>":"")+
    '<span class="roletag">'+(open?(save.role===r&&save.rolePicked?"यही चल रही है":"देखो"):"बंद")+"</span>";
   b.onclick=()=>roleDetail(r);
   if(save.journey&&save.journey.role===r&&!save.journey.live)b.className+=" mine";
@@ -6115,6 +6122,10 @@ function dawn(){
  const N=run.N;shut();
  const at=markPoint();
  step("सुबह हो गई");
+ {const r=myRole();save.roleDone=save.roleDone||{};save.roleDone[r]=save.roleDone[r]||{};
+  if(!save.roleDone[r][N.id]){save.roleDone[r][N.id]=true;persist();
+   earned=[];earn(MANI_JAGAH,"role",ROLE[r].n);earned=[];persist();
+   el('<p class="rolebar"><b>'+ROLE[r].n+" की मुद्रा:</b> यह रात इस भूमिका में पूरी हुई। हर भूमिका की अपनी मुद्राएँ अलग गिनी जाती हैं। +"+MANI_JAGAH+" मणि</p>");}}
  el("<h2>"+(N.id==="khoj"?"भोर हो गई":N.id==="aag"?"दिन ढल गया":"ख़बर पहुँच गई")+"</h2>");
  el('<p class="quiet">तुम यहाँ थे: '+run.went.join(", ")+"।</p>");
  if(run.lost.length)el('<p class="quiet">और यह सब तुम्हारे बिना हुआ: '+run.lost.join(", ")+"।</p>");
