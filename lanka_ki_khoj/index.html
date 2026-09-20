@@ -3706,6 +3706,20 @@ function weaveDoc(){
 }
 /* ---------- the thread: beats the story cannot lose, even if you were elsewhere ---------- */
 const SPINE={
+ "vilanka-v_utar-0":"पाताल का रास्ता उतरा गया, और ऊपर की दुनिया पीछे छूट गई।",
+ "vilanka-v_maidan-0":"मैदान में ताली बजी और सेना बिखर गई, बिना किसी लड़ाई के।",
+ "vilanka-v_surekha-1":"सुरेखा के घेरे में बँधकर सब रुक गए, और कोई निकल नहीं सका।",
+ "vilanka-v_kambu-1":"कम्बु ने छल से रास्ता खोला, और भीतर पहुँचना हुआ।",
+ "vilanka-v_bulawa-2":"देवी मंगला का बुलावा आया, और सीता आगे बुलाई गईं।",
+ "vilanka-v_dhanush-2":"फूलों का धनुष हाथ में आया, और मैदान चुप हो गया।",
+ "shakti-s_darbar-0":"जीत के बाद का दरबार बैठा, और तभी एक और नाम सुनाई दिया।",
+ "shakti-s_pushkar-0":"पुष्कर द्वीप सामने आया, यानी एक और नगर बचा रह गया था।",
+ "shakti-s_maya-1":"माया फैली और दोनों भाई बँध गए, कोई अस्त्र काम नहीं आया।",
+ "shakti-s_brahma-2":"ब्रह्मा ने समझाया कि जो होता है, शक्ति के साथ ही होता है।",
+ "vidya-j_vidya-0":"यहाँ साफ़ हुआ कि उड़ना वरदान नहीं, सीखी हुई विद्या है।",
+ "vidya-j_darbar-1":"दरबार में बात सीधे हुई, क्योंकि दूत बँधा हुआ नहीं आया था।",
+ "vidya-j_aag-2":"लंका जली, पर पूँछ से नहीं, और अंत वही रहा।",
+ "vidya-j_nishani-2":"अँगूठी दी गई और चूड़ामणि ली गई, बिना किसी तमाशे के।",
  "khabar-prasravan-3":"पहाड़ की चढ़ाई चढ़ी गई, और ऊपर डेरे की आग दिखने लगी।",
  "khoj-nagar-1":"नगर की गलियाँ छानी गईं, घर घर देखा गया, और कहीं वे नहीं मिलीं।",
  "khoj-akash-0":"सौ योजन की वह छलाँग लगी, और रास्ते की तीनों रुकावटें पार हुईं।",
@@ -4771,6 +4785,10 @@ function visit(id){
  if(run.ghadi===0&&ghadiSpots().length){
   f.appendChild(btn("कथा आगे चलती है, साथ चलो","do go",()=>{f.remove();
    const atn=markPoint();run.busy=false;offer();anchorFrom(atn);}));
+  anchorFrom(at);return;
+ }
+ if(run.ghadi===0&&!W.spots.filter(x=>mainList(run.w).indexOf(x)<0).length){
+  f.appendChild(btn("वक़्त आगे बढ़ाओ","do go",()=>{f.remove();endWatch();}));
   anchorFrom(at);return;
  }
  if(run.ghadi===0){
