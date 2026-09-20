@@ -4470,7 +4470,8 @@ function roleScreen(){
    '<span class="roleline">'+R.t+"</span>"+
    '<span class="rolemud">'+own+" ठिकाने · "+prize+" इनाम</span>"+
    (slotLine(r)?'<span class="roleslot">'+slotLine(r)+"</span>":"")+
-   '<span class="roletag">'+(open?(save.role===r&&save.rolePicked?"यही चल रही है":"देखो"):"बंद")+"</span>";
+   '<span class="roletag">'+(open?(save.role===r&&save.rolePicked?"यही चल रही है":"देखो"):
+     "बंद · "+Math.round(Math.min(1,adhikar(R.need).p)*100)+"%")+"</span>";
   b.onclick=()=>{rolePreview(r);roleDetail(r);};
   if(save.journey&&save.journey.role===r&&!save.journey.live)b.className+=" mine";
   grid.appendChild(b);
@@ -5060,7 +5061,8 @@ function farqNeed(i){
 function needsOf(list){return (list||[]).map(f=>f());}
 function adhikar(list){
  const need=needsOf(list);
- return {ok:need.every(n=>n.t()),miss:need.filter(n=>!n.t()),all:need};
+ const p=need.length?need.reduce((a,n)=>a+Math.min(1,(typeof n.p==="function"?n.p():(n.t()?1:0))||0),0)/need.length:1;
+ return {ok:need.every(n=>n.t()),miss:need.filter(n=>!n.t()),all:need,p:p};
 }
 /* ---------- where the tellings part ways ---------- */
 const FARQ=[
