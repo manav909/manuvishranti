@@ -1009,7 +1009,11 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  opacity:.45}
 .rolename{font-family:"Rozha One",serif;font-size:1.1rem;color:var(--rt)}
 .roleline{font-size:.8rem;color:var(--quiet);line-height:1.45;text-align:center}
-.rolemud{font-size:.74rem;color:var(--haldi)}
+.rolemud{font-size:.72rem;color:var(--haldi)}
+.steps{position:sticky;top:0;z-index:4;margin:0 0 .3rem;padding:.35rem 0;font-size:.82rem;color:var(--quiet);
+ background:linear-gradient(180deg,var(--page) 70%,transparent);backdrop-filter:blur(3px)}
+.steps b{color:var(--tide)}
+.steps span{color:var(--quiet);opacity:.7;margin-left:.4rem}
 .roletag{font-size:.74rem;color:var(--rt);border:1px solid var(--rt);border-radius:99px;padding:.02rem .55rem;margin-top:.2rem}
 .rolecard.locked{filter:saturate(.25);opacity:.72}
 .rolecard.mine{border-color:var(--rt);box-shadow:0 0 0 1px var(--rt),0 10px 24px -14px var(--rt)}
@@ -4112,6 +4116,7 @@ function roleScreen(){
  if(mode==="texts")storyMap();
  run=null;preview=null;roadHTML="";story.innerHTML="";curStep=null;shut();
  roleTint();build();paint();flyTo(fitAll(),1.05);      /* the whole map, before any road is drawn */
+ el('<p class="steps"><b>पहला क़दम:</b> भूमिका चुनो <span>फिर रात चुनना</span></p>');
  el('<h1>तुम कौन होकर चलोगे</h1>');
  el("<p>यह चुनाव पूरे खेल का रंग, तुम्हारी राह और तुम्हारी नज़र तय करता है। कथा सबको पूरी मिलती है, फ़र्क़ यह है कि तुम उसमें क्या देखोगे। एक बार यात्रा शुरू होने के बाद भूमिका नहीं बदलती।</p>");
  if(save.journey&&save.journey.role){
@@ -4131,9 +4136,10 @@ function roleScreen(){
   b.type="button";if(b.style&&b.style.setProperty)b.style.setProperty("--rt",R.tint);
   const mud=Object.keys((save.roleDone&&save.roleDone[r])||{}).length;
   const own=roleOwn(r).length;
+  const prize=Object.keys(ACH).filter(k=>ACH[k].only===r).length+ROLEPADVI.filter(x=>x.role===r).length;
   b.innerHTML=roleAvatar(r)+'<span class="rolename">'+R.n+"</span>"+
    '<span class="roleline">'+R.t+"</span>"+
-   '<span class="rolemud">'+own+" अपनी जगहें"+(mud?", "+mud+" मुद्रा":"")+"</span>"+
+   '<span class="rolemud">'+own+" ठिकाने · "+prize+" इनाम"+(mud?" · "+mud+" मुद्रा":"")+"</span>"+
    '<span class="roletag">'+(open?(save.role===r&&save.rolePicked?"यही चल रही है":"देखो"):"बंद")+"</span>";
   b.onclick=()=>{rolePreview(r);roleDetail(r);};
   if(save.journey&&save.journey.role===r&&!save.journey.live)b.className+=" mine";
@@ -4141,7 +4147,7 @@ function roleScreen(){
  });
  story.appendChild(grid);
  el('<p class="quiet">किसी भी भूमिका पर छूकर देखो कि उसमें क्या मिलेगा। बंद भूमिकाएँ भी खुलती हैं, उनकी शर्तें उन्हीं के पन्ने पर लिखी हैं।</p>');
- if(save.rolePicked){const f=el("","fork");f.appendChild(btn("रहने दो, वापस चलो","do go",()=>front()));}
+ if(save.rolePicked){const f=el("","fork actbar");f.appendChild(btn("रहने दो, वापस चलो","do go",()=>front()));}
  anchorFrom(at);
 }
 const pickRole=roleScreen;
