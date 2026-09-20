@@ -1061,25 +1061,15 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .rolegrid .rolecard:nth-child(8){animation-delay:.35s}
 }
 
-/* ---- each role carries its own map ---- */
-.rolemap{width:100%;height:auto;display:block;margin:.25rem 0 .1rem}
-.rolemap.big{max-width:22rem;margin:.3rem auto .6rem}
-.rolemapwrap{display:flex;justify-content:center}
-.rmbg{fill:color-mix(in srgb,var(--rt) 10%,var(--mark));stroke:color-mix(in srgb,var(--rt) 40%,transparent);stroke-width:1}
-.rmdot{fill:var(--quiet);opacity:.4}
-.rmpath{fill:none;stroke:var(--rt);stroke-width:1.6;stroke-linecap:round;stroke-dasharray:5 5}
-.rmglow{fill:none;stroke:var(--rt);stroke-width:6;opacity:.16;stroke-linecap:round}
-.rmown{fill:var(--rt)}
-.rmown.solo{fill:#f0c75a;stroke:var(--rt);stroke-width:1.2}
-.rmlbl{fill:var(--quiet);font-size:8px;font-family:inherit}
+
+/* the road of a role, drawn on the map itself */
+.rdline{fill:none;stroke:var(--tide);stroke-width:1.1;stroke-linecap:round;stroke-dasharray:3 3;opacity:.95}
+.rdglow{fill:none;stroke:var(--tide);stroke-width:4;opacity:.18;stroke-linecap:round}
 @media (prefers-reduced-motion:no-preference){
- .rmpath{animation:rmwalk 5.5s linear infinite}
- @keyframes rmwalk{from{stroke-dashoffset:0}to{stroke-dashoffset:-40}}
- .rmown.solo{animation:rmpulse 2.4s ease-in-out infinite}
- @keyframes rmpulse{0%,100%{r:4;opacity:1}50%{r:5.4;opacity:.75}}
- .rolecard:hover .rmglow{animation:rmbreathe 1.8s ease-in-out infinite}
- @keyframes rmbreathe{0%,100%{opacity:.12}50%{opacity:.34}}
- .rolecard:hover .rmpath{animation-duration:2.2s}
+ .rdline{animation:rdwalk 6s linear infinite}
+ @keyframes rdwalk{from{stroke-dashoffset:0}to{stroke-dashoffset:-24}}
+ .rdglow{animation:rdbreathe 3.4s ease-in-out infinite}
+ @keyframes rdbreathe{0%,100%{opacity:.12}50%{opacity:.3}}
 }
 </style>
 </head>
@@ -3907,36 +3897,42 @@ function roleLens(id){                /* what your role would look at, right her
  const R=ROLE[myRole()];
  return (R&&R.lens&&R.lens[catOf(id)])||"";
 }
-function roleMap(r,big){          /* the road this role walks, drawn as its own map */
+let preview=null;                 /* when a role is being looked at, the map shows its road */
+function rolePreview(r){
+ preview=r;run=null;
  const R=ROLE[r];
- const own=roleOwn(r);
- const mineAll=[];
+ if(app&&app.style&&app.style.setProperty){
+  app.style.setProperty("--tide",R.tint);app.style.setProperty("--haldi",R.tint);}
+ build();paint();
+ const box=document.getElementById("trail");if(box)box.innerHTML="";
+ /* the road drawn on the map itself */
+ const old=svg.querySelector("#roadline");if(old)old.remove();
+ const road=previewRoad(r);
+ if(road.length>1){
+  let d="";road.forEach((id,i)=>{const P=PLACES[id];d+=(i?" L":"M")+P.x.toFixed(2)+" "+P.y.toFixed(2);});
+  svg.insertAdjacentHTML("beforeend",'<g id="roadline" pointer-events="none">'+
+   '<path class="rdglow" d="'+d+'"/><path class="rdline" d="'+d+'"/></g>');
+ }
+ const xs=road.map(id=>PLACES[id].x),ys=road.map(id=>PLACES[id].y);
+ if(xs.length){
+  const x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),
+        y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys);
+  flyTo([x0-6,y0-6,(x1-x0)+12,(y1-y0)+12],1.18);
+ }
+}
+function previewRoad(r){          /* the places this role walks, in the order the night walks them */
+ const out=[];
  NIGHTS.forEach(N=>N.watches.forEach((w,i)=>w.spots.forEach(x=>{
-  if((PLACES[x].only&&PLACES[x].only!==r))return;
-  if(mineAll.indexOf(x)<0)mineAll.push(x);})));
- const road=mineAll.filter(x=>PLACES[x].only===r||(R.cats||[]).indexOf(catOf(x))>-1);
- const pts=mineAll.map(x=>[PLACES[x].lo,PLACES[x].la,x]);
- if(!pts.length)return "";
- let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;
- pts.forEach(q=>{x0=Math.min(x0,q[0]);x1=Math.max(x1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1]);});
- const W=big?300:132,H=big?150:66,pad=big?14:8;
- const px=q=>[pad+((q[0]-x0)/((x1-x0)||1))*(W-pad*2),
-              pad+((y1-q[1])/((y1-y0)||1))*(H-pad*2)];
- let dots="",mine="",path="";
- pts.forEach(q=>{const a=px(q);
-  if(road.indexOf(q[2])<0)dots+='<circle class="rmdot" cx="'+a[0].toFixed(1)+'" cy="'+a[1].toFixed(1)+'" r="'+(big?2.2:1.5)+'"/>';});
- const line=road.map(x=>{const q=pts.find(p=>p[2]===x);return q?{id:x,a:px(q)}:null;}).filter(Boolean)
-  .sort((u,v)=>u.a[1]-v.a[1]||u.a[0]-v.a[0]);
- line.forEach((o,i)=>{
-  const a=o.a;
-  mine+='<circle class="rmown'+(own.indexOf(o.id)>-1?" solo":"")+'" cx="'+a[0].toFixed(1)+'" cy="'+a[1].toFixed(1)+'" r="'+(big?4:2.6)+'"/>';
-  path+=(i?" L":"M")+a[0].toFixed(1)+" "+a[1].toFixed(1);});
- return '<svg class="rolemap'+(big?" big":"")+'" viewBox="0 0 '+W+" "+H+'" aria-hidden="true" style="--rt:'+R.tint+'">'+
-  '<rect class="rmbg" x="0" y="0" width="'+W+'" height="'+H+'" rx="'+(big?10:8)+'"/>'+
-  '<path class="rmglow" d="'+path+'"/>'+
-  '<path class="rmpath" d="'+path+'"/>'+dots+mine+
-  (big?'<text class="rmlbl" x="'+(W-10)+'" y="'+(H-9)+'" text-anchor="end">'+road.length+" पड़ाव, "+own.length+" सिर्फ़ इसी के</text>":"")+
-  "</svg>";
+  if(PLACES[x].only&&PLACES[x].only!==r)return;
+  if((ROLE[r].cats||[]).indexOf(catOf(x))<0&&PLACES[x].only!==r&&!SPINE[N.id+"-"+x+"-"+i])return;
+  if(out.indexOf(x)<0)out.push(x);})));
+ return out;
+}
+function clearPreview(){
+ if(!preview)return;
+ preview=null;roleTint();
+ const old=svg.querySelector("#roadline");if(old)old.remove();
+ build();paint();fitLater();
 }
 function roleAvatar(r,big){
  const R=ROLE[r];
@@ -3964,7 +3960,6 @@ function roleDetail(r){
  el('<div class="rolehero" style="--rt:'+R.tint+'">'+roleAvatar(r,true)+
   '<div class="rolehead"><h1>'+R.n+"</h1><p>"+R.t+"</p></div></div>");
  el("<p>"+R.x+"</p>");
- el('<div class="rolemapwrap">'+roleMap(r,true)+"</div>");
  el('<p class="ask">इस भूमिका में तुम क्या करोगे</p>');
  el('<p class="rolebar">'+R.say+"</p>");
  el("<p><b>कहाँ कहाँ ले जाएगी:</b> "+roleWhere(r).join(", ")+"। पूरे खेल में ऐसी "+roleCount(r)+" जगहें हैं।</p>");
@@ -3999,13 +3994,13 @@ function roleDetail(r){
   " की है। नई भूमिका चुनते ही वह मिट जाएगी, क्योंकि अभी एक ही यात्रा सँभलती है। खाता बनने के बाद हर भूमिका की यात्रा अलग रहेगी।</p>");
  if(open)f.appendChild(btn(other?"पुरानी यात्रा छोड़कर यही शुरू करो":"यही भूमिका चुनो","do go",()=>{
   if(other){save=blankSave();}
-  save.role=r;save.rolePicked=true;save.journey=null;persist();roleTint();
+  preview=null;save.role=r;save.rolePicked=true;save.journey=null;persist();roleTint();
   closeCard();fill();hud();paint();note(R.n+" होकर चलोगे।");front();}));
  else{
   el('<p class="ask">यह भूमिका अभी बंद है</p>');
   adhikar(R.need).all.forEach(n=>el('<p class="'+(n.t()?"beat":"quiet")+'">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+"</p>"));
  }
- f.appendChild(btn("बाकी भूमिकाएँ देखो","do",roleScreen));
+ f.appendChild(btn("बाकी भूमिकाएँ देखो","do",()=>{clearPreview();roleScreen();}));
  anchorFrom(at);
 }
 function exitScreen(){
@@ -4052,11 +4047,11 @@ function roleScreen(){
   b.type="button";if(b.style&&b.style.setProperty)b.style.setProperty("--rt",R.tint);
   const mud=Object.keys((save.roleDone&&save.roleDone[r])||{}).length;
   const own=roleOwn(r).length;
-  b.innerHTML=roleAvatar(r)+roleMap(r,false)+'<span class="rolename">'+R.n+"</span>"+
+  b.innerHTML=roleAvatar(r)+'<span class="rolename">'+R.n+"</span>"+
    '<span class="roleline">'+R.t+"</span>"+
    '<span class="rolemud">'+own+" अपनी जगहें"+(mud?", "+mud+" मुद्रा":"")+"</span>"+
    '<span class="roletag">'+(open?(save.role===r&&save.rolePicked?"यही चल रही है":"देखो"):"बंद")+"</span>";
-  b.onclick=()=>roleDetail(r);
+  b.onclick=()=>{rolePreview(r);roleDetail(r);};
   if(save.journey&&save.journey.role===r&&!save.journey.live)b.className+=" mine";
   grid.appendChild(b);
  });
@@ -5593,6 +5588,16 @@ function paint(){
  const W=run?run.N.watches[run.w]:null;
  Object.keys(PLACES).forEach(id=>{
   const m=marks[id],P=PLACES[id];if(!m)return;
+  if(preview){                    /* looking at a role: its road glows, the rest fades */
+   const mineP=!PLACES[id].only||PLACES[id].only===preview;
+   const onRoad=mineP&&previewRoad(preview).indexOf(id)>-1;
+   let c="mk"+(onRoad?" live"+(PLACES[id].only===preview?" here":""):" later");
+   if(!mineP)c+=" hide";
+   m.setAttribute("class",c);m.setAttribute("tabindex","-1");
+   const l=m.querySelector&&m.querySelector(".lbl");
+   if(l&&l.setAttribute)l.setAttribute("opacity",onRoad?"1":"0");
+   return;
+  }
   const inW=W&&W.spots.includes(id)&&mineOnly(id);
   const nowOpen=!run||!W||ghadiSpots().includes(id)||run.pickedHere.includes(id);
   const giftLock=false;
@@ -6992,6 +6997,7 @@ function dawn(){
  anchorFrom(at);
 }
 function front(){
+ if(preview)clearPreview();
  if(mode==="texts")storyMap();
  run=null;story.innerHTML="";curStep=null;dropAnchor();shut();build();paint();weather();hud();
  const tr0=document.getElementById("trail");if(tr0)tr0.innerHTML="";
