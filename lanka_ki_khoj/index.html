@@ -3977,6 +3977,17 @@ function roleDetail(r){
  const some=Object.keys(R.lens||{}).slice(0,3).map(c=>R.lens[c]);
  el("<p><b>वहाँ पहुँचकर यह सुनाई देगा:</b></p>");
  some.forEach(x=>el('<p class="beat">'+x+"</p>"));
+ {const tours=Object.keys(DETOUR).filter(k=>DETOUR[k].only===r);
+  const folk=Object.keys(PATRA).filter(k=>PATRA[k].only===r);
+  const things=Object.keys(VASTU).filter(k=>VASTU[k].only===r);
+  const badge=Object.keys(ACH).filter(k=>ACH[k].only===r);
+  const names=ROLEPADVI.filter(x=>x.role===r);
+  el('<p class="ask">और सिर्फ़ इसी को क्या मिलेगा</p>');
+  if(tours.length)el("<p><b>अपने चक्कर:</b> "+tours.map(k=>DETOUR[k].n+" ("+DETOUR[k].stops.length+" पड़ाव)").join(", ")+"</p>");
+  if(folk.length)el("<p><b>जिनसे यही मिलेगी:</b> "+folk.map(k=>PATRA[k].n).join(", ")+"</p>");
+  if(things.length)el("<p><b>संग्रह में सिर्फ़ इसकी:</b> "+things.map(k=>VASTU[k].n).join(", ")+"</p>");
+  if(badge.length)el("<p><b>अपना बैज:</b> "+badge.map(k=>ACH[k].n+" ("+ACH[k].x+")").join(", ")+"</p>");
+  if(names.length)el("<p><b>अपनी पदवियाँ:</b> "+names.map(x=>x.n+" ("+x.x+")").join(", ")+"</p>");}
  {const done=Object.keys((save.roleDone&&save.roleDone[r])||{});
   if(done.length)el("<p><b>इस भूमिका की मुद्राएँ:</b> "+done.map(id=>{
    const N=NIGHTS.find(n=>n.id===id);return N?N.name:id;}).join(", ")+"।</p>");
