@@ -1248,6 +1248,10 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  @keyframes blow{0%{opacity:0;transform:translateX(0)}12%{opacity:.75}
   88%{opacity:.45}100%{opacity:0;transform:translateX(150%)}}
 }
+
+/* a quiet mode for anyone who wants the world to hold still */
+#app.calm *,#app.calm *:before,#app.calm *:after{animation:none!important;transition:none!important}
+#app.calm .motes,#app.calm .air,#app.calm .grain,#app.calm .wipe{display:none}
 </style>
 </head>
 <body>
@@ -1266,6 +1270,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
     <span class="headbtns">
      <button class="chip" id="textsBtn">ग्रंथों का नक्शा</button>
      <button class="chip" id="tHome">पूरा नक्शा</button>
+     <button class="chip" id="calmBtn" aria-pressed="false">हरकत कम</button>
      <button class="chip sq" id="tOut" aria-label="दूर ले जाओ">&minus;</button>
      <button class="chip sq" id="tIn" aria-label="पास लाओ">+</button>
     </span>
@@ -2682,7 +2687,7 @@ function mapArt(night){
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
 function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
- katha:{},farq:{},vastu:{},kahi:{},tour:{},role:"jigyasu",rolePicked:false,journey:null,roleDone:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
+ katha:{},farq:{},vastu:{},kahi:{},tour:{},calm:false,role:"jigyasu",rolePicked:false,journey:null,roleDone:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
@@ -7970,6 +7975,12 @@ document.getElementById("lamp").onclick=()=>{
  hud();
  note(got.length?got.join("। ")+"। थैली में "+purse()+"।":"अभी कुछ तैयार नहीं है।");
 };
+{const cb=document.getElementById("calmBtn");
+ const setCalm=on=>{save.calm=!!on;persist();
+  if(app&&app.classList)app.classList.toggle("calm",!!on);
+  if(cb){cb.setAttribute("aria-pressed",on?"true":"false");cb.textContent=on?"हरकत चालू":"हरकत कम";}};
+ if(cb)cb.onclick=()=>setCalm(!save.calm);
+ setCalm(!!save.calm);}
 catchUp();foldLbl();tabs();showPanel("story");miniBuild();roleTint();(save.rolePicked?front():roleScreen());fitLater();
 </script>
 </body>
