@@ -1129,6 +1129,48 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .prize.badge{animation:prizeglow 3.2s ease-in-out infinite}
  @keyframes prizeglow{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 12px -2px var(--haldi)}}
 }
+
+/* ================= light, weather and the turn of the hour ================= */
+.grade{position:absolute;inset:0;pointer-events:none;z-index:3;transition:background 1.4s ease,opacity 1.4s ease;
+ mix-blend-mode:soft-light;opacity:.9}
+.grade.dawn{background:linear-gradient(180deg,#ffd9a8 0%,#ffb27a 28%,rgba(255,178,122,0) 70%)}
+.grade.day{background:linear-gradient(180deg,#eaf3ff 0%,rgba(234,243,255,.2) 45%,rgba(255,255,255,0) 75%)}
+.grade.dusk{background:linear-gradient(180deg,#ff9a5c 0%,#b3557a 38%,rgba(60,40,80,0) 78%)}
+.grade.night{background:linear-gradient(180deg,#0e1c33 0%,#122a44 40%,rgba(10,20,35,0) 82%)}
+.grain{position:absolute;inset:0;pointer-events:none;z-index:5;opacity:.06;mix-blend-mode:overlay;
+ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='.6'/></svg>");
+ background-size:180px 180px}
+.wipe{position:absolute;inset:0;pointer-events:none;z-index:7;opacity:0}
+@media (prefers-reduced-motion:no-preference){
+ .wipe.go{animation:wipe .62s cubic-bezier(.4,0,.2,1) both;
+  background:radial-gradient(120% 90% at 50% 50%,transparent 0%,color-mix(in srgb,var(--tide) 55%,#04060b) 72%)}
+ @keyframes wipe{0%{opacity:0;transform:scale(1.25)}22%{opacity:.92;transform:scale(1)}100%{opacity:0;transform:scale(.9)}}
+ .grain{animation:grainshift 5.4s steps(6) infinite}
+ @keyframes grainshift{0%{background-position:0 0}20%{background-position:-24px 12px}40%{background-position:16px -18px}
+  60%{background-position:-12px -24px}80%{background-position:22px 18px}100%{background-position:0 0}}
+}
+/* lamps and fires glow in the dark */
+.tlamp,.dfire,.dlampglow,.lamp{filter:drop-shadow(0 0 6px rgba(255,214,120,.75))}
+
+/* ================= panels that feel built, not typed ================= */
+#story{scrollbar-width:thin}
+.step{border-radius:.9rem}
+.step h2,.step h3{letter-spacing:.2px}
+.do{border-radius:.7rem;letter-spacing:.2px}
+.do.go{background:linear-gradient(180deg,color-mix(in srgb,var(--tide) 88%,white) 0%,var(--tide) 62%);
+ color:#06131a;font-weight:600;border:none}
+.card-pick{border-radius:.8rem;
+ background:linear-gradient(180deg,color-mix(in srgb,var(--tide) 7%,var(--page)) 0%,var(--page) 62%)}
+.cp-no{font-variant-numeric:tabular-nums}
+#bar{background:linear-gradient(180deg,color-mix(in srgb,var(--mark) 92%,transparent),color-mix(in srgb,var(--page) 88%,transparent))}
+.pip{width:.42rem;height:.42rem;border-radius:99px}
+.dio{border:1px solid var(--rule)}
+.dionote{letter-spacing:.1px}
+@media (prefers-reduced-motion:no-preference){
+ .do.go:hover{filter:brightness(1.06)}
+ .step:target,.step.now{box-shadow:var(--lift2)}
+ .gift .giftlid{background:linear-gradient(180deg,color-mix(in srgb,var(--haldi) 16%,var(--page)),var(--page))}
+}
 </style>
 </head>
 <body>
@@ -1153,6 +1195,9 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
    </div>
    <div id="stage">
     <svg id="map" viewBox="0 0 200 240" preserveAspectRatio="xMidYMid meet" role="application" aria-label="लंका का नक्शा"></svg>
+    <div id="grade" class="grade night" aria-hidden="true"></div>
+    <div id="grain" class="grain" aria-hidden="true"></div>
+    <div id="wipe" class="wipe" aria-hidden="true"></div>
     <div class="mini" id="mini">
      <svg id="minimap" preserveAspectRatio="xMidYMid meet" aria-label="पूरा नक्शा, छोटा"></svg>
      <div class="minibar"><span class="wx" id="wxLbl"></span><button class="minix" id="miniFold">छोटा करो</button></div>
@@ -5647,6 +5692,9 @@ function weather(){
  const w=mode==="texts"?{sky:"noon",cloud:4}:((W&&W.wx)||{sky:"morning",cloud:3});
  const chip0=document.getElementById("wxLbl");
  if(chip0)chip0.textContent=mode==="texts"?"ग्रंथों का नक्शा":(w.lbl||(run?run.N.name:"पूरा नक्शा"));
+ const gr=document.getElementById("grade");
+ if(gr){const t=({dawn:"dawn",morning:"dawn",noon:"day",day:"day",dusk:"dusk",night:"night"})[w.sky]||"night";
+  if(gr.className!=="grade "+t)gr.className="grade "+t;}
  const layer=svg.querySelector("#wx");if(!layer)return;
  const sky=SKY[w.sky]||SKY.morning;
  let g='<rect class="sky" x="-700" y="-1000" width="2400" height="2400" fill="'+sky[0]+'" opacity="'+sky[1]+'"/>';
@@ -5846,11 +5894,18 @@ function hud(){
  pips.innerHTML=run.N.watches.map((w,j)=>'<span class="pip '+(j<run.w?"past":j===run.w?"now":"")+
   (j===run.w&&run.ghadi===1?" half":"")+'"></span>').join("");
 }
+function wipeNow(){                 /* a quick curtain when the hour turns */
+ const w=document.getElementById("wipe");if(!w)return;
+ w.classList.remove("go");
+ if(typeof requestAnimationFrame==="function")requestAnimationFrame(()=>w.classList.add("go"));
+ else w.classList.add("go");
+}
 function start(id){
  const N=NIGHTS.find(n=>n.id===id);
  save.nights[id]=(save.nights[id]||0)+1;journeyMark();persist();
  if(mode==="texts")storyMap();
  run={N,w:0,went:[],lost:[],gone:[],used:0,pickedHere:[],busy:false,path:[]};
+ wipeNow();
  story.innerHTML="";curStep=null;dropAnchor();story.scrollTo({top:0});shut();
  step("");
  el('<h2>'+N.name+"</h2>");
@@ -5881,6 +5936,7 @@ function ghadiName(){
 }
 function turn(){
  if(run.w>=run.N.watches.length)return dawn();
+ wipeNow();
  const at=markPoint();
  run.ghadi=0;
  step(run.N.watches[run.w].n+", पहली घड़ी");
