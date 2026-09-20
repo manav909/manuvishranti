@@ -962,6 +962,20 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  @keyframes rise2{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 }
 
+/* inside a picture: haze far away, light above, and a slow drift of the whole scene */
+.dhaze{fill:url(#dHaze);pointer-events:none;mix-blend-mode:screen;opacity:.5}
+.dvig{fill:url(#dVig);pointer-events:none;mix-blend-mode:multiply;opacity:.75}
+.diopic{position:relative;perspective:700px}
+.diopic svg{border-radius:.5rem}
+@media (prefers-reduced-motion:no-preference){
+ .dio.open .dparx{animation:sceneIn .7s cubic-bezier(.2,.9,.25,1) both,sceneDrift 26s ease-in-out infinite 1s;
+  transform-box:view-box;transform-origin:50% 60%}
+ @keyframes sceneIn{from{transform:scale(1.10) translateY(6px)}to{transform:none}}
+ @keyframes sceneDrift{0%,100%{transform:scale(1.015) translateX(-1.4px)}50%{transform:scale(1.015) translateX(1.4px)}}
+ .dio.open .dhaze{animation:hazeBreathe 14s ease-in-out infinite}
+ @keyframes hazeBreathe{0%,100%{opacity:.38}50%{opacity:.6}}
+}
+
 /* landing on a place should feel like landing */
 @media (prefers-reduced-motion:no-preference){
  .mk.land .body{animation:land .6s cubic-bezier(.2,.9,.25,1) both;transform-box:fill-box;transform-origin:50% 100%}
@@ -5505,6 +5519,13 @@ const DIO={
 };
 
 const DEFS='<defs>'+
+ '<linearGradient id="dHaze" x1="0" y1="0" x2="0" y2="1">'+
+  '<stop offset="0" stop-color="#ffffff" stop-opacity=".30"/>'+
+  '<stop offset=".45" stop-color="#cfe2ee" stop-opacity=".16"/>'+
+  '<stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient>'+
+ '<radialGradient id="dVig" cx=".5" cy=".42" r=".78">'+
+  '<stop offset=".55" stop-color="#ffffff" stop-opacity="0"/>'+
+  '<stop offset="1" stop-color="#0a1018" stop-opacity=".55"/></radialGradient>'+
  '<radialGradient id="dglow" cx=".5" cy=".5"><stop offset="0" stop-color="#fff3d0" stop-opacity=".95"/>'+
  '<stop offset=".45" stop-color="#ffd96b" stop-opacity=".55"/>'+
  '<stop offset="1" stop-color="#ffd96b" stop-opacity="0"/></radialGradient>'+
@@ -5679,7 +5700,11 @@ function paintDio(name,art,note){
  const box=document.getElementById("dio");if(!box)return;
  if(!art){box.className="dio";box.innerHTML="";return;}
  box.innerHTML='<div class="diopic"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" aria-label="'+name+'">'+
-  DEFS+art()+"</svg></div>"+
+  DEFS+
+  '<g class="dparx">'+art()+"</g>"+
+  '<rect class="dhaze" x="0" y="0" width="320" height="180"/>'+
+  '<rect class="dvig" x="0" y="0" width="320" height="180"/>'+
+  "</svg></div>"+
   '<div class="diobar"><b>'+name+'</b><span class="diobtns">'+
   (note?'<button class="diox" data-note>'+(dioNote?"ब्योरा बंद":"ब्योरा")+"</button>":"")+
   '<button class="diox" data-big>'+(dioBig?"छोटा":"बड़ा")+'</button>'+
