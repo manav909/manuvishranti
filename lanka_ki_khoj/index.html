@@ -4616,6 +4616,7 @@ function freshAt(id,w){                  /* is anything still unread there in th
  if(!SC[key])return 0;
  return Math.max(0,layersOf(key).length-depthOf(key));
 }
+const ORD=["पहला","दूसरा","तीसरा","चौथा","पाँचवाँ","छठा","सातवाँ","आठवाँ"];
 function offer(only){
  const at=markPoint();
  const W=run.N.watches[run.w];
@@ -4658,7 +4659,9 @@ function offer(only){
   b.className="card-pick"+(PLACES[id].gift?" gift":"");
   b.innerHTML='<span class="cp-no">'+(numOf[id]||"")+'</span><span class="cp-mid">'+
    '<b>'+PLACES[id].n+"</b><span>"+PLACES[id].t+"</span>"+
-   '<span class="cp-left">'+(nf?nf+" रूप अभी बाकी":"यहाँ सब पढ़ा जा चुका")+"</span></span>"+
+   '<span class="cp-left">'+(run.ghadi===0
+     ?"कथा का "+ORD[mainList(run.w).indexOf(id)]+" पड़ाव"+(nf?", "+nf+" रूप बाकी":"")
+     :(nf?nf+" रूप अभी बाकी":"यहाँ सब पढ़ा जा चुका"))+"</span></span>"+
    '<span class="cp-go">जाओ</span>';
   b.onclick=()=>{f.remove();visit(id);};
   f.appendChild(b);
