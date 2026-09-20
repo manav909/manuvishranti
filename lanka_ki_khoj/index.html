@@ -850,6 +850,9 @@ a{color:var(--tide)}
  transition:opacity .25s ease;pointer-events:none}
 .mk .cnt circle{fill:var(--page);stroke:var(--tide);stroke-width:.7}
 .mk .cnt text{font-family:"Rozha One",serif;font-size:3.1px;fill:var(--tide)}
+.mk{-webkit-tap-highlight-color:transparent}
+.mk:focus{outline:none}
+.mk:focus-visible{outline:2px solid var(--tide);outline-offset:2px}
 .mk.live{cursor:pointer}
 .mk.later{opacity:.32;filter:saturate(.3);cursor:pointer}
 .mk.live .drop{fill:var(--tide)}
@@ -4022,8 +4025,8 @@ function roleDetail(r){
  if(open&&other)el('<p class="quiet">पिछली यात्रा '+ROLE[save.journey.role].n+" की है, और नई शुरू करते ही वह मिट जाएगी।</p>");
  if(open)f.appendChild(btn(other?"पुरानी यात्रा छोड़कर यही शुरू करो":"यही भूमिका चुनो","do go",()=>{
   if(other){save=blankSave();}
-  preview=null;save.role=r;save.rolePicked=true;save.journey=null;persist();roleTint();
-  closeCard();fill();hud();paint();note(R.n+" होकर चलोगे।");front();}));
+  preview=null;roadHTML="";save.role=r;save.rolePicked=true;save.journey=null;persist();roleTint();
+  closeCard();fill();hud();build();paint();note(R.n+" होकर चलोगे।");front();}));
  else adhikar(R.need).all.forEach(n=>el('<p class="'+(n.t()?"beat":"quiet")+'">'+(n.t()?"हो गया: ":"बाकी: ")+n.x+"</p>"));
  f.appendChild(btn("बाकी भूमिकाएँ देखो","do",()=>{clearPreview();roleScreen();}));
  anchorFrom(at);
@@ -4052,7 +4055,8 @@ function exitScreen(){
 function roleScreen(){
  const at=markPoint();
  if(mode==="texts")storyMap();
- run=null;story.innerHTML="";curStep=null;shut();
+ run=null;preview=null;roadHTML="";story.innerHTML="";curStep=null;shut();
+ roleTint();build();paint();flyTo(fitAll(),1.05);      /* the whole map, before any road is drawn */
  el('<h1>तुम कौन होकर चलोगे</h1>');
  el("<p>यह चुनाव पूरे खेल का रंग, तुम्हारी राह और तुम्हारी नज़र तय करता है। कथा सबको पूरी मिलती है, फ़र्क़ यह है कि तुम उसमें क्या देखोगे। एक बार यात्रा शुरू होने के बाद भूमिका नहीं बदलती।</p>");
  if(save.journey&&save.journey.role){
@@ -5559,10 +5563,10 @@ function build(){
  marks={};
  svg.querySelectorAll("[data-place]").forEach(n=>{
   const id=n.dataset.place;marks[id]=n;
-  n.addEventListener("mouseenter",()=>{if(preview)previewPeek(id);});
-  n.addEventListener("focus",()=>{if(preview)previewPeek(id);});
+  n.addEventListener("mouseenter",()=>{if(preview&&!n.dataset.off)previewPeek(id);});
+  n.addEventListener("focus",()=>{if(preview&&!n.dataset.off)previewPeek(id);});
   n.addEventListener("click",()=>{
-   if(preview){previewPeek(id);return;}
+   if(preview){if(!n.dataset.off)previewPeek(id);return;}
    if(n.dataset.off)return;
    if(+n.dataset.fold>0&&cam[2]>14){shut();flyTo([PLACES[id].x-cam[2]*.22,PLACES[id].y-cam[3]*.22,cam[2]*.44,cam[3]*.44],1);return;}
    tap(id);
@@ -5629,7 +5633,8 @@ function paint(){
    const onRoad=mineP&&previewRoad(preview).indexOf(id)>-1;
    let c="mk"+(onRoad?" live"+(PLACES[id].only===preview?" here":""):" later");
    if(!mineP)c+=" hide";
-   m.setAttribute("class",c);m.setAttribute("tabindex","-1");
+   m.setAttribute("class",c);m.setAttribute("tabindex",onRoad?"0":"-1");
+   if(m.dataset)m.dataset.off=onRoad?"":"1";
    const l=m.querySelector&&m.querySelector(".lbl");
    if(l&&l.setAttribute)l.setAttribute("opacity",onRoad?"1":"0");
    return;
