@@ -5,9 +5,9 @@ A static site. One self-contained HTML file per experience, no build step, no se
 Each experience lives in its own folder, so the root stays free for a home page later.
 
 Live experience: **लंका की खोज** at `/lanka_ki_khoj`, a Hindi discovery game built on the Sundar Kand,
-covering 41 tellings from India and beyond, 6 playable nights, 100 moments, 291 hidden findings,
-88 places, 53 detours inside tellings, 38 people, 34 boons and weapons, 12 stories told inside the story,
-14 side by side differences, 22 badges and 32 titles, all with citations.
+covering 41 tellings from India and beyond, 6 playable nights, 108 moments, 307 hidden findings,
+96 places, 53 detours inside tellings, 38 people, 34 boons and weapons, 12 stories told inside the story,
+14 side by side differences, 22 badges, 32 titles and 15 original lines in their own script, all with citations.
 
 ## How a night runs
 - Each night is four prahars, and each prahar splits into two ghadis
@@ -30,7 +30,13 @@ covering 41 tellings from India and beyond, 6 playable nights, 100 moments, 291 
 - The shape of a moment changes too: the warrior gets a reckoning, the scholar a citation, the
   katha lover the other tellings, the child something to enjoy, the king the decision, the seeker
   a pause, the traveller what to look at
-- Around 200 lines are written for the roles and no line is shared between two of them
+- Around 240 lines are written for the roles: an aim for each night, a parting line for each rasa, a
+  closing line for the morning, a rank ladder of seven, and five things the role simply knows, each
+  waiting at a different kind of place, folded away and said once
+- 36 of the 96 places belong to one role alone, and every role owns at least four, including at least
+  one in the later three nights
+- Every role keeps its own journey on the device: switching roles puts one away and picks the other up
+  exactly where it was left, and leaving one journey leaves the rest alone
 - The katha ghadi never bends to the role. `roletest.js` enforces all of it
 
 ## The look
@@ -75,12 +81,13 @@ shut kathas to their conditions, nights to the night or katha they wait on, text
 and it fails on any orphan, any dangling name, and any duplicate key.
 
 ## Test suite (run in the build container, not in the repo)
-37 check files covering: whole-project data integrity, language, camera, map thinning, panels,
+39 check files covering: whole-project data integrity, language, camera, map thinning, panels,
 scroll anchoring, story cards, gift boxes, the woven scroll, the thread of the story, progress card,
 titles, adhikar gates, parakh questions, prahar gifts, repeat visits, layout, the two ghadis,
-the eight roles, and the whole visual layer.
+the eight roles, the whole visual layer, the colour contrast of every palette in every hour, and a
+check that no line in the game is said twice anywhere, in any role or between two roles.
 
 ## Next steps parked
-- More original lines in their own script with a plain translation (9 so far)
-- Player accounts, so each role keeps its own journey instead of one slot on one device
+- More original lines in their own script with a plain translation (15 so far)
+- Player accounts, so the per role journeys follow the player instead of living on one device
 - Keep filling the thinnest tellings, one pass at a time
