@@ -1109,6 +1109,22 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .tease:hover{border-color:var(--tide);box-shadow:0 10px 22px -16px var(--tide)}
  .tease:not(.shut) .teasebody{animation:deal .3s cubic-bezier(.2,.9,.25,1) both}
 }
+
+/* the prizes a road pays, and the buttons that never drift */
+.prizes{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem;margin:.5rem 0 .2rem}
+.prizehead{font-size:.76rem;color:var(--quiet);margin-right:.2rem}
+.prize{font-size:.78rem;border-radius:99px;padding:.06rem .6rem;border:1px solid var(--rule);color:var(--ink)}
+.prize.mud{color:var(--tide);border-color:var(--tide)}
+.prize.badge{color:var(--haldi);border-color:var(--haldi);
+ background:color-mix(in srgb,var(--haldi) 12%,transparent)}
+.prize.name{color:var(--quiet)}
+.actbar{position:sticky;bottom:0;z-index:5;margin-top:.6rem;padding:.5rem 0 .2rem;
+ background:linear-gradient(180deg,transparent 0%,var(--page) 26%);
+ backdrop-filter:blur(3px)}
+@media (prefers-reduced-motion:no-preference){
+ .prize.badge{animation:prizeglow 3.2s ease-in-out infinite}
+ @keyframes prizeglow{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 12px -2px var(--haldi)}}
+}
 </style>
 </head>
 <body>
@@ -4050,7 +4066,16 @@ function roleDetail(r){
   lid.onclick=()=>{b.classList.toggle("shut");};
   b.appendChild(lid);b.appendChild(body);story.appendChild(b);
  });
- const f=el("","fork");
+ /* what this road pays: shown as prizes, not as a list */
+ {const badge=Object.keys(ACH).filter(k=>ACH[k].only===r)[0];
+  const names=ROLEPADVI.filter(x=>x.role===r);
+  let h='<div class="prizes"><span class="prizehead">जीतने को</span>';
+  h+='<span class="prize mud">'+mud+"/"+NIGHTS.length+" मुद्रा</span>";
+  if(badge)h+='<span class="prize badge" title="'+ACH[badge].x+'">'+ACH[badge].n+"</span>";
+  names.forEach(x=>{h+='<span class="prize name" title="'+x.x+'">'+x.n+"</span>";});
+  h+="</div>";
+  el(h);}
+ const f=el("","fork actbar");
  const other=save.journey&&save.journey.role&&save.journey.role!==r;
  if(open&&other)el('<p class="quiet">पिछली यात्रा '+ROLE[save.journey.role].n+" की है, और नई शुरू करते ही वह मिट जाएगी।</p>");
  if(open)f.appendChild(btn(other?"पुरानी यात्रा छोड़कर यही शुरू करो":"यही भूमिका चुनो","do go",()=>{
