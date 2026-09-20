@@ -6542,8 +6542,9 @@ function visit(id){
  const f=el("","fork actbar");
  if(more)f.appendChild(btn("इसी घड़ी एक और जगह देखो","do",()=>{f.remove();offer();}));
  if(run.ghadi===0&&ghadiSpots().length){
-  f.appendChild(btn("कथा आगे चलती है, साथ चलो","do go",()=>{f.remove();
-   const atn=markPoint();run.busy=false;offer();anchorFrom(atn);}));
+  const nxt=ghadiSpots()[0];
+  f.appendChild(btn("कथा आगे चलती है: "+PLACES[nxt].n,"do go",()=>{f.remove();
+   run.busy=false;visit(nxt);}));      /* no list to pick from, so go straight there */
   anchorFrom(at);return;
  }
  if(run.ghadi===0&&!spotsFor(run.w).filter(x=>mainList(run.w).indexOf(x)<0).length){
