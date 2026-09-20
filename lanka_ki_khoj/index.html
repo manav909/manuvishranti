@@ -6118,6 +6118,60 @@ function mera(N){
  const refs=[];rows.forEach(r=>{if(refs.indexOf(r.ref)<0)refs.push(r.ref);});
  el('<p class="quiet">हवाले: '+refs.join("; ")+"।</p>");
 }
+function roleLedger(N){          /* what this role, and only this role, carries away from the night */
+ const mine=Object.keys(SC).filter(k=>k.indexOf(N.id+"-")===0);
+ const seenK=mine.filter(k=>depthOf(k)>0);
+ const cardsHere=[];mine.forEach(k=>layersOf(k).forEach(L=>(L.cards||[]).forEach(c=>{
+  if(save.cards[c])cardsHere.push(c);})));
+ const placeOf=k=>k.split("-")[1];
+ const catCount=c=>seenK.filter(k=>catOf(placeOf(k))===c).length;
+ const namesOf=c=>seenK.filter(k=>catOf(placeOf(k))===c).map(k=>PLACES[placeOf(k)].n);
+ const texts={};mine.forEach(k=>{if(depthOf(k)>0)layersOf(k).slice(0,depthOf(k)).forEach(L=>{
+  texts[L.src||"vr"]=(texts[L.src||"vr"]||0)+1;});});
+ const rasas={};seenK.forEach(k=>{if(RAS[k])rasas[RAS[k]]=(rasas[RAS[k]]||0)+1;});
+ const withSl=cardsHere.filter(c=>CARDS[c]&&CARDS[c].sl).length;
+ const gotHere=Object.keys(VASTU).filter(v=>save.vastu[v]&&(VASTU[v].on||[]).some(c=>cardsHere.indexOf(c)>-1));
+ const left=mine.reduce((n,k)=>n+(layersOf(k).length-Math.min(depthOf(k),layersOf(k).length)),0);
+ const L=[];
+ switch(myRole()){
+  case "yoddha":
+   L.push("भिड़ंत की जगहें देखीं: "+(catCount("ladai")||0)+(namesOf("ladai").length?" ("+namesOf("ladai").join(", ")+")":""));
+   L.push("आग वाले दृश्य: "+catCount("aag")+", फाटक और दीवारें: "+catCount("dwar"));
+   L.push("वरदान, शाप और अस्त्र जो हाथ आए: "+(gotHere.length?gotHere.map(v=>VASTU[v].n).join(", "):"अभी कोई नहीं"));
+   break;
+  case "yatri":
+   L.push("जगहें देखीं: "+seenK.length+(seenK.length?" ("+seenK.map(k=>PLACES[placeOf(k)].n).join(", ")+")":""));
+   L.push("बस्ती और गलियाँ: "+catCount("nagar")+", महल और भीतर के कमरे: "+catCount("mahal")+", बाग़: "+catCount("vatika"));
+   L.push("इस रात में अभी "+left+" रूप और बचे हैं।");
+   break;
+  case "kathapremi":
+   L.push("आज ये कथाएँ बोलीं: "+Object.keys(texts).map(t=>SRC[t].n+" ("+texts[t]+")").join(", "));
+   L.push("अलग अलग ग्रंथ: "+Object.keys(texts).length+", और उनके कुल रूप: "+
+    Object.keys(texts).reduce((n,t)=>n+texts[t],0));
+   break;
+  case "balak":
+   L.push("अचरज वाले पल: "+(rasas.adbhut||0)+", डर वाले: "+(rasas.bhayanak||0)+", हिम्मत वाले: "+(rasas.veer||0));
+   L.push("नई बातें जो पता चलीं: "+cardsHere.length);
+   break;
+  case "shastri":
+   L.push("हवालों वाली बातें मिलीं: "+cardsHere.length+", जिनमें मूल की पंक्ति के साथ: "+withSl);
+   L.push("पाठ जिनसे मिलान हुआ: "+Object.keys(texts).map(t=>SRC[t].n).join(", "));
+   break;
+  case "sadhak":
+   L.push("आज जो रस भीतर उतरे: "+(Object.keys(rasas).length?Object.keys(rasas).map(r=>RASA[r].n+" ("+rasas[r]+")").join(", "):"अभी कोई नहीं"));
+   L.push("ठहरने वाली जगहें: "+(catCount("vatika")+catCount("pahad"))+", और कही हुई कथाएँ खुलीं: "+kahiCount());
+   break;
+  case "raja":
+   L.push("दरबार और बैठकें देखीं: "+catCount("sabha")+(namesOf("sabha").length?" ("+namesOf("sabha").join(", ")+")":""));
+   L.push("महल और बस्ती: "+(catCount("mahal")+catCount("nagar"))+", और संग्रह में आईं: "+
+    (gotHere.length?gotHere.map(v=>VASTU[v].n).join(", "):"अभी कोई चीज़ नहीं"));
+   break;
+  default:
+   L.push("इस रात के "+mine.length+" पलों में से "+seenK.length+" तक पहुँचे।");
+   L.push("नई बातें: "+cardsHere.length+", और अभी "+left+" रूप बचे हैं।");
+ }
+ return L;
+}
 function dawn(){
  const N=run.N;shut();
  const at=markPoint();
@@ -6135,6 +6189,9 @@ function dawn(){
  if(got===deep&&!save.done[N.id]){save.done[N.id]=true;persist();
   el('<p class="found gift"><b>इनाम:</b> इस हिस्से का कोई कोना छूटा नहीं। अब हर घड़ी दो जगह जा सकते हो।</p>');}
  /* the night at a glance */
+ {const L=roleLedger(N);
+  el('<p class="ask">'+ROLE[myRole()].n+" का हिसाब</p>");
+  L.forEach(x=>el('<p class="rolebar">'+x+"</p>"));}
  el('<p class="ask">इस रात की कथा, क्रम से</p>');
  N.watches.forEach((w,i)=>{
   const beats=w.spots.filter(x=>SPINE[N.id+"-"+x+"-"+i]);
