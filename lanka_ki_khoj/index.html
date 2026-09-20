@@ -6070,7 +6070,7 @@ function visit(id){
  const rest=ghadiSpots().filter(x=>!run.pickedHere.includes(x));
  const more=run.ghadi===1&&(twoVisits()?2:1)-run.used>0&&rest.length>0;
  el('<p class="ask">अब क्या करोगे?</p>');
- const f=el("","fork");
+ const f=el("","fork actbar");
  if(more)f.appendChild(btn("इसी घड़ी एक और जगह देखो","do",()=>{f.remove();offer();}));
  if(run.ghadi===0&&ghadiSpots().length){
   f.appendChild(btn("कथा आगे चलती है, साथ चलो","do go",()=>{f.remove();
