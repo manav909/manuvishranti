@@ -915,10 +915,11 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .mk.later{opacity:.32;filter:saturate(.3) drop-shadow(0 2px 3px rgba(6,12,20,.3))}
 .mk .halo{fill:var(--tide);opacity:0}
 @media (prefers-reduced-motion:no-preference){
- .mk.live{animation:bob 4.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
- .mk.live:nth-of-type(2n){animation-delay:-1.4s}
- .mk.live:nth-of-type(3n){animation-delay:-2.7s}
- @keyframes bob{0%,100%{translate:0 0}50%{translate:0 -2.2px}}
+ /* the pin itself carries a transform attribute, so only its inner parts may move */
+ .mk.live .body{animation:bob 4.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+ .mk.live:nth-of-type(2n) .body{animation-delay:-1.4s}
+ .mk.live:nth-of-type(3n) .body{animation-delay:-2.7s}
+ @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.4px)}}
  .mk.here .halo{animation:halo 2.6s ease-out infinite}
  @keyframes halo{0%{opacity:.45;r:4}70%{opacity:0;r:13}100%{opacity:0;r:13}}
  .mk.live:hover{filter:drop-shadow(0 7px 9px rgba(6,12,20,.5)) brightness(1.08)}
@@ -1084,7 +1085,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 @media (prefers-reduced-motion:no-preference){
  .mk .rmark{transform-box:fill-box;transform-origin:50% 100%}
  .mk.here .rmark{animation:pinbob 2.8s ease-in-out infinite}
- @keyframes pinbob{0%,100%{translate:0 0}50%{translate:0 -2.6px}}
+ @keyframes pinbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
  .mk .raura{animation:pinaura 2.6s ease-out infinite}
  @keyframes pinaura{0%{r:3.4;opacity:.45}70%{r:8;opacity:0}100%{r:8;opacity:0}}
  .mk.live:hover .rmark{animation:pinpop .45s cubic-bezier(.2,.9,.25,1) both}
