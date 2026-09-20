@@ -1223,6 +1223,13 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .citylights .cl2{animation-delay:-3.1s}
  @keyframes citylight{0%,100%{opacity:.12}50%{opacity:.4}}
 }
+
+/* each night wears its own world */
+#app[data-night="vilanka"]{--sea:#1a1030;--sea2:#2a1745;--land:#2e2440;--land2:#3b2d52;--wave:#6b4f9a;--grove:#3d2f56}
+#app[data-night="shakti"]{--sea:#2a1016;--sea2:#3c1620;--land:#3a2622;--land2:#4a2f28;--wave:#9a4f5f;--grove:#4a2f2c}
+#app[data-night="vidya"]{--sea:#0f2420;--sea2:#16362f;--land:#233a2f;--land2:#2e4a3b;--wave:#4f9a86;--grove:#2c5142}
+#app[data-night="aag"]{--wave:#b0713f}
+#app{transition:background .9s ease,color .9s ease}
 </style>
 </head>
 <body>
@@ -2619,6 +2626,12 @@ function mapArt(night){
  </g>
  <path d="${LINE(CITY)} Z" fill="none" stroke="var(--walldark)" stroke-width="1.6" transform="translate(.5,.7)"/>
  <path d="${LINE(CITY)} Z" fill="var(--roof)" fill-opacity=".22" stroke="var(--wall)" stroke-width="1.1"/>
+ <g class="lanes" opacity="0" stroke="var(--street)" stroke-width=".16" fill="none" pointer-events="none">
+  ${[[7.96,80.66],[7.90,80.74],[7.84,80.82],[7.78,80.90]].map(a=>
+    '<path d="'+LINE([[a[0],a[1]],[a[0]-.10,a[1]+.06],[a[0]-.16,a[1]+.14]])+'"/>').join("")}
+  ${[[7.98,80.78],[7.92,80.86],[7.86,80.70],[7.80,80.78]].map(a=>
+    '<path d="'+LINE([[a[0],a[1]],[a[0]-.06,a[1]-.09],[a[0]-.13,a[1]-.15]])+'"/>').join("")}
+ </g>
  <g class="citylights" filter="url(#soft)">
   ${[[7.92,80.70],[7.86,80.80],[7.80,80.88],[7.74,80.74],[7.96,80.84]].map((q,i)=>{const a=PX(q[0],q[1]);
    return '<circle class="cl'+(i%3)+'" cx="'+a[0].toFixed(2)+'" cy="'+a[1].toFixed(2)+'" r="'+(1.1+(i%3)*.5).toFixed(2)+'" fill="var(--lamp)" opacity=".0"/>';}).join("")}
@@ -2950,6 +2963,8 @@ function thin(){
  const r=stage.getBoundingClientRect();
  const W=r.width||360,H=r.height||300;
  const unit=W/cam[2];
+ {const lanes=svg.querySelector(".lanes");        /* the streets show themselves up close */
+  if(lanes&&lanes.setAttribute)lanes.setAttribute("opacity",cam[2]<14?String(Math.min(.85,(14-cam[2])/9)):"0");}
  if(mode==="texts"){
   Object.keys(marks).forEach(id=>{marks[id].style.opacity="0";marks[id].style.pointerEvents="none";});
   svg.querySelectorAll(".sc:not(.home)").forEach(n=>{n.style.opacity="0";});
@@ -5980,6 +5995,7 @@ function start(id){
  save.nights[id]=(save.nights[id]||0)+1;journeyMark();persist();
  if(mode==="texts")storyMap();
  run={N,w:0,went:[],lost:[],gone:[],used:0,pickedHere:[],busy:false,path:[]};
+ if(app&&app.dataset)app.dataset.night=id;
  wipeNow();
  story.innerHTML="";curStep=null;dropAnchor();story.scrollTo({top:0});shut();
  step("");
@@ -7237,6 +7253,7 @@ function dawn(){
 }
 function front(){
  if(preview)clearPreview();
+ if(app&&app.dataset)app.dataset.night="";
  if(mode==="texts")storyMap();
  run=null;story.innerHTML="";curStep=null;dropAnchor();shut();build();paint();weather();hud();
  const tr0=document.getElementById("trail");if(tr0)tr0.innerHTML="";
