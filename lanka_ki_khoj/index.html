@@ -3067,42 +3067,149 @@ const DART={
   TD.fig(130,150,1.08,{v:79,nari:1,veil:1,veilc:"#f4a7c0",d:.3})+TD.vig,
 };
 
+/* ---------- what kind of place each one is, so a role knows where to look ---------- */
+const PCAT={
+ akash:"paar",mainakp:"paar",surasap:"paar",sinhikap:"paar",samudra:"paar",devlok:"aasman",
+ trikut:"pahad",kinara:"paar",lankakinara:"paar",
+ dvar:"dwar",uttardwar:"dwar",chowki:"dwar",nagar:"nagar",aamghar:"nagar",
+ mahal:"mahal",pushpak:"mahal",pangrih:"mahal",ghar:"nagar",
+ vatika:"vatika",sarovar:"vatika",kona:"vatika",daal:"vatika",
+ chowk:"ladai",chaitya:"ladai",toran:"ladai",nikumbhila:"ladai",
+ sabha:"sabha",mantri:"sabha",chhat:"aag",bujhana:"aag",arisht:"paar",
+ ghera:"lautna",toli:"paar",madhuvan:"lautna",kishkindha:"sabha",
+ prasravan:"pahad",shibir:"lautna",
+ v_utar:"paar",v_fatak:"dwar",v_maidan:"ladai",v_surekha:"ladai",v_darbar:"sabha",
+ v_kambu:"ladai",v_bulawa:"vatika",v_dhanush:"ladai",v_ant:"ladai",
+ s_darbar:"sabha",s_hazar:"ladai",s_pushkar:"nagar",s_maya:"ladai",s_aage:"vatika",
+ s_roop:"ladai",s_brahma:"aasman",
+ j_nagar:"nagar",j_vidya:"aasman",j_dut:"dwar",j_darbar:"sabha",
+ j_aag:"aag",j_nishani:"vatika",j_lautna:"lautna"
+};
+const catOf=id=>PCAT[id]||"nagar";
 /* ---------- roles: who you walk this night as ---------- */
 const ROLE={
  jigyasu:{n:"जिज्ञासु",t:"सब थोड़ा थोड़ा, और छिपी बातों के इशारे",
   x:"जो हर तरफ़ देखना चाहता है। यह भूमिका किसी एक तरफ़ नहीं झुकती, इसलिए हर घड़ी में सबसे ज़्यादा बचा हुआ रास्ता सामने रखती है।",
-  tint:"#236f68",dark:"#5fb3aa",likes:["chh"],kinds:[],
-  say:"आज तुम सिर्फ़ देखने निकले हो, और देखना भी एक काम है।"},
+  tint:"#236f68",dark:"#5fb3aa",likes:["chh"],cats:["paar","dwar","nagar","mahal","vatika","sabha","ladai","aag","lautna","pahad","aasman"],
+  say:"आज तुम सिर्फ़ देखने निकले हो, और देखना भी एक काम है।",
+  lens:{paar:"पानी के ऊपर सबसे पहले यह देखो कि रास्ता ख़ुद क्या क्या सामने ला रहा है।",
+   dwar:"फाटक पर ठहरकर देखो, यहाँ हर चीज़ किसी न किसी वजह से रखी गई है।",
+   nagar:"गली में धीरे चलो, यहाँ बहुत कुछ ऐसा है जो एक बार में नहीं दिखता।",
+   mahal:"महल में जल्दी मत करो, हर कमरा अपनी अलग बात कहता है।",
+   vatika:"बग़ीचे में चुप रहकर देखो, यहाँ आवाज़ से ज़्यादा चुप्पी बोलती है।",
+   sabha:"दरबार में सिर्फ़ बोलने वाले को मत देखो, सुनने वालों को भी देखो।",
+   ladai:"भिड़ंत में यह देखो कि कौन आया और कौन पीछे रह गया।",
+   aag:"आग में यह देखो कि वह कहाँ कहाँ तक जाती है और कहाँ रुक जाती है।",
+   lautna:"लौटते हुए यह देखो कि पीछे क्या बदल गया।",
+   pahad:"ऊँचाई से देखो, ऊपर से चीज़ें दूसरी तरह दिखती हैं।",
+   aasman:"ऊपर देखो, वहाँ भी कुछ हो रहा है।"}},
  yatri:{n:"यात्री",t:"जगहें, बनावट, बाज़ार और घाट",
   x:"जिसे कथा से पहले जगह दिखती है। यह भूमिका उन कोनों की तरफ़ ले जाती है जहाँ नगर ख़ुद बोलता है: दीवारें, गलियाँ, बाग़ और पानी।",
-  tint:"#2f6f9a",dark:"#7fbfe0",likes:["chh"],kinds:["nagar","ghar","aamghar","chowki","pangrih","pushpak","sarovar","lankakinara","uttardwar","toran","chaitya"],
-  say:"आज तुम इस नगर को देखने आए हो, और यह नगर देखने लायक है।"},
+  tint:"#2f6f9a",dark:"#7fbfe0",likes:["chh"],cats:["nagar","mahal","dwar","vatika","pahad","paar"],
+  say:"आज तुम इस नगर को देखने आए हो, और यह नगर देखने लायक है।",
+  lens:{paar:"रास्ता भी एक जगह है। पानी का रंग, हवा की चाल, और दूर दिखती ज़मीन देखते चलो।",
+   dwar:"फाटक की ऊँचाई देखो, मेहराब पर बनी बेल देखो, और दीवार की मोटाई का अंदाज़ा लगाओ।",
+   nagar:"गली की चौड़ाई, घरों की छतें, दुकानों का सामान, और लोगों के कपड़े देखो।",
+   mahal:"इस महल में सीढ़ियाँ, जालीदार खिड़कियाँ, खंभों की नक्काशी और फ़र्श देखो।",
+   vatika:"बाग़ में पेड़ों की किस्में, पानी की क्यारियाँ और सीढ़ियों वाला घाट देखो।",
+   sabha:"दरबार की बनावट देखो, कहाँ कौन बैठता है और छत कितनी ऊँची है।",
+   ladai:"यह भी देखो कि लड़ाई किस जगह हो रही है और वह जगह कैसी बनी है।",
+   aag:"आग में यह देखो कि किस तरह के घर जल्दी जले और कौन से बचे।",
+   lautna:"लौटते हुए रास्ते के निशान याद रखो, वे अगली बार काम आएँगे।",
+   pahad:"चोटी से पूरा नक्शा पढ़ो: कहाँ पानी, कहाँ दीवार, कहाँ बस्ती।",
+   aasman:"ऊपर से पूरी बनावट एक साथ दिखती है, उसे ध्यान से देखो।"}},
  kathapremi:{n:"कथा प्रेमी",t:"वही पल दूसरे ग्रंथों में",
   x:"जिसे यह जानना अच्छा लगता है कि यही बात कहीं और कैसे कही गई। यह भूमिका हर जगह उस परत को पहले खोलती है जो किसी दूसरे ग्रंथ से आई हो।",
-  tint:"#9a6a09",dark:"#e0a93c",likes:["gr"],kinds:[],
-  say:"आज तुम एक ही रात को कई ज़बानों में सुनने आए हो।"},
+  tint:"#9a6a09",dark:"#e0a93c",likes:["gr"],cats:["vatika","sabha","nagar","aag","lautna","dwar"],
+  say:"आज तुम एक ही रात को कई ज़बानों में सुनने आए हो।",
+  lens:{paar:"इस छलाँग को हर परंपरा ने अपने ढंग से कहा है, यही देखते चलो।",
+   dwar:"फाटक पर रोकने वाली का नाम हर कथा में अलग है, ध्यान रखना।",
+   nagar:"किसी कथा में यह नगर सोने का है, किसी में डरावना, और किसी में बस एक शहर।",
+   mahal:"यह हिस्सा कहीं लंबा है और कहीं दो पंक्तियों का, यही फ़र्क़ देखो।",
+   vatika:"यही वह जगह है जहाँ हर कथा सबसे ज़्यादा ठहरती है।",
+   sabha:"दरबार वाला दृश्य कहीं है ही नहीं, और कहीं सबसे बड़ा है।",
+   ladai:"लड़ाइयों की गिनती हर कथा में अलग है, वही मिलाते चलो।",
+   aag:"आग कहाँ से लगी और कैसे बुझी, इसी पर सब अलग हो जाते हैं।",
+   lautna:"लौटकर क्या कहा गया, यह हर कथा अपने ढंग से कहती है।",
+   pahad:"पहली झलक किसने कैसे लिखी, यह देखने लायक है।",
+   aasman:"देखने वाले कौन थे, यह भी हर कथा में बदलता है।"}},
  balak:{n:"बालक",t:"छोटी सीधी बात, पशु पक्षी और अचरज",
   x:"जिसे लंबी बात से ज़्यादा अचरज चाहिए। यह भूमिका उन जगहों को आगे रखती है जहाँ कुछ होता हुआ दिखता है, और भारी हिस्सों को पीछे।",
-  tint:"#3f7a3a",dark:"#8cc97f",likes:["chh"],kinds:["daal","kona","vatika","sarovar","mainakp","surasap","sinhikap","devlok","madhuvan"],
-  say:"आज तुम एक बड़ी कहानी में घूमने आए हो, और डरने की कोई बात नहीं।"},
+  tint:"#3f7a3a",dark:"#8cc97f",likes:["chh"],cats:["paar","vatika","aasman","lautna","pahad"],
+  say:"आज तुम एक बड़ी कहानी में घूमने आए हो, और डरने की कोई बात नहीं।",
+  lens:{paar:"समुद्र के ऊपर कौन कौन मिलने आया, यह सबसे मज़ेदार हिस्सा है।",
+   dwar:"फाटक बहुत बड़ा है, पर डरना मत, यहाँ भी रास्ता निकल आता है।",
+   nagar:"गली में देखो कि लोग क्या खा रहे हैं और बच्चे क्या कर रहे हैं।",
+   mahal:"इतने बड़े घर में कोई कैसे छिपकर घूम सकता है, वही देखो।",
+   vatika:"बाग़ में पेड़, फूल, पंछी और एक बहुत बहादुर औरत है।",
+   sabha:"यहाँ बड़े लोग बड़ी बड़ी बातें करते हैं, और एक अकेला उनसे भिड़ जाता है।",
+   ladai:"यहाँ कौन जीता, यह देखो, पर ख़ून ख़राबे पर मत रुको।",
+   aag:"आग बड़ी है, पर याद रखना कि जलने वाला कोई नहीं था।",
+   lautna:"अब घर लौटने का वक़्त है, और सबसे अच्छी ख़बर साथ है।",
+   pahad:"ऊपर से नगर खिलौने जैसा दिखता है।",
+   aasman:"आसमान में और भी बहुत कुछ है, ऊपर देखो।"}},
  yoddha:{n:"योद्धा",t:"लड़ाइयाँ, अस्त्र, वरदान और गिनती",
   x:"जिसे यह जानना है कि कौन कब भिड़ा और किस चीज़ से। यह भूमिका तोरण, चौक, दरबार और मैदान की तरफ़ ले जाती है।",
-  tint:"#a5311f",dark:"#e06a58",likes:["chh"],kinds:["toran","chowk","sabha","mantri","chhat","maidan","nikumbhila","s_hazar","s_maya","j_darbar","v_maidan"],
-  say:"आज तुम गिनने आए हो कि कौन आया, किससे भिड़ा, और क्या लेकर लौटा।"},
+  tint:"#a5311f",dark:"#e06a58",likes:["chh"],cats:["ladai","aag","dwar","sabha","pahad"],
+  say:"आज तुम गिनने आए हो कि कौन आया, किससे भिड़ा, और क्या लेकर लौटा।",
+  lens:{paar:"रास्ते की हर रुकावट एक परख है, देखो कि वह कैसे पार की गई।",
+   dwar:"पहरे की गिनती करो और यह देखो कि भीतर जाने का रास्ता कैसे निकला।",
+   nagar:"गलियाँ भी नक्शा हैं, देखो कहाँ से निकला जा सकता है।",
+   mahal:"महल में भी यह देखो कि कहाँ पहरा है और कहाँ खुला रास्ता।",
+   vatika:"यहाँ हथियार नहीं चलता, यहाँ संयम चलता है, वही देखो।",
+   sabha:"दरबार भी एक मैदान है, और वहाँ शब्द ही हथियार हैं।",
+   ladai:"कौन आया, किस हथियार से, और कितनी देर टिका, यही गिनो।",
+   aag:"आग भी एक चाल है, देखो कि वह किस सोच से चली।",
+   lautna:"लौटते हुए यह देखो कि क्या जीता और क्या बचाया।",
+   pahad:"ऊँचाई से दुश्मन का नगर देखना सबसे पहला काम है।",
+   aasman:"ऊपर से देखने वाले भी गवाह हैं।"}},
  shastri:{n:"शास्त्री",t:"मूल पंक्तियाँ, सर्ग और हवाले",
   x:"जिसे पाठ चाहिए, कहानी बाद में। यह भूमिका उन बातों को पहले लाती है जिनके साथ मूल की पंक्ति या सर्ग का हवाला जुड़ा है।",
-  tint:"#3d4f8a",dark:"#9bb0ee",likes:["gr","man"],kinds:[],
+  tint:"#3d4f8a",dark:"#9bb0ee",likes:["gr","man"],cats:["sabha","vatika","mahal","nagar","aasman","lautna"],
+  lens:{paar:"यह हिस्सा किस सर्ग का है, और किस पाठ में कैसे मिलता है, यही मिलाते चलो।",
+   dwar:"यहाँ के श्लोक कम मिलते हैं, इसलिए जो मिले उसे ध्यान से पढ़ो।",
+   nagar:"नगर का वर्णन हर पाठ में अलग लंबाई का है, यही सबसे बड़ा सबूत है।",
+   mahal:"इन सर्गों में ब्योरा सबसे ज़्यादा है, और यही उनकी पहचान है।",
+   vatika:"यही वह हिस्सा है जिस पर सबसे ज़्यादा टीकाएँ लिखी गई हैं।",
+   sabha:"यहाँ दूत के अधिकार की बात है, और वही आगे नियम बन जाती है।",
+   ladai:"गिनतियाँ पाठ दर पाठ बदलती हैं, वही मिलाओ।",
+   aag:"इस दृश्य के श्लोक सबसे ज़्यादा उद्धृत होते हैं।",
+   lautna:"लौटने वाले सर्ग में वह पंक्ति है जिससे पूरा कांड पहचाना जाता है।",
+   pahad:"यह पहली झलक वाला सर्ग है, वर्णन का नमूना।",
+   aasman:"देखने वालों की सूची भी पाठ का हिस्सा है, उसे मत छोड़ो।"},
   need:[()=>NEED.texts(7),()=>({x:"पचीस छिपी बातें मिली हों",t:()=>cardCount()>=25,p:()=>cardCount()/25})],
   say:"आज तुम पाठ मिलाने आए हो, इसलिए हर बात के नीचे उसका हवाला देखना।"},
  sadhak:{n:"साधक",t:"मन, भक्ति और दर्शन वाली परतें",
   x:"जिसे घटना से ज़्यादा उसका अर्थ चाहिए। यह भूमिका मन वाली परतों और कही हुई कथाओं की तरफ़ ले जाती है।",
-  tint:"#6b4fa0",dark:"#c0a8ef",likes:["man"],kinds:["vatika","shibir","sarovar","devlok","chaitya","j_vidya","s_brahma"],
+  tint:"#6b4fa0",dark:"#c0a8ef",likes:["man"],cats:["vatika","aasman","lautna","pahad","mahal"],
+  lens:{paar:"रास्ते की रुकावटें भीतर की रुकावटों जैसी हैं, वैसे ही पढ़ो।",
+   dwar:"हर द्वार पहले भीतर खुलता है, फिर बाहर।",
+   nagar:"चमक के बीच चलते हुए यह देखो कि मन कहाँ अटकता है।",
+   mahal:"इतनी सुंदरता के बीच भी वही एक याद लौट आती है, उसी को देखो।",
+   vatika:"यहाँ दुख है, और उसी दुख में टिके रहने की ताक़त भी।",
+   sabha:"यहाँ देखो कि डर और सच में से कौन बड़ा पड़ता है।",
+   ladai:"क्रोध कहाँ तक ठीक है, यह सवाल यहीं उठता है।",
+   aag:"आग के बाद का पछतावा सबसे सच्चा हिस्सा है।",
+   lautna:"लौटना भी एक साधना है, बिना कुछ माँगे लौटना।",
+   pahad:"ऊँचाई पर मन शांत होता है, वहीं से देखो।",
+   aasman:"ऊपर वाले भी सिर्फ़ देख रहे हैं, करना नीचे वाले को ही है।"},
   need:[()=>({x:"तीन रसों के पल देखे हों",t:()=>{const rc=rasaCount();return Object.keys(rc).filter(r=>rc[r][0]>0).length>=3;},
     p:()=>{const rc=rasaCount();return Object.keys(rc).filter(r=>rc[r][0]>0).length/3;}}),()=>NEED.roop(18)],
   say:"आज तुम यह देखने आए हो कि इस रात के भीतर क्या चल रहा है।"},
  raja:{n:"राजा",t:"दरबार, नीति, दूत का अधिकार और फ़ैसले",
   x:"जिसे यह देखना है कि फ़ैसले कैसे लिए जाते हैं और कौन किससे क्या कहता है। यह भूमिका दरबारों और बैठकों की तरफ़ ले जाती है।",
-  tint:"#8a5b2b",dark:"#d9a46a",likes:["chh","man"],kinds:["sabha","mantri","darbar","shibir","kishkindha","v_darbar","s_darbar","j_darbar","mahal"],
+  tint:"#8a5b2b",dark:"#d9a46a",likes:["chh","man"],cats:["sabha","mahal","dwar","lautna","nagar"],
+  lens:{paar:"दूत भेजना भी एक फ़ैसला है, और उसका हिसाब रखा जाता है।",
+   dwar:"द्वार किसी राज्य का पहला चेहरा है, देखो कि वह क्या कहता है।",
+   nagar:"बस्ती देखकर पता चलता है कि राज कैसा चल रहा है।",
+   mahal:"महल में यह देखो कि सुख कहाँ तक पहुँचा है और कहाँ रुक गया।",
+   vatika:"यहाँ यह देखो कि एक बंदी के साथ राज कैसा बरताव करता है।",
+   sabha:"यहाँ नीति बोलती है: कौन क्या कहता है और राजा किसकी सुनता है।",
+   ladai:"लड़ाई भी नीति का हिस्सा है, देखो कि वह कब चुनी गई।",
+   aag:"नगर जलने पर सबसे पहले किसका नुक़सान होता है, यही सोचो।",
+   lautna:"लौटकर ख़बर देना दूत का सबसे बड़ा काम है।",
+   pahad:"ऊपर से राज्य की हद देखी जाती है।",
+   aasman:"ऊपर वालों की राय भी दरबार तक पहुँचती है।"},
   need:[()=>({x:"एक रात पूरी की हो",t:()=>!!(save.done.khoj||save.done.aag||save.done.khabar),
     p:()=>(save.done.khoj||save.done.aag||save.done.khabar)?1:0}),
    ()=>({x:"दस चीज़ें संग्रह में आई हों",t:()=>vastuCount()>=10,p:()=>vastuCount()/10})],
@@ -3117,9 +3224,13 @@ function roleTint(){
  app.style.setProperty("--tide",dark?R.dark:R.tint);
  app.style.setProperty("--haldi",dark?R.dark:R.tint);
 }
-function roleRank(id){                /* how much this place suits the role you picked */
+function roleRank(id){                /* does this place lie on the road your role walks */
  const R=ROLE[myRole()];if(!R)return 0;
- return (R.kinds||[]).indexOf(id)>-1?1:0;
+ return (R.cats||[]).indexOf(catOf(id))>-1?1:0;
+}
+function roleLens(id){                /* what your role would look at, right here */
+ const R=ROLE[myRole()];
+ return (R&&R.lens&&R.lens[catOf(id)])||"";
 }
 function pickRole(){
  const at=markPoint();
@@ -4724,11 +4835,18 @@ function offer(only){
   skip.onclick=()=>{f.remove();endWatch();};
   f.appendChild(skip);
  }
- /* in the free ghadi, keep the list short: the unread ones first, the rest behind a button */
+ /* in the free ghadi you walk your role's own road, and the rest waits behind a button */
  let hidden=[];
- if(run.ghadi===1&&!only&&open.length>4){
-  open.sort((a,b)=>(roleRank(b)-roleRank(a))||(freshAt(b)-freshAt(a)));
-  hidden=open.slice(4);open=open.slice(0,4);
+ if(run.ghadi===1&&!only){
+  const mine=open.filter(x=>roleRank(x)),rest=open.filter(x=>!roleRank(x));
+  if(mine.length){
+   el('<p class="rolebar">यह घड़ी '+ROLE[myRole()].n+" की है, इसलिए यहाँ वही जगहें हैं जो इस राह पर पड़ती हैं।</p>");
+   open=mine.sort((a,b)=>freshAt(b)-freshAt(a));hidden=rest;
+  }else{
+   el('<p class="quiet">इस घड़ी तुम्हारी राह की कोई जगह नहीं है, इसलिए सब खुली हैं।</p>');
+   open=open.sort((a,b)=>freshAt(b)-freshAt(a));
+  }
+  if(open.length>4){hidden=hidden.concat(open.slice(4));open=open.slice(0,4);}
  }
  open.forEach(id=>{
   const nf=freshAt(id);
@@ -4744,7 +4862,7 @@ function offer(only){
   f.appendChild(b);
  });
  if(hidden.length){
-  f.appendChild(btn("और "+hidden.length+" जगहें दिखाओ","do ghost",()=>{
+  f.appendChild(btn("इस राह से बाहर की "+hidden.length+" जगहें भी दिखाओ","do ghost",()=>{
    hidden.forEach(id=>{
     const nf=freshAt(id);
     const b=document.createElement("button");
@@ -4795,6 +4913,8 @@ function visit(id){
  const L=layersOf(key),d=Math.min(depthOf(key),L.length-1),S=L[d];
  didAct();
  run.path.push({id:id,w:run.w});
+ const lens=roleLens(id);
+ if(lens)el('<p class="rolebar">'+lens+"</p>");
  run.pickedHere.push(id);if(run.ghadi===1)run.used++;   /* the katha ghadi is free */
  run.went.push(PLACES[id].n);run.focus=id;
  paint();
