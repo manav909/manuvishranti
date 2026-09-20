@@ -1065,11 +1065,11 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 
 
 /* the road of a role, drawn on the map itself */
-.rdline{fill:none;stroke:var(--tide);stroke-width:1.1;stroke-linecap:round;stroke-dasharray:3 3;opacity:.95}
-.rdglow{fill:none;stroke:var(--tide);stroke-width:4;opacity:.18;stroke-linecap:round}
+.rdline{fill:none;stroke:var(--tide);stroke-width:1.6px;stroke-linecap:round;stroke-dasharray:5 6;opacity:.8}
+.rdglow{fill:none;stroke:var(--tide);stroke-width:6px;opacity:.13;stroke-linecap:round}
 @media (prefers-reduced-motion:no-preference){
  .rdline{animation:rdwalk 6s linear infinite}
- @keyframes rdwalk{from{stroke-dashoffset:0}to{stroke-dashoffset:-24}}
+ @keyframes rdwalk{from{stroke-dashoffset:0}to{stroke-dashoffset:-33}}
  .rdglow{animation:rdbreathe 3.4s ease-in-out infinite}
  @keyframes rdbreathe{0%,100%{opacity:.12}50%{opacity:.3}}
 }
@@ -3932,14 +3932,16 @@ function rolePreview(r){
   app.style.setProperty("--tide",R.tint);app.style.setProperty("--haldi",R.tint);}
  build();paint();
  const box=document.getElementById("trail");if(box)box.innerHTML="";
- /* the road drawn on the map itself */
- const old=svg.querySelector("#roadline");if(old)old.remove();
+ /* the road drawn on the map itself, under the pins */
  const road=previewRoad(r);
+ roadHTML="";
  if(road.length>1){
   let d="";road.forEach((id,i)=>{const P=PLACES[id];d+=(i?" L":"M")+P.x.toFixed(2)+" "+P.y.toFixed(2);});
-  svg.insertAdjacentHTML("beforeend",'<g id="roadline" pointer-events="none">'+
-   '<path class="rdglow" d="'+d+'"/><path class="rdline" d="'+d+'"/></g>');
+  roadHTML='<g id="roadline" pointer-events="none">'+
+   '<path class="rdglow" vector-effect="non-scaling-stroke" d="'+d+'"/>'+
+   '<path class="rdline" vector-effect="non-scaling-stroke" d="'+d+'"/></g>';
  }
+ build();paint();
  const xs=road.map(id=>PLACES[id].x),ys=road.map(id=>PLACES[id].y);
  if(xs.length){
   const x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),
@@ -3967,8 +3969,7 @@ function previewRoad(r){          /* the places this role walks, in the order th
 }
 function clearPreview(){
  if(!preview)return;
- preview=null;roleTint();
- const old=svg.querySelector("#roadline");if(old)old.remove();
+ preview=null;roleTint();roadHTML="";
  build();paint();fitLater();
 }
 function roleAvatar(r,big){
@@ -5528,8 +5529,9 @@ function scenes(){
  });
  return '<g id="scenes" pointer-events="none">'+g+"</g>";
 }
+let roadHTML="";               /* the role road lives under the pins, never over them */
 function build(){
- let g=mapArt(run?run.N.id:"khoj")+'<g id="wx" pointer-events="none"></g>'+scenes();
+ let g=mapArt(run?run.N.id:"khoj")+roadHTML+'<g id="wx" pointer-events="none"></g>'+scenes();
  Object.keys(PLACES).forEach(id=>{
   const P=PLACES[id];
   g+='<g class="mk" id="mk_'+id+'" data-place="'+id+'" transform="translate('+P.x.toFixed(2)+','+P.y.toFixed(2)+')">'+
