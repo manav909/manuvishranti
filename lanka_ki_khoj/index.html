@@ -2451,11 +2451,15 @@ try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r)
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
  if(typeof hud==="function")hud();}
 
+const NIGHTSRC={khoj:"vr",aag:"vr",khabar:"vr",vilanka:"sarala",shakti:"adbhuta",vidya:"jain"};
 Object.keys(SC).forEach(k=>{
  const all=[SC[k]].concat(SC[k].more||[]);
  if(all.length<2)return;
  const len=x=>(x.say||[]).join("").length;
- all.sort((a,b)=>(a.intro?1:0)-(b.intro?1:0)||len(b)-len(a));
+ const home=NIGHTSRC[k.slice(0,k.indexOf("-"))]||"vr";
+ /* the story itself comes first; the other tellings follow, longest first */
+ all.sort((a,b)=>((b.src||"vr")===home?1:0)-((a.src||"vr")===home?1:0)
+  ||(a.intro?1:0)-(b.intro?1:0)||len(b)-len(a));
  SC[k]=Object.assign({},all[0],{more:all.slice(1)});
 });
 const layersOf=k=>[SC[k]].concat(SC[k].more||[]);
