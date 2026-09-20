@@ -3739,6 +3739,9 @@ function roleAvatar(r,big){
  return '<svg class="ravatar'+(big?" big":"")+'" viewBox="0 0 68 68" aria-hidden="true" style="--rt:'+R.tint+'">'+
   '<rect class="avbg" x="0" y="0" width="68" height="68" rx="10"/>'+(RAV[r]||"")+"</svg>";
 }
+function roleOwn(r){               /* the places kept for this role alone */
+ return Object.keys(PLACES).filter(id=>PLACES[id].only===r);
+}
 function roleWhere(r){                /* the kinds of place this role walks through */
  const nm={paar:"समुद्र और रास्ता",pahad:"चोटियाँ",dwar:"फाटक और दीवारें",nagar:"गलियाँ और बस्ती",
   mahal:"महल और भीतर के कमरे",vatika:"बाग़ और ठहराव",sabha:"दरबार और बैठकें",
@@ -3760,6 +3763,12 @@ function roleDetail(r){
  el('<p class="ask">इस भूमिका में तुम क्या करोगे</p>');
  el('<p class="rolebar">'+R.say+"</p>");
  el("<p><b>कहाँ कहाँ ले जाएगी:</b> "+roleWhere(r).join(", ")+"। पूरे खेल में ऐसी "+roleCount(r)+" जगहें हैं।</p>");
+ {const own=roleOwn(r);
+  if(own.length){
+   el('<p class="ask">सिर्फ़ इसी भूमिका की जगहें</p>');
+   el('<p class="quiet">ये '+own.length+" जगहें और किसी भूमिका के नक्शे पर आती ही नहीं।</p>");
+   own.forEach(id=>el('<p class="beat"><b>'+PLACES[id].n+":</b> "+PLACES[id].t+"</p>"));
+  }}
  const some=Object.keys(R.lens||{}).slice(0,3).map(c=>R.lens[c]);
  el("<p><b>वहाँ पहुँचकर यह सुनाई देगा:</b></p>");
  some.forEach(x=>el('<p class="beat">'+x+"</p>"));
@@ -3826,9 +3835,10 @@ function roleScreen(){
   b.className="rolecard"+(open?"":" locked")+(save.role===r&&save.rolePicked?" mine":"");
   b.type="button";if(b.style&&b.style.setProperty)b.style.setProperty("--rt",R.tint);
   const mud=Object.keys((save.roleDone&&save.roleDone[r])||{}).length;
+  const own=roleOwn(r).length;
   b.innerHTML=roleAvatar(r)+'<span class="rolename">'+R.n+"</span>"+
    '<span class="roleline">'+R.t+"</span>"+
-   (mud?'<span class="rolemud">'+mud+" मुद्रा</span>":"")+
+   '<span class="rolemud">'+own+" अपनी जगहें"+(mud?", "+mud+" मुद्रा":"")+"</span>"+
    '<span class="roletag">'+(open?(save.role===r&&save.rolePicked?"यही चल रही है":"देखो"):"बंद")+"</span>";
   b.onclick=()=>roleDetail(r);
   if(save.journey&&save.journey.role===r&&!save.journey.live)b.className+=" mine";
