@@ -4226,6 +4226,16 @@ function journeyStats(){
  const forms=Object.keys(SC).reduce((n,k)=>n+Math.min(depthOf(k),layersOf(k).length),0);
  return forms+" रूप, "+cardCount()+" बातें, "+purse()+" मणि";
 }
+const RDAWN={
+ jigyasu:"एक रात में इतना ही खुलता है। जो बचा है, वह अगली बार खुलेगा।",
+ yatri:"नगर का यह हिस्सा अब जाना पहचाना है। अगली बार रास्ता कम भटकाएगा।",
+ kathapremi:"इतनी ज़बानों को एक साथ सुनना आसान नहीं होता, और आज वह हो गया।",
+ balak:"इतनी सारी चीज़ें एक ही रात में। अब थोड़ा आराम, फिर आगे।",
+ yoddha:"रात का हिसाब पूरा हुआ। जो अभी बाकी है, वह अगले दिन का काम है।",
+ shastri:"आज के हवाले जमा हो गए। जो पाठ छूटे हैं, उन्हें अगली बार मिलाइए।",
+ sadhak:"जो देखा, उसे अपने साथ मत ढोइए। सुबह अपने साथ ख़ाली हाथ जाइए।",
+ raja:"रात का ब्योरा दरबार तक पहुँच चुका है। अगला फ़ैसला अगली रात का है।"
+};
 const RFIRST={jigyasu:"khoj",yatri:"khoj",kathapremi:"khabar",balak:"khoj",
  yoddha:"aag",shastri:"khabar",sadhak:"khoj",raja:"aag"};
 const roleOpen=r=>!ROLE[r]||!ROLE[r].need||adhikar(ROLE[r].need).ok;
@@ -7388,7 +7398,12 @@ function dawn(){
  /* the night at a glance */
  {const L=roleLedger(N);
   el('<p class="ask">'+ROLE[myRole()].n+" का हिसाब</p>");
-  L.forEach(x=>el('<p class="rolebar">'+x+"</p>"));}
+  L.forEach(x=>el('<p class="rolebar">'+x+"</p>"));
+  const dl=RDAWN[myRole()];if(dl)el('<p class="rolebar close">'+dl+"</p>");
+  const nx=NIGHTS.find(x=>x.id!==N.id&&!save.done[x.id]&&(!x.needs||save.nights[x.needs])&&
+   (!x.katha||(save.katha&&save.katha[x.katha])));
+  if(nx){const aim=(RAIM[myRole()]||{})[nx.id];
+   if(aim)el('<p class="aim"><b>आगे:</b> '+nx.name+"। "+aim+"</p>");}}
  el('<p class="ask">इस रात की कथा, क्रम से</p>');
  N.watches.forEach((w,i)=>{
   const beats=w.spots.filter(x=>SPINE[N.id+"-"+x+"-"+i]);
