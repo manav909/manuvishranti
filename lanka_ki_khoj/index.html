@@ -5789,18 +5789,16 @@ function tap(id){
  const goNow=!!(run&&inW&&nowOpen&&!used&&!giftLock&&(run.ghadi===0||left>0)&&!run.busy);
  let why="",word="यहाँ चलो";
  if(!goNow){
-  if(!run){why="अभी कोई रात चल नहीं रही। कथा वाले पन्ने पर कोई हिस्सा चुनो, फिर यहाँ जाया जा सकेगा।";word="पहले कथा शुरू करो";}
-  else if(here){why="तुम इसी जगह पर खड़े हो। आगे की बात कथा वाले पन्ने पर चल रही है।";word="तुम यहीं हो";}
+  if(!run){why="अभी कोई रात नहीं चल रही।";word="पहले रात चुनो";}
+  else if(here){why="तुम यहीं खड़े हो।";word="तुम यहीं हो";}
   else if(giftLock){why="यह जगह अभी बंद है, आगे खुलेगी।";word="अभी बंद है";}
-  else if(used){why="इस घड़ी तुम यहाँ हो आए। यही पल किसी और ग्रंथ में पढ़ना हो तो कथा वाले पन्ने पर उसका बटन है।";word="यहाँ हो आए";}
-  else if(inW&&!nowOpen&&run.ghadi===0){
-   why="पहली घड़ी कथा की है, और इस वक़्त कथा किसी और जगह चल रही है। वह पूरी होते ही यह जगह खुल जाएगी।";
-   word="दूसरी घड़ी में";}
-  else if(inW&&!nowOpen){why="यह जगह पहली घड़ी की थी, और वह बीत चुकी है।";word="वह घड़ी बीत गई";}
-  else if(!inW){why="इस घड़ी यहाँ कुछ नहीं हो रहा। जहाँ कुछ हो रहा है, उन जगहों पर नक्शे में गिनती लगी है।";
+  else if(used){why="यहाँ हो आए।";word="हो आए";}
+  else if(inW&&!nowOpen&&run.ghadi===0){why="अभी कथा किसी और जगह है।";word="थोड़ी देर बाद";}
+  else if(inW&&!nowOpen){why="यहाँ का वक़्त बीत चुका।";word="बीत गया";}
+  else if(!inW){why="इस घड़ी यहाँ कुछ नहीं हो रहा।";
    word=(function(){let seen=false;run.N.watches.forEach((w0,i0)=>{const k0=run.N.id+"-"+id+"-"+i0;
     if(SC[k0]&&depthOf(k0)>0)seen=true;});return seen?"यहाँ हो आए":"इस घड़ी बंद";})();}
-  else if(run.ghadi===1&&left<=0){why="इस घड़ी की तुम्हारी चुनी हुई जगह हो चुकी। कथा वाले पन्ने पर वक़्त आगे बढ़ाओ, अगली घड़ी में यह जगह खुल सकती है।";word="इस घड़ी और नहीं";}
+  else if(run.ghadi===1&&left<=0){why="इस घड़ी और नहीं। वक़्त आगे बढ़ाओ।";word="इस घड़ी और नहीं";}
   else{why="अभी यहाँ नहीं जाया जा सकता।";word="अभी बंद है";}
  }
  sheet.innerHTML='<div><b>'+(numOf[id]?numOf[id]+". ":"")+P.n+"</b><span>"+P.t+"</span>"+
@@ -5916,19 +5914,15 @@ function offer(only){
  else{
   }
  if(run.ghadi===0){
-  const m=mainList(run.w).length;
-  el('<p class="quiet">पहली घड़ी कथा की है। इस प्रहर कथा '+(m>1?"इन "+m+" जगहों":"यहीं")+
-   " से होकर गुज़रती है, इसलिए ये छूटती नहीं।</p>");
-  el('<p class="ask">चलो, वहीं चलते हैं।</p>');
+  el('<p class="ask">कथा यहाँ से गुज़रती है।</p>');
  }else{
-  el('<p class="quiet">दूसरी घड़ी तुम्हारी है। उसी वक़्त ये जगहें भी चल रही हैं, और इनमें से एक चुनी जा सकती है।</p>');
-  el('<p class="ask">अब कहाँ जाओगे?</p>');
+  el('<p class="ask">उसी वक़्त यहाँ भी कुछ चल रहा है। कहाँ जाओगे?</p>');
  }
  const f=el("","fork");
  if(run.ghadi===1){
   const skip=document.createElement("button");
   skip.className="do go";skip.type="button";
-  skip.textContent="इस घड़ी कहीं नहीं जाना, वक़्त आगे बढ़ाओ";
+  skip.textContent="कहीं नहीं, वक़्त आगे बढ़ाओ";
   skip.onclick=()=>{f.remove();endWatch();};
   f.appendChild(skip);
  }
@@ -5937,10 +5931,8 @@ function offer(only){
  if(run.ghadi===1&&!only){
   const mine=open.filter(x=>roleRank(x)),rest=open.filter(x=>!roleRank(x));
   if(mine.length){
-   el('<p class="rolebar">यह घड़ी '+ROLE[myRole()].n+" की है, इसलिए यहाँ वही जगहें हैं जो इस राह पर पड़ती हैं।</p>");
    open=mine.sort((a,b)=>freshAt(b)-freshAt(a));hidden=rest;
   }else{
-   el('<p class="quiet">इस घड़ी तुम्हारी राह की कोई जगह नहीं है, इसलिए सब खुली हैं।</p>');
    open=open.sort((a,b)=>freshAt(b)-freshAt(a));
   }
   if(open.length>4){hidden=hidden.concat(open.slice(4));open=open.slice(0,4);}
@@ -5959,7 +5951,7 @@ function offer(only){
   f.appendChild(b);
  });
  if(hidden.length){
-  const moreBtn=btn("इस राह से बाहर की "+hidden.length+" जगहें भी दिखाओ","do ghost",()=>{
+  const moreBtn=btn("और "+hidden.length+" जगहें","do ghost",()=>{
    if(moreBtn.dataset)moreBtn.dataset.used="1";
    moreBtn.remove();                        /* once opened, the button goes: no second helping */
    hidden.forEach(id=>{
@@ -6001,8 +5993,7 @@ function visit(id){
  if(!run.N.watches[run.w]||!spotsFor(run.w).includes(id)){
   note("इस घड़ी "+PLACES[id].n+" में कुछ नहीं हो रहा।");return;}
  if(!ghadiSpots().includes(id)){
-  note(run.ghadi===0?"पहली घड़ी में कथा किसी और जगह चल रही है। पहले वहाँ चलो।"
-                    :"वह जगह पहली घड़ी की थी, और वह बीत चुकी है।");return;}
+  note(run.ghadi===0?"कथा अभी किसी और जगह है।":"यहाँ का वक़्त बीत चुका।");return;}
  run.busy=true;shut();
  story.querySelectorAll(".fork").forEach(x=>x.remove());
  const at=markPoint();
