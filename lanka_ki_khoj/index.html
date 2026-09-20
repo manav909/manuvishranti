@@ -2469,15 +2469,16 @@ const TELLS=Object.keys(SRC).filter(k=>!SRC[k].tool);
 const textCount=()=>TELLS.filter(k=>save.texts&&save.texts[k]).length;
 const patraMine=()=>Object.keys(PATRA).filter(k=>!PATRA[k].only||PATRA[k].only===myRole());
 const patraCount=()=>patraMine().filter(k=>save.patra&&save.patra[k]).length;
-const achCount=()=>Object.keys(ACH).filter(k=>save.ach&&save.ach[k]).length;
-const readyCount=()=>Object.keys(ACH).filter(k=>save.ach&&save.ach[k]==="ready").length;
+const achMine=()=>Object.keys(ACH).filter(k=>!ACH[k].only||ACH[k].only===myRole());
+const achCount=()=>achMine().filter(k=>save.ach&&save.ach[k]).length;
+const readyCount=()=>achMine().filter(k=>save.ach&&save.ach[k]==="ready").length;
 const kathaCount=()=>Object.keys(KATHA).filter(k=>save.katha&&save.katha[k]).length;
 function claimAch(k){
  if(!save.ach||save.ach[k]!=="ready")return false;
  save.ach[k]="lia";save.mani=(save.mani||0)+5;persist();
  return true;
 }
-function claimAll(){let n=0;Object.keys(ACH).forEach(k=>{if(claimAch(k))n++;});return n;}
+function claimAll(){let n=0;achMine().forEach(k=>{if(claimAch(k))n++;});return n;}
 function rasaCount(){
  const out={};Object.keys(RASA).forEach(r=>out[r]=[0,0]);
  Object.keys(SC).forEach(k=>{const r=RAS[k];if(!r)return;out[r][1]++;if(depthOf(k)>0)out[r][0]++;});
@@ -2580,10 +2581,14 @@ function checkAch(){
   char_rakshika:rakshikaSeen()>=4,
   das_granth:textCount()>=10, sab_granth:textCount()>=TELLS.length,
   chhah_ras:ras>=6, aadhi_baat:cardCount()>=Math.ceil(Object.keys(CARDS).length/2),
-  sab_patra:patraCount()>=Object.keys(PATRA).length
+  sab_patra:patraCount()>=patraMine().length
  };
  Object.keys(test).forEach(k=>{
   if(test[k]&&!save.ach[k])save.ach[k]="ready";
+ });
+ achMine().forEach(k=>{                 /* the badge your own road can earn */
+  if(!ACH[k].only||save.ach[k])return;
+  if(ACH[k].p()>=1)save.ach[k]="ready";
  });
 }
 function tally_up(){openPatra();openVastu();openKahi();checkAch();persist();}
@@ -4763,6 +4768,22 @@ const PATRA={
  surekha:{n:"सुरेखा",x:"ओड़िया की विलंका रामायण में पाताल की दूसरी लंका की असुरी। वह माया का रूप धरकर सामने आती है और पहचानने से पहले ही हनुमान को निगल लेती है, फिर हज़ार सिर वाले रावण के सामने उगल देती है। पूरा दरबार हँसता है, और छूटते ही वे रानियों के नाक कान काट देते हैं। हँसी वहीं ख़त्म हो जाती है।",on:["sarala_lanka"]}
 };
 const ACH={
+ a_yod:{n:"तोरण का हिसाब",only:"yoddha",x:"योद्धा की चारों अपनी जगहें देखीं।",
+  p:()=>roleSeen(["ladai"])/4},
+ a_yat:{n:"पूरा नगर देखा",only:"yatri",x:"यात्री की चारों अपनी जगहें देखीं।",
+  p:()=>(roleSeen(["nagar","mahal","dwar","vatika"]))/8},
+ a_kat:{n:"तीन कथाओं का मिलान",only:"kathapremi",x:"एक ही पल तीन अलग ग्रंथों में पढ़ा।",
+  p:()=>deepestMoment()/3},
+ a_bal:{n:"सारे मज़े",only:"balak",x:"बालक की चारों अपनी जगहें देखीं।",
+  p:()=>roleSeen(["paar","vatika","lautna","aasman"])/6},
+ a_sha:{n:"हवालों का पक्का",only:"shastri",x:"मूल की पंक्ति वाली तीन बातें मिलीं।",
+  p:()=>Object.keys(CARDS).filter(c=>save.cards[c]&&CARDS[c].sl).length/3},
+ a_sad:{n:"ठहरा हुआ मन",only:"sadhak",x:"साधक की तीनों अपनी जगहें देखीं।",
+  p:()=>roleSeen(["vatika","aasman","pahad"])/5},
+ a_raj:{n:"दरबार पढ़ लिया",only:"raja",x:"राजा की चारों अपनी जगहें देखीं।",
+  p:()=>roleSeen(["sabha"])/5},
+ a_jig:{n:"हर तरफ़ झाँका",only:"jigyasu",x:"सातों किस्म की जगहें देखीं।",
+  p:()=>roleSeen(["paar","dwar","nagar","mahal","vatika","sabha","ladai"])/9},
  char_chakkar:{n:"चार परंपराओं का चक्कर",x:"चार अलग ग्रंथों के भीतर के चक्कर पूरे घूमे।",
   p:()=>Object.keys(save.tour||{}).length/4},
  saat_samundar:{n:"सात समंदर पार",x:"भारत के बाहर की चार कथाओं का पाठ खोला।",
