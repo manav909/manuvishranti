@@ -3761,6 +3761,36 @@ function openVastu(){
  });
 }
 /* ---------- padvi: names a player earns and can wear ---------- */
+/* ---------- names that only your own road can earn ---------- */
+function roleSeen(cats){
+ let n=0;Object.keys(SC).forEach(k=>{if(!depthOf(k))return;
+  const pid=k.slice(k.indexOf("-")+1,k.lastIndexOf("-"));
+  if(cats.indexOf(catOf(pid))>-1)n++;});
+ return n;
+}
+const ROLEPADVI=[
+ {role:"yoddha",id:"r_yod1",g:"योद्धा",n:"तोरण का पहरेदार",x:"भिड़ंत की चार जगहें देखीं",t:()=>roleSeen(["ladai"])>=4},
+ {role:"yoddha",id:"r_yod2",g:"योद्धा",n:"आग का गवाह",x:"भिड़ंत और आग की दस जगहें देखीं",t:()=>roleSeen(["ladai","aag"])>=10},
+ {role:"yatri",id:"r_yat1",g:"यात्री",n:"गलियों का जानकार",x:"बस्ती और महल की छह जगहें देखीं",t:()=>roleSeen(["nagar","mahal"])>=6},
+ {role:"yatri",id:"r_yat2",g:"यात्री",n:"नगर का नक्शा",x:"नगर की पंद्रह जगहें देखीं",t:()=>roleSeen(["nagar","mahal","dwar","vatika"])>=15},
+ {role:"kathapremi",id:"r_kat1",g:"कथा प्रेमी",n:"कई ज़बानों का सुनने वाला",x:"आठ कथाएँ खोलीं",t:()=>textCount()>=8},
+ {role:"kathapremi",id:"r_kat2",g:"कथा प्रेमी",n:"बीस ग्रंथों का साथी",x:"बीस कथाएँ खोलीं",t:()=>textCount()>=20},
+ {role:"balak",id:"r_bal1",g:"बालक",n:"अचरज ढूँढने वाला",x:"पाँच अचरज वाले पल देखे",
+  t:()=>{const rc=rasaCount();return (rc.adbhut&&rc.adbhut[0]||0)>=5;}},
+ {role:"balak",id:"r_bal2",g:"बालक",n:"बहादुर बच्चा",x:"तीस पल देखे",t:()=>seenCount()>=30},
+ {role:"shastri",id:"r_sha1",g:"शास्त्री",n:"हवालों का रखवाला",x:"चालीस बातें हवालों के साथ मिलीं",t:()=>cardCount()>=40},
+ {role:"shastri",id:"r_sha2",g:"शास्त्री",n:"मूल का पाठक",x:"मूल की पंक्ति वाली पाँच बातें मिलीं",
+  t:()=>Object.keys(CARDS).filter(c=>save.cards[c]&&CARDS[c].sl).length>=5},
+ {role:"sadhak",id:"r_sad1",g:"साधक",n:"ठहरने वाला",x:"चार रसों के पल देखे",
+  t:()=>{const rc=rasaCount();return Object.keys(rc).filter(r=>rc[r][0]>0).length>=4;}},
+ {role:"sadhak",id:"r_sad2",g:"साधक",n:"कथाओं का श्रोता",x:"छह कही हुई कथाएँ खुलीं",t:()=>kahiCount()>=6},
+ {role:"raja",id:"r_raj1",g:"राजा",n:"दरबार का पढ़ने वाला",x:"चार दरबार और बैठकें देखीं",t:()=>roleSeen(["sabha"])>=4},
+ {role:"raja",id:"r_raj2",g:"राजा",n:"ख़ज़ाने का मालिक",x:"पंद्रह चीज़ें संग्रह में आईं",t:()=>vastuCount()>=15},
+ {role:"jigyasu",id:"r_jig1",g:"जिज्ञासु",n:"हर तरफ़ देखने वाला",x:"सातों किस्म की जगहें देखीं",
+  t:()=>roleSeen(["paar","dwar","nagar","mahal","vatika","sabha","ladai"])>=7},
+ {role:"jigyasu",id:"r_jig2",g:"जिज्ञासु",n:"कुछ नहीं छोड़ा",x:"सौ छिपी बातें मिलीं",t:()=>cardCount()>=100}
+];
+const myPadvi=()=>ROLEPADVI.filter(p=>p.role===myRole());
 const PADVI=[
  /* the journeys inside the tellings */
  {id:"chakkari",g:"चक्कर",n:"चक्कर लगाने वाला",x:"तीन चक्कर पूरे घूमे",t:c=>c.chakkar>=3},
@@ -3823,7 +3853,8 @@ function counts(){
   kahi:kahiCount(),kahiAll:Object.keys(KAHI).length,
   khoj:!!save.done.khoj,aag:!!save.done.aag,khabar:!!save.done.khabar};
 }
-function padviGot(){const c=counts();return PADVI.filter(p=>p.t(c)).map(p=>p.id);}
+function padviGot(){const c=counts();
+ return PADVI.filter(p=>p.t(c)).map(p=>p.id).concat(myPadvi().filter(p=>p.t(c)).map(p=>p.id));}
 function padviCount(){return padviGot().length;}
 function progress(){
  const c=counts();
