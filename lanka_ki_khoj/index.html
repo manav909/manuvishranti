@@ -155,6 +155,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .panel h1{font-family:"Rozha One",serif;font-weight:400;font-size:2.4rem;color:var(--haldi);margin:.2rem 0 .3rem;line-height:1.15}
 .panel h2{font-family:"Rozha One",serif;font-weight:400;font-size:1.45rem;margin:1.4rem 0 .3rem}
 .panel p{margin:0 0 .9rem}
+.rolebar.close{border-left-style:dotted;opacity:.92}
 .rolebar{margin:.1rem 0 .55rem;font-size:.92rem;color:var(--tide);border-left:3px solid var(--tide);padding-left:.6rem}
 .recap{margin:.1rem 0 .5rem;font-size:.9rem;color:var(--quiet);border-left:2px solid var(--rule);padding-left:.6rem}
 .quiet{color:var(--quiet);font-style:italic}
@@ -3979,6 +3980,60 @@ const RPIN={
  sadhak:'<circle class="rpin" cx="0" cy="-9.6" r="2.6"/><circle class="rpin2 raura" cx="0" cy="-9.6" r="5.4"/>',
  raja:'<path class="rpin" d="M-4 -8 l1.6 -4.6 l2.4 2.4 l2.4 -2.4 l1.6 4.6 Z"/><path class="rpin2" d="M-4 -6.6 h8"/>'
 };
+/* ---------- how each role takes leave of a moment ---------- */
+const RCLOSE={
+ jigyasu:{veer:"यह देख लिया। अब अगला सवाल।",karun:"यह भारी था। इसे यहीं रहने दो और आगे देखो।",
+  adbhut:"ऐसा और कहाँ कहाँ हुआ होगा, यही सोचते चलो।",bhayanak:"डर भी एक सूचना है। इसे गिन लो।",
+  shant:"यहाँ ठहरने लायक कुछ था। मिल गया।",hasya:"यह हल्का था। ऐसा कम मिलता है।"},
+ yatri:{veer:"यह जगह अब इसी भिड़ंत से पहचानी जाएगी।",karun:"जगहें दुख भी सँभालती हैं, यही उनका काम है।",
+  adbhut:"यह दृश्य याद रखने लायक है, आगे कहीं काम आएगा।",bhayanak:"यहाँ से निकलने का दूसरा रास्ता याद रखना।",
+  shant:"यह कोना सबसे अच्छा लगा। यहाँ फिर आना।",hasya:"ऐसी जगहें सफ़र को हल्का कर देती हैं।"},
+ kathapremi:{veer:"इसी दृश्य को किसी और कथा में सुनो, वहाँ यह और बड़ा है।",
+  karun:"कोई कथा यहाँ रुकती है, कोई निकल जाती है।",adbhut:"यही जगह है जहाँ हर कवि अपनी कल्पना जोड़ देता है।",
+  bhayanak:"डर हर ज़बान में अलग तरह से कहा गया है।",shant:"चुप्पी को शब्दों में रखना सबसे कठिन है।",
+  hasya:"हँसी वाले हिस्से अक्सर लोक की देन होते हैं।"},
+ balak:{veer:"वाह, यह तो कमाल था।",karun:"थोड़ा दुख वाला हिस्सा था। आगे अच्छा होगा।",
+  adbhut:"यह सबसे मज़ेदार था, है न।",bhayanak:"डरने की ज़रूरत नहीं, सब ठीक हो जाएगा।",
+  shant:"यहाँ बहुत शांति थी।",hasya:"इस पर तो हँसी आ ही जाती है।"},
+ yoddha:{veer:"गिन लिया। अगला कौन।",karun:"हर लड़ाई के बाद कुछ टूटता है, यह भी देखना है।",
+  adbhut:"यह चाल याद रखने लायक है।",bhayanak:"डर सामने वाले का हथियार है, अपना नहीं।",
+  shant:"साँस लेने का वक़्त मिला। आगे कठिन है।",hasya:"थोड़ी हँसी से थकान उतर जाती है।"},
+ shastri:{veer:"इस प्रसंग की गिनती हर पाठ में अलग मिलती है।",karun:"इस हिस्से पर सबसे ज़्यादा टीकाएँ लिखी गई हैं।",
+  adbhut:"यही वह जगह है जहाँ पाठ आपस में सबसे ज़्यादा अलग होते हैं।",
+  bhayanak:"डर वाले वर्णन बाद के पाठों में बढ़ते गए हैं।",shant:"ऐसे शांत हिस्से पुराने पाठ की पहचान हैं।",
+  hasya:"हँसी वाले प्रसंग अक्सर बाद में जुड़े मिलते हैं।"},
+ sadhak:{veer:"बल दिखाना आसान है, रुकना कठिन।",karun:"दुख देखकर आगे बढ़ना भी एक अभ्यास है।",
+  adbhut:"अचरज मन को खोल देता है, इसे रहने दो।",bhayanak:"डर आता है और चला जाता है, देखते रहो।",
+  shant:"यही वह ठहराव है जिसके लिए चले थे।",hasya:"हल्कापन भी साधना का हिस्सा है।"},
+ raja:{veer:"हर जीत के पीछे एक फ़ैसला होता है।",karun:"राज्य का असली हिसाब ऐसे ही पलों में दिखता है।",
+  adbhut:"जो अनहोना लगे, उसे भी नीति में गिनना पड़ता है।",
+  bhayanak:"डर फैलने से पहले फ़ैसला होना चाहिए।",shant:"शांति भी बनाए रखनी पड़ती है, अपने आप नहीं रहती।",
+  hasya:"दरबार में हँसी भी नापी हुई होती है।"}
+};
+function roleBlock(id,key){          /* the shape of the card changes with who you are */
+ const r=myRole(),P=PLACES[id],L=layersOf(key),d=depthOf(key);
+ const others=L.length-1, left=Math.max(0,L.length-d);
+ switch(r){
+  case "yoddha":{
+   const arms=Object.keys(VASTU).filter(v=>save.vastu[v]&&(VASTU[v].on||[]).some(c=>(L[0].cards||[]).indexOf(c)>-1));
+   return "<p><b>हिसाब:</b> इस जगह पर "+L.length+" रूप, "+(L[0].cards||[]).length+" बातें"+
+    (arms.length?", और हाथ में "+arms.map(v=>VASTU[v].n).join(", "):"")+"।</p>";}
+  case "shastri":
+   return "<p><b>हवाला:</b> "+(L[0].ref||"वाल्मीकि रामायण, सुंदरकांड")+"। इस पल को "+L.length+" पाठ कहते हैं।</p>";
+  case "kathapremi":
+   return others?"<p><b>और कौन कहता है:</b> "+L.slice(1).map(x=>SRC[x.src||"vr"].n).join(", ")+"।</p>":"";
+  case "balak":
+   return "<p><b>मज़े की बात:</b> "+P.t+"।</p>";
+  case "raja":
+   return "<p><b>नीति की नज़र:</b> यहाँ देखो कि फ़ैसला कौन ले रहा है और उसका असर किस पर पड़ेगा।</p>";
+  case "sadhak":
+   return '<p class="quiet">यहाँ एक पल रुको। जो अभी पढ़ा, उसे दोहराने की ज़रूरत नहीं, बस बैठने दो।</p>';
+  case "yatri":
+   return "<p><b>देखने लायक:</b> "+(P.lore||P.t).split("।")[0]+"।</p>";
+  default:
+   return left?'<p class="quiet">यहाँ अभी '+left+" रूप और बाकी हैं।</p>":"";
+ }
+}
 /* ---------- roles: who you walk this night as ---------- */
 const ROLE={
  jigyasu:{n:"जिज्ञासु",t:"सब थोड़ा थोड़ा, और छिपी बातों के इशारे",
@@ -6218,8 +6273,11 @@ function visit(id){
  arrive(id);showDio(id);
  el('<p class="chose">तुम '+PLACES[id].n+" की ओर गए।</p>");
  const cut=splitSay(S.say);
- say(cut.story);
+ say(myRole()==="balak"?cut.story.slice(0,3):cut.story);   /* a child gets it shorter */
  el('<p class="w-src">'+SRC[S.src||"vr"].n+"</p>");
+ {const blk=roleBlock(id,key);if(blk)el(blk);
+  const cl=(RCLOSE[myRole()]||{})[RAS[key]];
+  if(cl)el('<p class="rolebar close">'+cl+"</p>");}
  aboutStrip(SRC[S.src||"vr"].n,cut.about);
  detoursAt(key,S.src||"vr").forEach(dk=>{
   const D=DETOUR[dk],been=save.tour&&save.tour[dk],f=el("","fork");
