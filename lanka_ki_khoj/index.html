@@ -1014,6 +1014,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .rolename{font-family:"Rozha One",serif;font-size:1.1rem;color:var(--rt)}
 .roleline{font-size:.8rem;color:var(--quiet);line-height:1.45;text-align:center}
 .rolemud{font-size:.72rem;color:var(--haldi)}
+.roleslot{font-size:.72rem;color:var(--tide);border-top:1px dashed var(--rule);margin-top:.15rem;padding-top:.15rem}
 .steps{position:sticky;top:0;z-index:4;margin:0 0 .3rem;padding:.35rem 0;font-size:.82rem;color:var(--quiet);
  background:linear-gradient(180deg,var(--page) 70%,transparent);backdrop-filter:blur(3px)}
 .steps b{color:var(--tide)}
@@ -4219,6 +4220,18 @@ const ROLE={
 };
 const KEEPKEYS=["seen","cards","nights","done","depth","texts","patra","ach","katha","farq",
  "vastu","kahi","tour","qdone","qright","qround","title","mani","kharch","journey","roleDone"];
+function slotOf(r){              /* what that role has on this device right now */
+ if(r===myRole()){const out={};KEEPKEYS.forEach(k=>{out[k]=save[k];});return out;}
+ return (save.slots||{})[r]||null;
+}
+function slotLine(r){
+ const g=slotOf(r);if(!g)return "";
+ const cards=Object.keys(g.cards||{}).length;
+ const nights=Object.keys(g.done||{}).length;
+ const mud=Object.keys((g.roleDone||{})[r]||{}).length;
+ if(!cards&&!nights&&!mud)return "";
+ return [nights?nights+" रातें":"",cards?cards+" बातें":"",mud?mud+" मुद्रा":""].filter(Boolean).join(" · ");
+}
 function slotSave(){                 /* the journey you are in, put away under its own role */
  const out={};KEEPKEYS.forEach(k=>{out[k]=save[k];});
  save.slots=save.slots||{};save.slots[myRole()]=JSON.parse(JSON.stringify(out));
@@ -4452,7 +4465,8 @@ function roleScreen(){
   const prize=Object.keys(ACH).filter(k=>ACH[k].only===r).length+ROLEPADVI.filter(x=>x.role===r).length;
   b.innerHTML=roleAvatar(r)+'<span class="rolename">'+R.n+"</span>"+
    '<span class="roleline">'+R.t+"</span>"+
-   '<span class="rolemud">'+own+" ठिकाने · "+prize+" इनाम"+(mud?" · "+mud+" मुद्रा":"")+"</span>"+
+   '<span class="rolemud">'+own+" ठिकाने · "+prize+" इनाम</span>"+
+   (slotLine(r)?'<span class="roleslot">'+slotLine(r)+"</span>":"")+
    '<span class="roletag">'+(open?(save.role===r&&save.rolePicked?"यही चल रही है":"देखो"):"बंद")+"</span>";
   b.onclick=()=>{rolePreview(r);roleDetail(r);};
   if(save.journey&&save.journey.role===r&&!save.journey.live)b.className+=" mine";
