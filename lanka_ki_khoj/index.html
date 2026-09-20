@@ -1270,6 +1270,11 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .dio.open .dper:nth-of-type(3n){animation-duration:3.6s}
  @keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.012)}}
 }
+
+.gloss{margin:.25rem 0 .5rem;padding:.4rem .65rem;border-left:3px solid var(--haldi);
+ background:color-mix(in srgb,var(--haldi) 9%,transparent);border-radius:.4rem;
+ font-size:.9rem;line-height:1.75;color:var(--ink)}
+.gloss b{color:var(--haldi)}
 </style>
 </head>
 <body>
@@ -2710,7 +2715,7 @@ function mapArt(night){
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
 function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
- katha:{},farq:{},vastu:{},kahi:{},tour:{},slots:{},calm:false,role:"jigyasu",rolePicked:false,journey:null,roleDone:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
+ katha:{},farq:{},vastu:{},kahi:{},tour:{},terms:{},slots:{},calm:false,role:"jigyasu",rolePicked:false,journey:null,roleDone:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(save));}catch(e){}
@@ -4089,6 +4094,28 @@ const RAIM={
   shakti:"आज देखिए कि सबसे बड़ी जीत के बाद भी दरबार क्यों नहीं बैठ पाता।",
   vidya:"आज उस दरबार को देखिए जहाँ दूत बाँधा ही नहीं जाता।"}
 };
+/* ---------- words nobody knows until they have used them once ---------- */
+const TERMS={
+ prahar:["प्रहर","दिन और रात मिलाकर आठ हिस्से होते हैं, हर हिस्सा लगभग तीन घंटे का। उसी एक हिस्से को प्रहर कहते हैं।"],
+ ghadi:["घड़ी","यहाँ हर प्रहर दो हिस्सों में बँटा है। पहले हिस्से में कथा ख़ुद चलती है, दूसरे में तुम चुनते हो।"],
+ padav:["पड़ाव","वह जगह जहाँ कथा ख़ुद रुकती है। ये सब अपने आप मिलती हैं, इन्हें ढूँढना नहीं पड़ता।"],
+ mani:["मणि","खेल के भीतर की गिनती। कुछ नया देखने या सही जवाब देने पर मिलती है, और कुछ बंद चीज़ें इसी से खुलती हैं।"],
+ mudra:["मुद्रा","किसी रात को पूरा कर लेने का निशान। हर भूमिका की अपनी अलग मुद्राएँ होती हैं।"],
+ padvi:["पदवी","तुम्हारा अपना नाम, जो खेलते खेलते बदलता जाता है और ऊपर की पट्टी में दिखता है।"],
+ chakkar:["चक्कर","किसी एक ग्रंथ के भीतर एक छोटा सा सफ़र, चार पड़ावों का, जो कथा से हटकर उसी कथा के बारे में बताता है।"],
+ pothi:["पोथी","तुम्हारी अपनी कॉपी, जिसमें जो कुछ तुमने देखा और पाया वह सब जमा होता रहता है।"],
+ granth:["ग्रंथ","वह किताब जिसमें यह कथा लिखी गई है। इस खेल में इकतालीस अलग अलग किताबें बोलती हैं।"],
+ sarg:["सर्ग","किसी पुरानी किताब का एक अध्याय। जैसे किताब के पन्ने गिने जाते हैं, वैसे ही वहाँ सर्ग गिने जाते हैं।"],
+ ras:["रस","किसी दृश्य का मिज़ाज। डर वाला, हिम्मत वाला, दुख वाला, अचरज वाला, हँसी वाला, या शांत।"],
+ kand:["कांड","रामायण सात हिस्सों में बँटी है, और हर हिस्से को कांड कहते हैं। यह खेल पाँचवें हिस्से, सुंदरकांड का है।"]
+};
+function gloss(k){                  /* said once, the first time the word turns up */
+ const T=TERMS[k];if(!T)return;
+ save.terms=save.terms||{};
+ if(save.terms[k])return;
+ save.terms[k]=true;persist();
+ el('<p class="gloss"><b>'+T[0]+":</b> "+T[1]+"</p>");
+}
 /* ---------- roles: who you walk this night as ---------- */
 const ROLE={
  jigyasu:{n:"जिज्ञासु",t:"सब थोड़ा थोड़ा, और छिपी बातों के इशारे",
@@ -6239,6 +6266,7 @@ function start(id){
  el('<p class="rolebar"><b>'+ROLE[myRole()].n+":</b> "+ROLE[myRole()].say+"</p>");
  {const aim=(RAIM[myRole()]||{})[N.id];
   if(aim)el('<p class="aim">'+aim+"</p>");}
+ gloss("kand");gloss("prahar");gloss("ghadi");
  anchorFrom(0);            /* this night begins at its own first line */
  build();weather();turn();
 }
@@ -6298,6 +6326,7 @@ function offer(only){
  else{
   }
  if(run.ghadi===0){
+  gloss("padav");
   el('<p class="ask">कथा यहाँ से गुज़रती है।</p>');
  }else{
   el('<p class="ask">उसी वक़्त यहाँ भी कुछ चल रहा है। कहाँ जाओगे?</p>');
@@ -6402,6 +6431,7 @@ function visit(id){
  stage.classList.add("focus");
  arrive(id);showDio(id);
  el('<p class="chose">तुम '+PLACES[id].n+" की ओर गए।</p>");
+ gloss("granth");gloss("mani");
  const cut=splitSay(S.say);
  say(myRole()==="balak"?cut.story.slice(0,3):cut.story);   /* a child gets it shorter */
  el('<p class="w-src">'+SRC[S.src||"vr"].n+"</p>");
@@ -7458,6 +7488,7 @@ function dawn(){
  if(got===deep&&!save.done[N.id]){save.done[N.id]=true;persist();
   el('<p class="found gift"><b>इनाम:</b> इस हिस्से का कोई कोना छूटा नहीं। अब हर घड़ी दो जगह जा सकते हो।</p>');}
  /* the night at a glance */
+ gloss("mudra");gloss("padvi");
  {const L=roleLedger(N);
   el('<p class="ask">'+ROLE[myRole()].n+" का हिसाब</p>");
   L.forEach(x=>el('<p class="rolebar">'+x+"</p>"));
@@ -7713,6 +7744,8 @@ function deepAbout(){
    Object.keys(VASTU).length+" वरदान, शाप, अस्त्र और निशानियाँ, "+FARQ.length+" फ़र्क़, "+Object.keys(DETOUR).length+" चक्कर, "+Object.keys(KAHI).length+" कही हुई कथाएँ, "+Object.keys(SPINE).length+" कथा के पड़ाव, और "+NIGHTS.length+" रातें।</p>"+
   "<p><b>क्या सच है और क्या बनावट:</b> हर पाठ के नीचे उसका हवाला है, सर्ग या अध्याय के नाम के साथ। वाल्मीकि में प्रवेश साँझ ढलते होता है और सर्ग 41 से 55 का हिस्सा दिन में, यह ग्रंथ से पक्का है। पर जगहों का एक ही वक़्त पर आमने सामने होना इस खेल की बनावट है, कथा का नियम नहीं।</p>"+
   "<p><b>जहाँ मूल की पंक्ति मिली</b>, वहाँ वह अपनी ही लिपि में दी है, नीचे सीधा अर्थ। जहाँ खुली प्रति नहीं मिली, वहाँ उस छपी प्रति का नाम लिखा है जिससे मिलान किया गया।</p>"+
+  '<p class="ask">खेल के शब्द</p>'+
+  Object.keys(TERMS).map(k=>"<p><b>"+TERMS[k][0]+":</b> "+TERMS[k][1]+"</p>").join("")+
   "<p><b>यह खेल कहीं बाहर नहीं भेजता।</b> कोई लिंक नहीं, कोई नई खिड़की नहीं। जो पढ़ना है, यहीं पूरा लिखा है।</p>"+
   '<p class="quiet">मनु विश्रांति</p>');
 }
