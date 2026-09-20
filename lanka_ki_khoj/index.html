@@ -3952,7 +3952,14 @@ function rolePreview(r){
 function previewPeek(id){          /* a look inside a place, without entering the night */
  const P=PLACES[id];if(!P)return;
  showDio(id);
- sheetFor(id,'<p class="quiet">'+(PLACES[id].only?"यह जगह सिर्फ़ "+ROLE[PLACES[id].only].n+" को मिलती है।":"यह जगह सबको मिलती है।")+"</p>");
+ const R=ROLE[preview]||ROLE[myRole()];
+ const lens=(R&&R.lens&&R.lens[catOf(id)])||"";
+ const nights=[];
+ NIGHTS.forEach(N=>N.watches.forEach((w,i)=>{if(SC[N.id+"-"+id+"-"+i]&&nights.indexOf(N.name)<0)nights.push(N.name);}));
+ sheetFor(id,
+  (lens?'<p class="rolebar">'+lens+"</p>":"")+
+  (nights.length?'<p class="quiet">'+nights.join(", ")+"</p>":"")+
+  '<p class="quiet">'+(P.only?"यह जगह सिर्फ़ "+ROLE[P.only].n+" को मिलती है।":"यह जगह सबको मिलती है।")+"</p>");
 }
 function sheetFor(id,extra){
  if(!sheet)return;
