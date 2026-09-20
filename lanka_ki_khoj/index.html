@@ -3929,6 +3929,38 @@ function buyKahi(k){
 /* ---------- the collection: boons, curses, weapons and tokens ---------- */
 const VKIND={var:"वरदान",shaap:"शाप",astra:"अस्त्र",nishani:"निशानी",vahan:"वाहन"};
 const VASTU={
+ v_yod:{n:"परिघ",k:"astra",only:"yoddha",who:"हनुमान",from:"लंका के ही किसी लड़ाके से छीना हुआ",
+  x:"लोहे का वह भारी हथियार जो जम्बुमाली वाले मुक़ाबले में काम आता है। वे अपना कोई अस्त्र लेकर नहीं गए थे, इसलिए हर हथियार वहीं से उठाया गया, कभी तोरण का डंडा और कभी सामने वाले का ही सामान। इस दिन की सारी लड़ाई उधार के हथियारों से लड़ी गई।",
+  use:"दूसरे दिन कई बार, और हर बार वह किसी और का ही होता है।",
+  n_use:"0",ref:"सुंदरकांड, सर्ग 44 से 46",on:["y_dhanush","y_paanch"]},
+ v_yat:{n:"नगर का नक्शा",k:"nishani",only:"yatri",who:"ढूँढने वाला",from:"ऊपर से देखकर बनाया हुआ",
+  x:"छतों और अटारियों से देखकर बना हुआ वह ढाँचा जो दिमाग़ में रहता है: कहाँ दीवार, कहाँ बस्ती, कहाँ महल और कहाँ बाग़। यह किसी के हाथ से नहीं मिला, चलते चलते बना। खोज में सबसे काम की चीज़ यही निकली, क्योंकि इसी से पता चला कि अभी कहाँ देखा ही नहीं गया।",
+  use:"पहली रात लगातार। यही तय करता है कि अभी कहाँ देखा ही नहीं गया।",
+  n_use:"0",ref:"सुंदरकांड, सर्ग 2 से 6",on:["t_naksha","t_chhat"]},
+ v_kat:{n:"कई ज़बानों की एक पंक्ति",k:"nishani",only:"kathapremi",who:"सुनने वाला",from:"हर परंपरा से थोड़ा थोड़ा",
+  x:"वह एक ही बात जो हर कथा में अलग ढंग से कही गई है, और जिसे साथ रखकर पढ़ने पर पूरी परंपरा दिखने लगती है। कहीं वह दृश्य पूरा है, कहीं दो पंक्तियों का, और कहीं है ही नहीं। जो कथाओं को साथ रखकर पढ़ता है, उसी को यह चीज़ मिलती है।",
+  use:"हर उस पल पर जहाँ दो कथाएँ आमने सामने आती हैं।",
+  n_use:"0",ref:"कई ग्रंथ, इस खेल के हवालों के अनुसार",on:["k_manas_bhram","k_ananda_sapna"]},
+ v_bal:{n:"पंछी का इशारा",k:"nishani",only:"balak",who:"बाग़ के पंछी",from:"डाल पर बैठे हुए",
+  x:"पंछियों की वह हलचल जिससे पता चल जाता है कि कोई आ रहा है। जब आदमी चुप हों, तब यही सबसे पहले बताते हैं। बाग़ में बैठे हुए घंटों में यही एक चीज़ थी जो लगातार ख़बर देती रही, और उसी से हर बार सँभलने का वक़्त मिला।",
+  use:"पहली रात बाग़ में, और हर बार सँभलने का वक़्त मिल जाता है।",
+  n_use:"0",ref:"सुंदरकांड, सर्ग 14 और 15",on:["b_shor","b_chhipna"]},
+ v_sha:{n:"हवालों की पोथी",k:"nishani",only:"shastri",who:"पढ़ने वाला",from:"मिलाकर रखा हुआ",
+  x:"वह सूची जिसमें हर बात के साथ उसका सर्ग और उसका पाठ लिखा रहता है। इसी से पता चलता है कि कौन सी बात कहाँ से आई और किस परंपरा ने उसे कैसे कहा। बिना हवाले के कही गई बात सुनने में अच्छी लग सकती है, पर उस पर खड़ा नहीं हुआ जा सकता।",
+  use:"हर उस जगह जहाँ दो पाठ अलग अलग कहते हैं।",
+  n_use:"0",ref:"इस खेल के सारे हवाले",on:["s_kyon","s_paath"]},
+ v_sad:{n:"ठहरने की आदत",k:"var",only:"sadhak",who:"ढूँढने वाला",from:"अपने ही अभ्यास से",
+  x:"वह आदत जिससे जल्दी उतर जाती है और सही वक़्त का इंतज़ार किया जा सकता है। यह किसी से मिली नहीं, अपने आप बनी है। साँझ का इंतज़ार, डाल पर बैठकर देखना, और रावण के जाने के बाद बात शुरू करना, तीनों इसी एक आदत से निकले हैं।",
+  use:"पहली रात कई बार, और हर बार यही सबसे काम आती है।",
+  n_use:"0",ref:"सुंदरकांड, सर्ग 2, 11 और 30",on:["sd_wait","sd_samay"]},
+ v_raj:{n:"दूत का दर्जा",k:"var",only:"raja",who:"भेजा हुआ दूत",from:"पुराने नियम से",
+  x:"वह दर्जा जिसके कारण दूत को मारा नहीं जाता, दंड देकर लौटाया जाता है। यह किसी की दया नहीं, माना हुआ नियम है, और उसे दुश्मन के दरबार में भी मानना पड़ता है। इसी एक नियम से वह बच निकला, और इसी से नगर भी जला।",
+  use:"दूसरे दिन दरबार में एक बार, और उसी से पूरी रात का रुख़ बदल जाता है।",
+  n_use:"1",ref:"सुंदरकांड, सर्ग 51 और 52",on:["r_niyam","r_dut"]},
+ v_jig:{n:"बचे हुए सवाल",k:"nishani",only:"jigyasu",who:"सुनने वाला",from:"कथा के अपने अधूरेपन से",
+  x:"वे सवाल जिनका जवाब कथा नहीं देती, और जिनसे आगे की कथाएँ बनती हैं। छाया वाली सीता, पाताल की दूसरी लंका, हज़ार मुँह वाला रावण, सब इन्हीं से निकले हैं। यही इस खेल की सबसे लंबी कड़ी है, क्योंकि यह कभी पूरी नहीं होती।",
+  use:"हर रात के अंत में, और हर बार एक नया सवाल जुड़ जाता है।",
+  n_use:"0",ref:"विलंका रामायण; अद्भुत रामायण; कूर्म पुराण",on:["j_bacha","j_aage"]},
  vidya_astra:{n:"उड़ने की विद्या",k:"var",who:"विद्याधर और हनुमान, जैन कथा में",from:"सीखने से",
   x:"जैन परंपरा में उड़ना वरदान नहीं, सीखी हुई विद्या है। जिसने सीखी, वह उड़ा, और इसीलिए वहाँ उड़ान पर कोई चौंकता नहीं। इसी एक बात से रास्ते की तीनों रुकावटें अपने आप हट जाती हैं, क्योंकि जब कोई काम सीखा जा सकता हो तो उसे रोकने के लिए किसी परीक्षा की ज़रूरत नहीं रहती।",
   use:"छठी रात में लगातार। इसी एक बात से रास्ते की तीनों रुकावटें अपने आप हट जाती हैं।",
@@ -4042,10 +4074,11 @@ const VART={
  vahan:'<g class="vi"><circle class="vglow" cx="26" cy="26" r="15"/><path class="vline" d="M14 30 h24 l-6 6 h-12 Z"/><path class="vline" d="M20 30 v-8 h12 v8"/></g>'
 };
 const vastuGot=k=>VASTU[k]&&VASTU[k].on.some(c=>save.cards[c]);
-const vastuCount=()=>Object.keys(VASTU).filter(vastuGot).length;
+const vastuMine=()=>Object.keys(VASTU).filter(k=>!VASTU[k].only||VASTU[k].only===myRole());
+const vastuCount=()=>vastuMine().filter(vastuGot).length;
 function openVastu(){
  save.vastu=save.vastu||{};
- Object.keys(VASTU).forEach(k=>{
+ vastuMine().forEach(k=>{
   if(save.vastu[k])return;
   if(vastuGot(k)){save.vastu[k]=true;earn(3,"vastu",VASTU[k].n);}
  });
@@ -4139,7 +4172,7 @@ function counts(){
   kamai:save.mani||0,qright:save.qright||0,
   katha:kathaCount(),kathaAll:Object.keys(KATHA).length,
   chakkar:Object.keys(save.tour||{}).length,chakkarAll:Object.keys(DETOUR).length,
-  vastu:vastuCount(),vastuAll:Object.keys(VASTU).length,
+  vastu:vastuCount(),vastuAll:vastuMine().length,
   kahi:kahiCount(),kahiAll:Object.keys(KAHI).length,
   khoj:!!save.done.khoj,aag:!!save.done.aag,khabar:!!save.done.khabar};
 }
@@ -4537,7 +4570,7 @@ function weaveDoc(){
   (topRas?"जो रस सबसे ज़्यादा ठहरा, वह "+RASA[topRas]+" था।":"")+"</p>";
  out+="<p>यह वही कथा है जो सबने सुनी है, पर इस तरह सिर्फ़ तुमने सुनी है।</p>";
  const met=Object.keys(PATRA).filter(k=>save.patra&&save.patra[k]).map(k=>PATRA[k].n);
- const held=Object.keys(VASTU).filter(vastuGot).map(k=>VASTU[k].n);
+ const held=vastuMine().filter(vastuGot).map(k=>VASTU[k].n);
  if(met.length)out+="<h2>रास्ते में जो मिले</h2><p>"+met.join(", ")+"।</p>";
  if(held.length)out+="<h2>जो बटोरा</h2><p>"+held.join(", ")+"।</p>";
  if(refs.length)out+='<p class="w-refs">हवाले: '+refs.join("; ")+"।</p>";
@@ -4662,7 +4695,7 @@ const ACH={
   p:()=>["ramakien","kakawin","reamker","yama","lao","hikayat","maranao","tibbati","taili"]
     .filter(k=>save.texts&&save.texts[k]).length/4},
  sunne_wala:{n:"कथा के भीतर की कथाएँ",x:"छह कही हुई कथाएँ खोलीं।",p:()=>kahiCount()/6},
- poora_sangrah:{n:"भरा हुआ संग्रह",x:"संग्रह की हर चीज़ पा ली।",p:()=>vastuCount()/Object.keys(VASTU).length},
+ poora_sangrah:{n:"भरा हुआ संग्रह",x:"संग्रह की हर चीज़ पा ली।",p:()=>vastuCount()/vastuMine().length},
  teen_granth:{n:"तीन ग्रंथ, एक पल",x:"किसी एक पल को तीन अलग ग्रंथों में पढ़ा।",
   p:()=>deepestMoment()/3},
  poori_raat:{n:"पूरी रात",x:"पहली रात का कोई कोना नहीं छोड़ा।",p:()=>nightPart("khoj")},
@@ -7045,7 +7078,7 @@ function drawPatra(){
     bar("उपलब्धियाँ",achCount(),Object.keys(ACH).length)+
     bar("खुली कथाएँ",kathaCount(),Object.keys(KATHA).length)+
     bar("पदवियाँ",padviCount(),PADVI.length)+
-    bar("संग्रह",vastuCount(),Object.keys(VASTU).length)+
+    bar("संग्रह",vastuCount(),vastuMine().length)+
     bar("कही हुई कथाएँ",kahiCount(),Object.keys(KAHI).length);
  h+='<h2>रस</h2>';
  Object.keys(RASA).forEach(r=>{h+='<div class="tapme" data-rasa="'+r+'">'+bar(RASA[r],rc[r][0],rc[r][1],RASA_X[r])+"</div>";});
