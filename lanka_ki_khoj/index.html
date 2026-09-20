@@ -1187,6 +1187,29 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  @keyframes wonpulse{0%{transform:scale(1)}30%{transform:scale(1.14);filter:brightness(1.3)}100%{transform:none}}
  .notecard.win{box-shadow:0 0 0 1px var(--haldi),0 12px 26px -12px var(--haldi)}
 }
+
+/* the whole game leans with the hour */
+#app[data-sky="day"]{--page:#f3efe6;--mark:#e7e1d4;--ink:#241f18;--quiet:#6a6155;--rule:#d6cdbb}
+#app[data-sky="dawn"]{--page:#f6ece2;--mark:#ead9c8;--ink:#2a1f18;--quiet:#6d5a4b;--rule:#dcc7b2}
+#app[data-sky="dusk"]{--page:#191320;--mark:#231a2c;--ink:#efe6f2;--quiet:#a496b0;--rule:#3a2c46}
+#app[data-sky="night"]{--page:#0d1220;--mark:#141b2c;--ink:#e8eefb;--quiet:#8e9ab5;--rule:#243149}
+#app{transition:background .9s ease,color .9s ease}
+
+/* landing shakes the ground a little, and fire scenes throw sparks */
+@media (prefers-reduced-motion:no-preference){
+ #stage.jolt{animation:jolt .32s cubic-bezier(.36,.07,.19,.97) both}
+ @keyframes jolt{0%{transform:translate(0,0)}25%{transform:translate(1.4px,-1px)}
+  55%{transform:translate(-1.2px,1px)}80%{transform:translate(.6px,.4px)}100%{transform:none}}
+ .dio.hot .diopic:after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+   radial-gradient(2px 2px at 22% 78%,#ffb457,transparent 60%),
+   radial-gradient(2px 2px at 48% 88%,#ff8a3c,transparent 60%),
+   radial-gradient(1.6px 1.6px at 70% 74%,#ffd08a,transparent 60%),
+   radial-gradient(1.8px 1.8px at 86% 84%,#ff9f4a,transparent 60%);
+  animation:sparks 3.6s ease-in-out infinite;opacity:.85}
+ @keyframes sparks{0%{transform:translateY(0);opacity:.2}35%{opacity:.9}
+  100%{transform:translateY(-44px);opacity:0}}
+}
 </style>
 </head>
 <body>
@@ -5719,6 +5742,9 @@ function weather(){
       "s;animation-duration:"+(9+(i%5)*3)+'s"></i>';}
    mo.innerHTML=h;
   }}
+
+ const t0=({dawn:"dawn",morning:"dawn",noon:"day",day:"day",dusk:"dusk",night:"night"})[w.sky]||"night";
+ if(app&&app.dataset&&app.dataset.sky!==t0)app.dataset.sky=t0;
  const gr=document.getElementById("grade");
  if(gr){const t=({dawn:"dawn",morning:"dawn",noon:"day",day:"day",dusk:"dusk",night:"night"})[w.sky]||"night";
   if(gr.className!=="grade "+t)gr.className="grade "+t;}
@@ -6087,6 +6113,9 @@ function visit(id){
  didAct();
  run.path.push({id:id,w:run.w});
  if(marks[id]&&marks[id].classList)marks[id].classList.add("land");
+ if(stage&&stage.classList){stage.classList.remove("jolt");
+  if(typeof requestAnimationFrame==="function")requestAnimationFrame(()=>stage.classList.add("jolt"));
+  else stage.classList.add("jolt");}
  const lens=roleLens(id);
  if(lens)el('<p class="rolebar">'+lens+"</p>");
  run.pickedHere.push(id);if(run.ghadi===1)run.used++;   /* the katha ghadi is free */
@@ -6841,7 +6870,7 @@ function lightNote(id){
 }
 function showDio(id){
  const P=PLACES[id],k=keyNow(id);
- paintDio(P.n,artFor(id),lines([P.t,(k&&SEENK[k])||SEEN[id],lightNote(id),tellers(id)]));
+ paintDio(P.n,artFor(id),lines([P.t,(k&&SEENK[k])||SEEN[id],lightNote(id),tellers(id)]),catOf(id)==="aag");
 }
 function showHomeDio(k){
  const S=SRC[k];if(!S)return;
@@ -6850,9 +6879,10 @@ function showHomeDio(k){
  if(S.where)bits.push("यह ग्रंथ यहाँ रचा गया माना जाता है: "+S.where);
  paintDio(S.n,DIOT[env],lines(bits));
 }
-function paintDio(name,art,note){
+function paintDio(name,art,note,hotArt){
  const box=document.getElementById("dio");if(!box)return;
  if(!art){box.className="dio";box.innerHTML="";return;}
+ box.className="dio"+(hotArt?" hot":"");
  box.innerHTML='<div class="diopic"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" aria-label="'+name+'">'+
   DEFS+
   '<g class="dparx">'+art()+"</g>"+
