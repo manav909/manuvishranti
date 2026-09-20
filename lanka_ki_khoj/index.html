@@ -1110,6 +1110,8 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .teaselid span{font-size:.8rem;color:var(--quiet)}
 .teasebody{padding:0 .7rem .6rem;font-size:.92rem;line-height:1.8}
 .tease.shut .teasebody{display:none}
+.tease.tip .teaselid b{color:var(--haldi)}
+.tease.tip{border-color:color-mix(in srgb,var(--haldi) 40%,var(--rule))}
 .peekrow{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin:.3rem 0 0}
 .peekmark{font-size:.76rem;color:var(--tide);border:1px solid var(--tide);border-radius:99px;padding:.02rem .5rem}
 .peeknight{font-size:.78rem;color:var(--quiet)}
@@ -4195,6 +4197,48 @@ function helpPanel(){
   known.concat(rest).map(k=>"<p><b>"+TERMS[k][0]+":</b> "+TERMS[k][1]+"</p>").join("")+
   '<p class="quiet">यह पन्ना जब चाहो खोल सकते हो, ऊपर वाले चिह्न से।</p>');
 }
+/* ---------- what a role happens to know, said in its own way, once each ---------- */
+const RTIP={
+ jigyasu:[{id:"jg1",cat:"nagar",say:"एक बात और: इस नगर के हर हिस्से का नाम कथा में अलग से आता है, और वही नाम बाद में पहचान बन जाते हैं।"},
+  {id:"jg2",cat:"vatika",say:"यहाँ यह भी देखना कि जो चीज़ें गिनाई जाती हैं, वे बाद में किसी न किसी काम आती हैं।"},
+  {id:"jg3",cat:"sabha",say:"दरबार वाले दृश्यों में जवाब से ज़्यादा यह देखना कि किसने बोलने ही नहीं दिया।"}],
+ yatri:[{id:"yt1",cat:"dwar",say:"रास्ते की बात: हर फाटक के दो चेहरे होते हैं, एक बाहर वालों के लिए और एक भीतर वालों के लिए।"},
+  {id:"yt2",cat:"pahad",say:"पहाड़ पर चढ़ने से पहले नीचे का रास्ता याद कर लेना, लौटते वक़्त वही काम आता है।"},
+  {id:"yt3",cat:"paar",say:"पानी पार करते वक़्त किनारे की कोई एक चीज़ याद कर लो, वरना लौटकर जगह पहचानना मुश्किल हो जाता है।"}],
+ kathapremi:[{id:"kp1",cat:"vatika",say:"सुनने वालों की बात: इसी बग़ीचे को कुछ कथाएँ गाकर सुनाती हैं, और वहाँ हर पेड़ लय में आता है।"},
+  {id:"kp2",cat:"sabha",say:"दरबार वाले हिस्से नाटकों में सबसे ज़्यादा खेले जाते हैं, क्योंकि वहाँ आमने सामने बात होती है।"},
+  {id:"kp3",cat:"aag",say:"आग वाला हिस्सा हर परंपरा में सबसे ज़्यादा बदला गया है, कहीं छोटा, कहीं बड़ा, कहीं ग़ायब।"}],
+ balak:[{id:"bl1",cat:"paar",say:"मज़े की बात यह भी है कि इतनी बड़ी छलाँग में सबसे मुश्किल हिस्सा उतरना होता है, कूदना नहीं।"},
+  {id:"bl2",cat:"aasman",say:"ऊपर से चीज़ें छोटी दिखती हैं, इसलिए डर भी थोड़ा छोटा लगने लगता है।"},
+  {id:"bl3",cat:"lautna",say:"लौटते वक़्त रास्ता हमेशा छोटा लगता है, क्योंकि अब वह जाना पहचाना होता है।"}],
+ yoddha:[{id:"yd1",cat:"ladai",say:"एक काम की बात: जो पहले आता है वह सबसे कमज़ोर होता है, और जो आख़िर में आता है उसे रोकना सबसे कठिन।"},
+  {id:"yd2",cat:"dwar",say:"फाटक पर लड़ाई कभी नहीं जीती जाती, वहाँ सिर्फ़ रुकना या निकलना होता है।"},
+  {id:"yd3",cat:"aag",say:"आग हथियार नहीं है, वह किसी की भी हो सकती है, इसलिए उसे छोड़ते वक़्त अपना रास्ता पहले देख लेना।"}],
+ shastri:[{id:"st1",cat:"sabha",say:"एक बात दर्ज करने लायक: दरबार वाले संवाद हर पाठ में सबसे कम बदले हैं, शायद इसलिए कि वे याद रखे जाते थे।"},
+  {id:"st2",cat:"vatika",say:"इस हिस्से के श्लोक सबसे ज़्यादा उद्धृत होते हैं, इसलिए यहाँ पाठभेद भी सबसे ज़्यादा मिलते हैं।"},
+  {id:"st3",cat:"nagar",say:"नगर के वर्णन बाद के पाठों में बढ़ते गए हैं, इसलिए लंबाई से भी पाठ की उम्र का अंदाज़ा लगता है।"}],
+ sadhak:[{id:"sk1",cat:"vatika",say:"एक बात ध्यान रखिए: जहाँ कुछ हो नहीं रहा, वहीं सबसे ज़्यादा सहा जा रहा होता है।"},
+  {id:"sk2",cat:"mahal",say:"चमक देखकर मन दौड़ता है, इसलिए ऐसी जगहों पर धीरे चलिए।"},
+  {id:"sk3",cat:"aasman",say:"ऊँचाई पर साँस अपने आप धीमी हो जाती है, और उसी के साथ सोचना भी साफ़ हो जाता है।"}],
+ raja:[{id:"rj1",cat:"sabha",say:"नीति की एक बात: जो सलाह सबसे जल्दी दी जाती है, वह अक्सर सबसे सस्ती होती है।"},
+  {id:"rj2",cat:"dwar",say:"किसी राज्य की हालत उसके फाटक पर खड़े पहरेदार के चेहरे से पता चल जाती है।"},
+  {id:"rj3",cat:"nagar",say:"बस्ती में जो सबसे कमज़ोर है, नुक़सान सबसे पहले उसी का होता है, और हिसाब भी वहीं से शुरू होना चाहिए।"}]
+};
+function roleTip(id){              /* said once, folded, and never inside the story itself */
+ const list=RTIP[myRole()]||[];
+ const t=list.find(x=>x.cat===catOf(id));
+ if(!t)return;
+ save.terms=save.terms||{};
+ const k="tip:"+t.id;if(save.terms[k])return;
+ save.terms[k]=true;persist();
+ const b=document.createElement("div");b.className="tease shut tip";
+ const lid=document.createElement("button");lid.className="teaselid";lid.type="button";
+ lid.innerHTML="<b>"+ROLE[myRole()].n+" यह भी जानता है</b><span>खोलो</span>";
+ const body=document.createElement("div");body.className="teasebody";
+ body.innerHTML="<p>"+t.say+"</p>";
+ lid.onclick=()=>{b.classList.toggle("shut");};
+ b.appendChild(lid);b.appendChild(body);story.appendChild(b);
+}
 /* ---------- roles: who you walk this night as ---------- */
 const ROLE={
  jigyasu:{n:"जिज्ञासु",t:"सब थोड़ा थोड़ा, और छिपी बातों के इशारे",
@@ -6552,7 +6596,8 @@ function visit(id){
    b.appendChild(lid);b.appendChild(body);story.appendChild(b);
   }
   const cl=(RCLOSE[myRole()]||{})[RAS[key]];
-  if(cl)el('<p class="rolebar close">'+cl+"</p>");}
+  if(cl)el('<p class="rolebar close">'+cl+"</p>");
+  roleTip(id);}
  aboutStrip(SRC[S.src||"vr"].n,cut.about);
  detoursAt(key,S.src||"vr").forEach(dk=>{
   const D=DETOUR[dk],been=save.tour&&save.tour[dk],f=el("","fork");
