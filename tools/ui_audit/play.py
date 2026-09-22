@@ -19,7 +19,7 @@ VISIBLE_BTNS="""()=>{const out=[];document.querySelectorAll('button').forEach((b
   for(let n=b.parentElement;n&&shown;n=n.parentElement){const s=getComputedStyle(n);
     if(/(auto|scroll|hidden)/.test(s.overflowY+s.overflowX)){const q=n.getBoundingClientRect();
       if(cy<q.top||cy>q.bottom||cx<q.left||cx>q.right)shown=false;}}
-  if(shown){const t=document.elementFromPoint(cx,cy);if(t&&t!==b&&!b.contains(t)){covered=true;by=(t.className&&String(t.className))||t.tagName;}}
+  if(shown){const t=document.elementFromPoint(cx,cy);if(t&&t!==b&&!b.contains(t)){const own=t.closest&&t.closest('#dio.open,#pcard.show,#deep.show');if(!own){covered=true;by=(t.className&&String(t.className))||t.tagName;}}}
   out.push({i,t:(b.textContent||b.getAttribute('aria-label')||'').trim().slice(0,50),cls:String(b.className),x:Math.round(cx),y:Math.round(cy),inView:shown,covered,by:String(by).slice(0,30)});});return out;}"""
 def screen_name(pg):
     return pg.evaluate("()=>{const h=document.querySelector('#story h1, #story h2');return (h?h.textContent:'').trim().slice(0,30)}")

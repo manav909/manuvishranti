@@ -1370,6 +1370,13 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 #bar{flex-wrap:wrap;row-gap:.25rem}
 #bar .pip{position:relative;z-index:0}
 #bar button{position:relative;z-index:1}
+
+/* when the scene card is open it owns the stage: corner map, place title and notices step out of its way */
+#stage:has(.dio.open) .dio{z-index:9}
+@media (max-width:560px){
+ #stage:has(.dio.open) #arrive{display:none}
+ #stage:has(.dio.open) #note{top:auto;bottom:.4rem;left:.5rem;right:.5rem;transform:none;z-index:10;font-size:.82rem}
+}
 </style>
 </head>
 <body>
@@ -8535,9 +8542,9 @@ function fill(){
     '<div class="from">'+(S.u?"खुली प्रति मौजूद है":S.pr?"छपी प्रति: "+S.pr:"छपी प्रति से मिलाया गया")+"</div>"+"</div>";
   });
  }else{
-  const ids=Object.keys(CARDS).filter(c=>CARDS[c].l===tab);
+  const ids=Object.keys(CARDS).filter(c=>CARDS[c].l===myTab());
   const mine=ids.filter(c=>save.cards[c]);
-  out+='<p class="shut-note">'+L[tab]+": "+ids.length+" में से "+mine.length+"</p>";
+  out+='<p class="shut-note">'+L[myTab()]+": "+ids.length+" में से "+mine.length+"</p>";
   mine.forEach(c=>{
    const C=CARDS[c],w=whereFound(c);
    out+='<div class="note tapme" data-card="'+c+'"><div class="who">'+C.t+'</div><p style="margin:.3rem 0 0">'+

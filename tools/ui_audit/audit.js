@@ -84,5 +84,12 @@
     const r = b.getBoundingClientRect(); if (r.width === 0) return;
     if (!(b.textContent || '').trim() && !b.getAttribute('aria-label')) out.push({ kind: 'mute-button', cls: String(b.className).slice(0, 40) });
   });
+  // words that only a broken program writes
+  const bad=/\b(undefined|NaN|null|\[object Object\])\b/;
+  const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  while(tw.nextNode()){const n=tw.currentNode;const el=n.parentElement;if(!el)continue;
+    const r=el.getBoundingClientRect();if(r.width<1)continue;
+    let hid=false;for(let a=el;a;a=a.parentElement){const s=getComputedStyle(a);if(s.display==='none'||s.visibility==='hidden'){hid=true;break;}}
+    if(!hid&&bad.test(n.nodeValue))out.push({kind:'broken-text',text:n.nodeValue.trim().slice(0,60),cls:String(el.className).slice(0,30)});}
   return out;
 })()
