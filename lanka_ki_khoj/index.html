@@ -1377,6 +1377,8 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  #stage:has(.dio.open) #arrive{display:none}
  #stage:has(.dio.open) #note{top:auto;bottom:.4rem;left:.5rem;right:.5rem;transform:none;z-index:10;font-size:.82rem}
 }
+
+.tart.px svg{image-rendering:pixelated;shape-rendering:crispEdges}
 </style>
 </head>
 <body>
@@ -8038,6 +8040,223 @@ function detoursAt(key,src){
  return Object.keys(DETOUR).filter(k=>DETOUR[k].src===src&&DETOUR[k].at.indexOf(key)>-1
   &&(!DETOUR[k].only||DETOUR[k].only===myRole()));   /* some journeys belong to one role */
 }
+/* ================= pixel scenes for the detours =================
+   every picture is drawn on a 4 unit grid (80 by 45 cells in a 320 by 180 frame);
+   sprites are small letter maps, one letter one colour, and they move by swapping frames */
+const PX_PAL={k:"#1b1420",w:"#f4ecd8",W:"#c9bfa8",s:"#c98a5b",S:"#9c6541",y:"#f7d45a",o:"#ef8a2e",r:"#c8402f",R:"#7e2218",
+ b:"#8a5630",B:"#4a2c17",g:"#3f8a3a",G:"#24542a",l:"#7cc453",u:"#3a6ea5",U:"#1f3c6e",c:"#8fd8ea",C:"#4aa3c0",
+ p:"#7a5bb5",P:"#3f2c66",z:"#8a8f98",Z:"#4e535c",m:"#e0b030",M:"#9a6a09",n:"#e59aa6",e:"#2a2230",v:"#b9e27a",
+ h:"#f5efe2",d:"#5c3b22",a:"#d7c49a",A:"#a8926a",q:"#b35a3c",Q:"#7a3524",i:"#ffd98a",j:"#ffffff",f:"#ff5b2e",F:"#ffb02e"};
+/* sprite: frames of equal size; '.' is empty; 'x' and 'X' take the player's role colour */
+const PX_SPR={
+ lamp:{f:[["..y..",".yiy.","..o..","dMmMd",".ddd."],["...y.",".yiy.","..o..","dMmMd",".ddd."],[".y...",".yiy.","..o..","dMmMd",".ddd."]],t:"दीया दीये लौ जल पूजा बुदबुदा रात इंतज़ार"},
+ fire:{f:[["...f....","..fF.f..",".fFiFf..",".FiyiFf.","fFiyyiFf","fFiyyiFf",".fFiiFf.","..ffff.."],
+          ["....f...","..f.Ff..","..fFiFf.",".fFiyiF.","fFiyyiFf","fFiyyiFf",".fFiiFf.","..ffff.."],
+          ["..f.....",".fF..f..",".fFiFFf.","fFiyiFf.","fFiyyiFf","fFiyyiFf",".fFiiFf.","..ffff.."]],t:"आग लपट जल जलती जलता जलाना छप्पर धुआँ लंका दहन"},
+ smoke:{f:[["..zz..",".zZZz.","zZ..Zz",".zz.z."],[".zz...","zZZz..",".zZZz.","..zz.."]],t:"धुआँ आग"},
+ star:{f:[[".y.","yiy",".y."],["...",".y.","..."]],t:"रात तारे आसमान"},
+ moon:{f:[[".hhh.","hhh..","hh...","hhh..",".hhh."]],t:"रात चाँद"},
+ cloud:{f:[["..hhhh....",".hhhhhhh..","hhhhhhhhhh"]],t:"बादल आसमान"},
+ bird:{f:[["h...h",".h.h.","..h.."],[".....","hhhhh","..h.."]],t:"पंछी चिड़िया उड़ान आसमान"},
+ parrot:{f:[["..gg..",".gggy.","gglgg.",".ggg..","..gG..","..G.G."],["..gg..",".gggy.",".gglgg",".ggg..","..gG..","..G.G."]],t:"तोता तोते पंछी सुनाने"},
+ wave:{f:[["..cc....cc..","cC..cCcC..cC"],["cc....cc....","..cCcC..cCcC"]],t:"पानी समुद्र लहर नदी बावड़ी सरोवर"},
+ tree:{f:[["...GGGG...","..GgggGG..",".GgglggGG.","GgglgggggG","GggggglggG",".GgggggGG.","..GGgGGG..","....bB....","....bB....","...bbBB..."],
+          ["..GGGG....",".GgggGG...","GgglggGG..","GgglgggggG","GggggglggG",".GgggggGG.","..GGgGGG..","....bB....","....bB....","...bbBB..."]],t:"पेड़ बाग़ वाटिका अशोक डाल वन फल"},
+ ashoka:{f:[["..nGGGn...",".GgnggGG..","GgnlggnGG.","GggggnggGG",".GgnggggG.","..GGgGnG..","....bB....","....bB....","...bbBB..."],
+           ["...GGGn...","..GgnggGG.",".GgnlggnGG","GggggnggGG",".GgnggggG.","..GGgGnG..","....bB....","....bB....","...bbBB..."]],t:"अशोक वाटिका पेड़ सीता"},
+ tulsi:{f:[[".l.l.","lglgl",".lgl.","..g..","ddMdd",".dMd."],["l.l..","lglgl",".lgl.","..g..","ddMdd",".dMd."]],t:"तुलसी आँगन पूजा"},
+ flower:{f:[[".n.",
+ "nyn",".g."],[".n.","nyn","g.."]],t:"फूल बाग़ फूलों"},
+ fruit:{f:[["GGGG","GrgG","GgrG",".bb."]],t:"फल फलों बाग़"},
+ house:{f:[["....qq....","...qQQq...","..qQQQQq..",".qQQQQQQq.","qqqqqqqqqq",".aaaaaaaa.",".aAaaaaAa.",".aAaiiaAa.",".aaaiiaaa.",".aaaddaaa."],
+          ["....qq....","...qQQq...","..qQQQQq..",".qQQQQQQq.","qqqqqqqqqq",".aaaaaaaa.",".aAaaaaAa.",".aAaeeaAa.",".aaaiiaaa.",".aaaddaaa."]],t:"घर घरों छप्पर छत गली"},
+ hut:{f:[["...yyyy...","..yMMMMy..",".yMMMMMMy.","yyyyyyyyyy",".bbbbbbbb.",".bbbddbbb.",".bbbddbbb."]],t:"छप्पर झोपड़ी कुटी घर"},
+ palace:{f:[["....m.....m....","...mMm...mMm...","...aaa...aaa...","..aaaaa.aaaaa..","..aAaAa.aAaAa..",".mmmmmmmmmmmmm.",".aaaaaaaaaaaaa.",".aAaiaAaAaiaAa.",".aAaiaAaAaiaAa.",".aaaaaddAaaaaa.",".aaaaaddAaaaaa."]],t:"महल दरबार राजा रावण लंका नगर सोना"},
+ gate:{f:[["mmmmmmmmmm","aAaaaaaaAa","aA.....aAa","aA......Aa","aA......Aa","aA......Aa","aA......Aa"]],t:"फाटक द्वार दरवाज़ा पहरा"},
+ wall:{f:[["aAaaAaaAaaAa","AaaAaaAaaAaa","aAaaAaaAaaAa"]],t:"दीवार नगर परकोटा"},
+ pillar:{f:[["mmmm",".aa.",".aA.",".aA.",".aA.",".aA.","mmmm"]],t:"खंभा खंभे महल दरबार"},
+ throne:{f:[["m....m","mm..mm","mrrrrm","mrrrrm","mmmmmm","M....M"]],t:"सिंहासन दरबार राजा"},
+ mountain:{f:[["......zz......",".....zZzz.....","....zZZZzz....","...zZZhZZzz...","..zZZZZZZZzz..",".zZZZZZZZZZzz.","zZZZZZZZZZZZzz"]],t:"पहाड़ चोटी त्रिकूट पर्वत मैनाक"},
+ boat:{f:[["....w.....","....ww....","....www...","....w.....","bbbbbbbbbb",".bBBBBBBb."],["....w.....","....ww....","....www...","....w.....",".bbbbbbbbb","..bBBBBBB."]],t:"नाव समुद्र पार"},
+ elephant:{f:[["..zzzzz....",".zZzzzzzz..","zZzkzzzzzz.","zZzzzzzzzz.","zz.zzzzzzzz","z..zz..zz..","z..zz..zz.."],
+             ["..zzzzz....",".zZzzzzzz..","zZzkzzzzzz.","zZzzzzzzzz.",".z.zzzzzzzz","z..zz..zz..","...zz..zz.."]],t:"हाथी हाथियों घंटियाँ"},
+ bell:{f:[[".m.","mmm","mmm",".M."],[".m.","mmm","mmm","M.."]],t:"घंटी घंटियाँ"},
+ pothi:{f:[["dddddddd","dwwkwwkd","dwkwwkwd","dddddddd"]],t:"पोथी किताब ग्रंथ पाठ लिखा पन्ना"},
+ scroll:{f:[["b......b","bwwwwwwb","bwkkwkwb","bwwwwwwb","b......b"]],t:"चिट्ठी संदेश पत्र लिखा"},
+ pot:{f:[[".dd.","dbbd","bbbb","dbbd",".dd."]],t:"घड़ा घड़े पानी बावड़ी"},
+ drum:{f:[["ww..","qqqq","QqQq","qqqq"],[".ww.","qqqq","QqQq","qqqq"]],t:"ढोल बाजा संगीत गाना"},
+ veena:{f:[["m.......","bm......",".bbbbbbb","..bbbbbM"]],t:"वीणा संगीत गाना साज़"},
+ gold:{f:[["mmmm","mMmm","mmMm"],["mmmm","mmMm","mMmm"]],t:"सोना सोने मोती दौलत"},
+ drip:{f:[["m","m","."],["m",".","m"],[".","m","m"]],t:"पिघलना बहने सोना"},
+ spear:{f:[[".z.","zzz",".b.",".b.",".b.",".b.",".b.",".b."]],t:"भाला पहरा सिपाही"},
+ chain:{f:[["zZzZzZzZ"]],t:"बंधन बाँध जंजीर बंदी"},
+ petal:{f:[["n"],["."],["n"]],t:"फूल बरसाते देवता"},
+ chant:{f:[["...h..","...hh.","...h..",".hhh..","hhhh..",".hh..."],[".....h",".....h","...hhh","..hhhh","...hh.","......"]],t:"आवाज़ नाम गीत गाना लय सुनने सुनाने जप"},
+ eye:{f:[[".www.","wwkww",".www."],[".....","wwwww","....."]],t:"देखना नज़र मन"},
+ heart:{f:[[".r.r.","rrrrr",".rrr.","..r.."],[".....",".r.r.",".rrr.","..r.."]],t:"मन याद प्रेम"},
+ count:{f:[["k.k.k.k"],["k.k.k.."]],t:"गिनती गिने दिन"},
+ skull:{f:[[".www.","wkwkw","wwwww",".w.w."]],t:"राक्षस डर"},
+ monkey:{f:[["..bb..",".bsSb.","..bb..",".bbbb.","b.bb.b","..b.b.","bb...."],["..bb..",".bsSb.","..bb..","bbbbbb","..bb..","..b.b.","....bb"]],t:"वानर बंदर हनुमान कूद उड़ान उड़ते"},
+ /* people: 'q' and 'Q' clothing can be recoloured per placement */
+ man:{f:[["..ss..","..ss..",".qqqq.","qqqqqq","s.qq.s","..qq..","..QQ..",".Q..Q."],["..ss..","..ss..",".qqqq.","qqqqqq","s.qq.s","..qq..","..QQ..","Q....Q"]],t:"लोग आदमी भागते बहस गली"},
+ woman:{f:[["..kk..",".kssk.",".qqqq.","qqqqqq","s.qq.s",".qqqq.","qqqqqq",".s..s."],["..kk..",".kssk.",".qqqq.","qqqqqq","s.qq.s",".qqqq.","qqqqqq","..ss.."]],t:"औरत स्त्री औरतें माँ सीता"},
+ child:{f:[[".ss.","qqqq","s..s",".QQ.","Q..Q"],[".ss.","qqqq","s..s",".QQ.",".QQ."]],t:"बच्चे बच्चा"},
+ sleeper:{f:[["ss.qqqqqqq","ssqqqqqqqQ"],["ss.qqqqqqq","ssqqqqqqqq"]],t:"सो सोए सोना नींद छत"},
+ guard:{f:[[".z..zz.",".z..ss.",".z.qqqq",".zqqqqq",".z.qqqs",".z.QQ..",".z.Q.Q."],[".z..zz.",".z..ss.",".z.qqqq",".zqqqqq",".z.qqqs",".z.QQ..",".zQ...Q"]],t:"पहरेदार पहरा रखवाले सिपाही राक्षसी"},
+ king:{f:[[".mmmm.","..ss..",".rrrr.","rrrrrr","s.rr.s","..rr..",".mmmm.",".r..r."]],t:"राजा रावण दरबार"},
+ sage:{f:[["..ww..","..ss..",".wwww.","wwwwww","s.ww.s","..ww..",".wwww.",".w..w."]],t:"ऋषि मुनि कवि शिव ब्रह्मा गुरु"},
+ demon:{f:[["r.kk.r",".kssk.",".RRRR.","RRRRRR","s.RR.s","..RR..",".RRRR.",".R..R."],["..kk..","rksskr",".RRRR.","RRRRRR","s.RR.s","..RR..",".RRRR.","R....R"]],t:"असुर राक्षस रावण"},
+ /* the eight players, in their role colour; each has its own sign and its own idle motion */
+ r_jigyasu:{f:[["..xx...","..ss...",".xxxx..","xxxxxxy","s.xx.iy","..xx...",".XXXX..",".X..X.."],["..xx...","..ss...",".xxxx..","xxxxxx.","s.xx.sy","..xx..y",".XXXX..",".X..X.."]],t:"",role:"jigyasu"},
+ r_yatri:{f:[["..xx...b","..ss...b",".xxxx..b","xxxxxx.b","s.xx.ssb","..xxBB.b",".XX.X..b",".X...X.b"],["..xx..b.","..ss..b.",".xxxx.b.","xxxxxxb.","s.xx.sb.","..xxBBb.",".X.XX.b.","..X.X.b."]],t:"",role:"yatri"},
+ r_kathapremi:{f:[["..xx..","..ssS.",".xxxx.","xxxxxx","xxxxxx",".XXXX."],["..xx..",".Sss..",".xxxx.","xxxxxx","xxxxxx",".XXXX."]],t:"",role:"kathapremi"},
+ r_balak:{f:[[".xx.",".ss.","xxxx","s..s",".XX.","X..X"],[".xx.",".ss.","xxxx","s..s",".XX.",".XX."]],t:"",role:"balak"},
+ r_yoddha:{f:[["..xx...","..ss...","zxxxx..","zxxxxxs","zzxx..s","z.xx..s",".XXXX.s",".X..X.s"],["..xx...","..ss...","zxxxx.s","zxxxxxs","zzxx..s","z.xx...",".XXXX..",".X..X.."]],t:"",role:"yoddha"},
+ r_shastri:{f:[["..xx...","..ss...",".xxxx..","xxxdwwd","s.xdwwd","..xx...",".XXXX..",".X..X.."],["..xx...","..ss...",".xxxx..","xxxdwkd","s.xdkwd","..xx...",".XXXX..",".X..X.."]],t:"",role:"shastri"},
+ r_sadhak:{f:[["..xx..","..ss..",".xxxx.","xxmxxx","xXXXXx","XXXXXX"],["..xx..","..ss..",".xxxx.","xxxmxx","xXXXXx","XXXXXX"]],t:"",role:"sadhak"},
+ r_raja:{f:[[".mmmm..","..ss...",".xxxx..","xxxxxbw","s.xx.bw","..xx...",".XXXX..",".X..X.."],[".mmmm..","..ss...",".xxxx..","xxxxxbw","s.xx..w","..xx..b",".XXXX..",".X..X.."]],t:"",role:"raja"},
+};
+const PX_ROLECOL={jigyasu:["#2a8a80","#16524c"],yatri:["#3a80b0","#1f4a6c"],kathapremi:["#c8901a","#7a5307"],balak:["#4e9a46","#2c5a28"],
+ yoddha:["#c8402f","#7e2218"],shastri:["#5a6fb5","#2c3b72"],sadhak:["#8a6ac8","#4a3480"],raja:["#a8743a","#6a4520"]};
+/* one symbol per sprite frame, built only for what a scene uses */
+function pxSym(name,fi,over){
+ const S=PX_SPR[name],rows=S.f[fi];let out="";
+ const pal=Object.assign({},PX_PAL,over||{});
+ rows.forEach((row,y)=>{let x=0;while(x<row.length){const c=row[x];if(c==="."){x++;continue;}
+   let n=1;while(x+n<row.length&&row[x+n]===c)n++;
+   out+='<rect x="'+x+'" y="'+y+'" width="'+n+'" height="1" fill="'+(pal[c]||"#f0f")+'"/>';x+=n;}});
+ return out;
+}
+/* a placed sprite: [name, cell x, cell y, scale, extra] ; extra can hold a speed, a flip, a recolour and a drift */
+function pxPut(it,idx,role){
+ const [name,cx,cy,sc0,ex]=it;const S=PX_SPR[name];if(!S)return "";
+ const sc=(sc0||1)*4,e=ex||{},w=S.f[0][0].length;
+ let over=null;
+ if(e.q)over={q:e.q,Q:e.Q||e.q};
+ if(S.role){const rc=PX_ROLECOL[S.role]||PX_ROLECOL.jigyasu;over=Object.assign({},over||{},{x:rc[0],X:rc[1]});}
+ const flip=e.flip?' transform="translate('+(w)+',0) scale(-1,1)"':"";
+ const n=S.f.length,dur=(e.sp||0.9)*n;
+ let frames="";
+ S.f.forEach((f,fi)=>{
+  const anim=n>1?' style="animation:pxf'+n+' '+dur+'s steps(1) '+(-(idx*0.37)%dur).toFixed(2)+'s infinite;animation-name:pxf'+n+'_'+fi+'"':"";
+  frames+='<g'+anim+'><g'+flip+'>'+pxSym(name,fi,over)+"</g></g>";});
+ const drift=e.drift?' class="pxd pxd-'+e.drift+'"':"";
+ return '<g'+drift+' transform="translate('+(cx*4)+','+(cy*4)+') scale('+sc+')" shape-rendering="crispEdges">'+frames+"</g>";
+}
+/* skies and grounds, all in flat pixel bands */
+const PX_BG={
+ night:["#0d1026","#141a3a","#1c2350","#252e63"], dusk:["#2a1838","#4a2448","#7a3848","#b0584a"],
+ day:["#7fbfe0","#9fd0ea","#c3e2f2","#e3f1f8"], dawn:["#3a3a6a","#7a5a8a","#d0808a","#f0b08a"],
+ fire:["#2a0c0c","#5a1810","#9a2c14","#d8501c"], patal:["#0a0612","#140a22","#1e1032","#2a1640"],
+ inner:["#1a1424","#241a32","#2e2240","#3a2c4e"], green:["#1c3322","#24442c","#2c5636","#386a42"],
+ stone:["#2a2622","#3a342e","#4a423a","#5a5046"], river:["#12304a","#1a4466","#225a82","#2c709e"]};
+const PX_GROUND={grass:["#2c5a2a","#3a7034"],stone:["#5a5046","#4a423a"],sand:["#c9a86a","#a8884c"],water:["#1f5a8a","#174670"],
+ floor:["#6a4a30","#56391f"],roof:["#7a3524","#5a2418"],dark:["#1a1420","#120e18"],gold:["#9a6a09","#7a5207"]};
+function pxBack(bg,gr){
+ const B=PX_BG[bg]||PX_BG.night,G=PX_GROUND[gr]||PX_GROUND.grass;let s="";
+ B.forEach((c,i)=>{s+='<rect x="0" y="'+(i*32)+'" width="320" height="32" fill="'+c+'"/>';});
+ /* a dithered seam between bands so the sky reads as pixel art, not a gradient */
+ for(let i=1;i<B.length;i++)for(let x=0;x<320;x+=8)s+='<rect x="'+(x+((i%2)*4))+'" y="'+(i*32-4)+'" width="4" height="4" fill="'+B[i]+'"/>';
+ s+='<rect x="0" y="128" width="320" height="52" fill="'+G[0]+'"/>';
+ for(let x=0;x<320;x+=12)s+='<rect x="'+x+'" y="'+(128+((x/12)%3)*4)+'" width="4" height="4" fill="'+G[1]+'"/>';
+ return s;
+}
+const PX_CSS=
+ "@keyframes pxf2_0{0%{opacity:1}50%{opacity:0}}@keyframes pxf2_1{0%{opacity:0}50%{opacity:1}}"+
+ "@keyframes pxf3_0{0%{opacity:1}33.3%{opacity:0}}@keyframes pxf3_1{0%{opacity:0}33.3%{opacity:1}66.6%{opacity:0}}@keyframes pxf3_2{0%{opacity:0}66.6%{opacity:1}}"+
+ ".pxd{animation-timing-function:steps(8);animation-iteration-count:infinite}"+
+ ".pxd-r{animation:pxdr 14s steps(28) infinite}.pxd-l{animation:pxdl 16s steps(32) infinite}.pxd-u{animation:pxdu 4s steps(8) infinite}"+
+ ".pxd-b{animation:pxdb 2.4s steps(2) infinite}.pxd-d{animation:pxdd 3s steps(6) infinite}"+
+ "@keyframes pxdr{from{translate:0 0}to{translate:112px 0}}@keyframes pxdl{from{translate:0 0}to{translate:-128px 0}}"+
+ "@keyframes pxdu{from{translate:0 0;opacity:1}to{translate:0 -24px;opacity:0}}@keyframes pxdb{0%{translate:0 0}50%{translate:0 -4px}}"+
+ "@keyframes pxdd{from{translate:0 0;opacity:1}to{translate:0 24px;opacity:0}}"+
+ "@media (prefers-reduced-motion:reduce){.pxscene *{animation:none!important}}#app.calm .pxscene *{animation:none!important}";
+/* the whole scene: sky, ground, placed sprites, and the player in role colour */
+function pixScene(P,role){
+ let s='<g class="pxscene"><style>'+PX_CSS+"</style>"+pxBack(P.bg,P.gr);
+ (P.it||[]).forEach((it,i)=>{s+=pxPut(it,i,role);});
+ if(P.me){const [cx,cy,ex]=P.me;const rn="r_"+(PX_SPR["r_"+role]?role:"jigyasu");
+  /* a soft ring in the role colour under the player, so the eye finds them at once */
+  const rc=(PX_ROLECOL[role]||PX_ROLECOL.jigyasu)[0];
+  const H=PX_SPR[rn].f[0].length*5;
+  /* the player's own glow: a pixel halo in the role colour that breathes */
+  /* a rounded pixel halo, stepped at the corners, not a box */
+  let halo="";const X0=cx*4-6,Y0=cy*4-4,WW=48,HH=H+8;
+  for(let yy=0;yy<HH;yy+=4){const edge=Math.min(yy,HH-4-yy);const cut=edge<4?12:edge<8?4:0;
+   halo+='<rect x="'+(X0+cut)+'" y="'+(Y0+yy)+'" width="'+(WW-2*cut)+'" height="4" fill="'+rc+'" fill-opacity=".2"/>';}
+  s+='<g shape-rendering="crispEdges" style="animation:pxf2 2.4s steps(1) infinite;animation-name:pxf2_0">'+halo+'</g>';
+  s+='<g shape-rendering="crispEdges"><rect x="'+(cx*4-4)+'" y="'+(cy*4+H-2)+'" width="44" height="4" fill="'+rc+'" opacity=".6"/></g>';
+  s+=pxPut([rn,cx,cy,1.25,ex||{}],99,role);}
+ return s+"</g>";
+}
+
+/* scenes for each detour stop; one line per stop, read against the stop's own text */
+const PX_TOUR={
+ kamba_gali:[
+  {bg:"dusk",gr:"stone",it:[["house",2,20,1.3,{q:"#7a3524"}],["house",46,21,1.2,{q:"#3a6ea5"}],["gold",20,33,1],["gold",24,34,1],["man",16,32,1,{q:"#e0b030"}],["woman",28,32,1,{q:"#c0392b"}],["lamp",40,31,1],["man",58,33,1,{q:"#3f8a3a",flip:1}]],me:[34,32]},
+  {bg:"dusk",gr:"stone",it:[["wall",0,24,1.4],["wall",46,24,1.4],["wave",20,36,1.2],["wave",34,37,1],["pot",14,31,1.2],["woman",8,30,1,{q:"#7a5bb5"}],["woman",52,30,1,{q:"#c0392b",flip:1}],["pot",60,31,1.2]],me:[34,28]},
+  {bg:"night",gr:"stone",it:[["moon",68,3,1],["palace",26,6,1.5],["elephant",2,30,1.3],["bell",5,29,0.8],["elephant",56,30,1.3,{flip:1}],["bell",60,29,0.8],["lamp",36,34,1]],me:[42,31]},
+  {bg:"night",gr:"roof",it:[["moon",8,3,1],["star",30,5,1],["star",50,3,1],["star",66,8,1],["house",0,18,1.5],["house",52,18,1.5],["sleeper",4,15,1,{q:"#c9bfa8"}],["sleeper",56,15,1,{q:"#8a5630"}],["man",40,31,1,{q:"#3a6ea5"}]],me:[26,31]}],
+ kritti_ghar:[
+  {bg:"inner",gr:"floor",it:[["man",20,30,1.2,{q:"#7a3524"}],["man",44,30,1.2,{q:"#24542a",flip:1}],["lamp",34,34,1],["pillar",2,22,1.6],["pillar",68,22,1.6]],me:[58,31]},
+  {bg:"inner",gr:"floor",it:[["woman",28,30,1.2,{q:"#b35a3c"}],["lamp",38,34,1.1],["lamp",20,35,0.8],["gate",56,18,1.6],["star",62,21,1]],me:[8,31]},
+  {bg:"night",gr:"floor",it:[["moon",66,3,1],["sleeper",8,34,1,{q:"#3a6ea5"}],["sleeper",22,34,1,{q:"#c0392b"}],["sleeper",36,34,1,{q:"#3f8a3a"}],["child",52,31,1.3,{q:"#e0b030"}],["lamp",62,34,1]],me:[66,30]},
+  {bg:"inner",gr:"floor",it:[["tulsi",30,31,1.3],["lamp",24,34,1],["lamp",38,34,1],["sage",46,30,1.1,{flip:1}],["flower",20,36,1],["flower",52,36,1]],me:[6,31]}],
+ ranga_man:[
+  {bg:"inner",gr:"dark",it:[["moon",6,3,1],["count",20,8,2],["count",20,14,2],["count",20,20,2],["woman",38,29,1.3,{q:"#e0b030"}],["ashoka",54,14,1.4]],me:[8,30]},
+  {bg:"day",gr:"grass",it:[["cloud",10,4,1,{drift:"r"}],["house",6,22,1.3],["tree",56,14,1.5],["woman",30,30,1.1,{q:"#e0b030"}],["man",38,30,1.1,{q:"#3a6ea5",flip:1}],["heart",34,22,1,{drift:"b"}],["flower",22,36,1],["flower",48,36,1]],me:[64,31]},
+  {bg:"inner",gr:"dark",it:[["ashoka",4,14,1.5],["woman",34,29,1.3,{q:"#e0b030"}],["heart",44,22,1.2],["star",60,6,1],["star",70,12,1]],me:[58,30]},
+  {bg:"stone",gr:"floor",it:[["pillar",2,20,1.8],["pillar",70,20,1.8],["king",22,28,1.3],["woman",40,28,1.3,{q:"#7a5bb5",flip:1}],["lamp",32,34,1]],me:[56,30]}],
+ manas_bhakti:[
+  {bg:"night",gr:"sand",it:[["moon",66,3,1],["house",4,18,1.5],["tulsi",34,30,1.4],["lamp",28,35,1],["star",20,6,1],["star",46,4,1]],me:[50,31]},
+  {bg:"inner",gr:"floor",it:[["sage",30,29,1.3],["chant",34,20,1.2,{drift:"u"}],["chant",40,22,1,{drift:"u"}],["lamp",24,35,1],["lamp",40,35,1],["pillar",4,20,1.6]],me:[58,31]},
+  {bg:"night",gr:"stone",it:[["pillar",0,20,1.6],["pillar",20,20,1.6],["man",30,28,1.3,{q:"#3f8a3a"}],["lamp",38,34,1],["monkey",60,30,1.2,{flip:1}],["star",50,4,1]],me:[8,31]},
+  {bg:"night",gr:"grass",it:[["ashoka",46,12,1.5],["guard",60,30,1.1],["guard",68,30,1.1,{flip:1}],["man",24,30,1.1,{q:"#3f8a3a"}],["monkey",32,31,1.1]],me:[8,31]}],
+ torave_aag_tour:[
+  {bg:"fire",gr:"sand",it:[["hut",8,24,1.4],["fire",11,16,1.3],["smoke",12,10,1,{drift:"u"}],["hut",40,25,1.2],["monkey",58,30,1.2]],me:[30,31]},
+  {bg:"fire",gr:"gold",it:[["palace",20,8,1.6],["drip",30,24,1.4],["drip",42,24,1.4],["drip",54,24,1.4],["fire",64,24,1.2],["fire",8,26,1]],me:[4,33]},
+  {bg:"fire",gr:"stone",it:[["house",50,20,1.4],["fire",54,12,1.2],["man",30,31,1,{q:"#3a6ea5",drift:"l"}],["woman",36,31,1,{q:"#c0392b",drift:"l"}],["child",42,33,1,{drift:"l"}],["smoke",56,6,1,{drift:"u"}]],me:[8,31]},
+  {bg:"fire",gr:"dark",it:[["pothi",30,28,2],["fire",10,22,1.4],["fire",56,22,1.4],["fire",66,26,1],["count",30,38,1.6]],me:[46,30]}],
+ ezhu_tota:[
+  {bg:"green",gr:"grass",it:[["tree",46,12,1.6],["parrot",54,16,1.2],["sage",22,29,1.3],["pothi",28,37,0.8]],me:[6,31]},
+  {bg:"night",gr:"stone",it:[["gate",24,14,2],["woman",34,26,1.3,{q:"#c8402f"}],["monkey",12,31,1.2],["star",8,4,1],["moon",66,3,1]],me:[62,30]},
+  {bg:"green",gr:"grass",it:[["parrot",20,14,1.6],["chant",28,10,1,{drift:"u"}],["drum",40,32,1.3],["veena",52,33,1.2],["sage",30,28,1.2]],me:[6,31]},
+  {bg:"night",gr:"grass",it:[["ashoka",10,12,1.6],["woman",32,30,1.2,{q:"#e0b030"}],["parrot",18,16,1],["moon",64,3,1]],me:[54,31]}],
+ jain_vidya:[
+  {bg:"day",gr:"grass",it:[["cloud",8,4,1,{drift:"r"}],["sage",14,28,1.3],["man",32,28,1.2,{q:"#3a6ea5"}],["bird",40,10,1.2,{drift:"r"}],["bird",50,14,1,{drift:"r"}]],me:[60,31]},
+  {bg:"stone",gr:"floor",it:[["pothi",30,20,2],["king",10,28,1.2],["man",46,29,1.1,{q:"#7a5bb5"}],["man",54,29,1.1,{q:"#3f8a3a",flip:1}]],me:[66,30]},
+  {bg:"day",gr:"stone",it:[["gate",40,14,2],["monkey",22,30,1.3],["scroll",28,28,1],["cloud",6,4,1,{drift:"r"}]],me:[6,31]},
+  {bg:"fire",gr:"stone",it:[["palace",22,8,1.5],["fire",24,4,1.3],["fire",50,6,1.2],["smoke",30,0,1,{drift:"u"}],["house",4,24,1.1],["fire",6,18,1]],me:[64,31]}],
+ sarala_patal:[
+  {bg:"patal",gr:"dark",it:[["wall",0,22,1.4],["wall",46,22,1.4],["palace",22,6,1.3,{}],["lamp",10,34,1],["lamp",64,34,1],["star",40,2,1]],me:[34,31]},
+  {bg:"patal",gr:"dark",it:[["demon",24,24,1.4],["demon",32,22,1.4],["demon",40,24,1.4],["king",32,30,1.3],["fire",8,28,1],["fire",66,28,1]],me:[58,31]},
+  {bg:"patal",gr:"stone",it:[["gate",8,14,2],["woman",40,28,1.3,{q:"#e0b030"}],["pot",46,33,1.2],["wave",54,38,1]],me:[62,30]},
+  {bg:"patal",gr:"dark",it:[["woman",34,26,1.4,{q:"#e0b030"}],["flower",26,24,1.4],["flower",46,24,1.4],["petal",30,4,1,{drift:"d"}],["petal",42,6,1,{drift:"d"}],["petal",54,2,1,{drift:"d"}],["demon",60,32,1.2]],me:[8,31]}],
+ adhy_darshan:[
+  {bg:"night",gr:"stone",it:[["gate",6,14,2],["sleeper",14,36,1.2,{q:"#c8402f"}],["monkey",36,30,1.3],["star",50,4,1],["moon",66,3,1]],me:[56,31]},
+  {bg:"night",gr:"grass",it:[["ashoka",20,8,2],["monkey",28,13,1],["eye",44,8,1.4],["guard",58,30,1.1]],me:[4,31]},
+  {bg:"night",gr:"grass",it:[["ashoka",46,10,1.8],["woman",30,29,1.3,{q:"#e0b030"}],["guard",10,30,1.1],["guard",18,30,1.1,{flip:1}],["star",4,4,1]],me:[64,31]},
+  {bg:"fire",gr:"stone",it:[["house",4,20,1.3],["fire",6,12,1.2],["house",52,20,1.3],["fire",54,12,1.2],["house",28,21,1.3,{q:"#3f8a3a"}],["lamp",33,34,1]],me:[18,32]}],
+ eknath_bageeche:[
+  {bg:"day",gr:"grass",it:[["flower",8,32,1.3],["flower",16,34,1.3],["flower",26,31,1.3],["flower",50,33,1.3],["flower",60,31,1.3],["tree",34,14,1.4],["bird",60,6,1,{drift:"l"}]],me:[40,31]},
+  {bg:"day",gr:"grass",it:[["wave",4,34,1.2],["wave",18,36,1.2],["wave",52,34,1.2],["pot",36,32,1.2],["tree",60,14,1.4]],me:[26,29]},
+  {bg:"green",gr:"grass",it:[["tree",4,12,1.5],["fruit",8,16,1],["tree",46,12,1.5],["fruit",50,16,1],["guard",32,30,1.1],["guard",64,30,1.1,{flip:1}]],me:[20,31]},
+  {bg:"night",gr:"grass",it:[["ashoka",30,8,2],["woman",40,30,1.2,{q:"#e0b030"}],["guard",8,30,1.1],["moon",66,3,1]],me:[58,31]}],
+ adbhuta_shakti:[
+  {bg:"night",gr:"grass",it:[["ashoka",6,10,1.8],["woman",36,30,1.3,{q:"#e0b030"}],["star",50,4,1],["star",62,10,1],["moon",70,2,1]],me:[56,31]},
+  {bg:"patal",gr:"dark",it:[["demon",18,22,1.4],["demon",28,20,1.4],["demon",38,22,1.4],["demon",48,24,1.4],["king",33,29,1.3],["fire",66,28,1]],me:[4,31]},
+  {bg:"fire",gr:"dark",it:[["woman",32,22,2,{q:"#1b1420"}],["fire",20,26,1.3],["fire",50,26,1.3],["demon",62,34,1,{}],["smoke",34,4,1,{drift:"u"}]],me:[6,31]},
+  {bg:"dawn",gr:"grass",it:[["cloud",6,4,1,{drift:"r"}],["sage",20,28,1.3],["man",40,28,1.3,{q:"#3a6ea5",flip:1}],["lamp",32,35,1]],me:[60,31]}],
+ kandali_darshan:[
+  {bg:"day",gr:"water",it:[["wave",4,34,1.3],["wave",30,36,1.3],["wave",56,34,1.3],["monkey",20,14,1.3,{drift:"r"}],["mountain",54,18,1.6],["cloud",40,4,1]],me:[4,26]},
+  {bg:"dusk",gr:"stone",it:[["mountain",14,6,3],["monkey",34,4,1.1],["house",4,32,0.7],["house",64,32,0.7],["palace",50,30,0.7]],me:[62,30]},
+  {bg:"dusk",gr:"stone",it:[["wall",0,26,1.4],["house",4,18,1],["house",16,19,1,{q:"#3a6ea5"}],["palace",30,10,1.3],["tree",60,14,1.3],["lamp",24,34,1]],me:[52,31]},
+  {bg:"dawn",gr:"floor",it:[["sage",18,28,1.2],["sage",30,28,1.2],["drum",42,33,1.2],["lamp",52,34,1],["pothi",24,37,0.8]],me:[62,31]}],
+};
+
+/* each converted stop carries its own pixel scene */
+Object.keys(PX_TOUR).forEach(k=>{if(DETOUR[k])DETOUR[k].stops.forEach((st,i)=>{if(PX_TOUR[k][i])st.px=PX_TOUR[k][i];});});
+
 function startTour(k,backTo){
  const D=DETOUR[k];if(!D)return;
  tour={k:k,i:0,back:backTo||null,seen:{}};
@@ -8056,8 +8275,8 @@ function drawTour(){
   '<h2 class="rtitle">'+D.n+"</h2>"+
   '<p class="rmeta">'+D.why+"</p>"+
   '<div class="tstrip">'+strip+"</div>"+
-  '<div class="tart"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">'+
-   TD.defs+(DART[st.art]?DART[st.art]():"")+"</svg></div>"+
+  '<div class="tart'+(st.px?" px":"")+'"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">'+
+   (st.px?pixScene(st.px,myRole()):TD.defs+(DART[st.art]?DART[st.art]():""))+"</svg></div>"+
   "<h3 class=\"tname\">"+st.n+"</h3>"+
   st.say.map(t=>"<p>"+t+"</p>").join("")+
   '<p class="rsrc">'+D.ref+"</p>"+
