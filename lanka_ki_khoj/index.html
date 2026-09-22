@@ -1346,6 +1346,30 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 /* gift labels read in the ink; weather line wraps wherever it does not fit */
 #app .gifttag,#app .giftact{color:var(--ink)}
 .wx,.now{white-space:normal;overflow:visible;text-overflow:clip}
+
+/* on a phone the map pane is shorter than the stage behind it, so the scene card hangs from the top
+   where its buttons stay in sight, instead of from the bottom where the story panel covers them */
+@media (max-width:560px){
+ .dio{top:.5rem;bottom:auto;max-height:calc(100% - 3.8rem)}
+ .dio.big{top:.5rem;transform:none}
+}
+
+/* the scene card must fit the pane it lives in: the picture gives way, the buttons never do */
+.dio.open{overflow:hidden}
+.dio .diopic{flex:1 1 auto;min-height:0;overflow:hidden}
+.dio .diopic svg{display:block;width:100%;height:100%;max-height:100%}
+.dio .diobar{flex:0 0 auto}
+@media (max-width:560px){
+ .dio{max-height:calc(100% - 3.6rem)}
+ .dio .dionote{display:none}
+ .dio.big .dionote{display:block}
+}
+
+/* the corner map stays above the trail of visited places, and the hour dots never spill onto buttons */
+.mini{z-index:7}
+#bar{flex-wrap:wrap;row-gap:.25rem}
+#bar .pip{position:relative;z-index:0}
+#bar button{position:relative;z-index:1}
 </style>
 </head>
 <body>
