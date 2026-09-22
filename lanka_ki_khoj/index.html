@@ -1379,6 +1379,12 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 }
 
 .tart.px svg{image-rendering:pixelated;shape-rendering:crispEdges}
+
+/* the 3D frame: the canvas lies over the pixel scene and hides it once it draws */
+.tart{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:.8rem}
+.tart svg{display:block;width:100%;height:100%}
+.tart canvas.s3{position:absolute;inset:0;width:100%;height:100%;display:block}
+.tart.is3d svg{visibility:hidden}
 </style>
 </head>
 <body>
@@ -1467,6 +1473,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
   </div>
  </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const SRC={
  vr:{lore:"सबसे पुरानी रामकथा, और बाकी सबकी नींव। इसका सुंदरकांड अड़सठ सर्गों का है और पूरा का पूरा हनुमान पर टिका है, जो इस ग्रंथ में और कहीं नहीं होता। ब्योरे इसकी पहचान हैं: नगर के भीतर के घर, सोते हुए लोग, राक्षसियों के नाम, और बीच बीच में हनुमान का अपना सोचना।",n:"वाल्मीकि रामायण",level:"pal",who:"वाल्मीकि",lang:"संस्कृत",when:"सबसे पुरानी रामकथा",
@@ -3915,244 +3922,7 @@ const TD={
   '<path d="M0 '+(y+i*10)+' q20 -5 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" style="animation-delay:-'+(i*1.3)+'s"/>').join("")+"</g>",
  vig:'<rect x="0" y="0" width="320" height="180" fill="url(#tgVig)"/>'
 };
-const DART={
- pothi:()=>TD.sky()+TD.stars(8)+TD.ground(142,"#1b1b26")+TD.lamp(30,74,.5)+
-  '<rect x="70" y="96" width="180" height="46" rx="4" fill="#2a2a38" stroke="#6b6b86" stroke-width="2"/>'+
-  [0,1,2,3,4].map(i=>'<path d="M86 '+(106+i*7)+' h148" stroke="#8b8ba8" stroke-width="1.6" opacity="'+(.9-i*.12)+'"/>').join("")+
-  '<path d="M160 96 v46" stroke="#6b6b86" stroke-width="2"/>'+
-  TD.lamp(58,88,.7)+TD.fig(268,152,.92,{v:31,rishi:1,d:.4})+TD.fig(206,154,.88,{v:66,d:.9}),
- gali:()=>TD.sky()+TD.stars(10)+TD.ground(146,"#1d1a16")+
-  TD.stall(40,146,58)+TD.stall(226,146,54)+TD.kutir(140,146,46)+
-  TD.lamp(96,92,.8)+TD.lamp(248,86,.6)+
-  TD.fig(120,156,.9,{v:12,pot:1,d:.3})+TD.fig(196,158,.88,{v:47,nari:1,veil:1,d:.9}),
- chhat:()=>TD.sky()+TD.stars(12)+TD.moon(50,34,9)+TD.ground(160,"#151d28")+TD.lamp(286,92,.6)+
-  '<rect x="10" y="104" width="120" height="56" fill="#22303f"/><rect x="150" y="82" width="90" height="78" fill="#2a3a4c"/>'+
-  '<rect x="256" y="112" width="64" height="48" fill="#1e2a38"/>'+
-  TD.jaali(160,96,80,26,5)+TD.fig(196,80,.8,{v:5,d:.2})+TD.dhvaja(276,112,26),
- darbar2:()=>TD.sky()+TD.stars(6)+TD.ground(150,"#241c1c")+TD.prakara(56)+
-  TD.torana(160,150,120,58)+TD.lamp(56,86,.8)+TD.lamp(264,86,.8)+
-  TD.fig(102,158,.95,{v:63,rakshasa:1,spear:1,d:.4})+TD.fig(218,158,.95,{v:19,d:.8})+
-  TD.fig(160,160,1.05,{v:77,crown:1,d:.2}),
- rath:()=>TD.sky()+TD.stars(7)+TD.ground(150,"#22201a")+
-  '<circle cx="118" cy="140" r="16" fill="none" stroke="#c9a227" stroke-width="3"/>'+
-  '<circle cx="176" cy="140" r="16" fill="none" stroke="#c9a227" stroke-width="3"/>'+
-  '<path d="M104 126 h86 l-10 -20 h-66 Z" fill="#3a2f22" stroke="#c9a227" stroke-width="2"/>'+
-  TD.fig(148,106,.9,{v:53,rakshasa:1,bow:1,d:.3})+TD.fig(256,156,.95,{v:7,d:.7})+TD.dhvaja(190,106,24),
- kathputli:()=>TD.sky()+TD.stars(6)+TD.ground(150,"#1b1620")+TD.lamp(24,80,.55)+
-  '<path d="M40 40 h240" stroke="#7a6a52" stroke-width="3"/>'+
-  [80,160,240].map((x,i)=>'<path d="M'+x+' 40 v'+(38+i*8)+'" stroke="#7a6a52" stroke-width="1.4"/>').join("")+
-  TD.fig(80,132,.8,{v:23,d:.3})+TD.fig(160,140,.85,{v:61,rakshasa:1,d:.6})+TD.fig(240,134,.8,{v:88,nari:1,d:.9})+
-  TD.lamp(300,90,.6),
- parda:()=>TD.sky()+TD.stars(6)+TD.ground(150,"#161620")+
-  '<rect x="46" y="58" width="228" height="88" fill="#e8dcc0" opacity=".14" stroke="#e8dcc0" stroke-width="1.5"/>'+
-  '<g opacity=".75">'+TD.fig(120,142,.85,{v:33,d:.4})+TD.fig(206,142,.85,{v:71,rakshasa:1,spear:1,d:.8})+"</g>"+
-  TD.lamp(300,104,.9)+TD.fig(40,158,.8,{v:52,d:.5}),
- samudra:()=>TD.sky()+TD.stars(12)+TD.moon(258,34,9)+
-  '<rect x="0" y="118" width="320" height="62" fill="#0e2230"/>'+
-  [0,1,2].map(i=>'<path class="twave" style="animation-delay:-'+(i*1.1)+'s" d="M0 '+(128+i*14)+' q26 -8 52 0 t52 0 t52 0 t52 0 t52 0 t52 0" stroke="#3f7f96" stroke-width="2.4" fill="none"/>').join("")+
-  TD.fig(70,152,.88,{v:15,d:.5})+'<circle cx="170" cy="60" r="7" fill="#f0c75a" opacity=".85"/>',
- panchhi:()=>TD.sky()+TD.stars(9)+TD.ground(150,"#17261d")+
-  [50,130,210,286].map((x,i)=>'<g transform="translate('+x+',150)"><path d="M0 0 v-'+(40+i*6)+'" stroke="#3f7a52" stroke-width="4"/>'+
-   '<circle cx="0" cy="-'+(46+i*6)+'" r="14" fill="#2f5f43"/></g>').join("")+
-  [96,150,214].map((x,i)=>'<path class="tfly" style="animation-delay:-'+(i*.9)+'s" d="M'+x+' '+(54+i*10)+' q7 -6 14 0 q-7 5 -14 0 Z" fill="#e8dcc0" opacity=".85"/>').join("")+
-  TD.fig(262,158,.9,{v:41,nari:1,veil:1,d:.4}),
- aagbeech:()=>TD.sky()+TD.stars(5)+TD.ground(150,"#2a1a14")+TD.prakara(52)+
-  [60,140,226].map((x,i)=>'<g class="tflick" style="animation-delay:-'+(i*.7)+'s">'+
-   '<path d="M'+x+' 146 q-14 -30 0 -52 q14 22 0 52 Z" fill="#e0632c" opacity=".9"/>'+
-   '<path d="M'+x+' 146 q-7 -18 0 -30 q7 12 0 30 Z" fill="#f0c75a"/></g>').join("")+
-  TD.fig(288,156,.9,{v:9,d:.3}),
- khai:()=>TD.sky()+TD.stars(10)+TD.ground(158,"#141e28")+
-  '<rect x="0" y="118" width="320" height="26" fill="#123040"/>'+
-  [0,1].map(i=>'<path class="twave" style="animation-delay:-'+(i*1.2)+'s" d="M0 '+(124+i*10)+' q24 -6 48 0 t48 0 t48 0 t48 0 t48 0 t48 0" stroke="#3f7f96" stroke-width="2" fill="none"/>').join("")+
-  TD.prakara(46)+TD.dhvaja(80,110,26)+TD.dhvaja(240,110,26)+
-  TD.fig(160,166,.9,{v:25,d:.4}),
- sabhabhid:()=>TD.sky()+TD.stars(6)+TD.ground(152,"#1f1a24")+TD.prakara(50)+
-  [46,96,146,196,246,292].map((x,i)=>TD.fig(x,158,.82+((i%3)*.05),{v:i*17+3,rakshasa:i%2,spear:i%3===0,d:i*.3})).join("")+
-  TD.lamp(160,78,.8),
- flowergarden:()=>TD.sky()+TD.stars(10)+TD.moon(268,30,8)+TD.ground(140,"#16251f")+
-  TD.prakara(48)+
-  [30,96,164,232,292].map((x,i)=>'<g transform="translate('+x+',140)"><g class="tsway" style="animation-delay:-'+(i*.8)+'s">'+
-   '<path d="M0 0 v-30" stroke="#3f7a52" stroke-width="3"/>'+
-   '<circle cx="0" cy="-34" r="8" fill="'+["#f4a7c0","#f0c75a","#f4a7c0","#e8dcc0","#f0c75a"][i]+'"/>'+
-   '<circle cx="-9" cy="-26" r="5" fill="#3f7a52"/><circle cx="9" cy="-26" r="5" fill="#3f7a52"/></g></g>').join("")+
-  TD.lamp(160,80,.7)+TD.fig(200,152,.9,{v:89,nari:1,veil:1,basket:1,d:.5})+TD.vig,
- orchard:()=>TD.sky()+TD.stars(9)+TD.ground(142,"#16251f")+
-  [56,146,236].map((x,i)=>'<g transform="translate('+x+',142)">'+
-   '<path d="M-5 0 v-34 h10 v34 Z" fill="#6b4a2a"/>'+
-   '<g class="tsway" style="animation-delay:-'+(i*1.1)+'s"><circle cx="0" cy="-48" r="26" fill="#2f6b4a"/>'+
-   '<circle cx="-14" cy="-56" r="6" fill="#e2703a"/><circle cx="12" cy="-44" r="6" fill="#e2703a"/>'+
-   '<circle cx="2" cy="-64" r="5" fill="#f0c75a"/></g></g>').join("")+
-  TD.fig(298,152,.82,{v:14,skin:"#96602f",basket:1,d:1.2,face:-1})+TD.fig(104,152,.9,{v:41,turban:1,staff:1,d:.3})+TD.vig,
- grove:()=>TD.sky()+TD.stars(14)+TD.moon(64,34,10)+TD.ground(146,"#152420")+
-  TD.tree(250,148,1.1)+TD.tree(60,150,.8)+
-  '<g transform="translate(160,146)"><path d="M-6 0 v-44 h12 v44 Z" fill="#6b4a2a"/>'+
-  '<g class="tsway"><circle cx="0" cy="-60" r="30" fill="#2b5c48"/><circle cx="-24" cy="-46" r="18" fill="#26533f"/>'+
-  '<circle cx="24" cy="-46" r="18" fill="#26533f"/></g></g>'+
-  TD.fig(160,150,1,{v:2,sit:1,nari:1,veil:1,veilc:"#b9805f",d:.4})+
-  TD.fig(108,150,.82,{v:37,kind:"rakshasi",spear:1,d:1.4})+
-  TD.fig(216,150,.8,{v:52,kind:"rakshasi",face:-1,d:2.1})+TD.vig,
- peak:()=>TD.sky()+TD.stars(16)+TD.moon(258,30,10)+
-  '<path class="tfar" d="M0 112 q50 -34 96 -6 q40 -28 84 -4 q46 -24 140 -4 V180 H0 Z"/>'+
-  '<g opacity=".85">'+TD.wall(40,118,80,30)+TD.windows(40,118,80,30,3,1,.6)+
-  TD.wall(140,112,76,36)+TD.windows(140,112,76,36,3,1,1.4)+TD.wall(232,120,62,28)+"</g>"+
-  '<path d="M0 148 q60 -16 120 -2 q70 10 200 -6 V180 H0 Z" fill="#0f1826"/>'+
-  '<path d="M18 176 q26 -34 58 -30 q22 4 30 28 Z" fill="#1a2434"/>'+
-  TD.fig(52,150,1.12,{v:31,d:.3})+TD.vig,
- argue:()=>TD.sky()+TD.ground(140,"#182231")+
-  TD.kutir(160,144,150)+
-  '<rect x="96" y="112" width="128" height="32" rx="2" fill="#160f12" opacity=".92"/>'+
-  TD.lamp(160,120,.85)+
-  TD.fig(120,144,.78,{v:4,d:.2})+TD.fig(200,144,.78,{v:17,d:1.3,face:-1,nari:1,veil:1})+TD.vig,
- waiting:()=>TD.sky()+TD.stars(10)+TD.ground(142,"#182231")+
-  TD.kutir(160,142,146)+
-  TD.lamp(112,120,.9)+TD.fig(112,144,.95,{v:6,sit:1,nari:1,veil:1,d:.4})+
-  '<path class="tpathline" d="M166 148 q40 22 120 20"/>'+TD.vig,
- shrine:()=>TD.sky()+TD.ground(142,"#182231")+TD.wall(60,62,200,80)+TD.windows(60,62,200,80,3,2,1.2)+
-  '<path class="tgoldy" d="M128 118 h64 l-8 -22 h-48 Z"/>'+
-  '<circle class="tglowbig" cx="160" cy="104" r="30"/>'+
-  TD.lamp(160,112,.8)+TD.fig(160,150,1,{v:12,sit:1,kind:"rishi",d:.3})+TD.vig,
- gatedevi:()=>TD.sky("tgDusk")+TD.ground(146,"#1d1620")+
-  TD.torana(160,146,180,58)+
-  TD.fig(160,146,1.05,{v:18,nari:1,veil:1,veilc:"#d8b26a",d:.4})+
-  '<path class="tpotw" d="M196 132 h26 l-5 14 h-16 Z"/>'+TD.lamp(96,120,.7)+TD.vig,
- chant:()=>TD.sky()+TD.ground(140,"#182231")+TD.wall(48,60,224,80)+TD.windows(48,60,224,44,4,1,.6)+
-  '<rect x="96" y="80" width="128" height="60" rx="3" fill="#120e14"/>'+
-  '<circle class="tglowbig" cx="160" cy="108" r="34"/>'+TD.lamp(160,114,.8)+
-  TD.fig(160,146,1,{v:22,sit:1,kind:"rishi",d:.2})+
-  '<g class="tnote">'+[0,1,2].map(i=>'<circle cx="'+(214+i*26)+'" cy="'+(96-(i%2)*14)+'" r="4" style="animation-delay:-'+(i*.8)+'s"/>').join("")+"</g>"+TD.vig,
- treewatch:()=>TD.sky()+TD.stars(12)+TD.moon(60,32,9)+TD.ground(148,"#152420")+
-  '<g transform="translate(170,148)"><path d="M-7 0 v-56 h14 v56 Z" fill="#6b4a2a"/>'+
-  '<g class="tsway"><circle cx="0" cy="-74" r="34" fill="#2b5c48"/><circle cx="-28" cy="-58" r="20" fill="#26533f"/>'+
-  '<circle cx="28" cy="-58" r="20" fill="#26533f"/></g>'+
-  "</g>"+D.person(176,92,1.1,0,{kind:"nar",act:"stand"})+
-  TD.fig(170,150,.95,{v:83,sit:1,nari:1,veil:1,d:.3})+TD.vig,
- well:()=>TD.sky()+TD.stars(10)+TD.moon(60,34,8)+TD.ground(96,"#182130")+
-  '<path d="M28 96 h264 v84 h-264 Z" fill="url(#tgWater)"/>'+TD.ripple(112)+
-  '<path class="tghat" d="M28 96 h264 v10 h-264 Z"/><path class="tghat" d="M48 108 h224 v9 h-224 Z"/>'+
-  '<path class="tghat" d="M70 119 h180 v9 h-180 Z"/>'+TD.torana(278,96,44,34)+
-  TD.fig(96,120,.92,{v:7,nari:1,pot:1,d:.3})+TD.fig(214,120,.9,{v:15,skin:"#d2a06a",nari:1,veil:1,face:-1,d:1.6})+
-  '<path class="tpotw" d="M126 110 h22 l-4 12 h-14 Z"/>'+TD.lamp(160,74,.8)+TD.vig,
- street:()=>TD.sky()+TD.stars(12)+TD.moon(268,30,9)+TD.hillsFar(96)+TD.ground(128,"#17202e")+
-  TD.wall(6,58,86,70)+TD.windows(6,58,86,70,3,3,0)+TD.goldRoof(6,58,86)+
-  TD.wall(108,44,104,84)+TD.windows(108,44,104,84,3,3,1.4)+TD.goldRoof(108,44,104)+
-  TD.wall(226,64,88,64)+TD.windows(226,64,88,64,3,2,2.6)+
-  TD.lamp(100,106,.9)+TD.lamp(222,110,.75)+
-  TD.stall(70,130,64)+TD.stall(244,132,58)+TD.torana(160,130,58,42)+
-  TD.fig(64,150,.95,{v:3,turban:1,basket:1,d:.2})+
-  TD.fig(150,156,1.1,{v:11,walk:1,d:1.2,nari:1,veil:1})+
-  TD.fig(238,148,.9,{v:19,walk:1,d:2.1,face:-1})+
-  TD.fig(288,152,.7,{v:27,child:1,d:.8,walk:1})+TD.vig,
- water:()=>TD.sky()+TD.stars(10)+TD.moon(60,34,8)+TD.ground(96,"#182130")+
-  '<path d="M28 96 h264 v84 h-264 Z" fill="url(#tgWater)"/>'+TD.ripple(112)+
-  '<path class="tghat" d="M28 96 h264 v10 h-264 Z"/><path class="tghat" d="M48 108 h224 v9 h-224 Z"/>'+
-  '<path class="tghat" d="M70 119 h180 v9 h-180 Z"/>'+TD.dhvaja(40,96,18)+
-  TD.fig(96,120,.92,{v:5,nari:1,pot:1,d:.3})+TD.fig(214,120,.88,{v:13,nari:1,pot:1,face:-1,d:1.6})+
-  TD.fig(160,128,.6,{v:21,child:1,d:1.1})+TD.lamp(160,74,.8)+TD.vig,
- herd:()=>TD.sky()+TD.stars(9)+TD.hillsFar(92)+TD.ground(126,"#161f2c")+TD.prakara(46)+
-  TD.wall(16,74,130,52)+TD.windows(16,74,130,52,3,2,.8)+TD.goldRoof(16,74,130)+
-  TD.wall(186,68,118,58)+TD.windows(186,68,118,58,3,2,1.9)+
-  [0,1,2].map(i=>'<g transform="translate('+(66+i*94)+',134)"><g class="tbeast" style="animation-delay:-'+(i*1.4)+'s">'+
-   '<ellipse cx="0" cy="-16" rx="34" ry="22" fill="#4a4a58"/><circle cx="-30" cy="-22" r="14" fill="#55555f"/>'+
-   '<path d="M-42 -20 q-10 12 -2 20" stroke="#55555f" stroke-width="5" fill="none" stroke-linecap="round"/>'+
-   '<circle cx="-30" cy="-6" r="2.5" fill="#f0c75a"/>'+
-   '<path d="M-18 6 v10 M0 6 v10 M18 6 v10" stroke="#4a4a58" stroke-width="6" stroke-linecap="round"/></g></g>').join("")+
-  TD.lamp(160,66,.7)+TD.fig(298,150,.78,{v:9,turban:1,staff:1,d:.6,face:-1})+
-  TD.fig(18,150,.72,{v:23,turban:1,d:1.7})+TD.vig,
- roof:()=>TD.sky()+TD.stars(18)+TD.moon(250,34,11)+TD.ground(140,"#141c28")+
-  TD.wall(10,86,132,54)+TD.goldRoof(10,86,132)+TD.wall(158,64,150,76)+TD.goldRoof(158,64,150)+
-  TD.windows(158,64,150,76,4,2,1.1)+
-  TD.fig(52,86,.85,{v:2,sit:1,d:.4})+TD.fig(96,86,.8,{v:14,sit:1,nari:1,veil:1,d:1.7})+
-  TD.fig(230,64,.88,{v:26,d:2.2,face:-1})+
-  TD.lamp(70,74,.6)+TD.lamp(276,52,.6)+TD.dhvaja(150,86,20)+TD.dhvaja(300,64,18)+TD.vig,
- kids:()=>TD.sky()+TD.stars(11)+TD.ground(134,"#182231")+
-  TD.wall(24,56,150,78)+TD.windows(24,56,150,78,3,2,2)+TD.goldRoof(24,56,150)+
-  TD.kutir(252,134,92)+TD.lamp(58,104,.7)+
-  TD.fig(96,152,.7,{v:1,child:1,sit:1,d:.1})+TD.fig(132,152,.66,{v:8,child:1,sit:1,d:.9})+
-  TD.fig(168,152,.72,{v:16,child:1,sit:1,d:1.7})+
-  TD.fig(226,150,.95,{v:29,nari:1,veil:1,veilc:"#b9b2a4",staff:1,face:-1,d:2.4})+TD.vig,
- count:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#151d2a")+TD.tree(44,140,.9)+TD.tree(286,140,.75)+
-  '<g class="ttick">'+[...Array(10)].map((_,i)=>'<rect x="'+(96+i*13)+'" y="96" width="5" height="26" rx="1" style="animation-delay:-'+(i*.3)+'s"/>').join("")+"</g>"+
-  TD.fig(160,150,1.05,{v:57,sit:1,nari:1,veil:1,d:.4})+TD.vig,
- memory:()=>TD.sky("tgDusk")+TD.ground(140,"#1d1620")+TD.tree(60,140,.8)+
-  '<circle class="tglowbig" cx="200" cy="82" r="44"/>'+
-  TD.fig(200,140,1.05,{v:35,sit:1,nari:1,veil:1,d:.2})+TD.lamp(120,104,.6)+TD.vig,
- alone:()=>TD.sky()+TD.stars(16)+TD.moon(66,36,10)+TD.ground(142,"#141c28")+TD.tree(268,142,1)+
-  TD.fig(150,146,1.18,{v:43,sit:1,nari:1,veil:1,veilc:"#a8968a",d:.5})+TD.vig,
- queen:()=>TD.sky("tgDusk")+TD.ground(136,"#1e1622")+TD.wall(30,48,260,88)+TD.goldRoof(30,48,260)+
-  TD.windows(30,48,260,88,4,2,1.3)+TD.lamp(86,100,.8)+TD.lamp(238,100,.8)+
-  TD.fig(132,150,1.05,{v:10,nari:1,veil:1,veilc:"#e8c98a",d:.3})+
-  TD.fig(200,150,1.15,{v:0,kind:"ravan",face:-1,d:1.4})+TD.vig,
- tulsi:()=>TD.sky()+TD.stars(9)+TD.ground(138,"#182231")+TD.wall(16,60,288,78)+TD.windows(16,60,288,78,5,2,1.9)+
-  TD.goldRoof(16,60,288)+
-  '<path class="tpotw" d="M142 128 h36 l-7 18 h-22 Z"/>'+
-  '<g transform="translate(160,128)"><g class="tsway"><circle cx="0" cy="-16" r="15" fill="#2f6b52"/>'+
-  '<circle cx="-11" cy="-7" r="9" fill="#2a5e48"/><circle cx="11" cy="-7" r="9" fill="#2a5e48"/></g></g>'+
-  TD.lamp(212,128,.75)+TD.fig(76,152,.9,{v:29,nari:1,veil:1,pot:1,d:1.1})+TD.vig,
- two:()=>TD.sky()+TD.ground(134,"#161e2b")+TD.wall(34,54,252,80)+TD.windows(34,54,252,80,4,2,.9)+
-  TD.lamp(160,96,1)+TD.fig(126,150,1.08,{v:6,kind:"rishi",d:.2})+TD.fig(198,150,1.1,{v:44,turban:1,face:-1,d:1.5})+TD.vig,
- map:()=>TD.sky()+TD.stars(12)+TD.moon(272,32,9)+TD.hillsFar(100)+TD.ground(132,"#161f2c")+
-  '<path class="tpathline" d="M20 154 q60 -40 120 -18 q54 16 74 -22 q16 -30 84 -22"/>'+
-  TD.tree(56,154,.7)+TD.tree(238,150,.6)+TD.fig(120,150,.95,{v:47,turban:1,staff:1,d:.4})+TD.vig,
- fire:()=>TD.sky("tgDusk")+TD.ground(132,"#20141a")+TD.wall(18,58,120,74)+TD.windows(18,58,120,74,3,2,.4)+
-  TD.wall(168,48,140,84)+TD.goldRoof(168,48,140)+TD.smoke(196,46,4)+
-  TD.fire(84,116,1)+TD.fire(240,110,.7)+TD.fig(148,154,.9,{v:61,walk:1,turban:1,d:.9})+TD.vig,
- gold:()=>TD.sky("tgDusk")+TD.ground(140,"#20141a")+TD.wall(24,62,272,78)+TD.windows(24,62,272,44,5,1,.9)+
-  '<path class="tgoldy" d="M24 62 h272 v14 h-272 Z"/>'+
-  '<g class="tdrip">'+[0,1,2,3,4].map(i=>'<path d="M'+(56+i*52)+' 76 v38" style="animation-delay:-'+(i*.8)+'s"/>').join("")+"</g>"+
-  TD.fire(286,120,.6)+TD.smoke(70,60,3)+TD.fig(110,156,.82,{v:67,walk:1,nari:1,veil:1,d:.4})+TD.vig,
- crowdrun:()=>TD.sky("tgDusk")+TD.ground(136,"#20141a")+TD.wall(0,54,320,82)+TD.windows(0,54,320,82,6,2,.6)+
-  TD.fire(292,110,.8)+TD.smoke(250,70,3)+
-  TD.fig(56,154,1,{v:33,walk:1,d:0,turban:1})+TD.fig(110,158,1.05,{v:41,walk:1,nari:1,veil:1,d:.5})+
-  TD.fig(166,152,.85,{v:47,walk:1,d:1,face:-1})+TD.fig(214,156,.75,{v:53,child:1,walk:1,d:1.5})+TD.vig,
- flamebig:()=>TD.sky("tgDusk")+TD.ground(150,"#20141a")+TD.smoke(160,60,5)+TD.fire(160,104,1.9)+
-  TD.fig(56,164,.8,{v:21,walk:1,d:.7})+TD.fig(266,164,.82,{v:59,skin:"#8a5a30",nari:1,veil:1,face:-1,d:1.6})+TD.vig,
- bird:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#182231")+TD.tree(70,140,1)+TD.tree(272,142,.8)+
-  '<g transform="translate(170,92)"><g class="tperch"><ellipse cx="0" cy="0" rx="26" ry="17" fill="#2f7d52"/>'+
-  '<circle cx="-22" cy="-8" r="10" fill="#37945f"/><path d="M-32 -8 l-9 4 l9 4 Z" fill="#f0c75a"/>'+
-  '<circle cx="-25" cy="-10" r="2" fill="#0d1520"/>'+
-  '<path class="twing" d="M4 -4 q20 -14 34 2 q-20 10 -34 -2 Z" fill="#256b46"/></g></g>'+
-  TD.fig(120,152,.9,{v:13,sit:1,kind:"rishi",d:.5})+TD.fig(222,152,.88,{v:49,sit:1,nari:1,veil:1,d:1.4})+TD.vig,
- gatearch:()=>TD.sky()+TD.stars(12)+TD.ground(146,"#151d2a")+
-  TD.prakara(118)+TD.torana(160,146,120,64)+
-  '<path class="tdoorw" d="M132 146 v-30 a28 28 0 0 1 56 0 v30 Z"/>'+
-  TD.lamp(80,96,.7)+TD.lamp(240,96,.7)+TD.fig(160,146,.95,{d:.3,arm:1})+TD.vig,
- song:()=>TD.sky()+TD.stars(14)+TD.ground(142,"#182231")+TD.tree(40,142,.8)+
-  '<g class="tnote">'+[0,1,2,3].map(i=>'<circle cx="'+(120+i*44)+'" cy="'+(96-(i%2)*18)+'" r="5" style="animation-delay:-'+(i*.7)+'s"/>').join("")+"</g>"+
-  TD.fig(160,152,1,{v:11,sit:1,kind:"rishi",d:.2})+TD.lamp(258,112,.7)+TD.vig,
- wing:()=>TD.sky()+TD.stars(16)+TD.moon(60,34,9)+TD.ground(150,"#141c28")+
-  '<g transform="translate(180,86)"><g class="tflyer">'+
-  '<path class="twing" d="M0 0 q-46 -26 -74 6 q42 12 74 -6 Z" fill="#cfd8e6"/>'+
-  '<path class="twing b" d="M0 0 q46 -26 74 6 q-42 12 -74 -6 Z" fill="#cfd8e6"/>'+
-  '<circle cx="0" cy="0" r="9" fill="#e8dcc0"/></g></g>'+TD.fig(60,158,.82,{v:71,turban:1,d:.9})+TD.vig,
- crowdcalm:()=>TD.sky()+TD.stars(10)+TD.ground(140,"#182231")+TD.prakara(50)+TD.wall(30,78,120,52)+TD.windows(30,78,120,52,3,2,1.2)+TD.goldRoof(30,78,120)+
-  TD.torana(240,140,70,48)+
-  TD.fig(76,152,1,{v:24,turban:1,spear:1,d:.2})+TD.fig(132,152,.95,{v:31,nari:1,veil:1,d:1})+
-  TD.fig(188,152,1.05,{v:38,turban:1,d:1.8,face:-1})+TD.fig(244,152,.9,{v:45,child:1,d:2.5})+TD.vig,
- ring:()=>TD.sky()+TD.stars(10)+TD.hillsFar(104)+TD.ground(146,"#161e2b")+
-  TD.wall(226,72,88,74)+TD.windows(226,72,88,74,3,2,1.1)+TD.tree(40,150,.7)+
-  '<circle class="tglowbig" cx="160" cy="92" r="40"/>'+
-  '<circle class="tring" cx="160" cy="92" r="24" fill="none"/>'+
-  '<circle class="tring b" cx="160" cy="92" r="15" fill="none"/>'+
-  TD.fig(70,152,.9,{v:73,kind:"rishi",d:.4})+TD.vig,
- deep:()=>'<rect x="0" y="0" width="320" height="180" fill="url(#tgWater)"/>'+
-  '<g class="tbub">'+[...Array(10)].map((_,i)=>'<circle cx="'+(20+i*31)+'" cy="'+(150-(i%4)*22)+'" r="'+(2+(i%3))+
-   '" style="animation-delay:-'+(i*.9).toFixed(1)+'s"/>').join("")+"</g>"+
-  TD.ground(152,"#0d2129")+TD.lamp(160,70,1.1)+
-  TD.fig(90,160,.85,{v:26,kind:"rakshasa",spear:1,d:.6})+
-  TD.fig(240,160,.8,{v:63,kind:"rakshasi",face:-1,d:1.7})+TD.vig,
- manyheads:()=>TD.sky("tgDusk")+TD.ground(150,"#1d1620")+TD.wall(20,56,280,94)+
-  TD.windows(20,56,280,48,5,1,1.4)+TD.goldRoof(20,56,280)+
-  D.person(160,150,2.6,0,{kind:"ravan"})+
-  '<g transform="translate(160,92)"><g class="tmany">'+
-  [-2,-1,1,2].map(i=>'<circle cx="'+(i*24)+'" cy="'+(-6+Math.abs(i)*5)+'" r="10" fill="#c98f6a" stroke="#8a5c40" style="animation-delay:-'+(Math.abs(i)*.5)+'s"/>').join("")+"</g></g>"+
-  TD.lamp(60,100,.7)+TD.lamp(262,100,.7)+TD.vig,
- bow:()=>TD.sky("tgDusk")+TD.ground(148,"#1d1620")+TD.tree(52,148,.8)+
-  '<g transform="translate(190,96)"><g class="tbow">'+
-  '<path d="M-30 -46 q40 46 0 92" stroke="#7fbf9a" stroke-width="4" fill="none" stroke-linecap="round"/>'+
-  '<path d="M-30 -46 L-30 46" stroke="rgba(255,255,255,.5)" stroke-width="1.6"/>'+
-  [0,1,2,3,4].map(i=>'<circle cx="'+(-26+i*14)+'" cy="'+(-40+i*20)+'" r="5" fill="#f4a7c0"/>').join("")+"</g></g>"+
-  TD.fig(130,150,1.08,{v:79,nari:1,veil:1,veilc:"#f4a7c0",d:.3})+TD.vig,
-};
+/* the old still drawings for detours were retired once every stop had its own pixel scene */
 
 /* ---------- what kind of place each one is, so a role knows where to look ---------- */
 const PCAT={
@@ -8057,7 +7827,7 @@ const PX_SPR={
  star:{f:[[".y.","yiy",".y."],["...",".y.","..."]],t:"रात तारे आसमान"},
  moon:{f:[[".hhh.","hhh..","hh...","hhh..",".hhh."]],t:"रात चाँद"},
  cloud:{f:[["..hhhh....",".hhhhhhh..","hhhhhhhhhh"]],t:"बादल आसमान"},
- bird:{f:[["h...h",".h.h.","..h.."],[".....","hhhhh","..h.."]],t:"पंछी चिड़िया उड़ान आसमान"},
+ bird:{f:[["h...h",".h.h.","..h.."],[".....","hhhhh","..h.."]],t:"पंछी चिड़िया उड़ान आसमान उड़ना उड़ता"},
  parrot:{f:[["..gg..",".gggy.","gglgg.",".ggg..","..gG..","..G.G."],["..gg..",".gggy.",".gglgg",".ggg..","..gG..","..G.G."]],t:"तोता तोते पंछी सुनाने"},
  wave:{f:[["..cc....cc..","cC..cCcC..cC"],["cc....cc....","..cCcC..cCcC"]],t:"पानी समुद्र लहर नदी बावड़ी सरोवर"},
  tree:{f:[["...GGGG...","..GgggGG..",".GgglggGG.","GgglgggggG","GggggglggG",".GgggggGG.","..GGgGGG..","....bB....","....bB....","...bbBB..."],
@@ -8081,7 +7851,7 @@ const PX_SPR={
  elephant:{f:[["..zzzzz....",".zZzzzzzz..","zZzkzzzzzz.","zZzzzzzzzz.","zz.zzzzzzzz","z..zz..zz..","z..zz..zz.."],
              ["..zzzzz....",".zZzzzzzz..","zZzkzzzzzz.","zZzzzzzzzz.",".z.zzzzzzzz","z..zz..zz..","...zz..zz.."]],t:"हाथी हाथियों घंटियाँ"},
  bell:{f:[[".m.","mmm","mmm",".M."],[".m.","mmm","mmm","M.."]],t:"घंटी घंटियाँ"},
- pothi:{f:[["dddddddd","dwwkwwkd","dwkwwkwd","dddddddd"]],t:"पोथी किताब ग्रंथ पाठ लिखा पन्ना पुराण रामायण संक्षेप"},
+ pothi:{f:[["dddddddd","dwwkwwkd","dwkwwkwd","dddddddd"]],t:"पोथी किताब ग्रंथ पाठ लिखा पन्ना पुराण रामायण संक्षेप मानस"},
  scroll:{f:[["b......b","bwwwwwwb","bwkkwkwb","bwwwwwwb","b......b"]],t:"चिट्ठी संदेश पत्र लिखा नाम"},
  pot:{f:[[".dd.","dbbd","bbbb","dbbd",".dd."]],t:"घड़ा घड़े पानी बावड़ी"},
  drum:{f:[["ww..","qqqq","QqQq","qqqq"],[".ww.","qqqq","QqQq","qqqq"]],t:"ढोल बाजा संगीत गाना"},
@@ -8092,7 +7862,7 @@ const PX_SPR={
  chain:{f:[["zZzZzZzZ"]],t:"बंधन बाँध जंजीर बंदी"},
  petal:{f:[["n"],["."],["n"]],t:"फूल बरसाते देवता"},
  chant:{f:[["...h..","...hh.","...h..",".hhh..","hhhh..",".hh..."],[".....h",".....h","...hhh","..hhhh","...hh.","......"]],t:"आवाज़ नाम गीत गाना लय सुनने सुनाने जप गाकर गाई छंद"},
- eye:{f:[[".www.","wwkww",".www."],[".....","wwwww","....."]],t:"देखना नज़र मन"},
+ eye:{f:[[".www.","wwkww",".www."],[".....","wwwww","....."]],t:"देखना नज़र मन तलाशी"},
  heart:{f:[[".r.r.","rrrrr",".rrr.","..r.."],[".....",".r.r.",".rrr.","..r.."]],t:"मन याद प्रेम"},
  count:{f:[["k.k.k.k"],["k.k.k.."]],t:"गिनती गिने दिन"},
  skull:{f:[[".www.","wkwkw","wwwww",".w.w."]],t:"राक्षस डर"},
@@ -8127,14 +7897,27 @@ const PX_SPR={
  shikara:{f:[["...r..r...","...rrrr...","..aaaaaa..","bbbbbbbbbb",".bbbbbbbb."],["...r..r...","...rrrr...","..aaaaaa..",".bbbbbbbbb","..bbbbbbb."]],t:"शिकारा नाव घाटी"},
  wayang:{f:[["..BB..",".BbbB.","..BB..",".BBBB.","B.BB.B","..BB..",".B..B.","..bb..","..b...","..b..."],["..BB..",".BbbB.","..BB..","BBBBBB","..BB..","..BB..",".B..B.","..bb..","..b...","..b..."]],t:"चमड़े पुतले छाया परदे"},
  cymbal:{f:[["mm..mm","MM..MM"],[".mmmm.",".MMMM."]],t:"मंजीरा भजन मंडली गाता"},
- sword:{f:[["....w","...wz","..wz.",".wz..","mm...","b...."]],t:"तलवार हिम्मत सामना मारने लड़ाई"},
+ sword:{f:[["....w","...wz","..wz.",".wz..","mm...","b...."]],t:"तलवार हिम्मत सामना मारने लड़ाई युद्ध"},
  mala:{f:[[".rmr.","m...m","r...r","m...m",".rmr.","..r.."],[".mrm.","r...r","m...m","r...r",".mrm.","..m.."]],t:"माला मनका अवतारों"},
  speech:{f:[[".hhhhhhh.","hhkhkhkhh","hhhhhhhhh",".hhhhhhh.","..hh.....","..h......"],[".hhhhhhh.","hhhkhkhhh","hhhhhhhhh",".hhhhhhh.","..hh.....","..h......"]],t:"भाषा शब्द बोलचाल बोली ज़बान बात"},
  scale:{f:[["....m....","mmmmmmmmm","m...m...m","mm..m..mm","....m....","..mmmmm.."],["....m....",".mmmmmmmm","m...m...m","m...m..mm","mm..m....","..mmmmm.."]],t:"तराज़ू कारण हिसाब वजह तौला"},
  roots:{f:[["....bB....","....bB....","...bbBB...","..b.bB.b..",".b..b..b..","b..b....b.","..b.....b."],["....bB....","....bB....","...bbBB...","..b.bB.b..",".b..b...b.","b..b.....b","..b....b.."]],t:"जड़ जड़ें"},
+ kulintang:{f:[["m.m.m.m.m.m.m.m.","MmMmMmMmMmMmMmMm","bbbbbbbbbbbbbbbb","b..............b"],["m.m.m.m.m.m.m.m.","MmMmMmMmMmMmMmMm","bbbbbbbbbbbbbbbb",".b............b."]],t:"कुलिंतांग गाने गाई गीत"},
+ kudyapi:{f:[["b..........","bbbbbbbbbbM",".dddddddddd"]],t:"कुद्यापी गाने"},
+ cliffcave:{f:[["AAAAAAAAAAAAAAAAAA","AaaAAaaAAaaAAaaAAA","AeeAAeeAAeeAAeeAAA","AeeAAeeAAeeAAeeAAA","AAAAAAAAAAAAAAAAAA","AaaAAaaAAaaAAaaAAA","AeeAAeeAAeeAAeeAAA","AAAAAAAAAAAAAAAAAA"]],t:"गुफा गुफाओं दुनहुआंग"},
+ camel:{f:[["....bb.....","...bbbb..b.","..bbbbbbbb.","bbbbbbbbbb.","b..b...b...","b..b...b..."],["....bb.....","...bbbb..b.","..bbbbbbbb.","bbbbbbbbbb.",".b.b..b....",".b.b..b...."]],t:"ऊँटों ऊँट व्यापार रास्ते रेशम"},
+ palmleaf:{f:[["aaaaaaaaaaaa","akakkakkakka","aaaaaaaaaaaa"],["aaaaaaaaaaaa","akkakakkakka","aaaaaaaaaaaa"]],t:"पोथियाँ पन्ने पोथी रचना पुराना"},
+ medal:{f:[["r...r",".r.r.",".mmm.","mmymm",".mmm."],["r...r",".r.r.",".mmm.","mmMmm",".mmm."]],t:"सम्मान पुरस्कार"},
+ daf:{f:[[".dddd.","dwwwwd","dwwwwd","dwwwwd",".dddd."],[".dddd.","dwwwwd","dwhwwd","dwwwwd",".dddd."]],t:"मजलिस गाने गाई"},
+ tower:{f:[["mm.mm","aaaaa","aAiAa","aaaaa","aAaAa","aaaaa","aAaAa"]],t:"बुर्ज दीवार पहरा"},
+ sawal:{f:[[".hhh.","h...h","...h.","..h..",".....","..h.."],[".hhh.","h...h","...h.","..h..","..h..","....."]],t:"सवाल सवालों अधूरा"},
+ cat:{f:[["k...k","kk.kk","kkkkk",".kkk.",".k.k."],["k...k","kk.kk","kkkkk",".kkk.","k...k"]],t:"बिल्ली छोटे"},
+ marker:{f:[["..zz..",".zZZz.",".zZZz.",".zZZz.","zzzzzz"]],t:"सीमा सीमाएँ नक्शे"},
+ tear:{f:[["c","."],[".","c"]],t:"दुख आँखें भर"},
+ ring:{f:[[".mm.","m..m","m..m",".mm."],[".mm.","m..m","M..m",".mm."]],t:"अँगूठी निशानी"},
  /* people: 'q' and 'Q' clothing can be recoloured per placement */
  man:{f:[["..ss..","..ss..",".qqqq.","qqqqqq","s.qq.s","..qq..","..QQ..",".Q..Q."],["..ss..","..ss..",".qqqq.","qqqqqq","s.qq.s","..qq..","..QQ..","Q....Q"]],t:"लोग आदमी भागते बहस गली भाई"},
- woman:{f:[["..kk..",".kssk.",".qqqq.","qqqqqq","s.qq.s",".qqqq.","qqqqqq",".s..s."],["..kk..",".kssk.",".qqqq.","qqqqqq","s.qq.s",".qqqq.","qqqqqq","..ss.."]],t:"औरत स्त्री औरतें माँ सीता"},
+ woman:{f:[["..kk..",".kssk.",".qqqq.","qqqqqq","s.qq.s",".qqqq.","qqqqqq",".s..s."],["..kk..",".kssk.",".qqqq.","qqqqqq","s.qq.s",".qqqq.","qqqqqq","..ss.."]],t:"औरत स्त्री औरतें माँ सीता मंदोदरी"},
  child:{f:[[".ss.","qqqq","s..s",".QQ.","Q..Q"],[".ss.","qqqq","s..s",".QQ.",".QQ."]],t:"बच्चे बच्चा"},
  sleeper:{f:[["ss.qqqqqqq","ssqqqqqqqQ"],["ss.qqqqqqq","ssqqqqqqqq"]],t:"सो सोए सोना नींद छत"},
  guard:{f:[[".z..zz.",".z..ss.",".z.qqqq",".zqqqqq",".z.qqqs",".z.QQ..",".z.Q.Q."],[".z..zz.",".z..ss.",".z.qqqq",".zqqqqq",".z.qqqs",".z.QQ..",".zQ...Q"]],t:"पहरेदार पहरा रखवाले सिपाही राक्षसी"},
@@ -8406,11 +8189,456 @@ const PX_TOUR={
   {bg:"dawn",gr:"stone",it:[["hillhouse",4,16,1.4],["palace",40,14,1],["snowpeak",56,10,1.4],["chant",24,18,1,{drift:"u"}]],me:[30,31]},
   {bg:"day",gr:"grass",it:[["pothi",12,26,1.4],["pothi",44,26,1.4],["hillhouse",24,18,1],["snowpeak",58,10,1.4],["cloud",6,2,1,{drift:"r"}]],me:[34,31]},
   {bg:"inner",gr:"floor",it:[["pothi",20,26,1.6],["sage",38,28,1.2],["lamp",30,34,1],["count",12,18,1.2]],me:[62,31]},
-  {bg:"dusk",gr:"stone",it:[["hillhouse",40,16,1.5],["man",14,29,1.1,{q:"#c8402f"}],["woman",24,29,1.1,{q:"#3f8a3a"}],["pothi",32,34,0.9],["lamp",20,35,1]],me:[4,31]}]
+  {bg:"dusk",gr:"stone",it:[["hillhouse",40,16,1.5],["man",14,29,1.1,{q:"#c8402f"}],["woman",24,29,1.1,{q:"#3f8a3a"}],["pothi",32,34,0.9],["lamp",20,35,1]],me:[4,31]}],
+ kalpa_nayi:[
+  {bg:"day",gr:"stone",it:[["pothi",14,26,1.6],["speech",30,16,1.2,{drift:"b"}],["sage",42,28,1.2],["house",58,22,1]],me:[4,31]},
+  {bg:"dawn",gr:"floor",it:[["pothi",20,28,1.4],["speech",34,18,1,{drift:"b"}],["man",46,29,1.1,{q:"#3a6ea5"}],["lamp",14,34,1]],me:[62,31]},
+  {bg:"night",gr:"floor",it:[["medal",32,14,2.4],["sage",20,28,1.2],["lamp",46,34,1],["star",8,4,1],["star",60,6,1]],me:[62,31]},
+  {bg:"dusk",gr:"grass",it:[["palmleaf",6,30,1.2],["pothi",40,30,1.2],["road",20,38,1.6],["moon",66,2,1]],me:[30,24]}],
+ maranao_jheel:[
+  {bg:"night",gr:"floor",it:[["mala",30,10,2],["kulintang",8,32,1.3],["sage",44,28,1.2],["star",62,4,1]],me:[62,31]},
+  {bg:"dusk",gr:"grass",it:[["wave",20,34,1.4],["wave",40,37,1.4],["wave",26,40,1.2],["hut",4,24,1.1],["scroll",50,22,1]],me:[62,31]},
+  {bg:"night",gr:"floor",it:[["kulintang",4,30,1.3],["kudyapi",40,33,1.3],["woman",28,27,1.2,{q:"#7e2218"}],["chant",32,18,1,{drift:"u"}],["lamp",60,34,1]],me:[66,31]},
+  {bg:"day",gr:"water",it:[["boat",16,32,1.6],["wave",40,36,1.3],["road",4,38,1.4],["cloud",40,4,1,{drift:"r"}],["bird",60,8,1,{drift:"l"}]],me:[56,24]}],
+ tibbat_gupha:[
+  {bg:"day",gr:"sand",it:[["cliffcave",4,10,2.2],["palmleaf",46,34,1.2],["palmleaf",46,30,1],["man",40,28,1,{q:"#7a3524"}],["cloud",50,2,1,{drift:"r"}]],me:[60,31]},
+  {bg:"inner",gr:"sand",it:[["palmleaf",10,20,1.3],["palmleaf",30,26,1.3],["palmleaf",50,18,1.3],["sawal",60,28,1.4]],me:[34,31]},
+  {bg:"dusk",gr:"sand",it:[["camel",6,28,1.4],["camel",24,29,1.3],["road",4,38,2],["man",40,29,1.1,{q:"#7a3524"}],["star",60,4,1]],me:[58,31]},
+  {bg:"dawn",gr:"stone",it:[["snowpeak",4,8,2.4],["snowpeak",40,12,1.8],["road",20,38,1.6],["palmleaf",60,34,0.9]],me:[30,31]}],
+ mappila_majlis:[
+  {bg:"dusk",gr:"sand",it:[["speech",24,16,1.2,{drift:"b"}],["man",18,29,1.1,{q:"#e8e0c8"}],["man",32,29,1.1,{q:"#3f8a3a"}],["tree",52,10,1.5]],me:[4,31]},
+  {bg:"night",gr:"floor",it:[["daf",20,28,1.6],["man",32,29,1.1,{q:"#e8e0c8"}],["man",42,29,1.1,{q:"#8a5630"}],["heart",36,20,1],["lamp",52,34,1]],me:[62,31]},
+  {bg:"night",gr:"sand",it:[["man",10,29,1,{q:"#e8e0c8"}],["woman",18,29,1,{q:"#3f8a3a"}],["man",26,29,1,{q:"#c8402f"}],["child",34,31,1],["daf",42,30,1.2],["lamp",52,34,1]],me:[64,31]},
+  {bg:"dawn",gr:"sand",it:[["house",4,20,1.1],["daf",30,30,1.2],["chant",34,20,1,{drift:"u"}],["man",42,29,1.1,{q:"#e8e0c8"}],["tree",58,12,1.3]],me:[18,31]}],
+ mal_yuddha:[
+  {bg:"fire",gr:"stone",it:[["palmleaf",10,32,1],["sword",20,22,1.6],["chariot",34,28,1.3],["demon",38,21,1],["monkey",56,27,1.2]],me:[4,20]},
+  {bg:"dusk",gr:"floor",it:[["palmleaf",8,26,1.3],["speech",28,16,1,{drift:"b"}],["speech",44,20,1,{drift:"b"}],["sage",52,28,1.2]],me:[30,31]},
+  {bg:"inner",gr:"floor",it:[["palmleaf",20,22,2],["lamp",14,34,1],["count",24,32,1.2],["star",60,4,1]],me:[56,31]},
+  {bg:"day",gr:"grass",it:[["pothi",6,28,1.1],["pothi",20,28,1.1],["palmleaf",34,32,1],["pothi",48,28,1.1],["cloud",20,2,1,{drift:"r"}]],me:[62,31]}],
+ kannassa_pahle:[
+  {bg:"dawn",gr:"grass",it:[["palmleaf",14,26,1.4],["count",16,18,1.4],["sage",42,28,1.2],["tree",58,10,1.4]],me:[4,31]},
+  {bg:"dusk",gr:"floor",it:[["sage",14,28,1.2],["sage",24,28,1.2],["sage",34,28,1.2],["palmleaf",44,34,1],["lamp",56,34,1]],me:[64,31]},
+  {bg:"inner",gr:"stone",it:[["palmleaf",14,24,1.6],["rock",42,30,1.4],["road",6,38,1.4],["chant",40,18,1,{drift:"u"}]],me:[60,31]},
+  {bg:"day",gr:"grass",it:[["road",4,38,3],["parrot",52,16,1.2],["tree",46,10,1.6],["palmleaf",10,30,1]],me:[26,31]}],
+ taili_seema:[
+  {bg:"dusk",gr:"stone",it:[["palace",30,10,1.3],["scroll",14,24,1.2],["marker",52,30,1.2],["star",60,4,1]],me:[4,31]},
+  {bg:"day",gr:"sand",it:[["road",4,38,3],["boat",20,32,1.2],["camel",44,29,1.2],["marker",62,30,1]],me:[30,24]},
+  {bg:"green",gr:"grass",it:[["speech",20,16,1.2,{drift:"b"}],["palmleaf",14,32,1.1],["sage",34,28,1.2],["tree",52,10,1.5]],me:[64,31]},
+  {bg:"night",gr:"stone",it:[["marker",10,30,1.2],["marker",30,30,1.2],["marker",50,30,1.2],["road",4,38,3],["moon",64,2,1],["star",40,4,1]],me:[62,31]}],
+ adb_raat:[
+  {bg:"dusk",gr:"stone",it:[["palace",4,14,1],["fire",8,8,0.9],["road",24,38,2],["scroll",48,18,1.1],["demon",54,26,1.3]],me:[36,31]},
+  {bg:"patal",gr:"dark",it:[["chain",24,34,1.6],["man",20,27,1.2,{q:"#3a6ea5"}],["man",30,27,1.2,{q:"#e0b030"}],["sword",44,30,1],["demon",58,24,1.4]],me:[4,31]},
+  {bg:"fire",gr:"dark",it:[["woman",30,24,1.6,{q:"#e0b030"}],["road",14,38,1.6],["fire",52,26,1.1],["petal",40,2,1,{drift:"d"}]],me:[6,31]},
+  {bg:"dawn",gr:"stone",it:[["sage",22,28,1.3],["speech",28,18,1.1,{drift:"b"}],["heart",44,22,1],["man",40,28,1.2,{q:"#3a6ea5"}]],me:[60,31]}],
+ jain_raat:[
+  {bg:"day",gr:"stone",it:[["man",30,10,1.3,{q:"#3a6ea5",drift:"r"}],["bird",44,6,1,{drift:"r"}],["sage",12,28,1.2],["pothi",20,36,0.9],["cloud",50,4,1]],me:[62,31]},
+  {bg:"dusk",gr:"stone",it:[["man",14,29,1.1,{q:"#7a5bb5"}],["woman",24,29,1.1,{q:"#3a6ea5"}],["child",32,31,1.1],["house",46,20,1.2]],me:[64,31]},
+  {bg:"day",gr:"stone",it:[["gate",40,12,2],["monkey",20,28,1.2],["ring",27,22,1.4],["road",4,38,1.6]],me:[6,31]},
+  {bg:"fire",gr:"stone",it:[["palace",30,10,1.2],["fire",32,4,1.2],["road",4,38,2],["scale",14,24,1.2],["smoke",40,0,1,{drift:"u"}]],me:[62,31]}],
+ y_ladai:[
+  {bg:"dusk",gr:"stone",it:[["count",10,6,2],["demon",20,28,0.9],["demon",26,29,0.9],["demon",32,28,0.9],["demon",38,29,0.9],["demon",44,28,0.9],["bar",60,24,1.4]],me:[64,31]},
+  {bg:"dusk",gr:"stone",it:[["chariot",22,28,1.5],["demon",26,21,1],["scroll",46,20,1.1],["monkey",56,28,1.2]],me:[4,31]},
+  {bg:"stone",gr:"floor",it:[["palace",4,12,1.1],["man",36,28,1],["man",42,28,1],["man",48,28,1],["man",54,28,1],["tower",64,22,1.2]],me:[24,31]},
+  {bg:"fire",gr:"stone",it:[["king",8,24,1.3],["demon",26,26,1.2],["demon",36,26,1.4],["chariot",50,28,1.3],["smoke",30,4,1,{drift:"u"}]],me:[64,20]}],
+ t_nagar:[
+  {bg:"night",gr:"water",it:[["wave",4,34,1.3],["lotus",20,36,1.2],["lotus",44,35,1.2],["wall",0,18,1.4],["wall",46,18,1.4]],me:[34,24]},
+  {bg:"night",gr:"stone",it:[["wall",0,24,1.4],["wall",46,24,1.4],["tower",10,12,1.6],["tower",56,12,1.6],["guard",12,4,1],["eye",34,6,1.2]],me:[34,31]},
+  {bg:"night",gr:"stone",it:[["house",2,18,1.2],["house",56,18,1.2,{q:"#3a6ea5"}],["lamp",20,34,1],["drum",46,33,1],["road",22,39,1.6],["sleeper",36,36,0.8]],me:[30,31]},
+  {bg:"night",gr:"roof",it:[["house",4,24,0.8],["house",20,26,0.7,{q:"#3a6ea5"}],["palace",42,20,0.9],["moon",66,2,1],["star",30,4,1],["eye",60,12,1]],me:[34,16]}],
+ k_kaisekaha:[
+  {bg:"inner",gr:"floor",it:[["woman",36,26,1.4,{q:"#7a5bb5"}],["monkey",20,28,1.2],["sawal",28,18,1.2],["pillar",60,16,1.8]],me:[4,31]},
+  {bg:"night",gr:"stone",it:[["road",4,38,3],["monkey",40,26,1.3,{drift:"r"}],["pothi",14,30,1],["star",50,4,1]],me:[6,31]},
+  {bg:"night",gr:"grass",it:[["pothi",30,24,1.8],["oldwoman",14,28,1.2],["count",32,34,1],["moon",64,2,1]],me:[56,31]},
+  {bg:"day",gr:"stone",it:[["pothi",8,26,1.4],["palace",30,10,1.3],["pillar",56,18,1.6],["speech",20,14,1,{drift:"b"}]],me:[64,31]}],
+ b_maza:[
+  {bg:"day",gr:"water",it:[["shade",20,34,2],["fish",14,38,1.2],["fish",44,40,1.2],["fish",56,36,1],["monkey",24,6,1.3,{drift:"r"}]],me:[62,26]},
+  {bg:"night",gr:"stone",it:[["cat",34,34,1.4],["gate",46,14,2],["guard",60,28,1.1],["moon",10,2,1]],me:[10,31]},
+  {bg:"day",gr:"grass",it:[["tree",30,4,2.4],["bird",36,10,1],["parrot",42,14,1],["bird",48,8,1],["guard",10,30,1.1]],me:[62,31]},
+  {bg:"day",gr:"grass",it:[["tree",4,10,1.5],["fruit",8,14,1],["monkey",24,28,1.2,{drift:"b"}],["monkey",34,26,1.2],["man",50,29,1.1,{q:"#3f8a3a"}],["heart",44,20,1]],me:[64,31]}],
+ s_paathchakkar:[
+  {bg:"inner",gr:"floor",it:[["pothi",8,24,1.2],["pothi",22,24,1.2],["pothi",36,24,1.2],["pothi",50,24,1.2],["count",20,34,1.6],["moon",64,2,1]],me:[64,30]},
+  {bg:"dusk",gr:"floor",it:[["pothi",20,26,1.6],["sawal",42,20,1.4],["lamp",14,34,1],["shade",36,34,1]],me:[56,31]},
+  {bg:"dawn",gr:"stone",it:[["sawal",14,16,1.6],["palmleaf",30,28,1.4],["sage",50,28,1.2],["chant",54,20,1,{drift:"u"}]],me:[64,31]},
+  {bg:"dawn",gr:"floor",it:[["hillhouse",4,16,1.4],["pothi",36,32,1.1],["lamp",46,34,1],["chant",40,22,1,{drift:"u"}]],me:[62,31]}],
+ sd_bheetar:[
+  {bg:"night",gr:"stone",it:[["chant",20,16,1.2,{drift:"u"}],["road",6,38,2.4],["mountain",44,16,1.6],["star",60,4,1]],me:[26,31]},
+  {bg:"inner",gr:"floor",it:[["sleeper",6,36,1,{q:"#e59aa6"}],["sleeper",22,36,1,{q:"#7a5bb5"}],["sawal",38,18,1.2],["monkey",40,27,1.2],["lamp",56,34,1]],me:[64,31]},
+  {bg:"night",gr:"grass",it:[["ashoka",20,4,2.4],["monkey",28,10,0.8],["eye",48,10,1.2],["count",50,30,1]],me:[62,31]},
+  {bg:"night",gr:"grass",it:[["woman",20,29,1.3,{q:"#e0b030"}],["tear",38,20,2],["monkey",44,24,1.1],["ashoka",52,10,1.4]],me:[6,31]}],
+ r_darbarchakkar:[
+  {bg:"inner",gr:"floor",it:[["king",30,20,1.4],["throne",28,30,1.6],["demon",10,28,1],["demon",48,28,1],["speech",14,20,1,{drift:"b"}]],me:[64,31]},
+  {bg:"inner",gr:"floor",it:[["man",30,28,1.3,{q:"#3f8a3a"}],["scale",42,18,1.4],["king",10,22,1.2],["throne",8,30,1.3],["monkey",56,28,1.1]],me:[64,20]},
+  {bg:"fire",gr:"floor",it:[["tailfire",30,24,2],["chain",28,36,1.2],["king",8,22,1.2],["throne",6,30,1.3],["smoke",40,4,1,{drift:"u"}]],me:[62,31]},
+  {bg:"dawn",gr:"grass",it:[["king",30,28,1.3],["monkey",46,28,1.2],["sawal",36,18,1.2],["tree",4,10,1.5]],me:[62,31]}],
+ j_sawalchakkar:[
+  {bg:"inner",gr:"floor",it:[["sawal",20,14,1.4],["eye",30,16,1.2],["pillar",4,16,1.8],["pillar",60,16,1.8],["count",30,34,1.4]],me:[38,31]},
+  {bg:"night",gr:"stone",it:[["road",4,38,1.6],["road",44,34,1.6],["house",2,20,1],["house",56,20,1,{q:"#3a6ea5"}],["sawal",36,14,1.2]],me:[30,31]},
+  {bg:"dusk",gr:"stone",it:[["sawal",14,12,1.4],["sawal",40,16,1.2],["shade",24,34,1.2],["fire",54,24,1]],me:[4,31]},
+  {bg:"patal",gr:"dark",it:[["palace",4,14,1],["demon",30,24,1.3],["shade",50,34,1.2],["woman",52,26,1.1,{q:"#9a8fb0"}],["pothi",20,34,0.9]],me:[64,31]}]
 };
 
 /* each converted stop carries its own pixel scene */
 Object.keys(PX_TOUR).forEach(k=>{if(DETOUR[k])DETOUR[k].stops.forEach((st,i)=>{if(PX_TOUR[k][i])st.px=PX_TOUR[k][i];});});
+
+const S3E=(()=>{
+/* ================= 3D scenes for the detours =================
+   each stop's scene plan (the same one the pixel fallback draws) is built here in real 3D:
+   soft light, soft shadows, rounded characters that breathe and blink, a slowly moving camera */
+const S3={cur:null};
+const S3SKY={night:["#0b1030","#28336a"],dusk:["#2a1838","#c0604e"],day:["#6fb4e0","#e6f3fa"],dawn:["#3a3a70","#f2b48c"],
+ fire:["#2a0a08","#e0561c"],patal:["#07040e","#2c1a44"],inner:["#150f1e","#3a2c4e"],green:["#16301e","#6fae78"],
+ stone:["#1e1a18","#5a5046"],river:["#0e2a44","#3a86b8"]};
+const S3GROUND={grass:"#3f7a38",stone:"#6b6056",sand:"#cfae72",water:"#23608f",floor:"#7a5536",roof:"#8a3e2a",dark:"#211a28",gold:"#a8780e"};
+const S3LIGHT={night:{sun:"#7f98e8",si:.42,hemi:.3},dusk:{sun:"#ffb07a",si:1.0,hemi:.55},day:{sun:"#fff2d6",si:1.05,hemi:.5},
+ dawn:{sun:"#ffc9a0",si:1.1,hemi:.6},fire:{sun:"#ff8a3a",si:1.3,hemi:.5},patal:{sun:"#a07aff",si:.6,hemi:.35},
+ inner:{sun:"#ffd9a8",si:.8,hemi:.4},green:{sun:"#fff0c8",si:1.05,hemi:.55},stone:{sun:"#ffe2c0",si:1.0,hemi:.5},river:{sun:"#e8f4ff",si:1.0,hemi:.55}};
+const S3ROLE={jigyasu:"#2a8a80",yatri:"#3a80b0",kathapremi:"#c8901a",balak:"#4e9a46",yoddha:"#c8402f",shastri:"#5a6fb5",sadhak:"#8a6ac8",raja:"#a8743a"};
+function s3ok(){try{if(!window.THREE)return false;const c=document.createElement("canvas");return !!(c.getContext("webgl")||c.getContext("experimental-webgl"));}catch(e){return false;}}
+/* ---------- materials and small helpers ---------- */
+function M(c,o){o=o||{};return new THREE.MeshStandardMaterial(Object.assign({color:(c&&c.isColor)?c:new THREE.Color(c),roughness:.62,metalness:0},o));}
+function glowM(c,i){return new THREE.MeshBasicMaterial({color:new THREE.Color(c),toneMapped:false,transparent:true,opacity:Math.min(1,.55+(i||1.4)*.25)});}
+function mesh(g,m,x,y,z){const o=new THREE.Mesh(g,m);o.position.set(x||0,y||0,z||0);o.castShadow=true;o.receiveShadow=true;return o;}
+function sph(r,m,x,y,z,sx,sy,sz){const o=mesh(new THREE.SphereGeometry(r,24,18),m,x,y,z);if(sx)o.scale.set(sx,sy||sx,sz||sx);return o;}
+function cyl(rt,rb,h,m,x,y,z,seg){return mesh(new THREE.CylinderGeometry(rt,rb,h,seg||20),m,x,y,z);}
+function box(w,h,d,m,x,y,z){return mesh(new THREE.BoxGeometry(w,h,d),m,x,y,z);}
+function cone(r,h,m,x,y,z,seg){return mesh(new THREE.ConeGeometry(r,h,seg||20),m,x,y,z);}
+function lathe(pts,m,y){const g=new THREE.LatheGeometry(pts.map(p=>new THREE.Vector2(p[0],p[1])),28);const o=mesh(g,m,0,y||0,0);return o;}
+function grp(){return new THREE.Group();}
+const SKIN="#c98a5b",SKIN2="#b0764c",HAIR="#1e1614";
+/* ---------- the character: the heart of the look ---------- */
+function eyes(g,y,z,spread,size){
+ const e=grp();[-1,1].forEach(s=>{const w=sph(size,M("#ffffff",{roughness:.2}),s*spread,0,0);const p=sph(size*.55,M("#1a1210",{roughness:.1}),s*spread,0,size*.62);
+  const h=sph(size*.18,glowM("#ffffff",.8),s*spread+size*.2,size*.25,size*.95);e.add(w,p,h);});
+ e.position.set(0,y,z);e.userData.blink=true;g.add(e);return e;
+}
+function person(o){
+ o=o||{};const g=grp();const cloth=M(o.cloth||"#b35a3c"),skin=M(o.skin||SKIN);
+ const h=o.h||1;
+ /* a bell shaped robe from a lathe, so the cloth falls softly */
+ const robe=lathe(o.robe||[[0,0],[.5,0],[.55,.25],[.46,.8],[.34,1.2],[.3,1.35],[0,1.4]],cloth,0);g.add(robe);
+ if(o.sari){const d=cyl(.02,.02,1.1,M(o.sari),.2,.9,.3);d.rotation.z=.6;g.add(d);}
+ const body=grp();body.position.y=1.35;g.add(body);
+ const head=grp();head.position.y=1.82;g.add(head);
+ head.add(sph(.46,skin,0,0,0,1,1.02,1));
+ head.add(sph(.09,M(SKIN2),0,-.08,.45));
+ eyes(head,.06,.36,.17,.13);
+ [-1,1].forEach(s=>{const b=box(.16,.035,.04,M(o.hair||HAIR),s*.17,.24,.42);b.rotation.z=-s*.12;head.add(b);});
+ if(!o.bald)head.add(sph(.47,M(o.hair||HAIR),0,.1,-.06,1,.9,1));
+ if(o.bun)head.add(sph(.15,M(o.hair||HAIR),0,.18,-.34));
+ if(o.crown){const c=cyl(.3,.34,.28,M("#e2b33a",{metalness:.6,roughness:.3}),0,.38,0);head.add(c);[0,1,2,3,4].forEach(i=>{const a=i/5*Math.PI*2;head.add(cone(.06,.2,M("#e2b33a",{metalness:.6,roughness:.3}),Math.sin(a)*.28,.6,Math.cos(a)*.28));});}
+ if(o.turban)head.add(sph(.38,M(o.turban),0,.22,0,1.05,.55,1.05));
+ if(o.beard)head.add(cone(.2,.42,M("#f0ece4"),0,-.36,.22));
+ if(o.horns){[-1,1].forEach(s=>{const hn=cone(.07,.34,M("#f0e6d0"),s*.24,.36,0);hn.rotation.z=-s*.5;head.add(hn);});}
+ if(o.third){head.add(sph(.05,glowM("#ff5b2e",1),0,.2,.34));}
+ if(o.crescent){const t=mesh(new THREE.TorusGeometry(.12,.03,8,16,Math.PI),M("#f4f0e0"),0,.52,0);head.add(t);}
+ /* arms: rounded tubes, one can hold something */
+ const arms=[];[-1,1].forEach(s=>{const a=grp();a.position.set(s*.42,1.28,0);const up=cyl(.09,.08,.62,cloth,0,-.3,0);a.add(up);a.add(sph(.1,skin,0,-.64,0));a.rotation.z=s*.18;g.add(a);arms.push(a);});
+ g.userData={head,arms,breathe:robe,h:h};
+ if(o.hold)arms[1].add(o.hold);
+ g.scale.setScalar(h);
+ return g;
+}
+function monkey(o){
+ o=o||{};const g=grp();const fur=M(o.fur||"#8a5630"),face=M(o.face||"#e0b48a");
+ g.add(sph(.55,fur,0,.75,0,1,1.15,.9));
+ const head=grp();head.position.y=1.55;g.add(head);
+ head.add(sph(.5,fur,0,0,0));head.add(sph(.33,face,0,-.06,.3,1.1,.9,.7));
+ [-1,1].forEach(s=>head.add(sph(.15,face,s*.5,.06,0)));
+ eyes(head,.1,.38,.16,.12);
+ if(o.crown){head.add(cyl(.26,.3,.22,M("#e2b33a",{metalness:.6,roughness:.3}),0,.36,0));head.add(cone(.1,.3,M("#e2b33a",{metalness:.6,roughness:.3}),0,.6,0));}
+ const tail=new THREE.CatmullRomCurve3([new THREE.Vector3(0,.5,-.4),new THREE.Vector3(-.3,.6,-.9),new THREE.Vector3(-.5,1.3,-1),new THREE.Vector3(-.2,1.9,-.8)]);
+ const t=mesh(new THREE.TubeGeometry(tail,24,.07,8,false),fur);g.add(t);
+ if(o.fire){const f=fireBall(.35);f.position.set(-.2,2,-.8);g.add(f);}
+ const arms=[];[-1,1].forEach(s=>{const a=grp();a.position.set(s*.5,1.05,0);a.add(cyl(.1,.09,.6,fur,0,-.28,0));a.add(sph(.11,face,0,-.6,0));a.rotation.z=s*.35;g.add(a);arms.push(a);});
+ [-1,1].forEach(s=>g.add(sph(.16,fur,s*.25,.12,.1,1,.7,1.2)));
+ g.userData={head,arms,breathe:g.children[0]};
+ return g;
+}
+/* ---------- props ---------- */
+function fireBall(r){
+ const g=grp();
+ /* many tongues, each its own height and phase, adding their light together */
+ const tongues=[[0,0,1,"#e23a12"],[.35,.1,.7,"#ff6a1a"],[-.35,-.05,.75,"#ff6a1a"],[.12,.3,.6,"#ff9a24"],[-.15,-.25,.55,"#ff9a24"],[0,0,.5,"#ffd24a"],[0,0,.28,"#fff2b0"]];
+ tongues.forEach((t,i)=>{const mt=new THREE.MeshBasicMaterial({color:new THREE.Color(t[3]),toneMapped:false,transparent:true,opacity:.85,depthWrite:false,blending:THREE.AdditiveBlending});
+  const m=cone(r*.55*t[2],r*2.8*t[2],mt,t[0]*r,r*1.35*t[2],t[1]*r,12);m.castShadow=false;m.userData.flick=i%3;g.add(m);});
+ g.userData.fire=true;return g;
+}
+function lampM(){const g=grp();g.add(lathe([[0,0],[.28,.02],[.32,.12],[.1,.16],[0,.16]],M("#9a5a2a"),0));const f=fireBall(.08);f.position.y=.16;g.add(f);g.userData.light="#ffb050";return g;}
+function tree(o){o=o||{};const g=grp();g.add(cyl(.18,.28,1.8,M("#6a4424"),0,.9,0));
+ const leaf=M(o.leaf||"#3f8a3a");[[0,2.3,0,1],[.6,2,.2,.75],[-.6,2.05,-.1,.8],[.1,2.8,-.1,.7],[-.3,2.6,.4,.6]].forEach(p=>g.add(sph(p[3],leaf,p[0],p[1],p[2])));
+ if(o.bloom)for(let i=0;i<14;i++){const a=i*2.4,r=.9;g.add(sph(.09,glowM(o.bloom,.5),Math.cos(a)*r*.9,2.2+Math.sin(i*1.7)*.5,Math.sin(a)*r*.7+.3));}
+ if(o.fruit)for(let i=0;i<8;i++){const a=i*.8;g.add(sph(.1,M(o.fruit),Math.cos(a)*.8,2+Math.sin(i)*.3,Math.sin(a)*.6+.4));}
+ g.userData.sway=true;return g;}
+function house(o){o=o||{};const g=grp();const wall=M(o.wall||"#e6d2a8"),roof=M(o.roof||"#9a4a2e");
+ g.add(box(1.8,1.4,1.4,wall,0,.7,0));const r=cone(1.45,.9,roof,0,1.85,0,4);r.rotation.y=Math.PI/4;g.add(r);
+ const w=box(.36,.42,.05,glowM("#ffb84a",o.dark?.2:1.1),-.45,.8,.72);g.add(w);g.add(box(.4,.7,.05,M("#5a3a22"),.45,.35,.72));return g;}
+function palace(){const g=grp();const w=M("#e8d6ae"),gold=M("#e2b33a",{metalness:.5,roughness:.3});
+ g.add(box(4,1.8,2,w,0,.9,0));[-1.3,0,1.3].forEach(x=>{g.add(cyl(.45,.5,1,w,x,2.3,0));g.add(sph(.55,gold,x,3,0,1,1.1,1));g.add(cone(.08,.5,gold,x,3.7,0));});
+ for(let i=-1.6;i<=1.6;i+=.8)g.add(box(.3,.5,.05,glowM("#ffb04a",.9),i,1,1.02));g.add(box(.6,.9,.06,M("#5a3a22"),0,.45,1.02));return g;}
+function gate(){const g=grp();const s=M("#d8c49a");g.add(box(.5,2.6,.6,s,-1.1,1.3,0));g.add(box(.5,2.6,.6,s,1.1,1.3,0));g.add(box(2.9,.5,.7,M("#e2b33a",{metalness:.4,roughness:.35}),0,2.8,0));return g;}
+function mountain(o){o=o||{};const g=grp();g.add(cone(3,4,M(o.c||"#7a7f88"),0,2,0,7));if(o.snow)g.add(cone(1.1,1.4,M("#f6f6f8"),0,3.35,0,7));return g;}
+function pothi(){const g=grp();const b=box(1,.12,.6,M("#8a5630"),0,.06,0);g.add(b);const p=box(.94,.06,.56,M("#f4ecd8"),0,.15,0);g.add(p);return g;}
+function scrollM(){const g=grp();const r=cyl(.08,.08,.8,M("#b07a3a"),0,0,0);r.rotation.z=Math.PI/2;g.add(r);g.add(box(.7,.02,.5,M("#f4ecd8"),0,-.05,.25));return g;}
+function glowIcon(kind,c){const g=grp();const m=glowM(c||"#fff4d0",1.2);
+ if(kind==="heart"){g.add(sph(.2,m,-.14,.1,0));g.add(sph(.2,m,.14,.1,0));const t=cone(.28,.4,m,0,-.18,0,16);t.rotation.z=Math.PI;g.add(t);}
+ else if(kind==="note"){g.add(sph(.14,m,0,0,0,1.2,.9,1));g.add(cyl(.03,.03,.6,m,.14,.3,0));}
+ else if(kind==="q"){const t=mesh(new THREE.TorusGeometry(.22,.06,10,20,Math.PI*1.4),m,0,.25,0);t.rotation.z=-.6;g.add(t);g.add(cyl(.06,.06,.2,m,0,-.05,0));g.add(sph(.07,m,0,-.3,0));}
+ else if(kind==="bubble"){g.add(sph(.45,M("#f8f4ea",{roughness:.3}),0,0,0,1.3,.9,.5));[-.25,0,.25].forEach(x=>g.add(sph(.06,M("#3a2a20"),x,0,.22)));g.add(cone(.12,.3,M("#f8f4ea"),-.3,-.42,0));}
+ else if(kind==="eye"){g.add(sph(.3,M("#ffffff",{roughness:.2}),0,0,0,1.4,.8,.5));g.add(sph(.14,M("#2a1a10"),0,0,.12));}
+ else if(kind==="beads"){for(let i=0;i<7;i++)g.add(sph(.08,m,(i-3)*.22,Math.sin(i)*.05,0));}
+ else if(kind==="tear"){const t=sph(.12,glowM("#8fd8ea",1),0,0,0,1,1.4,1);g.add(t);}
+ g.userData.float=true;return g;}
+/* ---------- the catalogue: every thing a scene plan can name ---------- */
+const S3B={
+ lamp:()=>lampM(),
+ fire:()=>{const g=fireBall(.85);g.userData.light="#ff7a2e";g.userData.sparks=true;return g;},
+ smoke:()=>{const g=grp();for(let i=0;i<5;i++){const s=sph(.4+i*.08,M("#6a6a72",{transparent:true,opacity:.55}),Math.sin(i)*.3,i*.5,0);s.castShadow=false;g.add(s);}g.userData.rise=true;return g;},
+ star:()=>{const s=sph(.08,glowM("#fff4c0",2),0,0,0);s.userData.twinkle=true;return s;},
+ moon:()=>{const g=grp();g.add(sph(.9,glowM("#f4efdc",1.1),0,0,0));g.userData.light="#cfe0ff";return g;},
+ cloud:()=>{const g=grp();const m=M("#f4f4f8",{roughness:.9});[[0,0,0,.8],[.8,-.1,0,.6],[-.8,-.1,0,.65],[.3,.35,0,.55]].forEach(p=>g.add(sph(p[3],m,p[0],p[1],p[2])));return g;},
+ bird:()=>{const g=grp();const m=M("#f0ece4");g.add(sph(.14,m,0,0,0,1.4,1,1));[-1,1].forEach(s=>{const w=box(.5,.03,.18,m,s*.3,0,0);w.userData.wing=s;g.add(w);});return g;},
+ parrot:()=>{const g=grp();const m=M("#3fae3a");g.add(sph(.25,m,0,0,0,1,1.3,1));g.add(sph(.18,m,0,.36,.02));g.add(cone(.06,.14,M("#e8a020"),0,.33,.2));eyes(g,.4,.14,.08,.04);g.add(cone(.08,.5,M("#2a7a2a"),0,-.4,-.1));g.userData.bob=true;return g;},
+ wave:()=>{const g=mesh(new THREE.PlaneGeometry(6,3,40,20),M("#123f6a",{roughness:.55,metalness:0,transparent:true,opacity:.97}),0,.05,0);g.rotation.x=-Math.PI/2;g.userData.water=true;g.castShadow=false;return g;},
+ tree:()=>tree(),
+ ashoka:()=>tree({leaf:"#2f7a3a",bloom:"#ff9ab0"}),
+ tulsi:()=>{const g=grp();g.add(cyl(.35,.3,.5,M("#b06a3a"),0,.25,0));for(let i=0;i<9;i++)g.add(sph(.12,M("#4f9a3a"),Math.cos(i)*.2,.6+i*.05,Math.sin(i)*.2));g.userData.sway=true;return g;},
+ flower:()=>{const g=grp();g.add(cyl(.03,.03,.5,M("#3f8a3a"),0,.25,0));for(let i=0;i<5;i++){const a=i/5*Math.PI*2;g.add(sph(.1,M("#f08aa0"),Math.cos(a)*.12,.55,Math.sin(a)*.12));}g.add(sph(.07,M("#f7d45a"),0,.56,0));g.userData.sway=true;return g;},
+ fruit:()=>tree({fruit:"#e0482e"}),
+ house:()=>house(),hut:()=>{const g=grp();g.add(cyl(.9,.9,1.1,M("#c9a06a"),0,.55,0));g.add(cone(1.3,1.1,M("#d9b24a"),0,1.65,0));g.add(box(.4,.6,.05,M("#5a3a22"),0,.3,.9));return g;},
+ hillhouse:()=>house({wall:"#e8dcc0",roof:"#6a3a2a"}),
+ palace:()=>palace(),gate:()=>gate(),
+ wall:()=>{const g=grp();g.add(box(5,1.4,.6,M("#cdb48a"),0,.7,0));for(let i=-2.2;i<=2.2;i+=.55)g.add(box(.3,.3,.6,M("#cdb48a"),i,1.55,0));return g;},
+ tower:()=>{const g=grp();g.add(cyl(.6,.7,3,M("#d4bc92"),0,1.5,0));g.add(cone(.8,.8,M("#e2b33a",{metalness:.4}),0,3.4,0));g.add(box(.25,.3,.05,glowM("#ffd27a",1),0,2.2,.62));return g;},
+ pillar:()=>{const g=grp();g.add(cyl(.28,.3,3,M("#eadcbc"),0,1.5,0));g.add(box(.8,.2,.8,M("#e2b33a",{metalness:.4}),0,3.05,0));g.add(box(.8,.2,.8,M("#e2b33a",{metalness:.4}),0,.1,0));return g;},
+ throne:()=>{const g=grp();const gold=M("#e2b33a",{metalness:.55,roughness:.3});g.add(box(1.4,.5,1,M("#b0302a"),0,.55,0));g.add(box(1.4,1.4,.2,gold,0,1.2,-.45));[-1,1].forEach(s=>g.add(box(.2,.8,1,gold,s*.7,.7,0)));return g;},
+ mountain:()=>mountain(),snowpeak:()=>mountain({snow:true,c:"#6a707c"}),rock:()=>{const g=grp();g.add(sph(.7,M("#8a8a90",{roughness:.95}),0,.5,0,1.2,.8,1));g.add(sph(.45,M("#7a7a80",{roughness:.95}),.6,.3,.2));return g;},
+ boat:()=>{const g=grp();const h=box(2.2,.4,.8,M("#7a4a26"),0,.25,0);g.add(h);g.add(cyl(.04,.04,1.6,M("#5a3a22"),0,1.1,0));const s=box(.02,1,.9,M("#f4ecd8"),.05,1.2,0);g.add(s);g.userData.bob=true;return g;},
+ shikara:()=>{const g=grp();g.add(box(2.4,.3,.7,M("#6a3a1e"),0,.2,0));g.add(box(1,.6,.6,M("#c8402f"),0,.65,0));g.add(box(1.1,.08,.7,M("#e2b33a"),0,.98,0));g.userData.bob=true;return g;},
+ elephant:()=>{const g=grp();const m=M("#8f949c");g.add(sph(1,m,0,1.3,0,1.3,.9,.8));g.add(sph(.6,m,1.1,1.6,0));const t=mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(1.55,1.5,0),new THREE.Vector3(1.8,1,0),new THREE.Vector3(1.75,.5,.1)]),16,.13,8,false),m);t.userData.trunk=true;g.add(t);
+  [-1,1].forEach(s=>g.add(sph(.45,m,1,1.7,s*.5,.3,1,1)));[[-.6,.3],[-.6,-.3],[.6,.3],[.6,-.3]].forEach(p=>g.add(cyl(.2,.22,.8,m,p[0],.4,p[1])));eyes(g,1.75,.5,.2,.07);g.children[g.children.length-1].rotation.y=Math.PI/2;g.children[g.children.length-1].position.set(1.45,1.75,0);return g;},
+ bell:()=>{const g=grp();g.add(lathe([[0,.5],[.12,.48],[.2,.3],[.28,0],[0,0]],M("#e2b33a",{metalness:.6,roughness:.3}),0));g.userData.swing=true;return g;},
+ pothi:()=>pothi(),palmleaf:()=>{const g=grp();for(let i=0;i<4;i++)g.add(box(1.2,.03,.18,M("#e0cc98"),0,.05+i*.04,0));g.add(cyl(.02,.02,.3,M("#5a3a22"),0,.15,0));return g;},
+ scroll:()=>scrollM(),
+ pot:()=>lathe([[0,0],[.3,.05],[.42,.35],[.3,.65],[.18,.72],[.22,.8],[0,.8]],M("#b0582e")),
+ drum:()=>{const g=grp();const d=cyl(.35,.35,.8,M("#b0302a"),0,.4,0);d.rotation.z=Math.PI/2;g.add(d);[-1,1].forEach(s=>{const h=cyl(.36,.36,.04,M("#f4ecd8"),s*.42,.4,0);h.rotation.z=Math.PI/2;g.add(h);});g.userData.beat=true;return g;},
+ drumcircle:()=>{const g=grp();for(let i=0;i<10;i++){const a=i/10*Math.PI*2;g.add(cyl(.18,.2,.4,M(i%2?"#b0302a":"#e2b33a"),Math.cos(a)*1,.2,Math.sin(a)*1));}g.add(cyl(1.15,1.15,.5,M("#c8402f"),0,.25,0,32));g.userData.beat=true;return g;},
+ veena:()=>{const g=grp();g.add(sph(.3,M("#8a5630"),-.6,.3,0));g.add(sph(.25,M("#8a5630"),.6,.3,0));const n=cyl(.05,.05,1.3,M("#6a4424"),0,.35,0);n.rotation.z=Math.PI/2;g.add(n);return g;},
+ kudyapi:()=>{const g=grp();const b=box(1.6,.14,.3,M("#7a4a26"),0,.2,0);b.rotation.z=.25;g.add(b);return g;},
+ kulintang:()=>{const g=grp();g.add(box(3,.2,.6,M("#7a4a26"),0,.4,0));for(let i=0;i<8;i++){g.add(cyl(.16,.16,.1,M("#d4a020",{metalness:.6,roughness:.3}),-1.3+i*.37,.55,0));g.add(sph(.06,M("#e2b33a",{metalness:.6}),-1.3+i*.37,.62,0));}return g;},
+ cymbal:()=>{const g=grp();[-1,1].forEach(s=>{const c=cyl(.2,.2,.03,M("#e2b33a",{metalness:.7,roughness:.25}),s*.15,.6,0);c.rotation.z=s*1.2;g.add(c);});g.userData.beat=true;return g;},
+ daf:()=>{const g=grp();const r=cyl(.45,.45,.1,M("#8a5630"),0,.8,0);r.rotation.x=Math.PI/2;g.add(r);const f=cyl(.42,.42,.02,M("#efe2c4"),0,.8,.06);f.rotation.x=Math.PI/2;g.add(f);g.userData.beat=true;return g;},
+ gold:()=>{const g=grp();for(let i=0;i<6;i++)g.add(cyl(.18,.18,.05,M("#e2b33a",{metalness:.8,roughness:.2}),(i%3)*.2-.2,.03+Math.floor(i/3)*.06,Math.floor(i/3)*.1));return g;},
+ drip:()=>{const g=grp();for(let i=0;i<3;i++){const d=sph(.08,glowM("#f0b020",1),0,1-i*.4,0,1,1.4,1);d.userData.dripI=i;g.add(d);}g.userData.drip=true;return g;},
+ spear:()=>{const g=grp();g.add(cyl(.04,.04,2.4,M("#6a4424"),0,1.2,0));g.add(cone(.1,.35,M("#c8ccd4",{metalness:.8,roughness:.2}),0,2.55,0));return g;},
+ sword:()=>{const g=grp();const b=box(.12,1.6,.03,M("#dfe4ea",{metalness:.9,roughness:.15}),0,1.2,0);g.add(b);g.add(box(.5,.08,.1,M("#e2b33a",{metalness:.6}),0,.4,0));g.add(cyl(.05,.05,.35,M("#5a3a22"),0,.2,0));g.userData.gleam=true;return g;},
+ bar:()=>{const g=grp();const b=cyl(.09,.09,2.6,M("#4e535c",{metalness:.7,roughness:.35}),0,1.3,0);b.rotation.z=.3;g.add(b);return g;},
+ chain:()=>{const g=grp();for(let i=0;i<7;i++){const t=mesh(new THREE.TorusGeometry(.12,.035,8,14),M("#9aa0a8",{metalness:.8,roughness:.3}),i*.2-.6,.15,0);t.rotation.y=i%2?Math.PI/2:0;g.add(t);}return g;},
+ petal:()=>{const g=grp();for(let i=0;i<6;i++){const p=sph(.07,M("#f7a0b8"),Math.sin(i*2)*1.2,i*.5,Math.cos(i)*.4,1,.4,1);g.add(p);}g.userData.fall=true;return g;},
+ eye:()=>glowIcon("eye"),heart:()=>glowIcon("heart","#ff7a90"),count:()=>glowIcon("beads","#f7d45a"),
+ chant:()=>glowIcon("note","#fff0b0"),speech:()=>glowIcon("bubble"),sawal:()=>glowIcon("q","#9fe0ff"),tear:()=>glowIcon("tear"),
+ skull:()=>sph(.3,M("#f0ece4")),
+ monkey:()=>monkey(),whitemonkey:()=>monkey({fur:"#f2f0ea",face:"#f8e6d4",crown:true}),tailfire:()=>monkey({fire:true}),
+ man:(e)=>person({cloth:e.q||"#3a6ea5"}),woman:(e)=>person({cloth:e.q||"#c0392b",bun:true,sari:"#e2b33a"}),
+ child:(e)=>person({cloth:e.q||"#e0b030",h:.62}),oldwoman:()=>person({cloth:"#9a9aa2",hair:"#e8e8ea",bun:true}),
+ sleeper:(e)=>{const p=person({cloth:e.q||"#8a5630"});p.rotation.z=Math.PI/2;p.position.y=.4;const g=grp();g.add(p);g.userData.sleep=true;g.userData.inner=p;return g;},
+ guard:(e)=>person({cloth:e.q||"#7e2218",turban:"#5a1810",hold:(()=>{const s=S3B.spear();s.position.set(0,-1.2,0);return s;})()}),
+ king:()=>person({cloth:"#c8402f",crown:true}),sage:()=>person({cloth:"#f4efe2",beard:true,hair:"#e8e8ea"}),
+ demon:()=>person({cloth:"#7e2218",skin:"#a8402f",horns:true}),rakshasi:()=>person({cloth:"#4a2c66",skin:"#8a4a5a",horns:true,bun:true}),
+ shiva:()=>person({cloth:"#e8e0cc",skin:"#6a8ec8",crescent:true,third:true,hair:"#2a2030"}),
+ dancer:(e)=>{const p=person({cloth:e.q||"#c8402f",crown:true});p.userData.dance=true;return p;},
+ marionette:(e)=>{const g=grp();const p=person({cloth:e.q||"#b35a3c",crown:true});p.scale.setScalar(.8);g.add(p);
+  for(let i=-1;i<=1;i++){const s=cyl(.01,.01,4,M("#222222"),i*.35,4,0);s.castShadow=false;g.add(s);}g.add(box(1.2,.08,.08,M("#6a4424"),0,6,0));g.userData.bob=true;return g;},
+ wayang:()=>{const g=grp();const p=box(.9,1.8,.04,M("#6a3a1e"),0,1.4,0);g.add(p);g.add(cyl(.02,.02,1.4,M("#3a2a1a"),0,.3,0));g.userData.bob=true;return g;},
+ sbek:()=>{const g=grp();const d=cyl(1,1,.05,M("#8a5a2e"),0,2,0,28);d.rotation.x=Math.PI/2;g.add(d);[-.4,.4].forEach(x=>g.add(cyl(.03,.03,2,M("#3a2a1a"),x,.8,0)));g.userData.bob=true;return g;},
+ screen:()=>{const g=grp();g.add(box(5,2.8,.05,M("#f4e6c4",{emissive:new THREE.Color("#ffb060"),emissiveIntensity:.35}),0,2.1,0));[-3,3].forEach(x=>g.add(cyl(.08,.08,4,M("#5a3a22"),x,2,0)));return g;},
+ relief:()=>{const g=grp();g.add(box(3,1.8,.4,M("#8e9098",{roughness:.95}),0,.9,0));for(let i=-1;i<=1;i++){const p=person({cloth:"#7a7c84",skin:"#7a7c84"});p.scale.setScalar(.35);p.position.set(i*.8,.2,.2);g.add(p);}return g;},
+ torch:()=>{const g=grp();g.add(cyl(.05,.06,1.6,M("#5a3a22"),0,.8,0));const f=fireBall(.16);f.position.y=1.6;g.add(f);g.userData.light="#ff9a3a";return g;},
+ vimana:()=>{const g=palace();g.scale.setScalar(.6);const w=grp();w.add(g);w.userData.hover=true;return w;},
+ chariot:()=>{const g=grp();g.add(box(1.6,.6,1,M("#e2b33a",{metalness:.5}),0,.8,0));[-1,1].forEach(s=>{const w=mesh(new THREE.TorusGeometry(.45,.07,8,20),M("#5a3a22"),0,.45,s*.55);g.add(w);});g.add(box(.08,1.2,.08,M("#5a3a22"),.6,1.4,0));g.add(box(.6,.4,.02,M("#c8402f"),.9,1.8,0));return g;},
+ fish:()=>{const g=grp();g.add(sph(.2,M("#8fd8ea",{metalness:.3,roughness:.3}),0,0,0,1.6,1,.6));g.add(cone(.14,.25,M("#6fc0d8"),-.35,0,0,4));g.children[1].rotation.z=Math.PI/2;g.userData.swim=true;return g;},
+ croc:()=>{const g=grp();const m=M("#3a6a3a");g.add(sph(.4,m,0,.25,0,2.6,.5,.9));g.add(box(.9,.2,.4,m,1.3,.25,0));eyes(g,.5,.1,.15,.06);g.children[g.children.length-1].position.set(.9,.55,0);g.userData.bob=true;return g;},
+ shade:()=>{const s=mesh(new THREE.CircleGeometry(2.4,32),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.35}),0,.08,0);s.rotation.x=-Math.PI/2;s.castShadow=false;s.userData.slide=true;return s;},
+ lotus:()=>{const g=grp();for(let i=0;i<8;i++){const a=i/8*Math.PI*2;const p=sph(.14,M("#f7a8c0"),Math.cos(a)*.16,.12,Math.sin(a)*.16,.6,1.2,.6);p.rotation.z=Math.cos(a)*.5;g.add(p);}g.add(sph(.08,M("#f7d45a"),0,.18,0));const l=cyl(.4,.4,.02,M("#3f8a3a"),0,.02,0);g.add(l);return g;},
+ road:()=>{const g=grp();for(let i=0;i<9;i++)g.add(cyl(.28,.3,.06,M("#cdb48a",{roughness:.95}),i*.6-2.4,.03,Math.sin(i)*.25));return g;},
+ grass:()=>{const g=grp();for(let i=0;i<14;i++){const b=cone(.05,.6+Math.random()*.4,M("#5fae3a"),(i%7)*.12-.4,.3,Math.floor(i/7)*.12);g.add(b);}g.add(cyl(.5,.5,.12,M("#6a4424"),0,.1,0));g.userData.sway=true;return g;},
+ chinar:()=>tree({leaf:"#e8732a"}),
+ cliffcave:()=>{const g=grp();g.add(box(7,3.4,1.4,M("#c8aa7a",{roughness:.95}),0,1.7,0));for(let r=0;r<2;r++)for(let i=0;i<5;i++)g.add(box(.6,.7,.3,M("#2a2018"),-2.4+i*1.2,1+r*1.4,.6));return g;},
+ camel:()=>{const g=grp();const m=M("#b8864a");g.add(sph(.7,m,0,1.6,0,1.4,.8,.7));g.add(sph(.45,m,-.1,2.2,0));g.add(cyl(.14,.16,1,m,.9,2,0));g.children[2].rotation.z=-.5;g.add(sph(.25,m,1.2,2.5,0,1.4,1,1));[[-.6,.2],[-.6,-.2],[.6,.2],[.6,-.2]].forEach(p=>g.add(cyl(.09,.08,1.3,m,p[0],.65,p[1])));g.userData.walk=true;return g;},
+ medal:()=>{const g=grp();const d=cyl(.35,.35,.06,M("#e2b33a",{metalness:.8,roughness:.2}),0,0,0);d.rotation.x=Math.PI/2;g.add(d);g.add(box(.3,.5,.02,M("#c8402f"),0,.4,-.02));g.userData.float=true;return g;},
+ scale:()=>{const g=grp();const gold=M("#e2b33a",{metalness:.6,roughness:.3});g.add(cyl(.05,.05,1.2,gold,0,.6,0));const beam=box(1.4,.06,.06,gold,0,1.2,0);g.add(beam);[-1,1].forEach(s=>g.add(cyl(.25,.2,.06,gold,s*.65,.8,0)));g.userData.tilt=beam;return g;},
+ roots:()=>{const g=grp();g.add(cyl(.18,.25,1,M("#6a4424"),0,.5,0));for(let i=0;i<6;i++){const a=i/6*Math.PI*2;const r=cyl(.05,.09,.9,M("#6a4424"),Math.cos(a)*.35,.05,Math.sin(a)*.35);r.rotation.z=Math.cos(a)*1.1;r.rotation.x=Math.sin(a)*1.1;g.add(r);}return g;},
+ wheel:()=>{const g=grp();const w=cyl(.8,.8,.15,M("#8a5a2e"),0,.5,0,28);w.userData.spin=true;g.add(w);g.add(cyl(.2,.25,.4,M("#b0582e"),0,.8,0));return g;},
+ parasol:()=>{const g=grp();g.add(cyl(.04,.04,2.2,M("#6a4424"),0,1.1,0));g.add(cone(1,.5,M("#e2b33a",{metalness:.4}),0,2.3,0,24));return g;},
+ mala:()=>{const g=grp();for(let i=0;i<18;i++){const a=i/18*Math.PI*2;g.add(sph(.08,M(i%2?"#c8402f":"#e2b33a",{metalness:.3}),Math.cos(a)*.6,Math.sin(a)*.6,0));}g.userData.float=true;g.userData.spin=true;return g;},
+ marker:()=>{const g=grp();g.add(box(.5,1,.3,M("#9a9aa2",{roughness:.95}),0,.5,0));g.add(cone(.35,.3,M("#9a9aa2"),0,1.15,0,4));return g;},
+ cat:()=>{const g=grp();const m=M("#2a2230");g.add(sph(.3,m,0,.3,0,1.3,.9,.8));g.add(sph(.2,m,.35,.55,0));[-1,1].forEach(s=>g.add(cone(.07,.14,m,.38,.75,s*.1)));g.add(sph(.04,glowM("#e8d040",1.5),.5,.58,.08));g.add(sph(.04,glowM("#e8d040",1.5),.5,.58,-.08));g.userData.bob=true;return g;},
+ ring:()=>{const g=grp();const r=mesh(new THREE.TorusGeometry(.22,.06,12,24),M("#e2b33a",{metalness:.9,roughness:.15}),0,0,0);g.add(r);g.add(sph(.08,glowM("#ff5b6a",1.2),0,.26,0));g.userData.float=true;g.userData.spin=true;return g;},
+};
+/* the eight players, each in their own colour with their own sign */
+function s3role(role){
+ const c=S3ROLE[role]||S3ROLE.jigyasu;let hold=null,o={cloth:c};
+ if(role==="jigyasu"){hold=lampM();hold.position.set(0,-.72,0);hold.scale.setScalar(.9);}
+ if(role==="yatri"){hold=grp();hold.add(cyl(.04,.04,2,M("#6a4424"),0,-.4,0));o.turban="#e8dcc0";}
+ if(role==="yoddha"){hold=S3B.spear();hold.position.set(0,-1.3,0);o.turban="#7e2218";}
+ if(role==="shastri"){hold=pothi();hold.position.set(-.2,-.62,.3);hold.rotation.x=-.8;}
+ if(role==="raja"){o.crown=true;hold=scrollM();hold.position.set(0,-.66,.2);}
+ if(role==="balak"){o.h=.66;}
+ if(role==="kathapremi"){o.robe=[[0,0],[.62,0],[.62,.35],[.4,.7],[.3,.95],[0,1]];}
+ if(role==="sadhak"){o.robe=[[0,0],[.7,0],[.62,.3],[.36,.65],[.3,.95],[0,1]];}
+ o.hold=hold;const p=person(o);
+ if(role==="kathapremi"||role==="sadhak"){p.userData.head.position.y=1.32;p.userData.arms.forEach(a=>a.position.y=.95);}
+ if(role==="sadhak"){const m=S3B.mala();m.scale.setScalar(.5);m.position.set(0,.9,.45);p.add(m);}
+ if(role==="kathapremi"){p.userData.arms[0].rotation.z=-2.4;}
+ /* the player's own light: a soft glow in the role colour, so the eye finds them */
+ const pl=new THREE.PointLight(new THREE.Color(c),1.1,4,2);pl.position.set(0,1.4,.8);p.add(pl);
+ const ring=mesh(new THREE.RingGeometry(.55,.8,40),new THREE.MeshBasicMaterial({color:new THREE.Color(c),transparent:true,opacity:.55,side:THREE.DoubleSide}),0,.03,0);ring.rotation.x=-Math.PI/2;ring.castShadow=false;ring.userData.pulse=true;p.add(ring);
+ p.userData.player=true;return p;
+}
+/* where a thing named in the plan sits in 3D: the plan's grid becomes a stage */
+const S3SKYTHINGS={moon:1,star:1,cloud:1,bird:1,vimana:1};
+const S3FLOAT={chant:1,speech:1,sawal:1,eye:1,heart:1,count:1,tear:1,medal:1,mala:1,ring:1,petal:1,smoke:1,drip:1};
+function s3place(o,name,cx,cy,sc,w,h){
+ /* the stage is narrower than the flat plan, so everything is kept inside the camera's view */
+ const X=Math.max(name==="me"?-5.2:-6.4,Math.min(name==="me"?5.2:6.4,((cx+w*sc/2)-40)*.2));
+ if(S3SKYTHINGS[name]){o.position.set(X,4+(32-cy)*.16,-7-(name==="moon"||name==="star"?4:0));return;}
+ const base=cy+h*sc;
+ let Z=Math.max(-4.5,Math.min(3.4,(base-32)*.55-2.2));
+ if(S3FLOAT[name]){o.position.set(X,1.6+Math.max(0,(32-cy))*.12,Math.max(Z,-1.5)+.4);return;}
+ /* landscape stands at the back, like a painted distance, never in front of anyone */
+ if(name==="mountain"||name==="snowpeak"||name==="cliffcave"){o.position.set(X*1.3,0,-8.5);return;}
+ /* the player always stands in front, so nothing can hide them */
+ if(name==="me"){o.position.set(X,0,Math.max(Z,1.2));return;}
+ /* raised in the plan: it rests on the roof, branch or wall below it */
+ if(base<31){o.position.set(X,(31-base)*.24,-1.4);return;}
+ o.position.set(X,0,Z);
+}
+function scene3d(P,role,canvas){
+ s3stop();
+ const W=canvas.clientWidth||640,H=canvas.clientHeight||360;
+ const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:"high-performance"});
+ const small=Math.min(screen.width||W,screen.height||H)<600;
+ R.setPixelRatio(Math.min(window.devicePixelRatio||1,small?1.5:2));R.setSize(W,H,false);
+ R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=({night:.72,patal:.78,inner:.85,dusk:.95,fire:.95,stone:.9,dawn:.92,day:.82,green:.9,river:.9})[P.bg]||1;
+ R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;
+ const sc=new THREE.Scene();
+ /* sky: a vertical gradient, and fog of the same colour so the far things melt into it */
+ const sk=S3SKY[P.bg]||S3SKY.night,cv=document.createElement("canvas");cv.width=2;cv.height=256;
+ const cx=cv.getContext("2d"),gr=cx.createLinearGradient(0,0,0,256);gr.addColorStop(0,sk[0]);gr.addColorStop(1,sk[1]);cx.fillStyle=gr;cx.fillRect(0,0,2,256);
+ const tex=new THREE.CanvasTexture(cv);tex.encoding=THREE.sRGBEncoding;sc.background=tex;
+ sc.fog=new THREE.Fog(new THREE.Color(sk[1]),18,42);
+ const L=S3LIGHT[P.bg]||S3LIGHT.night;
+ sc.add(new THREE.HemisphereLight(new THREE.Color(sk[1]),new THREE.Color(S3GROUND[P.gr]||"#3f7a38"),L.hemi));
+ const sun=new THREE.DirectionalLight(new THREE.Color(L.sun),L.si);sun.position.set(6,10,7);sun.castShadow=true;
+ sun.shadow.mapSize.set(small?512:1024,small?512:1024);Object.assign(sun.shadow.camera,{left:-14,right:14,top:10,bottom:-6,near:1,far:40});sun.shadow.radius=4;sc.add(sun);
+ const rim=new THREE.DirectionalLight(new THREE.Color(sk[0]).lerp(new THREE.Color("#ffffff"),.5),.35);rim.position.set(-6,5,-8);sc.add(rim);
+ const gcol=new THREE.Color(S3GROUND[P.gr]||"#3f7a38").multiplyScalar(({night:.42,patal:.38,inner:.55,dusk:.7,fire:.75,stone:.7,dawn:.8,day:.78,green:.8,river:.85})[P.bg]||1);
+ const ground=mesh(new THREE.PlaneGeometry(60,40),M(gcol,{roughness:.95}),0,0,0);ground.rotation.x=-Math.PI/2;ground.castShadow=false;sc.add(ground);
+ if(P.gr==="water"){const w=S3B.wave();w.scale.set(8,1,6);w.position.set(0,.06,0);sc.add(w);}
+ {let seed=JSON.stringify(P).length*7+((P.it||[]).length*13);const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
+  const hill=M(new THREE.Color(sk[1]).lerp(new THREE.Color(S3GROUND[P.gr]||"#3f7a38"),.35).multiplyScalar(.8),{roughness:1});
+  if(P.bg!=="inner"&&P.bg!=="patal")for(let i=0;i<7;i++){const h=sph(4+rnd()*4,hill,-26+i*9+rnd()*3,-2.5,-24-rnd()*6,1.6,.55+rnd()*.35,1);h.castShadow=false;sc.add(h);}
+  if(P.bg==="inner"||P.bg==="patal"){const wm=M(new THREE.Color(sk[1]).multiplyScalar(.9),{roughness:1});const back=box(40,12,.5,wm,0,6,-12);back.castShadow=false;sc.add(back);
+   for(let i=-3;i<=3;i++){const c=cyl(.4,.45,9,M(new THREE.Color(sk[1]).lerp(new THREE.Color("#e2b33a"),.25)),i*5.5,4.5,-11);sc.add(c);}}
+  const tuft=M(new THREE.Color(S3GROUND[P.gr]||"#3f7a38").lerp(new THREE.Color("#8fd060"),P.gr==="grass"?.35:0).multiplyScalar(.95));
+  const pebble=M(new THREE.Color(S3GROUND[P.gr]||"#6b6056").multiplyScalar(.75),{roughness:1});
+  if(P.gr!=="water"&&P.gr!=="floor"&&P.gr!=="roof")for(let i=0;i<26;i++){const x=(rnd()-.5)*26,z=-6+rnd()*9;
+   if(P.gr==="grass"){for(let b=0;b<4;b++){const bl=cone(.05,.35+rnd()*.3,tuft,x+(rnd()-.5)*.3,.18,z+(rnd()-.5)*.3,5);bl.castShadow=false;sc.add(bl);}}
+   else{const pb=sph(.12+rnd()*.12,pebble,x,.05,z,1.3,.5,1);pb.castShadow=false;sc.add(pb);}}
+  if(P.gr==="floor"||P.gr==="roof"){for(let i=-6;i<=6;i++){const ln=box(.04,.01,20,M(new THREE.Color(S3GROUND[P.gr]).multiplyScalar(.7)),i*2,.01,0);ln.castShadow=false;sc.add(ln);}}}
+ const live=[];let lights=0;
+ (P.it||[]).forEach((it,i)=>{
+  const [name,cx0,cy0,s0,ex0]=it,ex=ex0||{};const make=S3B[name];if(!make)return;
+  const o=make(ex);const sp=(PX_SPR[name]||{f:[["."]]}).f[0];
+  s3place(o,name,cx0,cy0,s0||1,sp[0].length,sp.length);
+  o.scale.multiplyScalar(S3SKYTHINGS[name]?(s0||1):(name==="mountain"||name==="snowpeak"||name==="cliffcave")?1.7:Math.min(1.35,.5+.4*(s0||1)));
+  if(!S3SKYTHINGS[name]&&!S3FLOAT[name]&&o.position.y===0)o.position.z+=((i*37)%5-2)*.55;
+  if(ex.flip)o.rotation.y=Math.PI;else if(!S3SKYTHINGS[name]&&!S3FLOAT[name])o.rotation.y=(i%3-1)*.18;
+  o.userData.drift=ex.drift||"";o.userData.home=o.position.clone();o.userData.seed=i*1.37;o.userData.kind=name;
+  o.traverse(c=>{if(c.userData.light&&lights<4){const pl=new THREE.PointLight(new THREE.Color(c.userData.light),1.6,9,2);pl.position.y=c===o?1:0;c.add(pl);c.userData.pl=pl;lights++;}});
+  if(o.userData.light&&!o.userData.pl&&lights<4){const pl=new THREE.PointLight(new THREE.Color(o.userData.light),1.6,9,2);pl.position.y=1;o.add(pl);o.userData.pl=pl;lights++;}
+  if(o.userData.sparks){const pts=new THREE.BufferGeometry(),n=60,pos=new Float32Array(n*3);for(let k=0;k<n;k++){pos[k*3]=(Math.random()-.5)*1.2;pos[k*3+1]=Math.random()*3;pos[k*3+2]=(Math.random()-.5)*1.2;}
+   pts.setAttribute("position",new THREE.BufferAttribute(pos,3));const sp2=new THREE.Points(pts,new THREE.PointsMaterial({color:0xffb040,size:.09,transparent:true,opacity:.9}));sp2.userData.embers=true;o.add(sp2);}
+  sc.add(o);live.push(o);
+ });
+ /* a king and a throne in the same scene: the king sits on it */
+ {const th=live.find(o=>o.userData.kind==="throne"),kg=live.find(o=>o.userData.kind==="king");
+  if(th&&kg){kg.position.set(th.position.x,th.position.y+.62*th.scale.y,th.position.z+.05);kg.rotation.y=th.rotation.y;kg.scale.copy(th.scale).multiplyScalar(.95);
+   kg.userData.home=kg.position.clone();if(kg.userData.breathe)kg.userData.breathe.scale.y=.8;}}
+ let me=null;
+ if(P.me){me=s3role(role);const sp=PX_SPR["r_"+role]||PX_SPR.r_jigyasu;s3place(me,"me",P.me[0],P.me[1],1.25,sp.f[0][0].length,sp.f[0].length);me.scale.multiplyScalar(1.05);me.rotation.y=me.position.x>0?-.45:.45;sc.add(me);live.push(me);}
+ /* dust in the air, catching the light: small, slow, everywhere */
+ const dg=new THREE.BufferGeometry(),dn=140,dp=new Float32Array(dn*3);for(let k=0;k<dn;k++){dp[k*3]=(Math.random()-.5)*26;dp[k*3+1]=Math.random()*8;dp[k*3+2]=(Math.random()-.5)*14;}
+ dg.setAttribute("position",new THREE.BufferAttribute(dp,3));const dust=new THREE.Points(dg,new THREE.PointsMaterial({color:P.bg==="fire"?0xffa050:0xfff2d0,size:.05,transparent:true,opacity:.55}));sc.add(dust);
+ const cam=new THREE.PerspectiveCamera(33,W/H,.1,120);
+ const calm=(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||document.getElementById("app").classList.contains("calm");
+ const t0=performance.now();let raf=0,dead=false,light=false,judged=false,fc=0,ft=0,lastF=t0;
+ function frame(){
+  if(dead)return;
+  const now=performance.now();
+  /* after three seconds, judge the pace once: slow frames drop the costly parts, the scene itself stays */
+  if(!light&&!judged){if(now-t0>500){fc++;ft+=now-lastF;}
+   if(now-t0>3000){judged=true;if(fc<2||ft/fc>38){light=true;R.shadowMap.enabled=false;sun.castShadow=false;dust.visible=false;
+    sc.traverse(c=>{if(c.userData.embers)c.visible=false;if(c.material&&c.material.needsUpdate!==undefined)c.material.needsUpdate=true;});
+    R.setPixelRatio(1);R.setSize(canvas.clientWidth,canvas.clientHeight,false);}}}
+  lastF=now;
+  const t=(now-t0)/1000;
+  /* the camera drifts in slowly, as if the viewer were stepping into the scene */
+  const k=calm?0:t;cam.position.set(Math.sin(k*.12)*1.4,3.3+Math.sin(k*.2)*.15,14.5-Math.min(k,12)*.12);cam.lookAt(0,1.7,-1.2);
+  live.forEach(o=>{const u=o.userData,s=u.seed||0;
+   if(u.head){u.head.rotation.y=Math.sin(k*.7+s)*.18;u.head.position.y+= (Math.sin(k*1.6+s)*.004);}
+   if(u.breathe)u.breathe.scale.y=1+Math.sin(k*2+s)*.02;
+   if(u.arms&&u.arms[0]&&!u.player)u.arms[0].rotation.x=Math.sin(k*1.1+s)*.15;
+   if(u.dance){o.rotation.y=Math.sin(k*1.5+s)*.6;u.arms.forEach((a,j)=>a.rotation.z=(j?1:-1)*(1.2+Math.sin(k*3+j)*.5));}
+   if(u.sway)o.rotation.z=Math.sin(k*.9+s)*.03;
+   if(u.bob)o.position.y=u.home.y+Math.sin(k*1.8+s)*.12;
+   if(u.hover)o.position.y=u.home.y+Math.sin(k*.9)*.3;
+   if(u.float){o.position.y=u.home.y+Math.sin(k*1.4+s)*.18;o.rotation.y=k*.5;}
+   if(u.spin)o.rotation.y=k*.8;
+   if(u.beat)o.scale.y=o.scale.x*(1+Math.max(0,Math.sin(k*6+s))*.06);
+   if(u.swing)o.rotation.z=Math.sin(k*2.4+s)*.35;
+   if(u.walk)o.position.x=u.home.x+((k*.4+s)%6)-3;
+   if(u.swim)o.position.x=u.home.x+Math.sin(k*.8+s)*1.5;
+   if(u.slide)o.position.x=u.home.x+Math.sin(k*.5)*1.5;
+   if(u.tilt)u.tilt.rotation.z=Math.sin(k*1.2)*.12;
+   if(u.rise){o.position.y=u.home.y+((k*.6+s)%3);}
+   if(u.fall){o.position.y=u.home.y+2-((k*.5+s)%3);}
+   if(u.drift==="r")o.position.x=u.home.x+((k*.7+s)%8)-2;
+   if(u.drift==="l")o.position.x=u.home.x-((k*.7+s)%8)+2;
+   if(u.drift==="u")o.position.y=u.home.y+((k*.5)%2.5);
+   if(u.drift==="d")o.position.y=u.home.y-((k*.5)%2.5);
+   if(u.drift==="b")o.position.y=u.home.y+Math.sin(k*2+s)*.15;
+   if(u.player){u.head.rotation.y=Math.sin(k*.5)*.25;}
+   o.traverse(c=>{const cu=c.userData;
+    if(cu.flick!==undefined){c.scale.y=1+Math.sin(k*(9+cu.flick*3)+s)*.18;c.scale.x=1+Math.sin(k*7+cu.flick)*.08;}
+    if(cu.pl)cu.pl.intensity=1.4+Math.sin(k*11+s)*.35+Math.sin(k*23)*.15;
+    if(cu.embers){const a=c.geometry.attributes.position;for(let q=0;q<a.count;q++){let y=a.getY(q)+.02;if(y>3.2)y=0;a.setY(q,y);}a.needsUpdate=true;}
+    if(cu.blink)c.scale.y=((k+s)%4)<.12?.1:1;
+    if(cu.wing)c.rotation.z=Math.sin(k*10)*.6*cu.wing;
+    if(cu.twinkle)c.scale.setScalar(.8+Math.sin(k*3+c.position.x)*.4);
+    if(cu.water){const a=c.geometry.attributes.position;for(let q=0;q<a.count;q++){const x=a.getX(q),y=a.getY(q);a.setZ(q,Math.sin(x*1.4+k*1.6)*.06+Math.cos(y*1.8+k*1.2)*.05);}a.needsUpdate=true;c.geometry.computeVertexNormals();}
+    if(cu.pulse){c.material.opacity=.35+Math.sin(k*2)*.2;c.scale.setScalar(1+Math.sin(k*2)*.06);}
+    if(cu.dripI!==undefined){c.position.y=1-((k*.8+cu.dripI*.33)%1)*1.2;}
+    if(cu.spin&&c!==o)c.rotation.y=k*2;
+   });
+  });
+  const dpos=dg.attributes.position;for(let q=0;q<dn;q++){let y=dpos.getY(q)+.004;if(y>8)y=0;dpos.setY(q,y);}dpos.needsUpdate=true;
+  R.render(sc,cam);
+  if(me&&S3.cur){const v=new THREE.Vector3();me.getWorldPosition(v);v.y+=1.2;v.project(cam);S3.cur.me={x:v.x,y:v.y};}
+  if(!calm)raf=requestAnimationFrame(frame);
+ }
+ function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();if(calm)frame();}
+ window.addEventListener("resize",resize);
+ S3.cur={R,raf:()=>raf,stop(){dead=true;cancelAnimationFrame(raf);window.removeEventListener("resize",resize);
+  sc.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});
+  tex.dispose();R.dispose();try{R.forceContextLoss();}catch(e){}}};
+ frame();
+ return true;
+}
+function s3stop(){if(S3.cur){try{S3.cur.stop();}catch(e){}S3.cur=null;}}
+
+return {scene3d,s3stop,s3ok,S3};
+})();
+const scene3d=S3E.scene3d,s3stop=S3E.s3stop,s3ok=S3E.s3ok,S3NOW=()=>S3E.S3.cur;
 
 function startTour(k,backTo){
  const D=DETOUR[k];if(!D)return;
@@ -8431,7 +8659,7 @@ function drawTour(){
   '<p class="rmeta">'+D.why+"</p>"+
   '<div class="tstrip">'+strip+"</div>"+
   '<div class="tart'+(st.px?" px":"")+'"><svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">'+
-   (st.px?pixScene(st.px,myRole()):TD.defs+(DART[st.art]?DART[st.art]():""))+"</svg></div>"+
+   pixScene(st.px,myRole())+"</svg></div>"+
   "<h3 class=\"tname\">"+st.n+"</h3>"+
   st.say.map(t=>"<p>"+t+"</p>").join("")+
   '<p class="rsrc">'+D.ref+"</p>"+
@@ -8441,6 +8669,10 @@ function drawTour(){
      '<button class="tbtn done" disabled>चक्कर पूरा हुआ</button>')+
    '<button class="tbtn ghost rback">वहीं लौटो जहाँ थे</button></div>'+
    '<p class="tcount">'+D.stops.length+" में से "+(tour.i+1)+"</p></div>";
+ /* the stop's own 3D scene; the pixel scene stays underneath as the fallback */
+ {const art=box.querySelector(".tart");
+  if(art&&st.px&&s3ok()){const cv=document.createElement("canvas");cv.className="s3";art.appendChild(cv);
+   try{scene3d(st.px,myRole(),cv);art.classList.add("is3d");}catch(e){cv.remove();s3stop();}}}
  box.querySelectorAll("[data-stop]").forEach(b=>{b.onclick=()=>{tour.i=+b.dataset.stop;drawTour();};});
  const nx=box.querySelector(".rnext");if(nx)nx.onclick=()=>{tour.i++;drawTour();};
  const pv=box.querySelector(".rprev");if(pv)pv.onclick=()=>{tour.i--;drawTour();};
@@ -8451,6 +8683,7 @@ function drawTour(){
  didAct();showPanel("chakkar");box.scrollTop=0;
 }
 function endTour(){
+ s3stop();
  const back=tour&&tour.back;tour=null;
  if(back&&back.kind==="reader")openReader(back.id,back.w,back.li);
  else showPanel("story");
