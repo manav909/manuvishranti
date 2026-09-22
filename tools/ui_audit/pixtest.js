@@ -5,7 +5,7 @@ function mk(){return{className:'',style:{setProperty(){},getPropertyValue(){retu
 const els={};global.document={createElement:()=>mk(),getElementById:id=>els[id]||(els[id]=mk())};
 global.window={};global.addEventListener=()=>{};
 eval(code.replace(/\nfoldLbl\(\)[^\n]*\n/,'')+';global.T={DETOUR,PX_SPR,pixScene};');
-const bad=[];const MIN_DONE=+(process.argv[2]||96);
+const bad=[];const MIN_DONE=+(process.argv[2]||144);
 const all=[];Object.keys(T.DETOUR).forEach(k=>T.DETOUR[k].stops.forEach((st,i)=>all.push({k,i,st})));
 const done=all.filter(x=>x.st.px);
 const sig={};
