@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
 <style>
-:root{--ongold:#22180a;--ontide:#06131a;--page:#f0f2ed;--ink:#17222f;--quiet:#586a79;--rule:#c6cfc8;--tide:#236f68;--haldi:#9a6a09;--fire:#a5311f;
+:root{--ongold:#22180a;--ontide:#06131a;--page:#f0f2ed;--ink:#17222f;--quiet:#4e5f6d;--rule:#c6cfc8;--tide:#216761;--haldi:#86590a;--fire:#a5311f;
  --mark:#e2e8df;--sea:#9dc2d4;--sea2:#c4dce7;--land:#d9d2b4;--land2:#ece5cb;--wall:#8f7c50;--walldark:#6f6040;
  --rock:#bdb493;--rocklit:#d8d2b6;--grove:#95b487;--grovedark:#75996c;--street:#c6bda3;--roof:#c9b795;
  --roofdark:#a08e6d;--roofside:#b3a17f;--wave:#8fb4c4;--shade:#6f7d80;--shoal:#bcd8e0;--gone:#8b9aa1;
@@ -1286,6 +1286,66 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  #helpBtn.new:after{animation:helpdot 2.2s ease-in-out infinite}
  @keyframes helpdot{0%,100%{opacity:.5}50%{opacity:1}}
 }
+
+/* ================= the ink follows the paper =================
+   colour is inherited as a finished value, so every surface that changes its paper
+   must also re-read its ink, or dark text lands on dark paper when the hour turns */
+#app,#app .pane,#app .panel,#app .panebody,#app #story,#app #pothi,#app .deep,#app .deepbox,
+#app .pcard-box,#app .sheet,#app .notecard,#app .tabsbar,#app #bar{color:var(--ink)}
+#app .quiet,#app .who,#app .from,#app .vkind,#app .pnote,#app .srcline{color:var(--quiet)}
+/* on a narrow phone the map's header wraps instead of pushing the page sideways */
+@media (max-width:560px){
+ .panehead{flex-wrap:wrap;row-gap:.3rem}
+ .headbtns{flex-wrap:wrap;justify-content:flex-end;max-width:100%}
+ .headbtns .chip{padding-left:.5rem;padding-right:.5rem}
+ html,body{max-width:100%;overflow-x:hidden}
+}
+
+/* the bars at the top of each pane follow the hour as well */
+#app[data-sky="day"]{--barbg:color-mix(in srgb,#e7e1d4 92%,transparent)}
+#app[data-sky="dawn"]{--barbg:color-mix(in srgb,#ead9c8 92%,transparent)}
+#app[data-sky="dusk"]{--barbg:color-mix(in srgb,#231a2c 94%,transparent)}
+#app[data-sky="night"]{--barbg:color-mix(in srgb,#141b2c 94%,transparent)}
+
+/* ================= readable in every hour: fixes found by running the game ================= */
+/* things not yet earned stay readable; they look empty, not faded */
+.vcell,.pcell{opacity:1}
+.vcell:not(.got):not(.ready),.pcell:not(.got):not(.ready){border-style:dashed;background:transparent}
+.vcell:not(.got):not(.ready) .vpic,.pcell:not(.got):not(.ready) .vpic{filter:grayscale(1);opacity:.55}
+/* a filled button carries the paper's colour as its ink, so it flips with the hour */
+.do.go{color:var(--page)}
+.do.read{color:var(--ink)}
+.giftlid b{color:var(--ink)}
+/* gold and fire are deepened on light paper and lifted on dark paper */
+#app[data-sky="day"],#app[data-sky="dawn"]{--haldi:#7d5200;--fire:#9a2f16}
+#app[data-sky="dusk"],#app[data-sky="night"]{--haldi:#e8b84a;--fire:#f2927a}
+
+/* the last few found by running the game */
+.steps span{opacity:1}
+.do.go{background:var(--tide)}
+.brand{color:var(--ink)}
+.rolename{color:var(--ink)}
+.rolename{text-decoration:underline;text-decoration-color:var(--rt);text-decoration-thickness:2px;text-underline-offset:.25em}
+/* a phone must be able to read the whole weather line, not half of it */
+@media (max-width:560px){
+ .wx,.now{white-space:normal;overflow:visible;text-overflow:clip}
+ .tab,.minix,.claim,.lamp,.scrollbtn{min-height:34px;min-width:34px}
+ .tab{padding:.45rem .2rem}
+}
+
+/* coloured words sitting on tinted bars and cards take the ink; the colour moves to their frame */
+#bar b,#bar .coin,#bar .scrollbtn,.coin,.scrollbtn,.rolemud,.roleslot,.roletag,.prize.badge{color:var(--ink)}
+
+.fold b{color:var(--ink)}
+
+.stephead b{color:var(--ink)}
+.stephead b{text-decoration:underline;text-decoration-color:var(--tide);text-decoration-thickness:2px;text-underline-offset:.22em}
+
+#app .tourcall .tcallname{color:var(--ink)}
+
+/* gift labels read in the ink; weather line wraps wherever it does not fit */
+#app .gifttag,#app .giftact{color:var(--ink)}
+.wx,.now{white-space:normal;overflow:visible;text-overflow:clip}
 </style>
 </head>
 <body>
@@ -4341,7 +4401,7 @@ function roleTip(id){              /* said once, folded, and never inside the st
 const ROLE={
  jigyasu:{n:"जिज्ञासु",t:"सब थोड़ा थोड़ा, और छिपी बातों के इशारे",
   x:"जो हर तरफ़ देखना चाहता है। यह भूमिका किसी एक तरफ़ नहीं झुकती, इसलिए हर घड़ी में सबसे ज़्यादा बचा हुआ रास्ता सामने रखती है।",
-  tint:"#236f68",dark:"#5fb3aa",likes:["chh"],cats:["paar","dwar","nagar","mahal","vatika","sabha","ladai","aag","lautna","pahad","aasman"],
+  tint:"#216761",dark:"#5fb3aa",likes:["chh"],cats:["paar","dwar","nagar","mahal","vatika","sabha","ladai","aag","lautna","pahad","aasman"],
   say:"आज तुम सिर्फ़ देखने निकले हो, और देखना भी एक काम है।",
   lens:{paar:"पानी के ऊपर सबसे पहले यह देखो कि रास्ता ख़ुद क्या क्या सामने ला रहा है।",
    dwar:"फाटक पर ठहरकर देखो, यहाँ हर चीज़ किसी न किसी वजह से रखी गई है।",
@@ -4356,7 +4416,7 @@ const ROLE={
    aasman:"ऊपर देखो, वहाँ भी कुछ हो रहा है।"}},
  yatri:{n:"यात्री",t:"जगहें, बनावट, बाज़ार और घाट",
   x:"जिसे कथा से पहले जगह दिखती है। यह भूमिका उन कोनों की तरफ़ ले जाती है जहाँ नगर ख़ुद बोलता है: दीवारें, गलियाँ, बाग़ और पानी।",
-  tint:"#2f6f9a",dark:"#7fbfe0",likes:["chh"],cats:["nagar","mahal","dwar","vatika","pahad","paar"],
+  tint:"#296186",dark:"#7fbfe0",likes:["chh"],cats:["nagar","mahal","dwar","vatika","pahad","paar"],
   say:"आज तुम इस नगर को देखने आए हो, और यह नगर देखने लायक है।",
   lens:{paar:"रास्ता भी एक जगह है। पानी का रंग, हवा की चाल, और दूर दिखती ज़मीन देखते चलो।",
    dwar:"फाटक की ऊँचाई देखो, मेहराब पर बनी बेल देखो, और दीवार की मोटाई का अंदाज़ा लगाओ।",
@@ -4371,7 +4431,7 @@ const ROLE={
    aasman:"ऊपर से पूरी बनावट एक साथ दिखती है, उसे ध्यान से देखो।"}},
  kathapremi:{n:"कथा प्रेमी",t:"वही पल दूसरे ग्रंथों में",
   x:"जिसे यह जानना अच्छा लगता है कि यही बात कहीं और कैसे कही गई। यह भूमिका हर जगह उस परत को पहले खोलती है जो किसी दूसरे ग्रंथ से आई हो।",
-  tint:"#9a6a09",dark:"#e0a93c",likes:["gr"],cats:["vatika","sabha","nagar","aag","lautna","dwar"],
+  tint:"#785307",dark:"#e0a93c",likes:["gr"],cats:["vatika","sabha","nagar","aag","lautna","dwar"],
   say:"आज तुम एक ही रात को कई ज़बानों में सुनने आए हो।",
   lens:{paar:"इस छलाँग को हर परंपरा ने अपने ढंग से कहा है, यही देखते चलो।",
    dwar:"फाटक पर रोकने वाली का नाम हर कथा में अलग है, ध्यान रखना।",
@@ -4386,7 +4446,7 @@ const ROLE={
    aasman:"देखने वाले कौन थे, यह भी हर कथा में बदलता है।"}},
  balak:{n:"बालक",t:"छोटी सीधी बात, पशु पक्षी और अचरज",
   x:"जिसे लंबी बात से ज़्यादा अचरज चाहिए। यह भूमिका उन जगहों को आगे रखती है जहाँ कुछ होता हुआ दिखता है, और भारी हिस्सों को पीछे।",
-  tint:"#3f7a3a",dark:"#8cc97f",likes:["chh"],cats:["paar","vatika","aasman","lautna","pahad"],
+  tint:"#346530",dark:"#8cc97f",likes:["chh"],cats:["paar","vatika","aasman","lautna","pahad"],
   say:"आज तुम एक बड़ी कहानी में घूमने आए हो, और डरने की कोई बात नहीं।",
   lens:{paar:"समुद्र के ऊपर कौन कौन मिलने आया, यह सबसे मज़ेदार हिस्सा है।",
    dwar:"फाटक बहुत बड़ा है, पर डरना मत, यहाँ भी रास्ता निकल आता है।",
@@ -4432,7 +4492,7 @@ const ROLE={
   say:"आज आप पाठ मिलाने आए हैं, इसलिए हर बात के नीचे उसका हवाला देखिए।"},
  sadhak:{n:"साधक",t:"मन, भक्ति और दर्शन वाली परतें",
   x:"जिसे घटना से ज़्यादा उसका अर्थ चाहिए। यह भूमिका मन वाली परतों और कही हुई कथाओं की तरफ़ ले जाती है।",
-  tint:"#6b4fa0",dark:"#c0a8ef",likes:["man"],cats:["vatika","aasman","lautna","pahad","mahal"],
+  tint:"#694d9d",dark:"#c0a8ef",likes:["man"],cats:["vatika","aasman","lautna","pahad","mahal"],
   lens:{paar:"रास्ते की रुकावटें भीतर की रुकावटों जैसी हैं, उन्हें वैसे ही पढ़िए।",
    dwar:"हर द्वार पहले भीतर खुलता है, फिर बाहर।",
    nagar:"चमक के बीच चलते हुए यह देखिए कि मन कहाँ अटकता है।",
@@ -4449,7 +4509,7 @@ const ROLE={
   say:"आज आप यह देखने आए हैं कि इस रात के भीतर क्या चल रहा है।"},
  raja:{n:"राजा",t:"दरबार, नीति, दूत का अधिकार और फ़ैसले",
   x:"जिसे यह देखना है कि फ़ैसले कैसे लिए जाते हैं और कौन किससे क्या कहता है। यह भूमिका दरबारों और बैठकों की तरफ़ ले जाती है।",
-  tint:"#8a5b2b",dark:"#d9a46a",likes:["chh","man"],cats:["sabha","mahal","dwar","lautna","nagar"],
+  tint:"#7e5327",dark:"#d9a46a",likes:["chh","man"],cats:["sabha","mahal","dwar","lautna","nagar"],
   lens:{paar:"दूत भेजना भी एक फ़ैसला है, और उसका हिसाब रखा जाता है।",
    dwar:"द्वार किसी राज्य का पहला चेहरा है, देखिए कि वह क्या कहता है।",
    nagar:"बस्ती देखकर पता चलता है कि राज कैसा चल रहा है।",
