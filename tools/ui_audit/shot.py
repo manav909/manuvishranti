@@ -7,6 +7,8 @@ with sync_playwright() as p:
     pg.goto('file:///mnt/user-data/outputs/lanka-map3.html'); pg.wait_for_timeout(700)
     pg.evaluate("()=>{try{localStorage.clear()}catch(e){};Object.assign(save,blankSave());save.role='jigyasu';save.rolePicked=true;save.nights.khoj=1;save.done.khoj=1;roleTint();}")
     pg.evaluate(go); pg.wait_for_timeout(1300)
+    if len(sys.argv)>5 and sys.argv[5]=='end':  # SCROLLEND
+        pg.evaluate("()=>{const s=document.getElementById('story');s.scrollTop=s.scrollHeight;}"); pg.wait_for_timeout(500)
     pg.screenshot(path=out)
     print(pg.evaluate("()=>[...document.querySelectorAll('button')].filter(b=>{const r=b.getBoundingClientRect();if(r.width<2)return false;const t=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return t&&(t===b||b.contains(t));}).map(b=>b.textContent.trim().slice(0,22))"))
     br.close()

@@ -6778,7 +6778,7 @@ function visit(id){
    const b=document.createElement("div");b.className="tease shut";
    const lid=document.createElement("button");lid.className="teaselid";lid.type="button";
    const head=({yoddha:"हिसाब",shastri:"हवाला",kathapremi:"और कौन कहता है",balak:"मज़े की बात",
-     raja:"नीति की नज़र",sadhak:"ठहराव",yatri:"देखने लायक"})[myRole()]||"और";
+     raja:"नीति की नज़र",sadhak:"ठहराव",yatri:"देखने लायक",jigyasu:"यहाँ और क्या बचा है"})[myRole()]||"यहाँ और क्या बचा है";
    lid.innerHTML="<b>"+head+"</b><span>खोलो</span>";
    const body=document.createElement("div");body.className="teasebody";body.innerHTML=blk;
    lid.onclick=()=>{b.classList.toggle("shut");};
@@ -7923,7 +7923,7 @@ function front(){
  el('<h1>लंका की खोज</h1>');
  el('<p>लंका में एक रात। एक ही वक़्त पर कई जगहों पर कुछ हो रहा है। पहली घड़ी में कथा ख़ुद साथ ले चलती है, और दूसरी घड़ी तुम्हारी अपनी होती है।</p>');
  {const R=ROLE[myRole()];
-  el('<p class="rolebar"><b>तुम्हारी भूमिका:</b> '+R.n+" — "+R.t+"</p>");
+  el('<p class="rolebar"><b>तुम्हारी भूमिका:</b> '+R.n+"। "+R.t+"</p>");
   const rf=el("","fork");
   if(journeyOn())rf.appendChild(btn("यात्रा से बाहर निकलो","do",exitScreen));
   else rf.appendChild(btn("भूमिका बदलो","do",roleScreen));}

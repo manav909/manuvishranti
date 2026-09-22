@@ -85,7 +85,7 @@
     if (!(b.textContent || '').trim() && !b.getAttribute('aria-label')) out.push({ kind: 'mute-button', cls: String(b.className).slice(0, 40) });
   });
   // words that only a broken program writes
-  const bad=/\b(undefined|NaN|null|\[object Object\])\b/;
+  const bad=/\b(undefined|NaN|null|\[object Object\])\b|[\u2013\u2014]/;
   const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
   while(tw.nextNode()){const n=tw.currentNode;const el=n.parentElement;if(!el)continue;
     const r=el.getBoundingClientRect();if(r.width<1)continue;
