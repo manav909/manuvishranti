@@ -8212,7 +8212,7 @@ const PX_TOUR={
   {bg:"day",gr:"sand",it:[["cliffcave",4,10,2.2],["palmleaf",46,34,1.2],["palmleaf",46,30,1],["man",40,28,1,{q:"#7a3524"}],["cloud",50,2,1,{drift:"r"}]],me:[60,31]},
   {bg:"inner",gr:"sand",it:[["palmleaf",10,20,1.3],["palmleaf",30,26,1.3],["palmleaf",50,18,1.3],["sawal",60,28,1.4]],me:[34,31]},
   {bg:"dusk",gr:"sand",it:[["camel",6,28,1.4],["camel",24,29,1.3],["road",4,38,2],["man",40,29,1.1,{q:"#7a3524"}],["star",60,4,1]],me:[58,31]},
-  {bg:"dawn",gr:"stone",it:[["snowpeak",4,8,2.4],["snowpeak",40,12,1.8],["road",20,38,1.6],["palmleaf",60,34,0.9]],me:[30,31]}],
+  {bg:"dawn",gr:"stone",it:[["snowpeak",4,8,2.4],["snowpeak",40,12,1.8],["hillhouse",54,22,1.2],["road",20,38,1.6],["palmleaf",60,34,0.9]],me:[30,31]}],
  mappila_majlis:[
   {bg:"dusk",gr:"sand",it:[["speech",24,16,1.2,{drift:"b"}],["man",18,29,1.1,{q:"#e8e0c8"}],["man",32,29,1.1,{q:"#3f8a3a"}],["tree",52,10,1.5]],me:[4,31]},
   {bg:"night",gr:"floor",it:[["daf",20,28,1.6],["man",32,29,1.1,{q:"#e8e0c8"}],["man",42,29,1.1,{q:"#8a5630"}],["heart",36,20,1],["lamp",52,34,1]],me:[62,31]},
@@ -8955,12 +8955,46 @@ const S3DRESS6={
   woman:()=>person({cloth:"#2a7a8a",sari:"#e8c24a",bun:true,mood:S3.mood}),
   sage:()=>person({cloth:"#c8562a",bald:true,mood:"calm"})},
 };
+
+/* Tibet: thick walls leaning inward, whitewashed, small windows in painted black frames,
+   a brown band of twigs below a flat earthen roof, and prayer flags above */
+function tibetHouse(o){o=o||{};const g=grp();const white=M("#efe9dc",{roughness:.95}),black=M("#241c18"),twig=M("#6a4a28",{roughness:1}),earth=M("#8a7a5c",{roughness:1}),wood=M("#7a4a24");
+ const tiers=o.tall?2:1;
+ for(let t=0;t<tiers;t++){const w=3-t*.5,h=1.6,y=t*1.6;
+  /* the wall leans inward: a box tapered by a lathe like profile */
+  const wall=mesh(new THREE.CylinderGeometry(w*.46,w*.5,h,4),white,0,y+h/2,0);wall.rotation.y=Math.PI/4;g.add(wall);
+  g.add(box(w*.72,.16,w*.72,twig,0,y+h-.08,0));
+  for(let i=-1;i<=1;i+=2)for(let k=0;k<(t?1:2);k++){const x=i*w*.18,yy=y+.55+k*.55;
+   g.add(box(.34,.42,.05,black,x,yy,w*.34));g.add(box(.24,.3,.06,M("#3a2a20"),x,yy,w*.35));}}
+ const top=tiers*1.6;
+ g.add(box(3.1,.18,3.1,earth,0,top+.05,0));
+ for(let i=-1;i<=1;i+=2){g.add(box(3.1,.28,.16,white,0,top+.2,i*1.45));g.add(box(.16,.28,3.1,white,i*1.45,top+.2,0));}
+ /* prayer flags from a pole at the corner of the roof */
+ g.add(cyl(.05,.05,1.6,wood,-1.3,top+.9,-1.3));
+ const cols=["#d8302a","#f0f0f0","#2a6ad8","#2a8a3a","#e8c030"];
+ for(let i=0;i<8;i++){const f=mesh(new THREE.PlaneGeometry(.36,.26),M(cols[i%5],{side:THREE.DoubleSide}),-1.3+i*.42,top+1.5-i*.12,-1.3+i*.3);f.userData.flag=true;f.castShadow=false;g.add(f);}
+ g.add(box(.7,1.1,.06,wood,0,.55,1.5));return g;}
+function gompa(){const g=grp();const white=M("#f0eade",{roughness:.95}),red=M("#8a2a20",{roughness:.9}),gold=M("#e8b23a",{metalness:.75,roughness:.25}),black=M("#241c18");
+ g.add(box(5,.5,4,M("#a89a84",{roughness:.95}),0,.25,0));
+ const w1=mesh(new THREE.CylinderGeometry(2.1,2.4,2.4,4),white,0,1.7,0);w1.rotation.y=Math.PI/4;g.add(w1);
+ g.add(box(3.4,.5,3.4,red,0,2.9,0));
+ const w2=mesh(new THREE.CylinderGeometry(1.3,1.6,1.6,4),white,0,3.9,0);w2.rotation.y=Math.PI/4;g.add(w2);
+ g.add(box(2.2,.4,2.2,red,0,4.8,0));
+ for(let i=-1;i<=1;i+=2)for(let k=0;k<2;k++){g.add(box(.4,.5,.06,black,i*.8,1.2+k*.8,1.62));}
+ g.add(box(2,.2,2,gold,0,5.1,0));g.add(cone(.3,.8,gold,0,5.6,0,16));
+ for(let i=0;i<4;i++){const a=i/4*Math.PI*2+Math.PI/4;g.add(cone(.12,.5,gold,Math.cos(a)*1,5.2,Math.sin(a)*1,8));}
+ return g;}
+const S3DRESS7={
+ tibet:{man:()=>person({cloth:"#6a2a20",sari:"#e8c24a",mood:S3.mood}),
+  woman:()=>person({cloth:"#2a2a3a",sari:"#d8a02a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#8a2a20",bald:true,mood:"calm"})},
+};
 const S3REGION={ezhu:"kerala",kannassa:"kerala",ramacharitam:"kerala",mappila:"mappila",bhanubhakta:"newar",siddhi:"newar",
  sarala:"odisha",jagamohan:"odisha",kandali:"assam",kashmiri:"kashmir",
  kamba:"tamil",ranganatha:"telugu",kalpavruksham:"telugu",molla:"telugu",torave:"kannada",pampa:"kannada",eknath:"marathi",
  giridhar:"gujarat",krittivasa:"bengal",gobind:"punjab",
  ramakien:"thai",reamker:"khmer",lao:"lao",hikayat:"malay",kakawin:"java",
- yama:"burma",maranao:"maranao",taili:"dai"};
+ yama:"burma",maranao:"maranao",taili:"dai",tibbati:"tibet"};
 function s3regional(name){
  const r=S3.region;if(!r)return null;
  const K=r==="mappila"?"kerala":r;
@@ -9032,7 +9066,12 @@ function s3regional(name){
   if(name==="house"||name==="hillhouse"||name==="hut")return ()=>daiHouse();
   if(name==="palace")return ()=>pyatthat();
  }
- const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r]||S3DRESS4[r]||S3DRESS5[r]||S3DRESS6[r];if(d&&d[name])return d[name];
+ if(K==="tibet"){
+  if(name==="house"||name==="hut")return ()=>tibetHouse();
+  if(name==="hillhouse")return ()=>tibetHouse({tall:true});
+  if(name==="palace")return ()=>gompa();
+ }
+ const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r]||S3DRESS4[r]||S3DRESS5[r]||S3DRESS6[r]||S3DRESS7[r];if(d&&d[name])return d[name];
  return null;
 }
 
