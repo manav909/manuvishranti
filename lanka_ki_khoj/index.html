@@ -1462,6 +1462,10 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .carrybox{width:100%;box-sizing:border-box;font:inherit;font-size:.82rem;line-height:1.4;padding:.45rem .55rem;
  border-radius:.6rem;border:2px solid var(--rule);background:var(--page);color:var(--ink);resize:vertical}
 .claim.ghost{background:transparent;color:var(--ink);border:2px solid var(--tide)}
+
+/* the pale buttons of a detour and a telling: readable ink, a visible edge */
+#chakkar .tbtn.ghost,#reader .rback,#chakkar .rback{color:var(--ink);background:transparent;border:2px solid var(--tide)}
+#chakkar .tbtn.ghost:hover,#reader .rback:hover{background:color-mix(in srgb,var(--tide) 16%,transparent)}
 </style>
 </head>
 <body>
@@ -3225,7 +3229,7 @@ const app=document.getElementById("app"),
 const tourBox=document.getElementById("chakkar");
 const PANE={story:story,pothi:pothi,reader:readerBox,chakkar:tourBox};
 const PANE_N={story:"कथा",pothi:"पोथी",reader:"पढ़ाई",chakkar:"चक्कर"};
-let panel="story",kept={},lastPanel="story";
+let panel="story",kept={},lastPanel="story",trail=[];
 function tabs(){
  if(!tabsBar)return;
  tabsBar.innerHTML="";
@@ -3236,7 +3240,11 @@ function tabs(){
 function showPanel(k){
  if(!PANE[k])return;
  if(quizLocked()){lockNote();return;}
- if(k!==panel){kept[panel]=PANE[panel].scrollTop;lastPanel=panel;}
+ if(k!==panel){kept[panel]=PANE[panel].scrollTop;lastPanel=panel;
+  /* the trail: where to fall back to, with dead pages never kept */
+  trail=(trail||[]).filter(x=>x!==k&&x!=="chakkar"&&x!=="reader");
+  if(panel!=="chakkar"&&panel!=="reader")trail.push(panel);
+  if(trail.length>4)trail.shift();}
  Object.keys(PANE).forEach(x=>{PANE[x].hidden=(x!==k);});
  panel=k;
  if(app.classList.contains("sidemin")){app.classList.remove("sidemin");foldLbl();fitLater();}
@@ -7641,7 +7649,8 @@ function storyMap(){
 }
 function closeReader(){
  readerBox.innerHTML="";readerBox.scrollTop=0;kept.reader=0;
- showPanel(lastPanel==="reader"?"story":lastPanel);
+ const home=(trail||[]).filter(x=>x!=="reader"&&x!=="chakkar").pop()||"story";
+ showPanel(home);
  if(readerBack!=null){anchorFrom(readerBack);readerBack=null;}
  if(readerFrom==="texts"){readerFrom="story";textsMap();}}
 
@@ -9595,6 +9604,7 @@ function drawTour(){
    '<span class="tbarno">'+(tour.i+1)+"/"+D.stops.length+"</span>"+
    (tour.i>0?'<button class="tstepbtn tprev2">←</button>':'<button class="tstepbtn" disabled>←</button>')+
    (tour.i<D.stops.length-1?'<button class="tstepbtn on tnext2">आगे →</button>':'<button class="tstepbtn" disabled>पूरा</button>')+
+   '<button class="tstepbtn tshut" title="सीधे खेल पर लौटो">✕</button>'+
    "</div>"+
   '<p class="rwhere">'+SRC[D.src].n+" के भीतर एक चक्कर</p>"+
   '<h2 class="rtitle">'+D.n+"</h2>"+
@@ -9609,7 +9619,7 @@ function drawTour(){
    (tour.i>0?'<button class="tbtn ghost rprev">पीछे वाली जगह</button>':"")+
    (tour.i<D.stops.length-1?'<button class="tbtn go rnext">आगे वाली जगह</button>':
      '<button class="tbtn done" disabled>चक्कर पूरा हुआ</button>')+
-   '<button class="tbtn ghost rback">वहीं लौटो जहाँ थे</button></div>'+
+   "</div>"+
    '<p class="tcount">'+D.stops.length+" में से "+(tour.i+1)+"</p></div>";
  /* the stop's own 3D scene; the pixel scene stays underneath as the fallback */
  {const art=box.querySelector(".tart");
@@ -9626,6 +9636,10 @@ function drawTour(){
     cap.innerHTML=(who.length?"इस दृश्य में: <b>"+who.join(", ")+"</b>. ":"")+'<span class="tme" style="--rc:'+(S3ROLECOL(myRole()))+'">तुम ('+(RWHO[myRole()]||"खोजी")+')</span>';
     art.after(cap);}catch(e){cv.remove();s3stop();}}}
  const tb=box.querySelector(".tback");if(tb)tb.onclick=()=>endTour();
+ /* one step back, or straight out to the night: two clear ways, not three */
+ const ts=box.querySelector(".tshut");
+ if(ts)ts.onclick=()=>{s3stop();tour=null;const cb=document.getElementById("chakkar");if(cb)cb.innerHTML="";
+  readerBox.innerHTML="";showPanel("story");};
  box.querySelectorAll("[data-stop]").forEach(b=>{b.onclick=()=>{tour.i=+b.dataset.stop;drawTour();};});
  const nx=box.querySelector(".rnext");if(nx)nx.onclick=()=>{tour.i++;drawTour();};
  const pv=box.querySelector(".rprev");if(pv)pv.onclick=()=>{tour.i--;drawTour();};
@@ -9640,6 +9654,8 @@ function drawTour(){
 function endTour(){
  s3stop();
  const back=tour&&tour.back,keep=(tour&&tour.scroll)||0;tour=null;
+ /* the detour's page is emptied, so the way back can never land on it again */
+ const cb=document.getElementById("chakkar");if(cb)cb.innerHTML="";
  if(back&&back.kind==="reader")openReader(back.id,back.w,back.li);
  else showPanel("story");
  /* put the reader back at the very line they left from */
