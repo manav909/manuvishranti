@@ -12,7 +12,7 @@ Object.keys(T.SC).forEach(m=>{const L=T.layersOf(m)||[];
   const c=say.join(' ').length;sumC+=c;
   if(i===0)mains.push({m,l:say.length,c});
   if(say.length<=3&&c<300)small.push({m,src:x.src||'vr',l:say.length,c});});});
-const CEIL=+(process.argv[2]||31);
+const CEIL=+(process.argv[2]||0);
 const thinMains=mains.filter(x=>x.l<=3).length;
 if(thinMains>CEIL)console.log('FAILS: '+thinMains+' main tellings still hold only three lines (ceiling '+CEIL+')');
 else console.log('fullness checked: '+count+' telling pages, '+(sumL/count).toFixed(1)+' lines each on average, '+thinMains+' main tellings still at three lines');
