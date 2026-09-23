@@ -20,6 +20,8 @@ roles.forEach(r=>{
  if(srcs.size<5)bad.push(r+': its journeys come from only '+srcs.size+' tellings');
  const nights=new Set();mine.forEach(k=>T.DETOUR[k].at.forEach(a=>nights.add(a.split('-')[0])));
  if(nights.size<2)bad.push(r+': its journeys all sit in one night');
+ /* the three long nights must each hold at least one journey of this role's own */
+ ['khoj','aag','khabar'].forEach(n=>{if(!nights.has(n))bad.push(r+': no journey of its own in the '+n+' night');});
 });
 /* the same journey must never show up for two roles */
 const seen={};
