@@ -1589,6 +1589,15 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 
 /* the row of small doors inside the mission strip */
 .mrow2{justify-content:flex-start;margin-top:.3rem}
+
+/* the page of missions */
+.mline{display:grid;grid-template-columns:1fr auto;gap:.3rem .6rem;align-items:center;margin:.5rem 0;padding:.6rem .7rem;
+ border:2px solid var(--rule);border-radius:.8rem}
+.mline.mdone{border-style:dashed;opacity:.8}
+.mline b{grid-column:1}
+.mline .mbar{grid-column:1;height:.5rem}
+.mline .mnum{grid-column:2;grid-row:2}
+.mline .quiet{grid-column:1 / -1;margin:.1rem 0 0;color:var(--quiet);font-size:.9rem;line-height:1.5}
 </style>
 </head>
 <body>
@@ -3801,7 +3810,7 @@ const MUHIM={
  g_chakkar:{size:"ghadi",n:"एक चक्कर",x:"इस घड़ी में अपना कोई चक्कर पूरा घूमो।",goal:1,count:"tour",mani:8},
  /* ---- the night missions: each role gets its own ---- */
  n_jigyasu:{size:"raat",only:"jigyasu",n:"जो छूट गया",x:"इस रात चार जगहें देखो और पाँच बातें पढ़ो।",goal:9,count:"placecard",mani:24,padvi:true},
- n_yatri:{size:"raat",only:"yatri",n:"पूरा नगर",x:"इस रात पाँच अलग जगहें देखो।",goal:5,count:"place",mani:24,padvi:true},
+ n_yatri:{size:"raat",only:"yatri",n:"पूरा नगर",x:"इस रात चार अलग जगहें देखो।",goal:4,count:"place",mani:24,padvi:true},
  n_kathapremi:{size:"raat",only:"kathapremi",n:"कई ज़बानें",x:"इस रात चार अलग ग्रंथों में पढ़ो।",goal:4,count:"read",mani:24,padvi:true},
  n_balak:{size:"raat",only:"balak",n:"सब देख डालो",x:"इस रात तीन जगहें देखो और अपना एक चक्कर पूरा करो।",goal:4,count:"placetour",mani:22,padvi:true},
  n_yoddha:{size:"raat",only:"yoddha",n:"हर मोर्चा",x:"इस रात चार जगहें देखो और तीन बातें पढ़ो।",goal:7,count:"placecard",mani:24,padvi:true},
@@ -11588,6 +11597,7 @@ function fill(){
  Object.keys(L).forEach(k=>tb.appendChild(btn(L[k],"tab"+(myTab()===k?" on":""),()=>{tab=k;fill();pothi.scrollTop=0;})));
  tb.appendChild(btn("जगहें","tab"+(myTab()==="places"?" on":""),()=>{tab="places";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("चिह्न","tab"+(myTab()==="chinh"?" on":""),()=>{tab="chinh";fill();pothi.scrollTop=0;}));
+ tb.appendChild(btn("मुहिमें","tab"+(myTab()==="muhim"?" on":""),()=>{tab="muhim";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("फ़र्क़","tab"+(myTab()==="farq"?" on":"")+"",()=>{tab="farq";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("स्रोत","tab"+(myTab()==="src"?" on":""),()=>{tab="src";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("इस खेल के बारे में","tab",deepAbout));
@@ -11609,6 +11619,29 @@ function fill(){
     out+='<p class="shut-note">'+w.n+": "+rows+"</p>";
    });
   });
+ }else if(myTab()==="muhim"){
+  const m=(save.muhim=save.muhim||{done:{},boon:{}});
+  const mine=Object.keys(MUHIM).filter(k=>!MUHIM[k].only||MUHIM[k].only===myRole());
+  const done=mine.filter(k=>m.done[k]||Object.keys(m.done||{}).some(d=>d.indexOf(k+"|")===0));
+  out+='<p class="shut-note">मुहिमें: '+mine.length+" में से "+done.length+" पूरी।</p>";
+  [["ghadi","घड़ी की मुहिमें"],["raat","रात की मुहिम"],["safar","सफ़र की मुहिमें"]].forEach(([sz,head])=>{
+   const list=mine.filter(k=>MUHIM[k].size===sz);
+   if(!list.length)return;
+   out+="<h3>"+head+"</h3>";
+   list.forEach(k=>{const M=MUHIM[k];
+    const ok=m.done[k]||Object.keys(m.done||{}).some(d=>d.indexOf(k+"|")===0);
+    const have=Math.min(mcount(k),M.goal);
+    out+='<div class="mline'+(ok?" mdone":"")+'"><b>'+M.n+(ok?" · पूरी":"")+"</b>"+
+     '<span class="mbar"><i style="width:'+Math.round(have/M.goal*100)+'%"></i></span>'+
+     '<span class="mnum">'+have+"/"+M.goal+"</span>"+
+     '<p class="quiet">'+M.x+"</p></div>";});
+  });
+  const boons=[];
+  if(m.boon&&m.boon.extra)boons.push("हर घड़ी में एक जगह ज़्यादा");
+  if(m.boon&&m.boon.diya)boons.push("दीया, जो रात में एक बार कोई बंद बात बताता है");
+  out+="<h3>जीते हुए हक़</h3>";
+  out+=boons.length?"<ul class=\"khellist\"><li>"+boons.join("</li><li>")+"</li></ul>":
+   '<p class="shut-note">अभी कोई हक़ नहीं। सफ़र की मुहिमें पूरी करने पर मिलते हैं।</p>';
  }else if(myTab()==="chinh"){
   save.chinh=save.chinh||{};save.khel=save.khel||{};
   const got=Object.keys(CHINH).filter(k=>save.chinh[k]).length;
