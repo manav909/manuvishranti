@@ -9138,7 +9138,7 @@ function s3role(role){
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,toneMapped:false,depthTest:false}));sp.scale.set(2.2,.69,1);sp.position.set(0,3.55,0);sp.renderOrder=10;sp.userData.tag=true;p.add(sp);
   const ar=cone(.2,.34,new THREE.MeshBasicMaterial({color:new THREE.Color(c),toneMapped:false,depthTest:false}),0,2.95,0,4);ar.rotation.x=Math.PI;ar.renderOrder=10;ar.castShadow=false;ar.userData.arrow=true;p.add(ar);}
  const spot=new THREE.SpotLight(new THREE.Color("#fff4e0"),2.2,12,.42,.6,1.2);spot.position.set(0,7,1.5);spot.target=p;p.add(spot);
- p.userData.player=true;return p;
+ p.userData.player=true;p.userData.role=role;return p;
 }
 /* where a thing named in the plan sits in 3D: the plan's grid becomes a stage */
 const S3SKYTHINGS={moon:1,star:1,cloud:1,bird:1,vimana:1};
@@ -9252,11 +9252,11 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
    while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;
    o.rotation.y=base+Math.max(-limit,Math.min(limit,d));o.userData.aim=heart.clone();};
   live.forEach(o=>{if(o.userData.head)lean(o,.5);});
-  if(me)lean(me,.45);
+  if(me){lean(me,.45);me.userData.baseY=me.rotation.y;}
   S3.dbg=live.concat(me?[me]:[]).filter(o=>o.userData.head).map(o=>({k:o.userData.kind||(o.userData.player?"me":"?"),r:+o.rotation.y.toFixed(2)}));}
  /* the player, the revered and Ravana are always fully in frame */
  /* tall buildings are brought inside the frame as well, so no roof is sliced off at the edge */
- live.forEach(o=>{if(o.userData.head||o.userData.player||o.position.y>.5)return;
+ live.forEach(o=>{if(o.userData.head||o.userData.player||o.position.y>.5||o.userData.drift)return;
   const bx=new THREE.Box3().setFromObject(o),sz=new THREE.Vector3();bx.getSize(sz);
   if(sz.y<2.2)return;
   for(let tries=0;tries<14;tries++){const c=new THREE.Vector3();bx.getCenter(c);c.project(cam);
@@ -9288,7 +9288,11 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
     /* a neck turns only so far */
     u.head.rotation.y=Math.max(-.32,Math.min(.32,d*.4))+Math.sin(k*.5+s)*.05;}
    if(u.breathe)u.breathe.scale.y=1+Math.sin(k*2+s)*.02;
-   if(u.arms&&u.arms[0]&&!u.player)u.arms[0].rotation.x=Math.sin(k*1.1+s)*.15;
+   if(u.arms&&u.arms[0]&&!u.player){const A=u.arms;
+    if(S3.mood==="alarm"&&!u.divine){A.forEach((a2,j)=>{a2.rotation.z=(j?1:-1)*(.9+Math.sin(k*4+s)*.25);a2.rotation.x=-.5;});o.position.z=u.home.z-Math.abs(Math.sin(k*1.6+s))*.18+((s*7)%3-1)*.35;}
+    else if(S3.mood==="sad"&&!u.divine){A.forEach(a2=>a2.rotation.x=-.35);u.head.rotation.x=.22;}
+    else if(S3.mood==="happy"){A.forEach((a2,j)=>a2.rotation.z=(j?1:-1)*(.35+Math.abs(Math.sin(k*3+s))*.5));o.position.y=u.home.y+Math.abs(Math.sin(k*3+s))*.06;}
+    else A[0].rotation.x=Math.sin(k*1.1+s)*.15;}
    if(u.dance){o.rotation.y=Math.sin(k*1.5+s)*.6;u.arms.forEach((a,j)=>a.rotation.z=(j?1:-1)*(1.2+Math.sin(k*3+j)*.5));}
    if(u.sway)o.rotation.z=Math.sin(k*.9+s)*.03;
    if(u.bob)o.position.y=u.home.y+Math.sin(k*1.8+s)*.12;
@@ -9303,12 +9307,23 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
    if(u.tilt)u.tilt.rotation.z=Math.sin(k*1.2)*.12;
    if(u.rise){o.position.y=u.home.y+((k*.6+s)%3);}
    if(u.fall){o.position.y=u.home.y+2-((k*.5+s)%3);}
-   if(u.drift==="r")o.position.x=u.home.x+((k*.7+s)%8)-2;
-   if(u.drift==="l")o.position.x=u.home.x-((k*.7+s)%8)+2;
+   if(u.drift==="r")o.position.x=u.home.x+((k*(.6+(s%3)*.08)+s*2)%8)-2;
+   if(u.drift==="l")o.position.x=u.home.x-((k*(.6+(s%3)*.08)+s*2)%8)+2;
    if(u.drift==="u")o.position.y=u.home.y+((k*.5)%2.5);
    if(u.drift==="d")o.position.y=u.home.y-((k*.5)%2.5);
    if(u.drift==="b")o.position.y=u.home.y+Math.sin(k*2+s)*.15;
-   if(u.player){u.head.rotation.y=Math.sin(k*.5)*.25;}
+   if(u.player){
+    /* the player does the thing their own way of looking asks for */
+    const A=u.arms,role=u.role;
+    if(role==="jigyasu"){A[1].rotation.x=-1.05+Math.sin(k*1.2)*.12;A[1].rotation.z=.3;o.rotation.x=Math.sin(k*.8)*.03+.04;}
+    else if(role==="yatri"){A[0].rotation.x=Math.sin(k*2.2)*.5;A[1].rotation.x=-Math.sin(k*2.2)*.3;o.position.y=u.home.y+Math.abs(Math.sin(k*2.2))*.07;}
+    else if(role==="kathapremi"){A[0].rotation.z=-2.3;A[0].rotation.x=-.5+Math.sin(k*1.1)*.08;u.head.rotation.z=Math.sin(k*.9)*.08;}
+    else if(role==="balak"){o.position.y=u.home.y+Math.abs(Math.sin(k*2.6))*.28;A.forEach((a2,j)=>a2.rotation.z=(j?1:-1)*(.5+Math.sin(k*2.6)*.5));}
+    else if(role==="yoddha"){A[1].rotation.x=-.25+Math.sin(k*.9)*.06;A[0].rotation.x=-.5;o.rotation.y=u.baseY+Math.sin(k*.5)*.06;}
+    else if(role==="shastri"){A[0].rotation.x=-1.15;A[1].rotation.x=-1.05+Math.sin(k*3)*.22;u.head.rotation.x=.18;}
+    else if(role==="sadhak"){o.rotation.z=Math.sin(k*.6)*.035;A.forEach(a2=>a2.rotation.x=-.35);}
+    else if(role==="raja"){A[1].rotation.x=-1.1;u.head.rotation.x=.12+Math.sin(k*.8)*.06;}
+   }
    o.traverse(c=>{const cu=c.userData;
     if(cu.flick!==undefined){c.scale.y=1+Math.sin(k*(9+cu.flick*3)+s)*.18;c.scale.x=1+Math.sin(k*7+cu.flick)*.08;}
     if(cu.pl)cu.pl.intensity=1.4+Math.sin(k*11+s)*.35+Math.sin(k*23)*.15;
