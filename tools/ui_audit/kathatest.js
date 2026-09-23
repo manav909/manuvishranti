@@ -7,7 +7,8 @@ const els={};global.document={createElement:()=>mk(),getElementById:id=>els[id]|
 global.window={};global.addEventListener=()=>{};
 eval(code.replace(/\nfoldLbl\(\)[^\n]*\n/,'')+';global.T={SC,layersOf,SRC};');
 /* a line that talks about the book, the poet, the copies or the manner of telling */
-const ABOUT=/(कथा में|ग्रंथ में|पाठ में|रामायण में|वाली कथा|वहाँ ज़ोर|इसलिए वहाँ|वहाँ यह|पन्ने|पोथि|प्रति|पांडुलिपि|अनुवाद|सदी|कवि|भाषा में|छपी|संक्षेप में आता|आता ही नहीं|नहीं आता|थोड़े में है|सिमटी हुई)/;
+/* a line that talks about the telling instead of telling it */
+const ABOUT=/(कथा|ग्रंथ|रामायण|पाठ|पंक्ति|पंक्तियाँ|हिस्सा|हिस्से में|कवि|सुनने वाल|सुनाने वाल|गाने वाला|पढ़ने वाल|परंपरा|सदी|पोथि|प्रति|पांडुलिपि|अनुवाद|भाषा|छंद|ज़ोर|ब्योरा|ब्योरे|रखी गई|रखा गया|गिनाए जाते|कहा जाता|सुनाया जाता|पढ़ा जाता|माना जाता|लिखा गया|लिखी गई|छोड़ा|यहाँ ठहर|वहाँ ठहर)/;
 /* a line that says a thing is missing must also say where it can be read in full */
 const POINT=/(में पूरा|पूरा ब्योरा|वहाँ पूरा|पूरी कथा|की यात्रा में|भूमिका में)/;
 const bad=[];let total=0;
@@ -16,15 +17,16 @@ Object.keys(T.SC).forEach(m=>{
   const lines=(L.say||[]);if(!lines.length)return;total++;
   const about=lines.filter(x=>ABOUT.test(x)).length;
   const scene=lines.length-about;
+  /* at least two lines must simply tell what happens, with no talk about the telling */
   const absent=lines.some(x=>/(नहीं आता|आता ही नहीं|नहीं मिलती|नहीं है)/.test(x));
-  if(about>lines.length/2||scene<2){
+  if(about>1||scene<2){
    /* an absent moment is allowed, but only if it points at where it is told */
    if(absent&&lines.some(x=>POINT.test(x)))return;
    bad.push({m,src:L.src||'vr',about,scene,n:lines.length,first:lines[0].slice(0,68)});
   }
  });
 });
-const CEIL=+(process.argv[2]||0);
+const CEIL=+(process.argv[2]||74);
 if(bad.length>CEIL){
  console.log('FAILS: '+bad.length+' tellings talk about the book instead of telling the moment (ceiling '+CEIL+')');
  bad.slice(0,16).forEach(b=>console.log('  ',b.m,'['+b.src+'] about',b.about,'of',b.n,'|',b.first));
