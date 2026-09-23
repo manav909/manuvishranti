@@ -1488,6 +1488,16 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .fuller{margin:.55rem 0;padding:.5rem .7rem;border-left:3px solid var(--tide);border-radius:.4rem;
  background:color-mix(in srgb,var(--mark) 40%,transparent)}
 .fuller .link{color:var(--ink);text-decoration:underline;background:none;border:0;font:inherit;cursor:pointer;padding:0;min-height:32px}
+
+/* the place you are at stays open; the ones behind you fold away to one line */
+.visit{margin:.35rem 0 .5rem;border-left:3px solid var(--rule);padding-left:.6rem}
+.visit:not(.shut){border-left-color:var(--tide)}
+.visitlid{display:flex;width:100%;gap:.6rem;justify-content:space-between;align-items:baseline;
+ background:transparent;border:0;color:var(--ink);font:inherit;padding:.35rem 0;cursor:pointer;min-height:36px;text-align:left}
+.visitlid b{font-weight:700;color:var(--tide)}
+.visitlid .visittag{color:var(--quiet);font-size:.85rem;flex:0 0 auto}
+.visit.shut .visitbody{display:none}
+.visit.shut{opacity:.92}
 </style>
 </head>
 <body>
@@ -3410,7 +3420,7 @@ const app=document.getElementById("app"),
 const tourBox=document.getElementById("chakkar");
 const PANE={story:story,pothi:pothi,reader:readerBox,chakkar:tourBox};
 const PANE_N={story:"कथा",pothi:"पोथी",reader:"पढ़ाई",chakkar:"चक्कर"};
-let panel="story",kept={},lastPanel="story",trail=[];
+let panel="story",kept={},lastPanel="story",trail=[],stepBody=null;
 try{addEventListener("load",()=>{const st=document.getElementById("story");if(st)st.addEventListener("scroll",()=>{if(window.__db)cancelAnimationFrame(window.__db);window.__db=requestAnimationFrame(doBar);},{passive:true});});}catch(e){}
 function tabs(){
  if(!tabsBar)return;
@@ -3468,7 +3478,7 @@ function step(title){                    /* every move opens a new card in the s
  head.onclick=()=>{sec.classList.toggle("shut");stepLabel(sec);};
  sec.appendChild(head);sec.head=head;sec.tag=tag;
  const body=document.createElement("div");body.className="stepbody";sec.appendChild(body);
- story.appendChild(sec);curStep=body;stepLabel(sec);
+ story.appendChild(sec);curStep=body;stepBody=body;stepLabel(sec);
  try{packPast();}catch(e){}
  try{setTimeout(doBar,90);}catch(e){}
  /* the new step comes to the top of the page by itself, so nobody has to hunt for it */
@@ -3519,6 +3529,38 @@ function doBar(){
  bar.textContent=b.textContent;bar.hidden=false;
  /* while the bar is up, the reading keeps that much room free at its foot */
  bar.onclick=()=>{b.click();setTimeout(doBar,80);};
+}
+
+
+/* every place you walk into gets its own block; the one before it folds to a single line */
+function openVisit(name){
+ const host=stepBody||story;   /* a place hangs under its own hour, never inside another place */
+ /* every place already walked folds away, wherever on the page it sits */
+ if(typeof story.querySelectorAll==="function"){
+  [...story.querySelectorAll(".visit")].forEach(v=>{if(!v.classList.contains("shut")){v.classList.add("shut");visitLbl(v);freeActs(v);}});
+ }
+ const v=document.createElement("section");v.className="visit";
+ const lid=document.createElement("button");lid.className="visitlid";lid.type="button";
+ const nm=document.createElement("b");nm.textContent="तुम "+name+" की ओर गए।";
+ const tag=document.createElement("span");tag.className="visittag";
+ lid.appendChild(nm);lid.appendChild(tag);
+ const body=document.createElement("div");body.className="visitbody";
+ lid.onclick=()=>{v.classList.toggle("shut");visitLbl(v);};
+ v.appendChild(lid);v.appendChild(body);v.tag=tag;
+ host.appendChild(v);
+ visitLbl(v);
+ curStep=body;            /* everything that follows belongs to this place */
+ return v;
+}
+function visitLbl(v){if(!v||!v.tag)return;v.tag.textContent=v.classList.contains("shut")?"फिर से खोलो":"बंद करो";}
+/* a folded place keeps its reading, but never hides a way forward:
+   anything that can be pressed moves out and stands after it */
+function freeActs(v){
+ if(!v||typeof v.querySelectorAll!=="function")return;
+ const body=v.querySelector(".visitbody");if(!body)return;
+ [...body.querySelectorAll(":scope > .fork, :scope > .tease, :scope > .basket, :scope > .gift")].forEach(n=>{
+  if(n.className.indexOf("fork")>-1||n.querySelector("button"))v.parentNode.insertBefore(n,v.nextSibling);
+ });
 }
 
 function el(h,c){const d=document.createElement("div");d.className=c||"";d.innerHTML=h;
@@ -4536,7 +4578,7 @@ function roleTip(id){              /* said once, folded, and never inside the st
  const body=document.createElement("div");body.className="teasebody";
  body.innerHTML="<p>"+t.say+"</p>";
  lid.onclick=()=>{b.classList.toggle("shut");};
- b.appendChild(lid);b.appendChild(body);story.appendChild(b);
+ b.appendChild(lid);b.appendChild(body);(curStep||story).appendChild(b);
 }
 /* ---------- roles: who you walk this night as ---------- */
 const ROLE={
@@ -4844,7 +4886,7 @@ function roleDetail(r){
   const body=document.createElement("div");body.className="teasebody";
   body.innerHTML="<p>"+(o.x||"")+"</p>";
   lid.onclick=()=>{b.classList.toggle("shut");};
-  b.appendChild(lid);b.appendChild(body);story.appendChild(b);
+  b.appendChild(lid);b.appendChild(body);(curStep||story).appendChild(b);
  });
  /* what this road pays: shown as prizes, not as a list */
  {const badge=Object.keys(ACH).filter(k=>ACH[k].only===r)[0];
@@ -6879,7 +6921,7 @@ function visit(id){
  setTimeout(()=>flyTo(around(id,near),1),260);
  stage.classList.add("focus");
  arrive(id);showDio(id);
- el('<p class="chose">तुम '+PLACES[id].n+" की ओर गए।</p>");
+ openVisit(PLACES[id].n);
  gloss("granth");gloss("mani");glossSrc(S.src||"vr");
  const cut=splitSay(S.say);
  say(myRole()==="balak"?cut.story.slice(0,3):cut.story);   /* a child gets it shorter */
@@ -6893,7 +6935,7 @@ function visit(id){
    lid.innerHTML="<b>"+head+"</b><span>खोलो</span>";
    const body=document.createElement("div");body.className="teasebody";body.innerHTML=blk;
    lid.onclick=()=>{b.classList.toggle("shut");};
-   b.appendChild(lid);b.appendChild(body);story.appendChild(b);
+   b.appendChild(lid);b.appendChild(body);(curStep||story).appendChild(b);
   }
   const cl=(RCLOSE[myRole()]||{})[RAS[key]];
   if(cl)el('<p class="rolebar close">'+cl+"</p>");
@@ -8009,7 +8051,7 @@ function dawn(){
   lid.innerHTML="<b>इस रात की कथा, क्रम से</b><span>"+n+" पड़ाव</span>";
   const body=document.createElement("div");body.className="teasebody";body.innerHTML=rows;
   lid.onclick=()=>{b.classList.toggle("shut");};
-  b.appendChild(lid);b.appendChild(body);story.appendChild(b);}
+  b.appendChild(lid);b.appendChild(body);(curStep||story).appendChild(b);}
  el('<p class="ask">और तुम कहाँ कहाँ हो आए</p>');
  N.watches.forEach((w,i)=>{
   const been=(run.path||[]).filter(x=>x.w===i).map(x=>PLACES[x.id].n);
