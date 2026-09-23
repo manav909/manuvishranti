@@ -8802,9 +8802,60 @@ const S3DRESS3={
   woman:()=>person({cloth:"#2a6a4a",sari:"#c8402f",bun:true,mood:S3.mood}),
   sage:()=>person({cloth:"#e8a02a",beard:true,hair:"#e8e8ea",mood:"calm"})},
 };
+
+/* Gujarat: the pol house, deep and narrow, its street face covered in carved timber, with a raised otla in front; and the round bhunga of Kutch */
+function polHouse(){const g=grp();const wall=M("#e8d8b8",{roughness:.9}),teak=M("#6a3c18",{roughness:.55}),tile=M("#a8512a",{roughness:.85});
+ g.add(box(2.6,.45,2.2,M("#b0a48c",{roughness:.95}),0,.22,1));
+ g.add(box(2.4,3,2,wall,0,1.9,0));
+ /* carved columns and brackets across the front */
+ for(let i=0;i<4;i++){g.add(cyl(.11,.13,1.5,teak,-.95+i*.63,1.2,1.02));
+  const br=box(.4,.16,.16,teak,-.95+i*.63,1.95,1.02);g.add(br);}
+ g.add(box(2.5,.22,.3,teak,0,2.05,1.05));
+ /* a carved balcony above, with a row of small turned posts */
+ g.add(box(2,.5,.45,teak,0,2.6,1.05));
+ for(let i=0;i<9;i++)g.add(cyl(.05,.05,.45,teak,-.9+i*.22,2.9,1.2));
+ g.add(box(2.1,.2,.5,teak,0,3.2,1.05));
+ const r=box(2.9,.12,2.4,tile,0,3.6,0);r.rotation.x=.12;g.add(r);
+ g.add(box(.8,1.3,.08,teak,0,1.1,1.02));g.add(box(.95,.2,.2,teak,0,1.8,1.06));return g;}
+function bhunga(){const g=grp();const mud=M("#efe4d0",{roughness:.95}),thatch=M("#c9a03a",{roughness:.95});
+ g.add(cyl(1.1,1.15,1.5,mud,0,.75,0,24));
+ for(let i=0;i<10;i++){const a=i/10*Math.PI*2;g.add(sph(.05,M("#d8cdb8"),Math.cos(a)*1.12,1.1,Math.sin(a)*1.12,.4,1,.4));}
+ g.add(cone(1.5,1.4,thatch,0,2.2,0,20));g.add(sph(.14,M("#8a6a2a"),0,2.95,0));
+ g.add(box(.5,.9,.06,M("#6a4424"),0,.45,1.12));return g;}
+/* Bengal: the curved chala roof of the hut, and the temple built on the same shape with terracotta panels */
+function chalaHut(){const g=grp();const mud=M("#cbb187",{roughness:.95}),thatch=M("#c2a458",{roughness:.95}),bam=M("#8a6a3a");
+ g.add(box(2.4,1.2,1.8,mud,0,.6,0));
+ /* two curved slopes meeting at a ridge, the cornice bending down at the ends */
+ [-1,1].forEach(sd=>{for(let k=0;k<5;k++){const t=k/4;const w=2.8,h=.16;
+   const sl=box(w,h,.45,thatch,0,1.35+Math.cos(t*1.2)*.5,sd*(.25+t*.75));sl.rotation.x=sd*(.35+t*.55);g.add(sl);}});
+ g.add(box(2.9,.14,.2,thatch,0,1.9,0));
+ for(let i=0;i<3;i++)g.add(cyl(.07,.08,1.2,bam,-.8+i*.8,.6,.95));
+ g.add(box(.5,.9,.05,M("#6a4424"),0,.45,.92));return g;}
+function bengalTemple(){const g=grp();const brick=M("#a85a3a",{roughness:.9}),terra=M("#8a4428",{roughness:.9});
+ g.add(box(3,.5,3,brick,0,.25,0));g.add(box(2.4,1.8,2.4,brick,0,1.4,0));
+ /* terracotta panels across the front */
+ for(let i=0;i<3;i++)for(let k=0;k<2;k++)g.add(box(.5,.5,.06,terra,-.7+i*.7,.9+k*.7,1.23));
+ const arch=mesh(new THREE.TorusGeometry(.42,.12,10,20,Math.PI),brick,0,1.5,1.24);g.add(arch);
+ g.add(box(.8,1.1,.1,M("#3a2418"),0,1,1.24));
+ /* the four curved slopes of a char chala, and a small one above it */
+ for(let lvl=0;lvl<2;lvl++){const base=2.3-lvl*.9,y=2.35+lvl*1.05;
+  for(let i=0;i<4;i++){const a=i/4*Math.PI*2;
+   for(let k=0;k<4;k++){const t=k/3;const sl=box(base,.14,.4,brick,Math.cos(a)*(t*base*.32),y+Math.cos(t*1.3)*.42,Math.sin(a)*(t*base*.32));
+    sl.rotation.y=a;sl.rotation.x=.35+t*.5;g.add(sl);}}
+  if(lvl===0)g.add(box(1.4,.5,1.4,brick,0,y+.75,0));}
+ g.add(cone(.16,.5,M("#e8b23a",{metalness:.6}),0,4.6,0));return g;}
+const S3DRESS4={
+ gujarat:{man:()=>person({cloth:"#f6f0e0",turban:"#e04a2a",mood:S3.mood}),
+  woman:()=>person({cloth:"#c8202a",sari:"#2a6a8a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8a02a",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ bengal:{man:()=>person({cloth:"#f6f4ec",mood:S3.mood}),
+  woman:()=>person({cloth:"#f6f4ec",sari:"#c02a2a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#f6f4ec",beard:true,hair:"#e8e8ea",mood:"calm"})},
+};
 const S3REGION={ezhu:"kerala",kannassa:"kerala",ramacharitam:"kerala",mappila:"mappila",bhanubhakta:"newar",siddhi:"newar",
  sarala:"odisha",jagamohan:"odisha",kandali:"assam",kashmiri:"kashmir",
- kamba:"tamil",ranganatha:"telugu",kalpavruksham:"telugu",molla:"telugu",torave:"kannada",pampa:"kannada",eknath:"marathi"};
+ kamba:"tamil",ranganatha:"telugu",kalpavruksham:"telugu",molla:"telugu",torave:"kannada",pampa:"kannada",eknath:"marathi",
+ giridhar:"gujarat",krittivasa:"bengal"};
 function s3regional(name){
  const r=S3.region;if(!r)return null;
  const K=r==="mappila"?"kerala":r;
@@ -8844,7 +8895,16 @@ function s3regional(name){
   if(name==="house"||name==="hillhouse"||name==="hut")return ()=>wada();
   if(name==="palace")return ()=>{const g=wada();g.scale.setScalar(1.3);return g;};
  }
- const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r];if(d&&d[name])return d[name];
+ if(K==="gujarat"){
+  if(name==="house"||name==="hillhouse")return ()=>polHouse();
+  if(name==="hut")return ()=>bhunga();
+  if(name==="palace")return ()=>{const g=polHouse();g.scale.setScalar(1.3);return g;};
+ }
+ if(K==="bengal"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>chalaHut();
+  if(name==="palace")return ()=>bengalTemple();
+ }
+ const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r]||S3DRESS4[r];if(d&&d[name])return d[name];
  return null;
 }
 
