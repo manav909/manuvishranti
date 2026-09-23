@@ -1510,6 +1510,11 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .giftlid b{white-space:normal;overflow:visible;text-overflow:clip;flex:1 1 60%;line-height:1.35}
 .giftlid .gifttag,.giftlid .giftact,.giftlid .giftread{flex:0 0 auto}
 @media (max-width:560px){.giftlid b{flex:1 1 100%;order:3}.giftlid .giftact{order:2;margin-left:auto}}
+
+/* in the notebook too: what is read steps back, what is new stands out */
+.note.doneread{opacity:.74;border-style:dashed}
+.note .who{display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap}
+.freshtag{font-size:.74rem;color:var(--page);background:var(--tide);border-radius:99px;padding:.04rem .55rem;font-weight:600}
 </style>
 </head>
 <body>
@@ -10794,11 +10799,17 @@ function fill(){
   });
  }else{
   const ids=Object.keys(CARDS).filter(c=>CARDS[c].l===myTab());
-  const mine=ids.filter(c=>save.cards[c]);
-  out+='<p class="shut-note">'+L[myTab()]+": "+ids.length+" में से "+mine.length+"</p>";
+  const mineAll=ids.filter(c=>save.cards[c]);
+  save.readCards=save.readCards||{};
+  /* what is still unread comes first, so the eye lands on it */
+  const unread=mineAll.filter(c=>!save.readCards[c]),done=mineAll.filter(c=>save.readCards[c]);
+  const mine=unread.concat(done);
+  out+='<p class="shut-note">'+L[myTab()]+": "+ids.length+" में से "+mineAll.length+" मिलीं"+
+   (mineAll.length?", उनमें "+(unread.length?unread.length+" अभी पढ़नी बाकी":"सब पढ़ी हुई"):"")+"</p>";
   mine.forEach(c=>{
-   const C=CARDS[c],w=whereFound(c);
-   out+='<div class="note tapme" data-card="'+c+'"><div class="who">'+C.t+'</div><p style="margin:.3rem 0 0">'+
+   const C=CARDS[c],w=whereFound(c),rd=!!save.readCards[c];
+   out+='<div class="note tapme'+(rd?" doneread":"")+'" data-card="'+c+'"><div class="who">'+C.t+
+    (rd?'<span class="giftread">पढ़ी हुई</span>':'<span class="freshtag">नई</span>')+'</div><p style="margin:.3rem 0 0">'+
     C.x.slice(0,110)+(C.x.length>110?"...":"")+'</p><span class="more">पूरा पढ़ो</span>'+
     (C.sl?'<div class="mool"><span class="mool-line">'+C.sl+'</span><span class="mool-arth">'+(C.slm||"")+"</span></div>":"")+
     (w?'<div class="from">यह यहाँ मिली: '+w+"</div>":"")+
@@ -10843,7 +10854,13 @@ function fill(){
     closeCard();fill();front();showPanel("story");note("पुराना खेल वापस आ गया।");};}
  }
  body.querySelectorAll("[data-farq]").forEach(b=>{b.onclick=()=>deepFarq(+b.dataset.farq);});
- body.querySelectorAll("[data-card]").forEach(b=>{b.onclick=()=>deepCard(b.dataset.card);});
+ body.querySelectorAll("[data-card]").forEach(b=>{b.onclick=()=>{
+  /* opening it here counts as reading it, just as it does in the story */
+  save.readCards=save.readCards||{};
+  if(!save.readCards[b.dataset.card]){save.readCards[b.dataset.card]=1;persist();
+   b.classList.add("doneread");const t=b.querySelector(".freshtag");
+   if(t){t.className="giftread";t.textContent="पढ़ी हुई";}}
+  deepCard(b.dataset.card);};});
  body.querySelectorAll("[data-place]").forEach(b=>{b.onclick=()=>deepPlace(b.dataset.place);});
  const fb=document.getElementById("findbox");
  if(fb){
