@@ -41,7 +41,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .pip.now{background:var(--haldi);box-shadow:0 0 0 3px rgba(154,106,9,.18)}
 .tally{font-size:.82rem;color:var(--quiet);white-space:nowrap}
 #board{flex:1 1 auto;min-height:0;display:grid;
- grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,46%) minmax(0,1fr)}
+ grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,36%) minmax(0,1fr)}
 .pane{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:var(--page)}
 #mapPane{border-bottom:1px solid var(--rule)}
 .panehead{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:.4rem;
@@ -1414,6 +1414,40 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  padding:.55rem .1rem .5rem;display:flex;gap:.5rem;flex-wrap:wrap;border-radius:.6rem}
 #chakkar .rin{padding-bottom:.6rem}
 #chakkar .tart{margin-bottom:.6rem}
+
+/* the fold that holds everything already read */
+.pastbox{margin:.3rem 0 .7rem;border:2px dashed var(--rule);border-radius:.9rem;overflow:hidden;background:color-mix(in srgb,var(--mark) 45%,transparent)}
+.pasthead{display:flex;width:100%;align-items:baseline;gap:.6rem;justify-content:space-between;
+ background:transparent;border:0;color:var(--ink);font:inherit;padding:.6rem .8rem;cursor:pointer;min-height:38px;text-align:left}
+.pasthead b{font-weight:700}
+.pasthead .pastno{color:var(--quiet);font-size:.85rem}
+.pastbox.shut .pastbody{display:none}
+.pastbody{padding:0 .5rem .5rem;display:flex;flex-direction:column;gap:.4rem;max-height:46vh;overflow:auto}
+.pastbody .step{animation:none;margin:0}
+#story{scroll-behavior:smooth}
+
+/* the basket of finds: one line while you read, opened when you want them */
+.basket{margin:.4rem 0;border:2px solid var(--rule);border-radius:.8rem;overflow:hidden;background:color-mix(in srgb,var(--mark) 40%,transparent)}
+.basketlid{display:flex;width:100%;justify-content:space-between;align-items:baseline;gap:.6rem;background:transparent;border:0;
+ color:var(--ink);font:inherit;font-weight:600;padding:.55rem .75rem;cursor:pointer;min-height:38px;text-align:left}
+.basketlid .basketno{color:var(--quiet);font-size:.85rem;font-weight:400}
+.basket.shut .basketbody{display:none}
+.basketbody{padding:.1rem .45rem .5rem;display:flex;flex-direction:column;gap:.35rem}
+
+/* on a phone the reading gets the larger half of the screen, and the words are set for reading */
+@media (max-width:560px){
+ #story{font-size:1.02rem;line-height:1.75;padding-bottom:1rem}
+ #story p{margin:.55rem 0}
+ .stepbody{padding-bottom:.3rem}
+}
+
+/* on a phone the trail of places you have walked sits at the top of the map, clear of the weather line and the corner map */
+@media (max-width:560px){
+ .trail{top:0;bottom:auto;z-index:8;padding:.2rem .3rem;overflow-x:auto;flex-wrap:nowrap;
+  background:linear-gradient(to bottom,var(--barbg,rgba(20,16,24,.88)) 70%,transparent)}
+ .trail .tchip{flex:0 0 auto}
+ .mini{z-index:7}
+}
 </style>
 </head>
 <body>
@@ -3074,7 +3108,24 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
   if(shut)setTimeout(()=>box.classList.remove("just"),700);
  };
  box.appendChild(lid);box.appendChild(body);
- (curStep||story).appendChild(box);
+ /* all the finds of one moment sit together in one small basket, not one under the other */
+ const host=curStep||story;
+ let basket=host.querySelector(":scope > .basket");
+ if(!basket||typeof basket.appendChild!=="function"){
+  basket=document.createElement("div");basket.className="basket shut";
+  const bl=document.createElement("button");bl.className="basketlid";bl.type="button";
+  const bn=document.createElement("b");bn.textContent="यहाँ मिली बातें";
+  const bc=document.createElement("span");bc.className="basketno";
+  bl.appendChild(bn);bl.appendChild(bc);
+  const bb=document.createElement("div");bb.className="basketbody";
+  bl.onclick=()=>{basket.classList.toggle("shut");count();};
+  basket.appendChild(bl);basket.appendChild(bb);basket.body=bb;basket.cnt=bc;
+  function count(){const n=bb.children.length;
+   bc.textContent=(basket.classList.contains("shut")?"खोलो · ":"बंद करो · ")+n;}
+  basket.count=count;host.appendChild(basket);
+ }
+ (basket.body||basket).appendChild(box);
+ if(basket.count)basket.count();
 }
 function elsewhere(thread,missed,w){     /* what happened away from you, folded away until asked for */
  const box=document.createElement("div");
@@ -3212,7 +3263,42 @@ function step(title){                    /* every move opens a new card in the s
  head.onclick=()=>{sec.classList.toggle("shut");stepLabel(sec);};
  sec.appendChild(head);sec.head=head;sec.tag=tag;
  const body=document.createElement("div");body.className="stepbody";sec.appendChild(body);
- story.appendChild(sec);curStep=body;stepLabel(sec);return sec;
+ story.appendChild(sec);curStep=body;stepLabel(sec);
+ try{packPast();}catch(e){}
+ /* the new step comes to the top of the page by itself, so nobody has to hunt for it */
+ if(typeof requestAnimationFrame==="function"&&story.getBoundingClientRect)
+  requestAnimationFrame(()=>{try{const y=story.scrollTop+sec.getBoundingClientRect().top-story.getBoundingClientRect().top-6;
+   story.scrollTo({top:Math.max(0,y),behavior:"smooth"});}catch(e){}});
+ return sec;
+}
+/* everything older than the last two steps folds into one small box, so the page stays short */
+function packPast(){
+ if(!story||typeof story.insertBefore!=="function")return;   /* only where a real page exists */
+ const keep=2;
+ let steps=[];
+ try{steps=[...story.querySelectorAll(":scope > .step")];}catch(e){return;}
+ if(steps.length<=keep)return;
+ let box=story.querySelector(".pastbox");
+ if(!box){
+  box=document.createElement("section");box.className="pastbox shut";
+  const lid=document.createElement("button");lid.className="pasthead";lid.type="button";
+  const nm=document.createElement("b");nm.textContent="अब तक";
+  const cnt=document.createElement("span");cnt.className="pastno";
+  lid.appendChild(nm);lid.appendChild(cnt);
+  const body=document.createElement("div");body.className="pastbody";
+  lid.onclick=()=>{box.classList.toggle("shut");lidText();};
+  box.appendChild(lid);box.appendChild(body);box.lid=lid;box.cnt=cnt;box.body=body;
+  story.insertBefore(box,steps[0]);
+  box.lidText=lidText;
+  function lidText(){const n=box.body.children.length;
+   box.cnt.textContent=(box.classList.contains("shut")?"खोलकर देखो · ":"बंद करो · ")+n+" पड़ाव";}
+ }
+ const older=steps.slice(0,steps.length-keep);
+ older.forEach(n=>{n.classList.add("shut");stepLabel(n);box.body.appendChild(n);});
+ if(box.lidText)box.lidText();
+ /* the fold stays above the two steps that are still open */
+ const first=[...story.querySelectorAll(":scope > .step")][0];
+ if(first)story.insertBefore(box,first);
 }
 function el(h,c){const d=document.createElement("div");d.className=c||"";d.innerHTML=h;
  (curStep||story).appendChild(d);return d;}
