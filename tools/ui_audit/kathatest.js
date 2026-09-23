@@ -26,7 +26,7 @@ Object.keys(T.SC).forEach(m=>{
   }
  });
 });
-const CEIL=+(process.argv[2]||43);
+const CEIL=+(process.argv[2]||32);
 if(bad.length>CEIL){
  console.log('FAILS: '+bad.length+' tellings talk about the book instead of telling the moment (ceiling '+CEIL+')');
  bad.slice(0,16).forEach(b=>console.log('  ',b.m,'['+b.src+'] about',b.about,'of',b.n,'|',b.first));
