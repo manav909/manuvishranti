@@ -3859,6 +3859,66 @@ function fitAll(){return CAM(16,74.4,6,81.8);}
 
 /* ---------- detours: a journey inside the telling ---------- */
 const DETOUR={
+ vilanka_naksha:{n:"पाताल का नक्शा",only:"yatri",src:"sarala",at:["vilanka-t_patal-1","vilanka-v_utar-0"],
+  why:"नीचे वाला नगर ऊपर वाली लंका की नक़ल है, और उसी नक़ल में उसका भेद भी है। यहाँ से चार जगह देखी जा सकती हैं।",
+  ref:"विलंका रामायण, सारला दास",
+  stops:[
+   {n:"पानी के भीतर का रास्ता",say:["समुद्र के तल में एक मुँह खुलता है, और उसी से नीचे का रास्ता जाता है।",
+     "जितना नीचे उतरो, पानी उतना गरम होता जाता है, और ऊपर की आवाज़ें ख़त्म हो जाती हैं।",
+     "दीवारों में जड़े पत्थर चमकते हैं, इसलिए अँधेरा पूरा कभी नहीं होता।"],
+    px:{bg:"patal",gr:"dark",it:[["wave",6,36,1.4],["road",14,38,2],["rock",44,28,1.4],["star",58,6,1],["lamp",30,34,1]],me:[62,31]}},
+   {n:"वही दीवारें, वही सड़कें",say:["नीचे का नगर ऊपर वाली लंका जैसा ही बना है: वही चौड़ी सड़कें और वही ऊँची दीवारें।",
+     "बाज़ार में वही चीज़ें बिकती हैं, और दुकानों पर वही चमक है।",
+     "फ़र्क़ सिर्फ़ इतना है कि यहाँ सिर उठाने पर आसमान नहीं, पत्थर की छत मिलती है।"],
+    px:{bg:"patal",gr:"stone",it:[["wall",2,22,1.4],["house",18,20,1.2],["house",40,20,1.2],["road",10,38,2.4],["marker",58,30,1.1]],me:[62,31]}},
+   {n:"बिना परछाईं के लोग",say:["गलियों में लोग आते जाते हैं, और सब कुछ ऊपर जैसा ही लगता है।",
+     "पर ध्यान से देखने पर पता चलता है कि किसी की परछाईं नहीं बनती।",
+     "यही वह पहचान है जिससे समझ आता है कि यह नगर ऊपर वाला नहीं है।"],
+    px:{bg:"patal",gr:"stone",it:[["man",14,29,1.1,{q:"#7a3524"}],["woman",26,29,1.1,{q:"#4a2c66"}],["man",38,29,1.1,{q:"#2a4a6a"}],["shade",30,37,1.4],["lamp",52,34,1]],me:[62,31]}},
+   {n:"ऊपर से नीचे तक",say:["ऊपर वाली लंका पहाड़ पर है, और उस तक पहुँचने के लिए समुद्र लाँघना पड़ा था।",
+     "नीचे वाली इस लंका तक पहुँचने के लिए पानी के भीतर उतरना पड़ता है।",
+     "दोनों का नक्शा एक जैसा है, बस दिशा उलटी है, और यही इस कथा की सबसे अजीब बात है।"],
+    px:{bg:"patal",gr:"dark",it:[["mountain",6,10,1.6],["palace",34,14,1.2],["wave",14,38,1.3],["road",40,38,1.6],["star",62,4,1]],me:[58,31]}}]},
+ vidya_nishani:{n:"निशानी वाला चक्कर",only:"shastri",src:"jain",at:["vidya-j_nishani-2","vidya-j_dut-1"],
+  why:"इस कथा में सबूत ही सब कुछ है, और सबूत को तमाशे की ज़रूरत नहीं पड़ती। यहाँ से चार जगह देखी जा सकती हैं।",
+  ref:"पउमचरिय, विमलसूरि",
+  stops:[
+   {n:"हाथ में आई अँगूठी",say:["दूत के हाथ में एक अँगूठी है, और वही उसका परिचय है।",
+     "वह उसे दिखाता है, और पहरेदार रास्ता छोड़ देते हैं।",
+     "यहाँ नाम से नहीं, निशानी से पहचान होती है।"],
+    px:{bg:"day",gr:"stone",it:[["ring",28,20,1.4],["gate",42,14,2],["guard",56,28,1.1],["man",16,28,1.1,{q:"#3f8a3a"}],["road",4,38,1.6]],me:[64,31]}},
+   {n:"लिखा हुआ जवाब",say:["लौटते वक़्त उसे कोरी बात नहीं दी जाती, एक निशानी दी जाती है।",
+     "वह उसे कपड़े में लपेटकर रखता है, ताकि रास्ते में कुछ न हो।",
+     "इस परंपरा में जो कहा गया उसका सबूत साथ चलता है।"],
+    px:{bg:"inner",gr:"floor",it:[["scroll",26,24,1.3],["man",40,28,1.1,{q:"#e8dcc0"}],["pothi",14,32,1.1],["lamp",52,34,1],["pillar",2,18,1.6]],me:[62,31]}},
+   {n:"बिना चमत्कार के",say:["यहाँ कोई चट्टान उठकर नहीं आती, और कोई मुँह खोलकर नहीं परखता।",
+     "उड़ना यहाँ विद्या है, और विद्या सीखी जाती है, माँगी नहीं जाती।",
+     "इसलिए रास्ता सीधा है, और जो चला वह पहुँच गया।"],
+    px:{bg:"dawn",gr:"grass",it:[["cloud",12,4,1,{drift:"r"}],["man",34,10,1.2,{q:"#3a6ea5",drift:"r"}],["pothi",22,32,1.1],["rock",48,30,1.2],["road",4,38,1.6]],me:[62,31]}},
+   {n:"जो लिखा रह गया",say:["ताड़ के पत्तों पर यह सब लिखा गया, और हर बात के साथ उसका कारण भी।",
+     "पढ़ने वाला रुककर देख सकता है कि यह क्यों हुआ और इसका फल क्या रहा।",
+     "यही इस परंपरा का ढंग है, और इसीलिए उसकी पोथियाँ आज भी काम की हैं।"],
+    px:{bg:"inner",gr:"floor",it:[["palmleaf",18,28,1.4],["pothi",34,30,1.2],["sage",48,28,1.2],["lamp",10,34,1],["count",30,18,1.2]],me:[62,31]}}]},
+ shakti_sawal:{n:"शक्ति वाले सवाल",only:"jigyasu",src:"adbhuta",at:["shakti-s_roop-2","shakti-s_maya-1"],
+  why:"इस कथा में अंत किसी और के हाथ होता है, और उसी से कई सवाल खड़े होते हैं। यहाँ से चार जगह देखी जा सकती हैं।",
+  ref:"अद्भुत रामायण",
+  stops:[
+   {n:"जो बाग़ में बैठी थीं",say:["जो पहली रात बाग़ में चुप बैठी थीं, वही आज मैदान में खड़ी हैं।",
+     "बीच का कोई हिस्सा कथा नहीं बताती, और यही सबसे बड़ा सवाल है।",
+     "चुप्पी कमज़ोरी थी या रुका हुआ बल, यह इसी रात से पूछा जाता है।"],
+    px:{bg:"dusk",gr:"grass",it:[["ashoka",6,10,1.6],["woman",30,26,1.5,{q:"#e0b030"}],["sawal",46,16,1.3],["rakshasi",14,30,1],["count",58,8,1.2]],me:[62,31]}},
+   {n:"हज़ार मुँह कहाँ से आए",say:["वाल्मीकि में ऐसा कोई नहीं है, और फिर भी यहाँ उसकी पूरी कथा है।",
+     "हर नई कथा को पिछली से बड़ा दिखना होता है, इसलिए गिनती बढ़ती जाती है।",
+     "दस से हज़ार तक की यह चढ़ाई अपने आप में एक सवाल है।"],
+    px:{bg:"fire",gr:"stone",it:[["demon",28,22,1.8],["count",8,6,1.6],["sawal",52,14,1.3],["fire",44,26,1.1],["smoke",30,4,1,{drift:"u"}]],me:[62,31]}},
+   {n:"ब्रह्मा की बात",say:["बीच कथा में एक और आवाज़ आती है, और वह किसी लड़ने वाले की नहीं है।",
+     "कहा यह जाता है कि जो हो रहा है उसके पीछे जो बल है, उसे पहचानो।",
+     "सुनने वाला यहीं रुककर पूछता है कि यह पहले क्यों नहीं कहा गया।"],
+    px:{bg:"inner",gr:"floor",it:[["brahma",30,22,1.4],["man",48,28,1.2,{q:"#3a6ea5"}],["sawal",18,16,1.2],["speech",40,14,1.1,{drift:"b"}],["lamp",10,34,1]],me:[62,31]}},
+   {n:"अंत के बाद की चुप्पी",say:["सब ख़त्म हो चुका है, और मैदान में गिरी हुई तलवार तक कोई उठाने नहीं आता।",
+     "जीत के बाद जो शोर होना चाहिए था, वह यहाँ आता ही नहीं।",
+     "जहाँ बाकी कथाएँ जयकार रखती हैं, वहाँ यह कथा ठहराव रखती है, और यही उसका जवाब है।"],
+    px:{bg:"dusk",gr:"stone",it:[["sword",16,26,1.4],["demon",34,26,1.4],["shade",26,37,1.3],["sawal",46,14,1.2],["star",60,6,1]],me:[62,31]}}]},
  kamba_gali:{only:"yatri",n:"गलियों का चक्कर",src:"kamba",at:["aag-nagar-0","khoj-nagar-1"],
   why:"कंबन नगर को गिनाते नहीं, चलकर दिखाते हैं। इसलिए यहाँ से उनकी लंका में चार जगह घूमी जा सकती हैं।",
   ref:"कंब रामायण, सुंदर कांडम्, नगर ढूँढने वाला हिस्सा",
@@ -8429,6 +8489,7 @@ const PX_SPR={
  marker:{f:[["..zz..",".zZZz.",".zZZz.",".zZZz.","zzzzzz"]],t:"सीमा सीमाएँ नक्शे"},
  tear:{f:[["c","."],[".","c"]],t:"दुख आँखें भर"},
  ring:{f:[[".mm.","m..m","m..m",".mm."],[".mm.","m..m","M..m",".mm."]],t:"अँगूठी निशानी"},
+ brahma:{f:[["..y..","yWyWy","wwwww",".www.","..w.."],["..y..","yWyWy","wwwww",".www.",".w.w."]],t:"ब्रह्मा चार मुख"},
  /* people: 'q' and 'Q' clothing can be recoloured per placement */
  man:{f:[["..ss..","..ss..",".qqqq.","qqqqqq","s.qq.s","..qq..","..QQ..",".Q..Q."],["..ss..","..ss..",".qqqq.","qqqqqq","s.qq.s","..qq..","..QQ..","Q....Q"]],t:"आदमी लोग भागते बहस गली भाई"},
  woman:{f:[["..kk..",".kssk.",".qqqq.","qqqqqq","s.qq.s",".qqqq.","qqqqqq",".s..s."],["..kk..",".kssk.",".qqqq.","qqqqqq","s.qq.s",".qqqq.","qqqqqq","..ss.."]],t:"औरत स्त्री औरतें माँ सीता मंदोदरी"},
@@ -8565,8 +8626,8 @@ const PX_TOUR={
   {bg:"patal",gr:"stone",it:[["gate",8,14,2],["woman",40,28,1.3,{q:"#e0b030"}],["pot",46,33,1.2],["wave",54,38,1]],me:[62,30]},
   {bg:"patal",gr:"dark",it:[["woman",34,26,1.4,{q:"#e0b030"}],["flower",26,24,1.4],["flower",46,24,1.4],["petal",30,4,1,{drift:"d"}],["petal",42,6,1,{drift:"d"}],["petal",54,2,1,{drift:"d"}],["demon",60,32,1.2]],me:[8,31]}],
  adhy_darshan:[
-  {bg:"night",gr:"stone",it:[["gate",6,14,2],["sleeper",14,36,1.2,{q:"#c8402f"}],["roots",50,30,1.1],["monkey",36,30,1.3],["star",50,4,1],["moon",66,3,1]],me:[56,31]},
-  {bg:"night",gr:"grass",it:[["ashoka",20,8,2],["monkey",28,13,1],["tree",54,14,1.3],["eye",44,8,1.4],["guard",58,30,1.1]],me:[4,31]},
+  {bg:"night",gr:"stone",it:[["gate",6,14,2],["brahma",54,10,1.2],["roots",44,30,1.1],["sleeper",14,36,1.2,{q:"#c8402f"}],["monkey",36,30,1.3],["star",50,4,1],["moon",66,3,1]],me:[56,31]},
+  {bg:"night",gr:"grass",it:[["brahma",52,12,1.2],["ashoka",20,8,2],["monkey",28,13,1],["tree",54,14,1.3],["eye",44,8,1.4],["guard",58,30,1.1]],me:[4,31]},
   {bg:"night",gr:"grass",it:[["ashoka",46,10,1.8],["woman",30,29,1.3,{q:"#e0b030"}],["guard",10,30,1.1],["guard",18,30,1.1,{flip:1}],["star",4,4,1]],me:[64,31]},
   {bg:"fire",gr:"stone",it:[["house",4,20,1.3],["fire",6,12,1.2],["house",52,20,1.3],["fire",54,12,1.2],["house",28,21,1.3,{q:"#3f8a3a"}],["lamp",33,34,1]],me:[18,32]}],
  eknath_bageeche:[
@@ -8578,7 +8639,7 @@ const PX_TOUR={
   {bg:"night",gr:"grass",it:[["ashoka",6,10,1.8],["woman",36,30,1.3,{q:"#e0b030"}],["star",50,4,1],["star",62,10,1],["moon",70,2,1]],me:[56,31]},
   {bg:"patal",gr:"dark",it:[["demon",18,22,1.4],["demon",28,20,1.4],["demon",38,22,1.4],["demon",48,24,1.4],["king",33,29,1.3],["fire",66,28,1]],me:[4,31]},
   {bg:"fire",gr:"dark",it:[["woman",32,22,2,{q:"#1b1420"}],["fire",20,26,1.3],["fire",50,26,1.3],["demon",62,34,1,{}],["smoke",34,4,1,{drift:"u"}]],me:[6,31]},
-  {bg:"dawn",gr:"grass",it:[["cloud",6,4,1,{drift:"r"}],["sage",20,28,1.3],["man",40,28,1.3,{q:"#3a6ea5",flip:1}],["lamp",32,35,1]],me:[60,31]}],
+  {bg:"dawn",gr:"grass",it:[["brahma",10,12,1.2],["cloud",6,4,1,{drift:"r"}],["sage",20,28,1.3],["man",40,28,1.3,{q:"#3a6ea5",flip:1}],["lamp",32,35,1]],me:[60,31]}],
  kandali_darshan:[
   {bg:"day",gr:"water",it:[["wave",4,34,1.3],["wave",30,36,1.3],["wave",56,34,1.3],["monkey",20,14,1.3,{drift:"r"}],["mountain",54,18,1.6],["cloud",40,4,1]],me:[4,26]},
   {bg:"dusk",gr:"stone",it:[["mountain",14,6,3],["monkey",34,4,1.1],["eye",56,8,1.2],["house",4,32,0.7],["house",64,32,0.7],["palace",50,30,0.7]],me:[62,30]},
@@ -8743,7 +8804,7 @@ const PX_TOUR={
   {bg:"dusk",gr:"stone",it:[["palace",4,14,1],["fire",8,8,0.9],["road",24,38,2],["scroll",48,18,1.1],["demon",54,26,1.3]],me:[36,31]},
   {bg:"patal",gr:"dark",it:[["road",6,38,1.8],["chain",24,34,1.6],["man",20,27,1.2,{q:"#3a6ea5"}],["man",30,27,1.2,{q:"#e0b030"}],["sword",44,30,1],["demon",58,24,1.4]],me:[4,31]},
   {bg:"fire",gr:"dark",it:[["woman",30,24,1.6,{q:"#e0b030"}],["road",14,38,1.6],["fire",52,26,1.1],["petal",40,2,1,{drift:"d"}]],me:[6,31]},
-  {bg:"dawn",gr:"stone",it:[["sage",22,28,1.3],["speech",28,18,1.1,{drift:"b"}],["heart",44,22,1],["man",40,28,1.2,{q:"#3a6ea5"}]],me:[60,31]}],
+  {bg:"dawn",gr:"stone",it:[["brahma",52,10,1.2],["sage",22,28,1.3],["speech",28,18,1.1,{drift:"b"}],["heart",44,22,1],["man",40,28,1.2,{q:"#3a6ea5"}]],me:[60,31]}],
  jain_raat:[
   {bg:"day",gr:"stone",it:[["man",30,10,1.3,{q:"#3a6ea5",drift:"r"}],["bird",44,6,1,{drift:"r"}],["sage",12,28,1.2],["pothi",20,36,0.9],["cloud",50,4,1]],me:[62,31]},
   {bg:"dusk",gr:"stone",it:[["man",14,29,1.1,{q:"#7a5bb5"}],["woman",24,29,1.1,{q:"#3a6ea5"}],["child",32,31,1.1],["house",46,20,1.2]],me:[64,31]},
@@ -8981,6 +9042,7 @@ const S3B={
  king:()=>person({cloth:"#c8402f",crown:true}),sage:()=>person({cloth:"#f4efe2",beard:true,hair:"#e8e8ea"}),
  demon:()=>person({cloth:"#7e2218",skin:"#a8402f",horns:true}),rakshasi:()=>person({cloth:"#4a2c66",skin:"#8a4a5a",horns:true,bun:true}),
  shiva:()=>person({cloth:"#e8e0cc",skin:"#6a8ec8",crescent:true,third:true,hair:"#2a2030"}),
+ brahma:()=>S3GOD.brahma(),
  dancer:(e)=>{const p=person({cloth:e.q||"#c8402f",crown:true});p.userData.dance=true;return p;},
  marionette:(e)=>{const g=grp();const p=person({cloth:e.q||"#b35a3c",crown:true});p.scale.setScalar(.8);g.add(p);
   for(let i=-1;i<=1;i++){const s=cyl(.01,.01,4,M("#222222"),i*.35,4,0);s.castShadow=false;g.add(s);}g.add(box(1.2,.08,.08,M("#6a4424"),0,6,0));g.userData.bob=true;return g;},
@@ -9101,7 +9163,7 @@ function rakshasi(v){
  const g=rakshasa({skin:skins[v%6],cloth:["#4a1a3a","#2a2a4a","#4a2a1a"][v%3],horns:v%3===0,h:1,eye:v%2?"#ff5a30":"#ffd030"});
  const head=g.userData.head,sk=M(skins[v%6],{roughness:.7});
  const kind=v%5;
- if(kind===0)head.add(cyl(.14,.17,.26,M("#8a5a6a"),0,-.08,.48)).rotation.x=Math.PI/2;           /* a boar's snout */
+ if(kind===0){const sn=cyl(.14,.17,.26,M("#8a5a6a"),0,-.08,.48);sn.rotation.x=Math.PI/2;head.add(sn);}           /* a boar's snout */
  if(kind===1)[-1,1].forEach(s=>{const e=cone(.12,.6,sk,s*.4,.46,-.04,8);e.rotation.z=-s*.3;head.add(e);});  /* the long ears of a horse or donkey */
  if(kind===2){head.children.filter(c=>c.material&&c.material.isMeshBasicMaterial).forEach(c=>c.visible=false);head.add(sph(.16,new THREE.MeshBasicMaterial({color:new THREE.Color("#ffcc30"),toneMapped:false}),0,.08,.42));} /* a single eye */
  if(kind===3)[-1,1].forEach(s=>head.add(sph(.34,sk,s*.55,0,-.05,.3,1,.9)));   /* an elephant's ears */
@@ -9202,7 +9264,7 @@ function pagoda(){
  g.add(cone(.18,.8,gold,0,5.2,0,12));g.add(sph(.14,gold,0,4.85,0));return g;}
 /* what people wore */
 const S3DRESS={
- kerala:{man:()=>{const p=person({cloth:"#f4efe2",bald:false,mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.5,.035,8,24),M("#d4a020",{metalness:.6}),0,.12,0)).rotation.x=Math.PI/2;return p;},
+ kerala:{man:()=>{const p=person({cloth:"#f4efe2",bald:false,mood:S3.mood});{const bd=mesh(new THREE.TorusGeometry(.5,.035,8,24),M("#d4a020",{metalness:.6}),0,.12,0);bd.rotation.x=Math.PI/2;p.add(bd);}return p;},
   woman:()=>person({cloth:"#f6f0e0",sari:"#d4a020",bun:true,mood:S3.mood}),
   sage:()=>person({cloth:"#f4efe2",beard:true,hair:"#e8e8ea",mood:"calm"})},
  mappila:{man:()=>person({cloth:"#f6f4ee",turban:"#ffffff",mood:S3.mood}),
@@ -9210,7 +9272,7 @@ const S3DRESS={
   sage:()=>person({cloth:"#f6f4ee",turban:"#ffffff",beard:true,hair:"#e8e8ea",mood:"calm"})},
  newar:{man:()=>{const p=person({cloth:"#efe6d0",mood:S3.mood});const cap=cyl(.3,.34,.28,M("#b0302a"),0,.45,0);p.userData.head.add(cap);
    [0,1,2].forEach(i=>p.userData.head.add(box(.62,.04,.05,M(["#2a5a8a","#e0b030","#2a7a3a"][i]),0,.38+i*.08,.3)));return p;},
-  woman:()=>{const p=person({cloth:"#1a1a1e",bun:true,mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.52,.05,8,24),M("#b0202a"),0,.1,0)).rotation.x=Math.PI/2;return p;},
+  woman:()=>{const p=person({cloth:"#1a1a1e",bun:true,mood:S3.mood});{const bd=mesh(new THREE.TorusGeometry(.52,.05,8,24),M("#b0202a"),0,.1,0);bd.rotation.x=Math.PI/2;p.add(bd);}return p;},
   sage:()=>person({cloth:"#8a2a1a",beard:true,hair:"#e8e8ea",mood:"calm"})},
 };
 
@@ -9254,7 +9316,7 @@ function kashmirHouse(){const g=grp();const stone=M("#b8b2a4",{roughness:.95}),b
   g.add(sph(.07,M(i%2?"#d0303a":"#e8a030"),x,3.75,z,.8,1.3,.8));}
  g.add(box(.5,1,.06,wood,0,1,.88));return g;}
 const S3DRESS2={
- odisha:{man:()=>{const p=person({cloth:"#f4efe2",mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.5,.04,8,20),M("#c8402f"),0,.14,0)).rotation.x=Math.PI/2;return p;},
+ odisha:{man:()=>{const p=person({cloth:"#f4efe2",mood:S3.mood});{const bd=mesh(new THREE.TorusGeometry(.5,.04,8,20),M("#c8402f"),0,.14,0);bd.rotation.x=Math.PI/2;p.add(bd);}return p;},
   woman:()=>person({cloth:"#c02a3a",sari:"#f4efe2",bun:true,mood:S3.mood}),
   sage:()=>person({cloth:"#e8752a",beard:true,hair:"#e8e8ea",mood:"calm"})},
  assam:{man:()=>{const p=person({cloth:"#f6f2e6",mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.5,.05,8,20),M("#c8302a"),0,1.1,0)).rotation.set(Math.PI/2.4,0,.5);return p;},
@@ -9305,7 +9367,7 @@ function hoysala(){const g=grp();const st=M("#8e8674",{roughness:.95});
   for(let i=0;i<4;i++){const a=i/4*Math.PI*2;g.add(sph(.13,st,Math.cos(a)*w*.5,1.95+t*.5,Math.sin(a)*w*.5));}}
  g.add(sph(.6,st,0,3.4,0,1,.75,1));g.add(cone(.12,.5,M("#e8b23a",{metalness:.7}),0,3.9,0));return g;}
 const S3DRESS3={
- tamil:{man:()=>{const p=person({cloth:"#f6f2e6",mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.5,.04,8,20),M("#d4a020",{metalness:.5}),0,.12,0)).rotation.x=Math.PI/2;return p;},
+ tamil:{man:()=>{const p=person({cloth:"#f6f2e6",mood:S3.mood});{const bd=mesh(new THREE.TorusGeometry(.5,.04,8,20),M("#d4a020",{metalness:.5}),0,.12,0);bd.rotation.x=Math.PI/2;p.add(bd);}return p;},
   woman:()=>person({cloth:"#c8402f",sari:"#d4a020",bun:true,mood:S3.mood}),
   sage:()=>person({cloth:"#f6f2e6",beard:true,hair:"#e8e8ea",mood:"calm"})},
  telugu:{man:()=>person({cloth:"#f4efe2",turban:"#f4efe2",mood:S3.mood}),
