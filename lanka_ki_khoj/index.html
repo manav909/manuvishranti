@@ -1577,6 +1577,15 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 
 /* the way into the little games, inside the mission strip */
 .mplay{align-self:flex-start;margin-top:.2rem}
+
+/* the page of emblems */
+.chinhgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.5rem;margin:.5rem 0}
+.chinhbox{display:flex;flex-direction:column;gap:.2rem;text-align:left;padding:.6rem .7rem;border-radius:.8rem;
+ border:2px solid var(--tide);background:color-mix(in srgb,var(--mark) 45%,transparent);color:var(--ink);font:inherit;cursor:pointer}
+.chinhbox b{font-size:1rem}
+.chinhbox span{color:var(--quiet);font-size:.86rem;line-height:1.5}
+.chinhbox.shutbox{border-style:dashed;border-color:var(--rule);cursor:default}
+.khellist{margin:.2rem 0 .6rem;padding-left:1.1rem;line-height:1.9}
 </style>
 </head>
 <body>
@@ -3640,7 +3649,9 @@ function tabs(){
  tabsBar.appendChild(btn(whoAmI()+" का पत्र","chip card-chip"+(cardOpen()?" on":""),openCard));
 }
 function showPanel(k){
+ try{const mb=document.getElementById("muhimbar");if(mb&&k!=="story")mb.hidden=true;}catch(e){}
  try{setTimeout(doBar,60);}catch(e){}
+ try{setTimeout(muhimBar,60);}catch(e){}
  if(!PANE[k])return;
  if(quizLocked()){lockNote();return;}
  if(k!==panel){kept[panel]=PANE[panel].scrollTop;lastPanel=panel;
@@ -3893,7 +3904,7 @@ function muhimNote(M,pay){
 /* the strip above the reading: what the game is asking for right now, and how far it has come */
 function muhimBar(){
  const host=document.getElementById("muhimbar");if(!host)return;
- if(panel!=="story"||!run){host.hidden=true;return;}
+ if(panel!=="story"||!run){host.hidden=true;return;}   /* the strip belongs to the reading only */
  const N=muhimNow();const rows=[];
  [["ghadi","इस घड़ी"],["raat","इस रात"],["safar","सफ़र"]].forEach(([k,lbl])=>{
   const id=N[k];if(!id)return;const M=MUHIM[id];
@@ -3928,6 +3939,21 @@ function muhimBar(){
 /* ============ बड़ा पर्दा: पूरे परदे का दृश्य, जो मुहिम पूरी होने पर खुलता है ============
    everything here is drawn with the page itself, no picture files, so it stays light on a phone.
    when the player has asked for less movement, it opens still and quiet. */
+/* ============ चिह्न और खेलों का हिसाब ============
+   what has been won, and the best a little game has gone, so there is something to beat next time. */
+const CHINH={
+ gada:{n:"गदा",x:"हनुमान का अपना हथियार। फूला हुआ सिर, उस पर उभरी पसलियाँ, और नीचे कटी अँगूठियों वाला डंडा।"},
+ kodanda:{n:"कोदंड",x:"राम का धनुष, जिसके दोनों सिरे गढ़े हुए होते हैं। इसी के नाम पर उन्हें कोदंडराम कहा जाता है।"},
+ surya:{n:"सूर्यचक्र",x:"रघुवंश का चिह्न। बीच में एक शांत चेहरा और चारों ओर बारह किरणें।"},
+ chudamani:{n:"चूड़ामणि",x:"कमल के आकार का वह सिर का गहना, जो सीता ने निशानी के तौर पर दिया।"},
+ mudrika:{n:"मुद्रिका",x:"राम की अँगूठी, जो पेड़ के ऊपर से नीचे गिराई गई थी।"},
+ veena:{n:"वीणा",x:"रावण के साथ दिखने वाला साज़। लंबी डंडी और दोनों सिरों पर तूँबे।"}
+};
+const KHEL={chalang:"समुद्र की छलाँग",chhat:"छत दर छत",chhaya:"परछाईं पहचानो",diya:"दीया जोड़ो"};
+function chinhMila(k){if(!k||!CHINH[k])return;save.chinh=save.chinh||{};
+ if(!save.chinh[k]){save.chinh[k]=1;persist();}}
+function khelScore(k,n){save.khel=save.khel||{};
+ const b=save.khel[k]||0;if(n>b){save.khel[k]=n;persist();return true;}return false;}
 function bigShow(o){
  o=o||{};
  const app=document.getElementById("app");
@@ -3956,7 +3982,7 @@ function bigShow(o){
  host.hidden=false;host.classList.remove("gone");
  const token=(host.dataset.token=String(Date.now()+Math.random()));
  /* the coins count up, so the reward is felt and not just read */
- if(o.obj)try{showObject(o.obj);}catch(e){}
+ if(o.obj){try{chinhMila(o.obj);}catch(e){}try{showObject(o.obj);}catch(e){}}
  const num=host.querySelector(".bnum");
  if(num){const to=+num.dataset.to||0;
   if(calm)num.textContent=to;
@@ -4035,8 +4061,9 @@ function runChhaya(after){
   dead=true;if(raf)cancelAnimationFrame(raf);
   const pay=Math.max(3,right*2-wrong);
   save.mani=(save.mani||0)+pay;persist();
+  const best=khelScore("chhaya",right);
   bigShow({obj:"chudamani",tag:"हो गया",title:right+" सही",
-   line:wrong?(wrong+" बार चूक हुई।"):"एक भी चूक नहीं।",mani:pay,shut:"कथा पर लौटो",
+   line:(wrong?(wrong+" बार चूक हुई। "):"एक भी चूक नहीं। ")+(best?"यह अब तक का सबसे अच्छा है।":"सबसे अच्छा अब तक: "+(save.khel&&save.khel.chhaya||0)),mani:pay,shut:"कथा पर लौटो",
    onShut:()=>{if(after)after(pay);}});
  }
  function frame(){
@@ -4092,7 +4119,9 @@ function runDiya(after){
   dead=true;if(raf)cancelAnimationFrame(raf);
   const pay=Math.max(3,(round-1)*3);
   save.mani=(save.mani||0)+pay;persist();
+  const best=khelScore("diya",round-1);
   bigShow({obj:"mudrika",tag:win?"पूरा":"क्रम टूटा",title:(round-1)+" दौर पार",
+   line:best?"यह अब तक का सबसे अच्छा है।":"सबसे अच्छा अब तक: "+(save.khel&&save.khel.diya||0),
    mani:pay,shut:"कथा पर लौटो",onShut:()=>{if(after)after(pay);}});
  }
  function frame(){
@@ -4162,8 +4191,9 @@ function runChhat(after){
   stop();
   const pay=win?Math.max(4,10-(6-fire)*2):3;
   save.mani=(save.mani||0)+pay;persist();
+  const best=khelScore("chhat",done);
   bigShow({obj:"gada",tag:win?"पार":"आग पकड़ गई",title:done+" छतें पार",
-   line:win?"आग पीछे ही रह गई।":"अगली बार थोड़ा जल्दी।",
+   line:(win?"आग पीछे ही रह गई। ":"अगली बार थोड़ा जल्दी। ")+(best?"यह अब तक का सबसे अच्छा है।":"सबसे अच्छा अब तक: "+(save.khel&&save.khel.chhat||0)),
    mani:pay,shut:"कथा पर लौटो",onShut:()=>{if(after)after(pay);}});
  }
  function stop(){dead=true;if(raf)cancelAnimationFrame(raf);}
@@ -4252,8 +4282,9 @@ function runChalang(after){
   stop();
   const pay=Math.max(3,8-hit*2);
   save.mani=(save.mani||0)+pay;persist();
-  bigShow({tag:"पार हो गए",title:done>=3?"तीनों पार":"जितना हुआ, उतना",
-   line:hit?("बीच में "+hit+" बार चूक हुई।"):"एक भी चूक नहीं।",
+  const best=khelScore("chalang",done);
+  bigShow({obj:"gada",tag:"पार हो गए",title:done>=3?"तीनों पार":"जितना हुआ, उतना",
+   line:(hit?("बीच में "+hit+" बार चूक हुई। "):"एक भी चूक नहीं। ")+(best?"यह अब तक का सबसे अच्छा है।":"सबसे अच्छा अब तक: "+(save.khel&&save.khel.chalang||0)),
    mani:pay,shut:"कथा पर लौटो",onShut:()=>{if(after)after(pay);}});
  }
  function stop(){dead=true;if(raf)cancelAnimationFrame(raf);}
@@ -11519,6 +11550,7 @@ function fill(){
  const tb=document.createElement("div");tb.className="tabs";pothi.appendChild(tb);
  Object.keys(L).forEach(k=>tb.appendChild(btn(L[k],"tab"+(myTab()===k?" on":""),()=>{tab=k;fill();pothi.scrollTop=0;})));
  tb.appendChild(btn("जगहें","tab"+(myTab()==="places"?" on":""),()=>{tab="places";fill();pothi.scrollTop=0;}));
+ tb.appendChild(btn("चिह्न","tab"+(myTab()==="chinh"?" on":""),()=>{tab="chinh";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("फ़र्क़","tab"+(myTab()==="farq"?" on":"")+"",()=>{tab="farq";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("स्रोत","tab"+(myTab()==="src"?" on":""),()=>{tab="src";fill();pothi.scrollTop=0;}));
  tb.appendChild(btn("इस खेल के बारे में","tab",deepAbout));
@@ -11540,6 +11572,19 @@ function fill(){
     out+='<p class="shut-note">'+w.n+": "+rows+"</p>";
    });
   });
+ }else if(myTab()==="chinh"){
+  save.chinh=save.chinh||{};save.khel=save.khel||{};
+  const got=Object.keys(CHINH).filter(k=>save.chinh[k]).length;
+  out+='<p class="shut-note">चिह्न: '+Object.keys(CHINH).length+" में से "+got+" जीते। किसी पर छूकर उसे घुमाकर देखो।</p>";
+  out+='<div class="chinhgrid">';
+  Object.keys(CHINH).forEach(k=>{const mine=!!save.chinh[k];
+   out+='<button class="chinhbox'+(mine?"":" shutbox")+'" data-chinh="'+k+'"'+(mine?"":" disabled")+'>'+
+    '<b>'+(mine?CHINH[k].n:"अभी बंद")+"</b>"+
+    '<span>'+(mine?CHINH[k].x:"किसी मुहिम या खेल के पूरा होने पर मिलेगा।")+"</span></button>";});
+  out+="</div>";
+  out+='<p class="shut-note">छोटे खेलों का सबसे अच्छा नतीजा:</p><ul class="khellist">';
+  Object.keys(KHEL).forEach(k=>{out+="<li>"+KHEL[k]+": <b>"+(save.khel[k]||0)+"</b></li>";});
+  out+="</ul>";
  }else if(myTab()==="farq"){
   out+='<p class="shut-note">एक ही पल, अलग अलग ग्रंथ।</p>';
   FARQ.forEach(F=>{
@@ -11628,6 +11673,9 @@ function fill(){
     closeCard();fill();front();showPanel("story");note("पुराना खेल वापस आ गया।");};}
  }
  body.querySelectorAll("[data-farq]").forEach(b=>{b.onclick=()=>deepFarq(+b.dataset.farq);});
+ body.querySelectorAll("[data-chinh]").forEach(b=>{b.onclick=()=>{
+  const k=b.dataset.chinh;
+  bigShow({obj:k,tag:"जीता हुआ चिह्न",title:CHINH[k].n,line:CHINH[k].x,shut:"पोथी पर लौटो"});};});
  body.querySelectorAll("[data-card]").forEach(b=>{b.onclick=()=>{
   /* opening it here counts as reading it, just as it does in the story */
   save.readCards=save.readCards||{};
