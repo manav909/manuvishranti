@@ -8908,11 +8908,59 @@ const S3DRESS5={
   woman:()=>person({cloth:"#6a4a2a",sari:"#c8a04a",bun:true,mood:S3.mood}),
   sage:()=>person({cloth:"#e8dcc0",beard:true,hair:"#e8e8ea",mood:"calm"})},
 };
+
+/* Burma: a bamboo house on posts with a thatch roof; and the monastery crowned with the tiered pyatthat */
+function burmaHouse(){const g=grp();const bam=M("#cbb07a",{roughness:.95}),wood=M("#7a5a34",{roughness:.7}),thatch=M("#b89a52",{roughness:.95});
+ [[-1.2,-.8],[1.2,-.8],[-1.2,.8],[1.2,.8]].forEach(p=>g.add(cyl(.11,.12,1.2,wood,p[0],.6,p[1])));
+ g.add(box(2.8,.2,1.9,wood,0,1.25,0));g.add(box(2.4,1.2,1.6,bam,0,1.9,0));
+ /* the plaited pattern of the bamboo walls */
+ for(let i=0;i<6;i++)g.add(box(2.42,.05,.04,M("#a88c5a"),0,1.4+i*.2,.81));
+ [-1,1].forEach(sd=>{const r=box(3,.16,1.6,thatch,0,2.9,sd*.6);r.rotation.x=sd*.68;g.add(r);});
+ g.add(box(.6,.06,1,wood,1.7,.8,0)).rotation.z=.5;g.add(box(.6,.9,.05,bam,0,1.85,.82));return g;}
+function pyatthat(){const g=grp();const teak=M("#5a3a1e",{roughness:.7}),roof=M("#4a2c16",{roughness:.85}),gold=M("#e8b23a",{metalness:.7,roughness:.25});
+ g.add(box(3.4,.4,3,M("#8a7a5a",{roughness:.95}),0,.2,0));
+ for(let i=0;i<6;i++){const x=(i%3-1)*1.1,z=(i<3?1:-1)*1.1;g.add(cyl(.13,.15,1.8,teak,x,1.1,z));}
+ g.add(box(3,1.4,2.6,teak,0,1.7,0));
+ /* five tiers, each with a small box between, and a spire on top */
+ for(let t=0;t<5;t++){const w=2.8-t*.45,y=2.5+t*.62;
+  const r=cone(w*.8,.5,roof,0,y,0,4);r.rotation.y=Math.PI/4;g.add(r);
+  for(let i=0;i<4;i++){const a=i/4*Math.PI*2+Math.PI/4;g.add(cone(.07,.3,gold,Math.cos(a)*w*.56,y+.2,Math.sin(a)*w*.56,6));}
+  if(t<4)g.add(box(w*.55,.4,w*.55,teak,0,y+.4,0));}
+ g.add(cone(.16,.9,gold,0,6.2,0,10));g.add(sph(.12,gold,0,6.8,0));return g;}
+/* the Maranao torogan: raised on posts, a great thatch roof, and carved panolong beams flaring out at the front */
+function torogan(){const g=grp();const wood=M("#6a4426",{roughness:.7}),thatch=M("#b08a4a",{roughness:.95}),paint=M("#c83a2a",{roughness:.6}),gold=M("#e0b03a");
+ for(let i=0;i<6;i++){const x=(i%3-1)*1.2,z=(i<3?1:-1)*.9;g.add(cyl(.16,.18,1.5,wood,x,.75,z));}
+ g.add(box(3.4,.3,2.2,wood,0,1.6,0));g.add(box(3,1.3,1.9,M("#8a6a44",{roughness:.85}),0,2.4,0));
+ /* the panolong: carved beams stepping out from the wall, the serpent pattern in front */
+ [-1,1].forEach(q=>{for(let k=0;k<3;k++){const b=box(1.1,.22,.3,paint,q*(1.5+k*.22),1.95+k*.3,1.1-k*.12);b.rotation.z=q*.18;g.add(b);
+   for(let m=0;m<3;m++)g.add(sph(.08,gold,q*(1.2+k*.22)+m*q*.3,2+k*.3,1.25-k*.12));}});
+ [-1,1].forEach(sd=>{const r=box(4,.2,2,thatch,0,3.6,sd*.75);r.rotation.x=sd*.62;g.add(r);});
+ g.add(box(1.1,.9,1,M("#8a6a44"),0,4.3,0));const r2=cone(1,.7,thatch,0,5,0,4);r2.rotation.y=Math.PI/4;g.add(r2);
+ g.add(box(.7,1,.06,wood,0,2.3,.97));return g;}
+/* the Dai house of Yunnan: on stilts, with a tall pitched roof */
+function daiHouse(){const g=grp();const wood=M("#8a6a44",{roughness:.8}),bam=M("#cbb388",{roughness:.95}),roof=M("#6a5a3a",{roughness:.9});
+ [[-1.2,-.9],[1.2,-.9],[-1.2,.9],[1.2,.9]].forEach(p=>g.add(cyl(.12,.13,1.5,wood,p[0],.75,p[1])));
+ g.add(box(3,.22,2.2,wood,0,1.55,0));g.add(box(2.6,1.1,1.9,bam,0,2.15,0));
+ [-1,1].forEach(sd=>{const r=box(3.4,.16,2,roof,0,3.4,sd*.7);r.rotation.x=sd*.85;g.add(r);
+  const r2=box(3.6,.14,1,roof,0,2.6,sd*1.35);r2.rotation.x=sd*.55;g.add(r2);});
+ g.add(box(.8,.06,1.1,wood,1.9,1.05,0)).rotation.z=.55;return g;}
+const S3DRESS6={
+ burma:{man:()=>person({cloth:"#3a5a4a",sari:"#f0e8d0",mood:S3.mood}),
+  woman:()=>person({cloth:"#c85a6a",sari:"#f0e8d0",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#c8562a",bald:true,mood:"calm"})},
+ maranao:{man:()=>person({cloth:"#c8a02a",turban:"#7a2a4a",mood:S3.mood}),
+  woman:()=>person({cloth:"#7a2a6a",sari:"#e0b03a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#f0ece0",turban:"#ffffff",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ dai:{man:()=>person({cloth:"#f0ece0",mood:S3.mood}),
+  woman:()=>person({cloth:"#2a7a8a",sari:"#e8c24a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#c8562a",bald:true,mood:"calm"})},
+};
 const S3REGION={ezhu:"kerala",kannassa:"kerala",ramacharitam:"kerala",mappila:"mappila",bhanubhakta:"newar",siddhi:"newar",
  sarala:"odisha",jagamohan:"odisha",kandali:"assam",kashmiri:"kashmir",
  kamba:"tamil",ranganatha:"telugu",kalpavruksham:"telugu",molla:"telugu",torave:"kannada",pampa:"kannada",eknath:"marathi",
  giridhar:"gujarat",krittivasa:"bengal",gobind:"punjab",
- ramakien:"thai",reamker:"khmer",lao:"lao",hikayat:"malay",kakawin:"java"};
+ ramakien:"thai",reamker:"khmer",lao:"lao",hikayat:"malay",kakawin:"java",
+ yama:"burma",maranao:"maranao",taili:"dai"};
 function s3regional(name){
  const r=S3.region;if(!r)return null;
  const K=r==="mappila"?"kerala":r;
@@ -8972,7 +9020,19 @@ function s3regional(name){
   if(name==="house"||name==="hillhouse"||name==="hut")return ()=>stiltHouse({roof:"#4a3628",wall:"#cbb388"});
   if(name==="palace")return ()=>joglo();
  }
- const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r]||S3DRESS4[r]||S3DRESS5[r];if(d&&d[name])return d[name];
+ if(K==="burma"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>burmaHouse();
+  if(name==="palace")return ()=>pyatthat();
+ }
+ if(K==="maranao"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>torogan();
+  if(name==="palace")return ()=>{const g=torogan();g.scale.setScalar(1.25);return g;};
+ }
+ if(K==="dai"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>daiHouse();
+  if(name==="palace")return ()=>pyatthat();
+ }
+ const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r]||S3DRESS4[r]||S3DRESS5[r]||S3DRESS6[r];if(d&&d[name])return d[name];
  return null;
 }
 
@@ -9156,6 +9216,14 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
   if(me)lean(me,.45);
   S3.dbg=live.concat(me?[me]:[]).filter(o=>o.userData.head).map(o=>({k:o.userData.kind||(o.userData.player?"me":"?"),r:+o.rotation.y.toFixed(2)}));}
  /* the player, the revered and Ravana are always fully in frame */
+ /* tall buildings are brought inside the frame as well, so no roof is sliced off at the edge */
+ live.forEach(o=>{if(o.userData.head||o.userData.player||o.position.y>.5)return;
+  const bx=new THREE.Box3().setFromObject(o),sz=new THREE.Vector3();bx.getSize(sz);
+  if(sz.y<2.2)return;
+  for(let tries=0;tries<14;tries++){const c=new THREE.Vector3();bx.getCenter(c);c.project(cam);
+   const half=(sz.x*.5)/ (Math.abs(cam.position.z-o.position.z)*Math.tan(33*Math.PI/360)*(W/H));
+   if(Math.abs(c.x)+half<1.02)break;o.position.x*=.88;bx.setFromObject(o);}
+  o.userData.home=o.position.clone();});
  live.concat(me?[me]:[]).forEach(o=>{if(!(o===me||o.userData.divine||o.userData.kind==="king"||o.userData.hanuman))return;
   for(let tries=0;tries<14;tries++){const v=o.position.clone();v.y+=1;v.project(cam);if(Math.abs(v.x)<(o===me?.72:.66))break;o.position.x*=.86;}o.userData.home=o.position.clone();});
  const calm=(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)||document.getElementById("app").classList.contains("calm");
