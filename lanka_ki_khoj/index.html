@@ -10129,7 +10129,8 @@ function fill(){
  out+='<div class="carry"><b>खेल अपने साथ ले जाओ</b>'+
   '<p class="quiet">यह खेल इसी फ़ोन में रखा है। नीचे का कोड कॉपी करके दूसरे फ़ोन में डालो, तो सारी खोज वहीं पहुँच जाएगी।</p>'+
   '<div class="carryrow"><button class="claim" id="carryout">कोड बनाओ</button>'+
-  '<button class="claim ghost" id="carryin">कोड डालो</button></div>'+
+  '<button class="claim ghost" id="carryin">कोड डालो</button>'+
+  '<button class="claim ghost" id="carryback" hidden>पुराना खेल वापस लाओ</button></div>'+
   '<textarea class="carrybox" id="carrybox" rows="3" spellcheck="false" placeholder="कोड यहाँ आएगा, या यहाँ चिपकाओ"></textarea></div>';
  out+='<p class="shut-note"><button class="link" id="wipe">सब कुछ भूल जाओ</button></p>';
  body.innerHTML=out;
@@ -10147,8 +10148,18 @@ function fill(){
    if(!t){note("पहले कोड चिपकाओ, फिर यह बटन दबाओ।");box.focus();return;}
    let got=null;try{got=unpack(t);}catch(e){got=null;}
    if(!got||typeof got!=="object"||!("mani" in got||"cards" in got||"nights" in got)){note("यह कोड इस खेल का नहीं लगता।");return;}
+   try{localStorage.setItem(KEY+"_before",JSON.stringify(save));}catch(e){}
    save=Object.assign(blankSave(),got);persist();closeCard();fill();front();showPanel("story");
-   note("खेल आ गया। जहाँ छोड़ा था, वहीं से चलो।");};}
+   note("खेल आ गया। पुराना खेल एक बार वापस लाया जा सकता है।");};
+  const back=document.getElementById("carryback");
+  if(back){let old=null;try{old=localStorage.getItem(KEY+"_before");}catch(e){}
+   back.hidden=!old;
+   back.onclick=()=>{let o=null;try{o=JSON.parse(localStorage.getItem(KEY+"_before"));}catch(e){}
+    if(!o){note("वापस लाने को कुछ नहीं है।");return;}
+    save=Object.assign(blankSave(),o);persist();
+    try{localStorage.removeItem(KEY+"_before");}catch(e){}
+    closeCard();fill();front();showPanel("story");note("पुराना खेल वापस आ गया।");};}
+ }
  body.querySelectorAll("[data-farq]").forEach(b=>{b.onclick=()=>deepFarq(+b.dataset.farq);});
  body.querySelectorAll("[data-card]").forEach(b=>{b.onclick=()=>deepCard(b.dataset.card);});
  body.querySelectorAll("[data-place]").forEach(b=>{b.onclick=()=>deepPlace(b.dataset.place);});
