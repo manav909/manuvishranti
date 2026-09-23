@@ -1574,6 +1574,9 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 /* the turning emblem above the card */
 .bobj{display:flex;justify-content:center;margin:-.2rem 0 .1rem;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45))}
 .bobjcv{width:180px;height:180px;max-width:56vw;max-height:56vw}
+
+/* the way into the little games, inside the mission strip */
+.mplay{align-self:flex-start;margin-top:.2rem}
 </style>
 </head>
 <body>
@@ -3913,6 +3916,11 @@ function muhimBar(){
   if(first){const M=MUHIM[first],have=Math.min(mcount(first),M.goal);
    lid.innerHTML="मुहिम: "+M.n+' <span class="mtag">'+have+"/"+M.goal+' · खोलो</span>';}
  }else lid.innerHTML='मुहिमें<span class="mtag">बंद करो</span>';
+ if(!host.classList.contains("shut")){
+  const play=document.createElement("button");play.className="claim mplay";play.textContent="थोड़ा दम लो";
+  play.onclick=()=>khelChuno();
+  const body=host.querySelector(".mbody");if(body)body.appendChild(play);
+ }
  lid.onclick=()=>{host.classList.toggle("shut");muhimBar();};
 }
 
@@ -3967,6 +3975,106 @@ function bigShow(o){
 /* ============ छोटा खेल: समुद्र की छलाँग ============
    no reading at all: three things come at you across the water and you tap at the right moment.
    it is short on purpose, to rest the eyes between long pages. */
+/* ============ छोटा खेल: छत दर छत ============
+   the roofs come one after another and the fire follows behind.
+   tap when a roof is under you and you land on it; miss and the fire gains a step. */
+/* ============ खेलों का दरवाज़ा ============
+   two little games, open whenever the eyes want a rest from reading. */
+function khelChuno(){
+ bigShow({obj:"gada",tag:"थोड़ा दम लो",title:"कौन सा खेल",
+  line:"दोनों छोटे हैं, और दोनों में कुछ पढ़ना नहीं पड़ता।",
+  extra:'<div class="bacts"><button class="claim kpick" data-k="chalang">समुद्र की छलाँग</button>'+
+   '<button class="claim kpick" data-k="chhat">छत दर छत</button></div>',
+  shut:"अभी नहीं"});
+ const host=document.getElementById("bigshow");
+ if(!host)return;
+ host.querySelectorAll(".kpick").forEach(b=>{b.onclick=()=>{
+  const k=b.dataset.k;
+  host.querySelector(".bshut").click();
+  setTimeout(()=>{k==="chhat"?khelChhat(()=>{}):khelChalang(()=>{});},80);};});
+}
+function khelChhat(after){
+ bigShow({tag:"थोड़ा दम लो",title:"छत दर छत",
+  line:"छतें आती जाएँगी। जब छत पैरों के नीचे आए, परदे पर छूओ।",
+  act:"शुरू करो",shut:"अभी नहीं",onGo:()=>runChhat(after),onShut:after});
+}
+function runChhat(after){
+ const app=document.getElementById("app");
+ const calm=app&&app.classList.contains("calm");
+ const host=bigShow({tag:"छत दर छत",title:"",shut:"छोड़ो",
+  extra:'<canvas class="kcanvas" width="640" height="360"></canvas>'+
+   '<p class="kscore"><span class="kdone">0</span> छतें पार, आग <span class="kfire">0</span> क़दम पीछे</p>',
+  onShut:()=>stop()});
+ const cv=host.querySelector(".kcanvas"),ctx=cv&&cv.getContext("2d");
+ if(!ctx){if(after)after(0);return;}
+ const out=host.querySelector(".kdone"),fo=host.querySelector(".kfire");
+ const W=cv.width,H=cv.height;
+ let t=0,raf=0,dead=false,done=0,fire=6,roofs=[],meX=150,meY=H-190,vy=0,onRoof=true,flash=0;
+ for(let i=0;i<7;i++)roofs.push({x:260+i*170,w:120,h:70+((i*37)%50)});
+ const tap=()=>{
+  const r=roofs.find(r=>Math.abs((r.x+r.w/2)-meX)<r.w*0.8);
+  if(r&&onRoof===false){onRoof=true;done++;out.textContent=done;flash=10;vy=-9;}
+  else if(onRoof){onRoof=false;vy=-11;}
+  else{fire=Math.max(0,fire-1);fo.textContent=6-fire;flash=-10;}
+ };
+ cv.onpointerdown=tap;
+ function finish(win){
+  stop();
+  const pay=win?Math.max(4,10-(6-fire)*2):3;
+  save.mani=(save.mani||0)+pay;persist();
+  bigShow({obj:"gada",tag:win?"पार":"आग पकड़ गई",title:done+" छतें पार",
+   line:win?"आग पीछे ही रह गई।":"अगली बार थोड़ा जल्दी।",
+   mani:pay,shut:"कथा पर लौटो",onShut:()=>{if(after)after(pay);}});
+ }
+ function stop(){dead=true;if(raf)cancelAnimationFrame(raf);}
+ function frame(){
+  if(dead)return;t++;
+  const sp=calm?2.2:3.6;
+  /* the burning sky behind the city */
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#2a0d16");g.addColorStop(.5,"#6a2010");g.addColorStop(1,"#1a0a10");
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle="rgba(255,150,60,.16)";
+  for(let i=0;i<14;i++){const x=(i*73+t*1.4)%W,y=H-40-((i*53+t)%200);
+   ctx.beginPath();ctx.arc(x,y,3+(i%3)*2,0,7);ctx.fill();}
+  /* the roofs, and the fire creeping behind them */
+  roofs.forEach(r=>{
+   r.x-=sp;
+   if(r.x<-200){r.x=Math.max.apply(null,roofs.map(q=>q.x))+170;r.h=70+((t*7)%60);}
+   const y=H-r.h;
+   ctx.fillStyle="#3a2a30";ctx.fillRect(r.x,y,r.w,r.h);
+   ctx.fillStyle="#6a4436";ctx.beginPath();ctx.moveTo(r.x-12,y);ctx.lineTo(r.x+r.w/2,y-26);ctx.lineTo(r.x+r.w+12,y);ctx.closePath();ctx.fill();
+   ctx.fillStyle="#d9a24a";for(let i=0;i<3;i++)ctx.fillRect(r.x+16+i*34,y+18,14,18);
+  });
+  /* the wall of fire that follows */
+  const fx=fire*22-40;
+  ctx.fillStyle="rgba(210,70,20,.85)";ctx.fillRect(0,0,fx,H);
+  for(let i=0;i<12;i++){const y=(i*31+t*3)%H;
+   ctx.fillStyle="rgba(255,190,80,.7)";ctx.beginPath();ctx.arc(fx+Math.sin(t/7+i)*10,y,10,0,7);ctx.fill();}
+  /* the one who jumps */
+  if(!onRoof){vy+=calm?.4:.55;meY+=vy;
+   const under=roofs.find(r=>meX>r.x&&meX<r.x+r.w);
+   if(under&&meY>=H-under.h-22){meY=H-under.h-22;onRoof=true;}
+   if(meY>H-18){meY=H-18;fire=Math.max(0,fire-1);fo.textContent=6-fire;onRoof=true;}
+  }else{
+   const under=roofs.find(r=>meX>r.x&&meX<r.x+r.w);
+   if(under)meY=H-under.h-22;else{onRoof=false;vy=0;}
+  }
+  ctx.save();ctx.translate(meX,meY);
+  ctx.strokeStyle="#c98a4a";ctx.lineWidth=6;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(-10,2);ctx.quadraticCurveTo(-42,-14,-60,10+Math.sin(t/8)*10);ctx.stroke();
+  ctx.fillStyle=flash>0?"#ffd98a":(flash<0?"#e07a5f":"#e2a86a");
+  ctx.beginPath();ctx.ellipse(0,0,19,15,-.2,0,7);ctx.fill();
+  ctx.fillStyle="#f0cfa0";ctx.beginPath();ctx.arc(14,-7,10,0,7);ctx.fill();
+  ctx.fillStyle="#3a2a24";ctx.beginPath();ctx.arc(19,-9,2,0,7);ctx.fill();
+  ctx.restore();
+  if(flash)flash+=flash>0?-1:1;
+  if(done>=6)return finish(true);
+  if(fire<=0)return finish(false);
+  raf=requestAnimationFrame(frame);
+ }
+ frame();
+}
 function khelChalang(after){
  const app=document.getElementById("app");
  const calm=app&&app.classList.contains("calm");
