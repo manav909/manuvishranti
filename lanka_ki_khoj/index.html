@@ -8852,10 +8852,67 @@ const S3DRESS4={
   woman:()=>person({cloth:"#f6f4ec",sari:"#c02a2a",bun:true,mood:S3.mood}),
   sage:()=>person({cloth:"#f6f4ec",beard:true,hair:"#e8e8ea",mood:"calm"})},
 };
+
+/* Punjab: sun dried mud walls plastered with chaff, a flat roof of wood and earth, a courtyard in front, the baithak with its windows */
+function punjabHouse(){const g=grp();const mud=M("#d8b483",{roughness:.95}),wood=M("#6a4424"),brick=M("#a85a42",{roughness:.9});
+ g.add(box(3.2,1.7,2.2,mud,0,.85,0));
+ g.add(box(3.5,.25,2.5,M("#c9a878",{roughness:.95}),0,1.8,0));
+ for(let i=0;i<7;i++)g.add(cyl(.06,.06,2.4,wood,0,1.95,-1.05+i*.35)).rotation.z=Math.PI/2;
+ g.add(box(.9,1.2,.08,wood,0,.6,1.12));
+ [-1,1].forEach(sd=>{g.add(box(.5,.5,.06,wood,sd*1.1,1.1,1.12));for(let q=0;q<2;q++)g.add(box(.5,.04,.08,mud,sd*1.1,.95+q*.3,1.14));});
+ /* the low wall of the courtyard, where the women painted their motifs */
+ g.add(box(3.4,.6,.15,brick,0,.3,1.9));g.add(box(.15,.6,1.6,brick,-1.6,.3,1.2));return g;}
+function punjabHaveli(){const g=grp();const brick=M("#b06a4a",{roughness:.9}),wood=M("#5a3418"),lime=M("#e8dcc4",{roughness:.9});
+ g.add(box(3.6,.4,2.4,M("#9a8a76",{roughness:.95}),0,.2,0));
+ g.add(box(3.2,3.2,2,brick,0,2,0));
+ for(let f=0;f<2;f++)for(let i=-1;i<=1;i++){const y=1.1+f*1.3;
+  g.add(box(.5,.8,.08,lime,i*1,y,1.02));const ar=mesh(new THREE.TorusGeometry(.25,.06,8,16,Math.PI),lime,i*1,y+.4,1.03);g.add(ar);}
+ /* the jharokha that juts out over the lane */
+ g.add(box(1.2,.9,.5,wood,0,2.6,1.15));for(let i=0;i<6;i++)g.add(cyl(.04,.04,.5,wood,-.5+i*.2,2.4,1.36));
+ g.add(box(1.3,.2,.55,wood,0,3.1,1.15));g.add(box(1.1,1.8,.12,wood,0,.9,1.02));return g;}
+/* the shared form of South East Asia: a wooden house raised on stilts under a steep gable, with carved boards at the gable ends */
+function stiltHouse(o){o=o||{};const g=grp();const wood=M(o.wood||"#8a5f34",{roughness:.7}),roof=M(o.roof||"#7a4a2a",{roughness:.85}),trim=M(o.trim||"#c8a04a");
+ [[-1.3,-.9],[1.3,-.9],[-1.3,.9],[1.3,.9]].forEach(p=>g.add(cyl(.12,.13,1.6,wood,p[0],.8,p[1])));
+ g.add(box(3.2,.25,2.2,wood,0,1.7,0));g.add(box(2.8,1.3,1.9,M(o.wall||"#c9a97a",{roughness:.9}),0,2.45,0));
+ [-1,1].forEach(sd=>{const r=box(3.6,.14,1.8,roof,0,3.5,sd*.62);r.rotation.x=sd*.78;g.add(r);});
+ /* the boards along the gable edge, their lower ends curving out like horns */
+ [-1,1].forEach(sd=>{[-1,1].forEach(q=>{const b=box(.1,1.9,.12,trim,q*1.45,3.35,sd*.5);b.rotation.x=sd*.78;b.rotation.z=q*.12;g.add(b);
+   const horn=cone(.1,.35,trim,q*1.5,2.7,sd*1.05,8);horn.rotation.z=q*.5;g.add(horn);});});
+ if(o.kalae){[-1,1].forEach(q=>{const k=box(.1,1.2,.1,trim,q*.25,4.4,0);k.rotation.z=q*.45;g.add(k);});}
+ g.add(box(.8,.06,1.2,wood,1.9,1.05,0)).rotation.z=.6;
+ g.add(box(.7,1,.06,wood,0,2.3,.96));return g;}
+/* Java: the joglo, its roof rising in tiers over a pillared hall */
+function joglo(){const g=grp();const wood=M("#6a4a2a",{roughness:.7}),roof=M("#5a4030",{roughness:.85}),floor=M("#b8a888",{roughness:.95});
+ g.add(box(4,.35,3.4,floor,0,.18,0));
+ for(let i=0;i<4;i++){const x=(i%2?1:-1)*.9,z=(i<2?1:-1)*.8;g.add(cyl(.12,.14,2.2,wood,x,1.2,z));}
+ [-1,1].forEach(sd=>{const r=box(4.4,.14,1.6,roof,0,2.1,sd*1.3);r.rotation.x=sd*.5;g.add(r);});
+ [-1,1].forEach(sd=>{const r=box(2.4,.14,1.2,roof,0,3.1,sd*.6);r.rotation.x=sd*.62;g.add(r);});
+ g.add(box(2.6,.16,1.6,roof,0,2.6,0));g.add(box(.2,.5,.2,M("#c8a04a"),0,3.6,0));return g;}
+const S3DRESS5={
+ punjab:{man:()=>person({cloth:"#f4efe2",turban:"#e04a2a",mood:S3.mood}),
+  woman:()=>person({cloth:"#e05a8a",sari:"#2a7a5a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8a02a",turban:"#f4efe2",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ thai:{man:()=>person({cloth:"#c8a04a",sari:"#f0e0b0",mood:S3.mood}),
+  woman:()=>person({cloth:"#7a2a6a",sari:"#e8c24a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8752a",bald:true,mood:"calm"})},
+ khmer:{man:()=>person({cloth:"#c85a2a",sari:"#f0e0b0",mood:S3.mood}),
+  woman:()=>person({cloth:"#2a6a7a",sari:"#e8c24a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8752a",bald:true,mood:"calm"})},
+ lao:{man:()=>person({cloth:"#d8a03a",sari:"#f0e0b0",mood:S3.mood}),
+  woman:()=>person({cloth:"#4a2a6a",sari:"#e8c24a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8752a",bald:true,mood:"calm"})},
+ malay:{man:()=>person({cloth:"#2a5a4a",turban:"#1a2a3a",mood:S3.mood}),
+  woman:()=>person({cloth:"#7a2a4a",sari:"#e8c24a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#f0ece0",turban:"#ffffff",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ java:{man:()=>person({cloth:"#4a3a6a",turban:"#5a4a2a",mood:S3.mood}),
+  woman:()=>person({cloth:"#6a4a2a",sari:"#c8a04a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8dcc0",beard:true,hair:"#e8e8ea",mood:"calm"})},
+};
 const S3REGION={ezhu:"kerala",kannassa:"kerala",ramacharitam:"kerala",mappila:"mappila",bhanubhakta:"newar",siddhi:"newar",
  sarala:"odisha",jagamohan:"odisha",kandali:"assam",kashmiri:"kashmir",
  kamba:"tamil",ranganatha:"telugu",kalpavruksham:"telugu",molla:"telugu",torave:"kannada",pampa:"kannada",eknath:"marathi",
- giridhar:"gujarat",krittivasa:"bengal"};
+ giridhar:"gujarat",krittivasa:"bengal",gobind:"punjab",
+ ramakien:"thai",reamker:"khmer",lao:"lao",hikayat:"malay",kakawin:"java"};
 function s3regional(name){
  const r=S3.region;if(!r)return null;
  const K=r==="mappila"?"kerala":r;
@@ -8904,7 +8961,18 @@ function s3regional(name){
   if(name==="house"||name==="hillhouse"||name==="hut")return ()=>chalaHut();
   if(name==="palace")return ()=>bengalTemple();
  }
- const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r]||S3DRESS4[r];if(d&&d[name])return d[name];
+ if(K==="punjab"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>punjabHouse();
+  if(name==="palace")return ()=>punjabHaveli();
+ }
+ if(K==="thai"||K==="khmer"||K==="lao"||K==="malay"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>stiltHouse({kalae:K==="lao",roof:K==="malay"?"#6a3a24":"#7a4a2a"});
+ }
+ if(K==="java"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>stiltHouse({roof:"#4a3628",wall:"#cbb388"});
+  if(name==="palace")return ()=>joglo();
+ }
+ const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r]||S3DRESS4[r]||S3DRESS5[r];if(d&&d[name])return d[name];
  return null;
 }
 
