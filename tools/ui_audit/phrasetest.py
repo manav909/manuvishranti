@@ -24,7 +24,7 @@ def longest(A,B):
     return best
 L=[longest(W[a],W[b]) for a,b in pairs]
 c20=sum(1 for x in L if x>=20); c12=sum(1 for x in L if 12<=x<20)
-CEIL20,CEIL12=int(sys.argv[1]) if len(sys.argv)>1 else 0, int(sys.argv[2]) if len(sys.argv)>2 else 144
+CEIL20,CEIL12=int(sys.argv[1]) if len(sys.argv)>1 else 0, int(sys.argv[2]) if len(sys.argv)>2 else 41
 bad=[]
 if c20>CEIL20: bad.append(f'{c20} repeats of 20+ words (ceiling {CEIL20})')
 if c12>CEIL12: bad.append(f'{c12} repeats of 12 to 19 words (ceiling {CEIL12})')
