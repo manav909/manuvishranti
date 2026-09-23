@@ -3874,7 +3874,9 @@ function muhimNote(M,pay){
   /* a small watch mission passes with a quiet line; only the big ones take the whole screen */
   if(!big){note("मुहिम पूरी: "+M.n+" · "+pay+" मणि");return;}
   if(typeof bigShow==="function"&&document.getElementById("app")){
-   bigShow({obj:M.size==="safar"?"surya":(M.count==="read"||M.count==="cardread"?"kodanda":"gada"),
+   const emblem={jigyasu:"mudrika",yatri:"gada",kathapremi:"veena",balak:"gada",
+    yoddha:"gada",shastri:"kodanda",sadhak:"chudamani",raja:"surya"}[myRole()]||"gada";
+   bigShow({obj:M.size==="safar"?"surya":(M.size==="raat"?emblem:(M.count==="read"?"kodanda":"gada")),
     tag:M.size==="safar"?"सफ़र की मुहिम":(M.size==="raat"?"इस रात की मुहिम":"इस घड़ी की मुहिम"),
     title:M.n+" पूरी",line:M.x,mani:pay,
     extra:M.boon?'<p class="bline"><b>'+(M.boon==="extra"?"अब हर घड़ी में एक जगह ज़्यादा देख सकते हो।":"अब दीया मिलेगा, जो बताएगा कि कोई बंद बात किस पल में छिपी है।")+"</b></p>":"",
@@ -4094,7 +4096,8 @@ function showObject(kind){
  R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.15;
  const cv=R.domElement;cv.className="bobjcv";wrap.appendChild(cv);
  const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,100);
- const obj=kind==="kodanda"?S3E.kodandaBow():(kind==="surya"?S3E.suryaDisc():S3E.gadaBig());
+ const make={kodanda:S3E.kodandaBow,surya:S3E.suryaDisc,chudamani:S3E.chudamani,mudrika:S3E.mudrika,veena:S3E.veena,gada:S3E.gadaBig};
+ const obj=(make[kind]||S3E.gadaBig)();
  sc.add(obj);
  const box=new THREE.Box3().setFromObject(obj);
  const ctr=box.getCenter(new THREE.Vector3());
@@ -9776,6 +9779,53 @@ function bow(){const g=grp();const b=mesh(new THREE.TorusGeometry(.75,.04,8,32,M
    a tapered shaft with cut rings and a collar under the head.
    Kodanda is the long bow with worked ends, carried with an arrow on the string.
    the sun of the Raghu line is a face in a disc with twelve rays. */
+/* चूड़ामणि: कमल के आकार की, रत्न जड़ी, जूड़े के बीच पहनी जाने वाली
+   the crest jewel is lotus shaped, its petals of gold set with stones, worn at the centre of the hair knot.
+   the mudrika is Rama's signet ring, the one that is dropped from the tree.
+   Ravana's veena is the instrument he is shown with, a long stick with two gourds. */
+function chudamani(){
+ const g=grp();
+ const gold=M("#f0c34a",{metalness:.92,roughness:.15}),deep=M("#b4761a",{metalness:.85,roughness:.28}),
+  ruby=M("#c02a3a",{metalness:.3,roughness:.2}),pearl=M("#f6efdc",{roughness:.25});
+ g.add(cyl(.62,.7,.14,deep,0,-.1,0));
+ /* two rings of petals, the outer ones wider */
+ for(let ring=0;ring<2;ring++){
+  const n=ring?8:10,R=ring?.42:.72,lift=ring?.14:.02,tilt=ring?.5:.85;
+  for(let i=0;i<n;i++){const a=i/n*Math.PI*2+(ring?Math.PI/n:0);
+   const pet=sph(ring?.2:.24,gold,Math.cos(a)*R,lift,Math.sin(a)*R,1,.34,1.5);
+   pet.rotation.y=-a;pet.rotation.x=tilt-1.2;g.add(pet);
+   if(!ring)g.add(sph(.06,ruby,Math.cos(a)*R,lift+.08,Math.sin(a)*R));}
+ }
+ g.add(sph(.26,gold,0,.2,0,1,.7,1));
+ g.add(sph(.15,ruby,0,.32,0));
+ for(let i=0;i<6;i++){const a=i/6*Math.PI*2;g.add(sph(.05,pearl,Math.cos(a)*.24,.3,Math.sin(a)*.24));}
+ return g;
+}
+function mudrika(){
+ const g=grp();
+ const gold=M("#e8b63a",{metalness:.92,roughness:.16}),ink=M("#7a4a12",{metalness:.7,roughness:.35});
+ g.add(mesh(new THREE.TorusGeometry(.62,.13,14,40),gold,0,0,0));
+ /* the face of the ring, where the name is cut */
+ const seal=cyl(.34,.34,.12,gold,0,.68,0);seal.rotation.x=Math.PI/2;g.add(seal);
+ const cut=cyl(.24,.24,.14,ink,0,.68,0);cut.rotation.x=Math.PI/2;g.add(cut);
+ [[-.1,.72],[.1,.72],[0,.6]].forEach(([x,y])=>g.add(box(.06,.12,.05,gold,x,y,.06)));
+ return g;
+}
+function veena(){
+ const g=grp();
+ const wood=M("#7a3a1a",{roughness:.5}),gold=M("#e0aa2c",{metalness:.8,roughness:.25}),
+  gourd=M("#a05a20",{roughness:.6});
+ const stick=cyl(.14,.14,3.4,wood,0,0,0);stick.rotation.z=Math.PI/2;g.add(stick);
+ /* the two gourds at the ends */
+ g.add(sph(.62,gourd,-1.55,-.3,0));
+ g.add(sph(.5,gourd,1.5,-.26,0,1,.9,1));
+ /* the frets along the stick */
+ for(let i=-5;i<=5;i++)g.add(box(.05,.2,.3,gold,i*.28,.16,0));
+ /* the strings */
+ for(let i=-1;i<=1;i++)g.add(box(3.2,.03,.03,M("#efe6d2"),0,.3,i*.08));
+ g.add(cone(.22,.42,gold,1.9,.1,0,8));
+ return g;
+}
 function gadaBig(){
  const g=grp();
  const gold=M("#e8b63a",{metalness:.9,roughness:.18}),dark=M("#9a6a18",{metalness:.8,roughness:.3});
@@ -10725,7 +10775,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
 function s3stop(){if(S3.cur){try{S3.cur.stop();}catch(e){}S3.cur=null;}}
 
 function s3canvas(){if(!S3.canvas){S3.canvas=document.createElement("canvas");S3.canvas.className="s3";}return S3.canvas;}
-return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc};
+return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena};
 })();
 const S3ROLECOL=r=>S3E.S3ROLE[r]||S3E.S3ROLE.jigyasu,scene3d=S3E.scene3d,s3stop=S3E.s3stop,s3ok=S3E.s3ok,s3canvas=S3E.s3canvas,S3NOW=()=>S3E.S3.cur;
 
