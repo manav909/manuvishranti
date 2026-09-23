@@ -8460,7 +8460,7 @@ const S3B={
  monkey:()=>monkey(),whitemonkey:()=>monkey({fur:"#f2f0ea",face:"#f8e6d4",crown:true}),tailfire:()=>monkey({fire:true}),
  man:(e)=>person({cloth:e.q||"#3a6ea5"}),woman:(e)=>person({cloth:e.q||"#c0392b",bun:true,sari:"#e2b33a"}),
  child:(e)=>person({cloth:e.q||"#e0b030",h:.62}),oldwoman:()=>person({cloth:"#9a9aa2",hair:"#e8e8ea",bun:true}),
- sleeper:(e)=>{const p=person({cloth:e.q||"#8a5630"});p.rotation.z=Math.PI/2;p.position.y=.4;const g=grp();g.add(p);g.userData.sleep=true;g.userData.inner=p;return g;},
+ sleeper:(e)=>{const p=person({cloth:e.q||"#8a5630",mood:"calm"});p.rotation.x=Math.PI/2;p.rotation.z=.12;p.position.z=.5;p.position.y=.4;const g=grp();g.add(p);g.userData.sleep=true;g.userData.inner=p;return g;},
  guard:(e)=>person({cloth:e.q||"#7e2218",turban:"#5a1810",hold:(()=>{const s=S3B.spear();s.position.set(0,-1.2,0);return s;})()}),
  king:()=>person({cloth:"#c8402f",crown:true}),sage:()=>person({cloth:"#f4efe2",beard:true,hair:"#e8e8ea"}),
  demon:()=>person({cloth:"#7e2218",skin:"#a8402f",horns:true}),rakshasi:()=>person({cloth:"#4a2c66",skin:"#8a4a5a",horns:true,bun:true}),
@@ -8748,8 +8748,63 @@ const S3DRESS2={
   woman:()=>person({cloth:"#8a3a4a",sari:"#e8dcc0",bun:true,mood:S3.mood,robe:[[0,0],[.58,0],[.62,.4],[.54,1],[.44,1.3],[.4,1.42],[0,1.45]]}),
   sage:()=>person({cloth:"#e8e2d4",beard:true,hair:"#e8e8ea",mood:"calm"})},
 };
+
+/* Tamil: houses in a row sharing walls, a pillared thinnai in front under low tiled eaves; temples as stepped vimana and gopuram */
+function tamilHouse(){const g=grp();const lime=M("#efe6d2",{roughness:.9}),tile=M("#a8431f",{roughness:.85}),teak=M("#5a3418",{roughness:.6}),stone=M("#b0a894",{roughness:.95});
+ g.add(box(3,.55,2,stone,0,.28,0));g.add(box(2.6,1.7,1.6,lime,0,1.4,-.2));
+ for(let i=0;i<4;i++)g.add(cyl(.1,.12,1.3,teak,-1.1+i*.73,1.2,.85));
+ const r=box(3.4,.1,1.6,tile,0,2.35,.5);r.rotation.x=.55;g.add(r);
+ const r2=box(3.4,.1,1.4,tile,0,2.5,-.7);r2.rotation.x=-.5;g.add(r2);
+ for(let k=0;k<7;k++){const ln=box(3.42,.02,.03,M("#7a2e12"),0,2.35+(k-3)*.1*Math.cos(.55),.5-(k-3)*.16);ln.rotation.x=.55;g.add(ln);}
+ g.add(box(.6,1,.06,teak,0,1.05,.62));g.add(box(2.2,.1,.1,teak,0,1.9,.85));return g;}
+function gopuram(){const g=grp();const st=M("#d8cbb0",{roughness:.9}),col=M("#c86a4a",{roughness:.8});
+ for(let t=0;t<5;t++){const w=3.2-t*.5,h=.8;g.add(box(w,h,1.4-t*.12,t%2?col:st,0,.4+t*h,0));
+  for(let i=-1;i<=1;i++)g.add(sph(.16,M("#e8b23a"),i*(w/3),.4+t*h+.3,.75-t*.06));}
+ g.add(box(2.6,.35,1.2,M("#e8b23a",{metalness:.4}),0,4.5,0));for(let i=-2;i<=2;i++)g.add(sph(.2,M("#e8b23a"),i*.55,4.8,0));
+ g.add(box(1,2.2,.3,M("#3a2a18"),0,1.1,.72));return g;}
+function vimanaTemple(){const g=grp();const st=M("#c9bda2",{roughness:.95});
+ g.add(box(3.4,.6,3.4,st,0,.3,0));for(let t=0;t<5;t++){const w=2.6-t*.42;g.add(box(w,.55,w,st,0,.85+t*.55,0));
+  for(let i=0;i<4;i++){const a=i/4*Math.PI*2+Math.PI/4;g.add(sph(.12,st,Math.cos(a)*w*.42,1.1+t*.55,Math.sin(a)*w*.42));}}
+ g.add(sph(.8,st,0,3.9,0,1,.8,1));g.add(cone(.14,.6,M("#e8b23a",{metalness:.7}),0,4.5,0));return g;}
+/* Maharashtra: a stone plinth, thick lime plastered walls, carved teak pillars and balconies, tiled roofs around a chowk */
+function wada(){const g=grp();const stone=M("#7a7468",{roughness:.95}),lime=M("#e6dcc4",{roughness:.9}),teak=M("#4a2e16",{roughness:.6}),tile=M("#8a3a24",{roughness:.85});
+ g.add(box(4,.6,2.6,stone,0,.3,0));g.add(box(3.6,2.6,2.2,lime,0,1.9,0));
+ for(let i=0;i<5;i++)g.add(cyl(.11,.13,1.5,teak,-1.5+i*.75,1.35,1.12));
+ g.add(box(3.8,.25,.6,teak,0,2.25,1.2));
+ for(let i=0;i<6;i++)g.add(box(.08,.6,.08,teak,-1.4+i*.56,2.6,1.25));
+ g.add(box(1.5,.7,.5,teak,0,2.7,1.15));
+ [-1,1].forEach(s=>{const r=box(4.4,.12,1.6,tile,0,3.4,s*.7);r.rotation.x=s*.5;g.add(r);});
+ g.add(box(1.2,2,.12,teak,0,1.2,1.12));g.add(box(1.4,.3,.2,teak,0,2.3,1.16));return g;}
+/* the Deccan: tiled roof over a front platform; the Hoysala temple on its star shaped base */
+function deccanHouse(){const g=grp();const mud=M("#cbb187",{roughness:.95}),tile=M("#9a4426",{roughness:.85}),wood=M("#6a4424");
+ g.add(box(3,.5,2,M("#9a9184",{roughness:.95}),0,.25,0));g.add(box(2.6,1.4,1.6,mud,0,1.2,-.1));
+ for(let i=0;i<3;i++)g.add(cyl(.09,.1,1.2,wood,-.9+i*.9,1.1,.8));
+ [-1,1].forEach(s=>{const r=box(3.3,.1,1.5,tile,0,2.1,s*.55);r.rotation.x=s*.55;g.add(r);});
+ g.add(box(.55,.95,.06,wood,0,.95,.72));return g;}
+function hoysala(){const g=grp();const st=M("#8e8674",{roughness:.95});
+ /* the star shaped base: squares turned one against the other */
+ for(let i=0;i<4;i++){const b=box(3,.35,3,st,0,.18+i*.02,0);b.rotation.y=i*Math.PI/8;g.add(b);}
+ g.add(box(2,1.2,2,st,0,1,0));
+ for(let t=0;t<3;t++){const w=1.8-t*.42;const b=box(w,.5,w,st,0,1.8+t*.5,0);b.rotation.y=t*.2;g.add(b);
+  for(let i=0;i<4;i++){const a=i/4*Math.PI*2;g.add(sph(.13,st,Math.cos(a)*w*.5,1.95+t*.5,Math.sin(a)*w*.5));}}
+ g.add(sph(.6,st,0,3.4,0,1,.75,1));g.add(cone(.12,.5,M("#e8b23a",{metalness:.7}),0,3.9,0));return g;}
+const S3DRESS3={
+ tamil:{man:()=>{const p=person({cloth:"#f6f2e6",mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.5,.04,8,20),M("#d4a020",{metalness:.5}),0,.12,0)).rotation.x=Math.PI/2;return p;},
+  woman:()=>person({cloth:"#c8402f",sari:"#d4a020",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#f6f2e6",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ telugu:{man:()=>person({cloth:"#f4efe2",turban:"#f4efe2",mood:S3.mood}),
+  woman:()=>person({cloth:"#2a7a5a",sari:"#e0b030",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8752a",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ kannada:{man:()=>person({cloth:"#f4efe2",turban:"#e0b030",mood:S3.mood}),
+  woman:()=>person({cloth:"#7a2a5a",sari:"#e0b030",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8752a",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ marathi:{man:()=>person({cloth:"#f4efe2",turban:"#e04a2a",mood:S3.mood}),
+  woman:()=>person({cloth:"#2a6a4a",sari:"#c8402f",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8a02a",beard:true,hair:"#e8e8ea",mood:"calm"})},
+};
 const S3REGION={ezhu:"kerala",kannassa:"kerala",ramacharitam:"kerala",mappila:"mappila",bhanubhakta:"newar",siddhi:"newar",
- sarala:"odisha",jagamohan:"odisha",kandali:"assam",kashmiri:"kashmir"};
+ sarala:"odisha",jagamohan:"odisha",kandali:"assam",kashmiri:"kashmir",
+ kamba:"tamil",ranganatha:"telugu",kalpavruksham:"telugu",molla:"telugu",torave:"kannada",pampa:"kannada",eknath:"marathi"};
 function s3regional(name){
  const r=S3.region;if(!r)return null;
  const K=r==="mappila"?"kerala":r;
@@ -8776,7 +8831,20 @@ function s3regional(name){
   if(name==="house"||name==="hillhouse"||name==="hut")return ()=>kashmirHouse();
   if(name==="palace")return ()=>{const g=kashmirHouse();g.scale.setScalar(1.35);return g;};
  }
- const d=S3DRESS[r]||S3DRESS2[r];if(d&&d[name])return d[name];
+ if(K==="tamil"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>tamilHouse();
+  if(name==="palace")return ()=>vimanaTemple();
+  if(name==="gate")return ()=>gopuram();
+ }
+ if(K==="telugu"||K==="kannada"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>deccanHouse();
+  if(name==="palace")return ()=>hoysala();
+ }
+ if(K==="marathi"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>wada();
+  if(name==="palace")return ()=>{const g=wada();g.scale.setScalar(1.3);return g;};
+ }
+ const d=S3DRESS[r]||S3DRESS2[r]||S3DRESS3[r];if(d&&d[name])return d[name];
  return null;
 }
 
