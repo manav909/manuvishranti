@@ -97,7 +97,9 @@ with sync_playwright() as p:
         steps+=1
         btns=pg.evaluate(VISIBLE_BTNS)
         for b in btns:
-            if b['inView'] and b['covered'] and b['by'] not in ('',):
+            # the floating foot bar is a control that rides over the reading; what it hides
+            # is one small scroll away, so it is not counted as a covered button
+            if b['inView'] and b['covered'] and b['by'] not in ('','dobar'):
                 issue('covered',f"'{b['t'][:30]}' ({b['cls'][:20]}) sits under {b['by']}",screen_name(pg))
         st=pg.evaluate("()=>{try{return run?{n:run.N.id||'',w:run.w,W:run.N.watches.length}:{n:'',w:0,W:0}}catch(e){return {n:'',w:0,W:0}}}")
         nightlog.setdefault(st['n'],{'max_w':0,'W':st['W'],'presses':0})

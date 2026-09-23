@@ -1466,6 +1466,23 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 /* the pale buttons of a detour and a telling: readable ink, a visible edge */
 #chakkar .tbtn.ghost,#reader .rback,#chakkar .rback{color:var(--ink);background:transparent;border:2px solid var(--tide)}
 #chakkar .tbtn.ghost:hover,#reader .rback:hover{background:color-mix(in srgb,var(--tide) 16%,transparent)}
+
+/* the one thing to do next stays at the foot of the page, always in reach */
+#story .step:not(.shut) .fork.actbar{position:sticky;bottom:0;z-index:4;background:var(--page);
+ padding:.55rem .1rem .5rem;margin-bottom:0;border-radius:.7rem;box-shadow:0 -12px 16px -12px rgba(0,0,0,.5)}
+#story .step:not(.shut) .fork.actbar .do{min-height:44px;font-size:1.02rem}
+#story{scroll-padding-bottom:4rem}
+.pastbox .fork.actbar,.step.shut .fork.actbar{position:static;box-shadow:none;background:transparent}
+
+/* the foot bar: one tap on the move the moment is asking for */
+.dobar{position:absolute;left:.6rem;right:.6rem;bottom:.6rem;z-index:6;min-height:46px;
+ border:0;border-radius:99px;background:var(--tide);color:var(--page);font:inherit;font-weight:700;font-size:1.02rem;
+ padding:.6rem 1rem;box-shadow:0 6px 18px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dobar:hover{filter:brightness(1.06)}
+#sidePane{position:relative}
+/* the reading always ends with room for the foot bar, so nothing is stranded under it */
+#story{padding-bottom:4.4rem}
+
 </style>
 </head>
 <body>
@@ -1518,6 +1535,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
     <div id="pothi" class="panel" hidden></div>
     <div id="reader" class="panel" hidden></div>
     <div id="chakkar" class="panel" hidden></div>
+    <button class="dobar" id="dobar" hidden></button>
    </div>
   </section>
  </main>
@@ -3230,6 +3248,7 @@ const tourBox=document.getElementById("chakkar");
 const PANE={story:story,pothi:pothi,reader:readerBox,chakkar:tourBox};
 const PANE_N={story:"कथा",pothi:"पोथी",reader:"पढ़ाई",chakkar:"चक्कर"};
 let panel="story",kept={},lastPanel="story",trail=[];
+try{addEventListener("load",()=>{const st=document.getElementById("story");if(st)st.addEventListener("scroll",()=>{if(window.__db)cancelAnimationFrame(window.__db);window.__db=requestAnimationFrame(doBar);},{passive:true});});}catch(e){}
 function tabs(){
  if(!tabsBar)return;
  tabsBar.innerHTML="";
@@ -3238,6 +3257,7 @@ function tabs(){
  tabsBar.appendChild(btn(whoAmI()+" का पत्र","chip card-chip"+(cardOpen()?" on":""),openCard));
 }
 function showPanel(k){
+ try{setTimeout(doBar,60);}catch(e){}
  if(!PANE[k])return;
  if(quizLocked()){lockNote();return;}
  if(k!==panel){kept[panel]=PANE[panel].scrollTop;lastPanel=panel;
@@ -3287,6 +3307,7 @@ function step(title){                    /* every move opens a new card in the s
  const body=document.createElement("div");body.className="stepbody";sec.appendChild(body);
  story.appendChild(sec);curStep=body;stepLabel(sec);
  try{packPast();}catch(e){}
+ try{setTimeout(doBar,90);}catch(e){}
  /* the new step comes to the top of the page by itself, so nobody has to hunt for it */
  if(typeof requestAnimationFrame==="function"&&story.getBoundingClientRect)
   requestAnimationFrame(()=>{try{const y=story.scrollTop+sec.getBoundingClientRect().top-story.getBoundingClientRect().top-6;
@@ -3322,6 +3343,21 @@ function packPast(){
  const first=[...story.querySelectorAll(":scope > .step")][0];
  if(first)story.insertBefore(box,first);
 }
+
+/* the one thing to do next, shown at the foot of the reading when it has scrolled out of sight */
+function doBar(){
+ const bar=document.getElementById("dobar");if(!bar)return;
+ if(panel!=="story"){bar.hidden=true;return;}
+ const open=[...story.querySelectorAll(".step:not(.shut)")].pop();
+ const b=open?[...open.querySelectorAll(".fork.actbar .do")].pop():null;
+ if(!b){bar.hidden=true;return;}
+ const r=b.getBoundingClientRect(),s2=story.getBoundingClientRect();
+ if(r.top<s2.bottom-6&&r.bottom>s2.top+6){bar.hidden=true;return;}
+ bar.textContent=b.textContent;bar.hidden=false;
+ /* while the bar is up, the reading keeps that much room free at its foot */
+ bar.onclick=()=>{b.click();setTimeout(doBar,80);};
+}
+
 function el(h,c){const d=document.createElement("div");d.className=c||"";d.innerHTML=h;
  (curStep||story).appendChild(d);return d;}
 function say(list){(list||[]).forEach(p=>el("<p>"+p+"</p>"));}
