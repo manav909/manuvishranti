@@ -1498,6 +1498,18 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .visitlid .visittag{color:var(--quiet);font-size:.85rem;flex:0 0 auto}
 .visit.shut .visitbody{display:none}
 .visit.shut{opacity:.92}
+
+/* a find that has been read steps back, so what is left stands out */
+.gift.read{opacity:.72;border-style:dashed}
+.gift.read .giftlid b{font-weight:500}
+.giftread{flex:0 0 auto;font-size:.76rem;color:var(--quiet);border:1px solid var(--rule);border-radius:99px;padding:.02rem .5rem}
+.giftlid b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* the find's name gets room to breathe, and the lid lays itself out for a narrow screen */
+.giftlid{flex-wrap:wrap;align-items:center;row-gap:.2rem}
+.giftlid b{white-space:normal;overflow:visible;text-overflow:clip;flex:1 1 60%;line-height:1.35}
+.giftlid .gifttag,.giftlid .giftact,.giftlid .giftread{flex:0 0 auto}
+@media (max-width:560px){.giftlid b{flex:1 1 100%;order:3}.giftlid .giftact{order:2;margin-left:auto}}
 </style>
 </head>
 <body>
@@ -3350,7 +3362,7 @@ function mapArt(night){
 
 /* ---------- save ---------- */
 const KEY="lanka_map_v3";
-function blankSave(){return {seen:{},cards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
+function blankSave(){return {seen:{},cards:{},readCards:{},nights:{},done:{},depth:{},texts:{},patra:{},ach:{},
  katha:{},farq:{},vastu:{},kahi:{},tour:{},terms:{},slots:{},calm:false,role:"jigyasu",rolePicked:false,journey:null,roleDone:{},qdone:{},qright:0,qround:0,title:"",mani:0,kharch:0};}
 let save=blankSave();
 try{const r=localStorage.getItem(KEY);if(r)save=Object.assign(save,JSON.parse(r));}catch(e){}
@@ -3411,8 +3423,14 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
  const lid=document.createElement("button");
  lid.className="giftlid";lid.type="button";
  const tag=document.createElement("span");tag.className="gifttag";tag.textContent=L[kind]||"बात";
- const say=document.createElement("b");say.textContent=how||"कुछ मिला";
+ const say=document.createElement("b");say.textContent=C.t||how||"कुछ मिला";
  const act=document.createElement("span");act.className="giftact";act.textContent="खोलो";
+ /* a find already read looks different, and says so */
+ /* found is not the same as read: a find counts as read only once it has been opened */
+ save.readCards=save.readCards||{};
+ const seen=!!save.readCards[c];
+ if(seen){box.classList.add("read");act.textContent="फिर से पढ़ो";
+  const mk=document.createElement("span");mk.className="giftread";mk.textContent="पढ़ी हुई";lid.appendChild(mk);}
  lid.appendChild(tag);lid.appendChild(say);lid.appendChild(act);
  const body=document.createElement("div");
  body.className="giftbody";
@@ -3429,9 +3447,13 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
  body.appendChild(where);
  lid.onclick=()=>{
   const shut=box.classList.contains("shut");
+  if(shut&&!box.classList.contains("read")){box.classList.add("read");
+   save.readCards=save.readCards||{};save.readCards[c]=1;persist();
+   const m=document.createElement("span");m.className="giftread";m.textContent="पढ़ी हुई";lid.appendChild(m);
+   const bs=box.closest(".basket");if(bs&&bs.count)bs.count();}
   box.classList.toggle("shut",!shut);
   box.classList.toggle("just",shut);
-  act.textContent=shut?"बंद करो":"खोलो";
+  act.textContent=shut?"बंद करो":(box.classList.contains("read")?"फिर से पढ़ो":"खोलो");
   if(shut)setTimeout(()=>box.classList.remove("just"),700);
  };
  box.appendChild(lid);box.appendChild(body);
@@ -3448,7 +3470,9 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
   bl.onclick=()=>{basket.classList.toggle("shut");count();};
   basket.appendChild(bl);basket.appendChild(bb);basket.body=bb;basket.cnt=bc;
   function count(){const n=bb.children.length;
-   bc.textContent=(basket.classList.contains("shut")?"खोलो · ":"बंद करो · ")+n;}
+   const left=[...bb.children].filter(x=>!x.classList.contains("read")).length;
+   bc.textContent=(basket.classList.contains("shut")?"खोलो · ":"बंद करो · ")+
+    (left?left+" बाकी, "+n+" में से":n+", सब पढ़ी");}
   basket.count=count;host.appendChild(basket);
  }
  (basket.body||basket).appendChild(box);
