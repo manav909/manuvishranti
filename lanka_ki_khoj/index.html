@@ -1586,6 +1586,9 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .chinhbox span{color:var(--quiet);font-size:.86rem;line-height:1.5}
 .chinhbox.shutbox{border-style:dashed;border-color:var(--rule);cursor:default}
 .khellist{margin:.2rem 0 .6rem;padding-left:1.1rem;line-height:1.9}
+
+/* the row of small doors inside the mission strip */
+.mrow2{justify-content:flex-start;margin-top:.3rem}
 </style>
 </head>
 <body>
@@ -3463,6 +3466,8 @@ const total=Object.keys(SC).reduce((n,k)=>n+layersOf(k).length,0);
 const seenCount=()=>Object.keys(SC).reduce((n,k)=>n+Math.min(depthOf(k),layersOf(k).length),0);
 const cardCount=()=>Object.keys(CARDS).filter(c=>save.cards[c]).length;
 const twoVisits=()=>!!save.done.khoj;
+/* a mission's boon: one more place in every watch */
+const visitsHere=()=>(twoVisits()?2:1)+((save.muhim&&save.muhim.boon&&save.muhim.boon.extra)?1:0);
 const purse=()=>(save.mani||0)-(save.kharch||0);
 const TELLS=Object.keys(SRC).filter(k=>!SRC[k].tool);
 const textCount=()=>TELLS.filter(k=>save.texts&&save.texts[k]).length;
@@ -3902,6 +3907,34 @@ function muhimNote(M,pay){
 
 
 /* the strip above the reading: what the game is asking for right now, and how far it has come */
+/* ============ दीया: रात में एक बार, एक बंद बात का पता ============
+   the boon of the lamp: once a night it points at where a find still waits. */
+function diyaLeft(){
+ const m=(save.muhim=save.muhim||{});
+ if(!(m.boon&&m.boon.diya))return 0;
+ const night=run?run.N.id:"";
+ return (m.diya&&m.diya[night])?0:1;
+}
+function diyaJalao(){
+ if(!run||!diyaLeft())return;
+ const m=(save.muhim=save.muhim||{});
+ /* look for a find of this night that has not been picked up yet */
+ let found=null;
+ Object.keys(SC).forEach(k=>{
+  if(found||k.indexOf(run.N.id+"-")!==0)return;
+  (layersOf(k)||[]).forEach(L=>{
+   if(found)return;
+   (L.cards||[]).forEach(c=>{if(!found&&!save.cards[c])found={k:k,c:c,src:L.src||"vr"};});
+  });
+ });
+ m.diya=m.diya||{};m.diya[run.N.id]=1;persist();
+ if(!found){note("इस रात की हर बात मिल चुकी है।");muhimBar();return;}
+ const parts=found.k.split("-"),place=PLACES[parts[1]],w=+parts[2];
+ bigShow({obj:"mudrika",tag:"दीया जला",title:CARDS[found.c].t,
+  line:"यह बात "+(place?place.n:"")+" पर मिलती है, "+(run.N.watches[w]?run.N.watches[w].n:"")+" में, "+
+   SRC[found.src].n+" के पन्ने पर।",
+  shut:"ठीक है",onShut:()=>muhimBar()});
+}
 function muhimBar(){
  const host=document.getElementById("muhimbar");if(!host)return;
  if(panel!=="story"||!run){host.hidden=true;return;}   /* the strip belongs to the reading only */
@@ -3928,9 +3961,13 @@ function muhimBar(){
    lid.innerHTML="मुहिम: "+M.n+' <span class="mtag">'+have+"/"+M.goal+' · खोलो</span>';}
  }else lid.innerHTML='मुहिमें<span class="mtag">बंद करो</span>';
  if(!host.classList.contains("shut")){
+  const body=host.querySelector(".mbody");
+  const row=document.createElement("div");row.className="bacts mrow2";
   const play=document.createElement("button");play.className="claim mplay";play.textContent="थोड़ा दम लो";
-  play.onclick=()=>khelChuno();
-  const body=host.querySelector(".mbody");if(body)body.appendChild(play);
+  play.onclick=()=>khelChuno();row.appendChild(play);
+  if(diyaLeft()){const d=document.createElement("button");d.className="claim ghost";d.textContent="दीया जलाओ";
+   d.onclick=()=>diyaJalao();row.appendChild(d);}
+  if(body)body.appendChild(row);
  }
  lid.onclick=()=>{host.classList.toggle("shut");muhimBar();};
 }
@@ -7750,7 +7787,7 @@ function tap(id){
  const key=run?run.N.id+"-"+id+"-"+run.w:"";
  const tot=key&&SC[key]?layersOf(key).length:0,d=key&&SC[key]?Math.min(depthOf(key),tot):0;
  const prog=(key&&SC[key])?(d===0?"अभी तक यहाँ नहीं गए":(d<tot?"यहाँ के "+tot+" रूपों में से "+d+" देखे":"यहाँ के सारे रूप देख लिए")):"";
- const left=run?(twoVisits()?2:1)-run.used:0;
+ const left=run?visitsHere()-run.used:0;
  const here=run&&run.focus===id;
  const nowOpen=!run||!inW||ghadiSpots().includes(id)||used;
  const goNow=!!(run&&inW&&nowOpen&&!used&&!giftLock&&(run.ghadi===0||left>0)&&!run.busy);
@@ -7891,7 +7928,7 @@ function offer(only){
  let open=ghadiSpots().filter(x=>!run.pickedHere.includes(x));
  if(only==="fresh")open=open.filter(x=>freshAt(x)>0);
  if(only==="seen")open=open.filter(x=>freshAt(x)===0);
- const left=(twoVisits()?2:1)-run.used;
+ const left=visitsHere()-run.used;
  if(only==="seen")
   el('<p class="quiet">ये जगहें तुम पहले ही पूरी पढ़ चुके हो।</p>');
  else if(only==="fresh")
@@ -7974,7 +8011,7 @@ function visit(id){
  if(!run){note("अभी कोई रात चल नहीं रही। कथा वाले पन्ने पर कोई हिस्सा चुनो।");return;}
  if(run.busy)return;
  if(run.pickedHere.includes(id)){note("इस घड़ी तुम "+PLACES[id].n+" हो आए।");return;}
- if(run.ghadi===1&&(twoVisits()?2:1)-run.used<=0){
+ if(run.ghadi===1&&visitsHere()-run.used<=0){
   note("इस घड़ी तुम्हारी चुनी हुई जगह हो चुकी। कथा वाले पन्ने पर वक़्त आगे बढ़ाओ।");return;}
  if(!run.N.watches[run.w]||!spotsFor(run.w).includes(id)){
   note("इस घड़ी "+PLACES[id].n+" में कुछ नहीं हो रहा।");return;}
@@ -8078,7 +8115,7 @@ function visit(id){
  }
  run.busy=false;paint();
  const rest=ghadiSpots().filter(x=>!run.pickedHere.includes(x));
- const more=run.ghadi===1&&(twoVisits()?2:1)-run.used>0&&rest.length>0;
+ const more=run.ghadi===1&&visitsHere()-run.used>0&&rest.length>0;
  el('<p class="ask">अब क्या करोगे?</p>');
  const f=el("","fork actbar");
  if(more)f.appendChild(btn("इसी घड़ी एक और जगह देखो","do",()=>{f.remove();offer();}));
