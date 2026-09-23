@@ -9229,7 +9229,11 @@ function dawn(){
  flyTo(watchBox());
  const f=el("","fork");
  f.appendChild(btn(got<deep?"यही हिस्सा दोबारा खेलो, दूसरे रास्ते से":"यही हिस्सा दोबारा खेलो","do",()=>start(N.id)));
- const nxt=NIGHTS.find(x=>x.needs===N.id);
+ /* whatever night is open next, offer it right here, so the way on is never lost */
+ const openNight=x=>(!x.needs||save.nights[x.needs])&&(!x.katha||(save.katha&&save.katha[x.katha]));
+ const nxt=NIGHTS.find(x=>x.needs===N.id&&openNight(x))||
+  NIGHTS.find(x=>x.id!==N.id&&!save.nights[x.id]&&openNight(x))||
+  NIGHTS.find(x=>x.id!==N.id&&save.nights[x.id]);
  if(nxt)f.appendChild(btn(nxt.name+" शुरू करो","do go",()=>start(nxt.id)));
  f.appendChild(btn("शुरुआत पर लौटो","do",front));
  run.w=run.N.watches.length;hud();
@@ -9257,7 +9261,9 @@ function front(){
  const first=RFIRST[myRole()];
  const order=NIGHTS.slice().sort((a,b)=>(b.id===first?1:0)-(a.id===first?1:0));
  order.forEach(N=>{
-  const ok=(!N.needs||save.nights[N.needs])&&(!N.katha||(save.katha&&save.katha[N.katha]));
+  /* a night once played stays open for ever, whatever door it was entered by */
+  const been=!!(save.nights&&save.nights[N.id]);
+  const ok=been||((!N.needs||save.nights[N.needs])&&(!N.katha||(save.katha&&save.katha[N.katha])));
   const mark=(N.id===first&&ok&&!save.nights[N.id])?" ← यहीं से शुरू करना ठीक रहेगा":"";
   const mine=Object.keys(SC).filter(k=>k.indexOf(N.id+"-")===0);
   const deep=mine.reduce((n,k)=>n+layersOf(k).length,0);
