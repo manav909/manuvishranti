@@ -1570,6 +1570,10 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 
 /* while it fades away, the show must not stand in the way of a tap */
 .bigshow.gone{pointer-events:none}
+
+/* the turning emblem above the card */
+.bobj{display:flex;justify-content:center;margin:-.2rem 0 .1rem;filter:drop-shadow(0 8px 22px rgba(0,0,0,.45))}
+.bobjcv{width:180px;height:180px;max-width:56vw;max-height:56vw}
 </style>
 </head>
 <body>
@@ -3870,7 +3874,8 @@ function muhimNote(M,pay){
   /* a small watch mission passes with a quiet line; only the big ones take the whole screen */
   if(!big){note("मुहिम पूरी: "+M.n+" · "+pay+" मणि");return;}
   if(typeof bigShow==="function"&&document.getElementById("app")){
-   bigShow({tag:M.size==="safar"?"सफ़र की मुहिम":(M.size==="raat"?"इस रात की मुहिम":"इस घड़ी की मुहिम"),
+   bigShow({obj:M.size==="safar"?"surya":(M.count==="read"||M.count==="cardread"?"kodanda":"gada"),
+    tag:M.size==="safar"?"सफ़र की मुहिम":(M.size==="raat"?"इस रात की मुहिम":"इस घड़ी की मुहिम"),
     title:M.n+" पूरी",line:M.x,mani:pay,
     extra:M.boon?'<p class="bline"><b>'+(M.boon==="extra"?"अब हर घड़ी में एक जगह ज़्यादा देख सकते हो।":"अब दीया मिलेगा, जो बताएगा कि कोई बंद बात किस पल में छिपी है।")+"</b></p>":"",
     act:big?"थोड़ा दम लो":"",shut:"कथा पर लौटो",
@@ -3929,6 +3934,7 @@ function bigShow(o){
   '<div class="brays"></div>'+
   '<div class="bpetals">'+fl+"</div>"+
   '<div class="bcard">'+
+   (o.obj?'<div class="bobj"></div>':"")+
    (o.tag?'<span class="btag">'+o.tag+"</span>":"")+
    '<h2 class="btitle">'+(o.title||"")+"</h2>"+
    (o.line?'<p class="bline">'+o.line+"</p>":"")+
@@ -3940,6 +3946,7 @@ function bigShow(o){
  host.hidden=false;host.classList.remove("gone");
  const token=(host.dataset.token=String(Date.now()+Math.random()));
  /* the coins count up, so the reward is felt and not just read */
+ if(o.obj)try{showObject(o.obj);}catch(e){}
  const num=host.querySelector(".bnum");
  if(num){const to=+num.dataset.to||0;
   if(calm)num.textContent=to;
@@ -4071,6 +4078,48 @@ function runChalang(after){
   raf=requestAnimationFrame(frame);
  }
  frame();
+}
+
+
+/* ============ बड़े परदे पर घूमता चिह्न ============
+   the gada, the bow or the sun disc turning slowly in its own light, over the show's sky. */
+function showObject(kind){
+ if(typeof THREE==="undefined"||!s3ok())return "";
+ const host=document.getElementById("bigshow");if(!host)return "";
+ const wrap=host.querySelector(".bobj");if(!wrap)return "";
+ const calm=(document.getElementById("app")||{classList:{contains:()=>false}}).classList.contains("calm");
+ const W=260,H=260;
+ const R=new THREE.WebGLRenderer({antialias:true,alpha:true});
+ R.setPixelRatio(Math.min(2,window.devicePixelRatio||1));R.setSize(W,H,false);
+ R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=1.15;
+ const cv=R.domElement;cv.className="bobjcv";wrap.appendChild(cv);
+ const sc=new THREE.Scene(),cam=new THREE.PerspectiveCamera(34,1,.1,100);
+ const obj=kind==="kodanda"?S3E.kodandaBow():(kind==="surya"?S3E.suryaDisc():S3E.gadaBig());
+ sc.add(obj);
+ const box=new THREE.Box3().setFromObject(obj);
+ const ctr=box.getCenter(new THREE.Vector3());
+ obj.position.sub(ctr);
+ const sph2=box.getBoundingSphere(new THREE.Sphere());
+ const need=sph2.radius/Math.sin(cam.fov*Math.PI/360)*1.22;   /* room to spare, so nothing is cut */
+ cam.position.set(0,0,need);cam.lookAt(0,0,0);
+ sc.add(new THREE.HemisphereLight(0xffe9c0,0x30203a,1.0));
+ const key=new THREE.DirectionalLight(0xfff2d0,1.9);key.position.set(2,3,3);sc.add(key);
+ const rim=new THREE.DirectionalLight(0x9fd4ff,1.1);rim.position.set(-3,1,-2);sc.add(rim);
+ let t=0,raf=0;
+ (function turn(){
+  t+=calm?0:1;
+  obj.rotation.y=t/60;
+  obj.rotation.z=Math.sin(t/90)*.08;
+  obj.position.y=Math.sin(t/45)*.12;
+  R.render(sc,cam);
+  raf=requestAnimationFrame(turn);
+ })();
+ /* when the show closes, the little picture stops too */
+ const watch=setInterval(()=>{
+  if(!document.body.contains(cv)){cancelAnimationFrame(raf);clearInterval(watch);
+   try{R.dispose();}catch(e){}}
+ },600);
+ return "";
 }
 
 function el(h,c){const d=document.createElement("div");d.className=c||"";d.innerHTML=h;
@@ -9609,6 +9658,9 @@ const S3B={
  elephant:()=>{const g=grp();const m=M("#8f949c");g.add(sph(1,m,0,1.3,0,1.3,.9,.8));g.add(sph(.6,m,1.1,1.6,0));const t=mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(1.55,1.5,0),new THREE.Vector3(1.8,1,0),new THREE.Vector3(1.75,.5,.1)]),16,.13,8,false),m);t.userData.trunk=true;g.add(t);
   [-1,1].forEach(s=>g.add(sph(.45,m,1,1.7,s*.5,.3,1,1)));[[-.6,.3],[-.6,-.3],[.6,.3],[.6,-.3]].forEach(p=>g.add(cyl(.2,.22,.8,m,p[0],.4,p[1])));eyes(g,1.75,.5,.2,.07);g.children[g.children.length-1].rotation.y=Math.PI/2;g.children[g.children.length-1].position.set(1.45,1.75,0);return g;},
  bell:()=>{const g=grp();g.add(lathe([[0,.5],[.12,.48],[.2,.3],[.28,0],[0,0]],M("#e2b33a",{metalness:.6,roughness:.3}),0));g.userData.swing=true;return g;},
+ gada:()=>gada(),
+ kodanda:()=>kodanda(),
+ suryachakra:()=>suryachakra(),
  pothi:()=>{const g=grp();const st=box(1.1,.16,.8,M("#6a4424",{roughness:.8}),0,.08,0);g.add(st);
   const bk=pothi();bk.position.set(0,.16,0);bk.rotation.x=-.42;bk.scale.setScalar(1.35);g.add(bk);return g;},
  palmleaf:()=>{const g=grp();g.add(box(1.3,.14,.9,M("#6a4424",{roughness:.8}),0,.07,0));
@@ -9719,6 +9771,64 @@ function divine(o){
 }
 function bow(){const g=grp();const b=mesh(new THREE.TorusGeometry(.75,.04,8,32,Math.PI*.9),M("#7a4a1e",{roughness:.5}),0,0,0);b.rotation.z=Math.PI/2+.15;g.add(b);
  g.add(cyl(.008,.008,1.46,M("#f4ecd8"),.08,0,0));g.position.set(0,-.7,.1);return g;}
+/* ===== पूज्य चिह्न, बड़े परदे के लिए =====
+   the gada follows the old maces: a bulbous ribbed head, a small point on top,
+   a tapered shaft with cut rings and a collar under the head.
+   Kodanda is the long bow with worked ends, carried with an arrow on the string.
+   the sun of the Raghu line is a face in a disc with twelve rays. */
+function gadaBig(){
+ const g=grp();
+ const gold=M("#e8b63a",{metalness:.9,roughness:.18}),dark=M("#9a6a18",{metalness:.8,roughness:.3});
+ /* the head takes almost half the mace, the way the old bulbous ones do */
+ const head=grp();head.position.y=2.15;g.add(head);
+ head.add(sph(1.02,gold,0,0,0));
+ for(let i=0;i<12;i++){const a=i/12*Math.PI*2;
+  const rib=sph(.17,dark,Math.cos(a)*.86,0,Math.sin(a)*.86,1,1.5,1);head.add(rib);}
+ head.add(cyl(.92,.72,.24,dark,0,-.86,0));      /* the band under the bulb */
+ head.add(cyl(.72,.92,.24,dark,0,.86,0));       /* and over it */
+ head.add(cyl(.34,.5,.2,gold,0,1.08,0));
+ head.add(cone(.3,.7,gold,0,1.5,0,12));         /* the small point on top */
+ /* the shaft: thin at the grip, wider where it meets the head, with cut rings */
+ g.add(cyl(.11,.19,2.1,gold,0,1.05,0));
+ for(let i=0;i<4;i++)g.add(cyl(.2,.2,.07,dark,0,.45+i*.45,0));
+ g.add(cyl(.26,.26,.18,dark,0,2.0,0));          /* the collar */
+ g.add(cyl(.15,.15,.34,dark,0,.17,0));          /* the grip */
+ g.add(sph(.19,gold,0,0,0));                    /* the knob at the very bottom */
+ return g;
+}
+function kodandaBow(){
+ const g=grp();
+ const wood=M("#6a3a1a",{roughness:.55}),gold=M("#e0aa2c",{metalness:.8,roughness:.25});
+ const pts=[];
+ for(let i=0;i<=16;i++){const t=i/16,a=(t-.5)*2.2;
+  pts.push(new THREE.Vector3(Math.cos(a)*1.1-1.0,(t-.5)*3.2,0));}
+ g.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),28,.07,8,false),wood,0,0,0));
+ [1,-1].forEach(q=>g.add(cyl(.11,.06,.3,gold,-0.78,q*1.6,0)));
+ g.add(cyl(.02,.02,3.2,M("#efe6d2",{roughness:.8}),-.05,0,0));
+ const shaft=cyl(.03,.03,2.2,M("#8a6a3a"),1.0,0,0);shaft.rotation.z=Math.PI/2;g.add(shaft);
+ const tipc=cone(.09,.26,gold,2.2,0,0,8);tipc.rotation.z=-Math.PI/2;g.add(tipc);
+ [0,1].forEach(i=>g.add(box(.22,.02,.16,M("#f0e2c0"),-.02,0,i?.06:-.06)));
+ return g;
+}
+function suryaDisc(){
+ const g=grp();
+ const gold=M("#f4c247",{metalness:.9,roughness:.16}),deep=M("#b4761a",{metalness:.8,roughness:.3}),
+  skin=M("#f6d79a",{roughness:.45}),ink=M("#5a3a10",{roughness:.6});
+ /* the disc itself, wide enough to carry a face */
+ g.add(cyl(1.15,1.15,.18,deep,0,0,0));
+ g.add(cyl(1.02,1.02,.22,gold,0,.03,0));
+ /* twelve rays, long and short by turns, as the old emblems cut them */
+ for(let i=0;i<12;i++){const a=i/12*Math.PI*2,lng=i%2===0;
+  const L=lng?.85:.5,d=1.15+L/2;
+  const ray=cone(lng?.17:.12,L,gold,Math.cos(a)*d,Math.sin(a)*d,0,lng?8:6);
+  ray.rotation.z=a-Math.PI/2;g.add(ray);}
+ /* the quiet face in the middle */
+ g.add(sph(.56,skin,0,0,.14,1,1,.4));
+ [-1,1].forEach(q=>{g.add(sph(.075,ink,q*.2,.1,.4,1,1,.5));
+  g.add(box(.2,.04,.04,ink,q*.2,.27,.38));});
+ g.add(box(.26,.05,.05,ink,0,-.18,.42));
+ return g;
+}
 function gada(){const g=grp();g.add(cyl(.05,.05,1.4,M("#c89020",{metalness:.7,roughness:.3}),0,.1,0));
  g.add(sph(.28,M("#e8b030",{metalness:.8,roughness:.25,emissive:new THREE.Color("#6a4000"),emissiveIntensity:.3}),0,.9,0));g.add(cone(.08,.2,M("#e8b030",{metalness:.8}),0,1.25,0));g.position.set(0,-.9,0);return g;}
 function lotusHold(){const g=S3B.lotus();g.scale.setScalar(.8);g.position.set(0,-.7,.15);return g;}
@@ -10615,7 +10725,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
 function s3stop(){if(S3.cur){try{S3.cur.stop();}catch(e){}S3.cur=null;}}
 
 function s3canvas(){if(!S3.canvas){S3.canvas=document.createElement("canvas");S3.canvas.className="s3";}return S3.canvas;}
-return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE};
+return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc};
 })();
 const S3ROLECOL=r=>S3E.S3ROLE[r]||S3E.S3ROLE.jigyasu,scene3d=S3E.scene3d,s3stop=S3E.s3stop,s3ok=S3E.s3ok,s3canvas=S3E.s3canvas,S3NOW=()=>S3E.S3.cur;
 
