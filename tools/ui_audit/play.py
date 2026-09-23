@@ -23,7 +23,13 @@ VISIBLE_BTNS="""()=>{const out=[];document.querySelectorAll('button').forEach((b
   out.push({i,t:(b.textContent||b.getAttribute('aria-label')||'').trim().slice(0,50),cls:String(b.className),x:Math.round(cx),y:Math.round(cy),inView:shown,covered,by:String(by).slice(0,30)});});return out;}"""
 def screen_name(pg):
     return pg.evaluate("()=>{const h=document.querySelector('#story h1, #story h2');return (h?h.textContent:'').trim().slice(0,30)}")
+def shut_big(pg):
+    # a full screen show may open when a mission is finished; a player would close it, so close it
+    pg.evaluate("""()=>{const x=document.getElementById('bigshow');
+      if(x&&!x.hidden){const c=x.querySelector('.bshut');if(c)c.click();x.hidden=true;}}""")
+
 def click_btn(pg, b):
+    shut_big(pg)
     loc=pg.locator('button').nth(b['i'])
     try:
         pg.wait_for_timeout(450); loc.scroll_into_view_if_needed(timeout=4000); loc.click(timeout=5000)
@@ -70,7 +76,7 @@ with sync_playwright() as p:
     pg.goto(URL); pg.wait_for_timeout(700)
     pg.evaluate("()=>{try{localStorage.clear()}catch(e){}}"); pg.reload(); pg.wait_for_timeout(700)
     # 1. the very first screen must offer a way in
-    btns=pg.evaluate(VISIBLE_BTNS)
+    btns=(shut_big(pg) or pg.evaluate(VISIBLE_BTNS))
     if not btns: issue('dead-end','the first screen has no button at all','शुरुआत')
     # 2. pick a role the way a player would: tap its card, then the button that confirms it
     cards=[b for b in btns if 'rolecard' in b['cls'] or 'role' in b['cls']]
@@ -81,21 +87,21 @@ with sync_playwright() as p:
     if not target: issue('dead-end','no role card to press on the first screen','भूमिका चुनना')
     else:
         click_btn(pg,target)
-        btns=pg.evaluate(VISIBLE_BTNS)
+        btns=(shut_big(pg) or pg.evaluate(VISIBLE_BTNS))
         go=next((b for b in btns if 'चलो' in b['t'] or 'चुनो' in b['t'] or 'do go' in b['cls']),None)
         if not go: issue('dead-end','a role page with no way to pick it','भूमिका का पन्ना')
         else:
             if go['covered']: issue('covered',f"'{go['t']}' is under {go['by']}",'भूमिका का पन्ना')
             click_btn(pg,go)
     # 3. play the first night, only by pressing what is on screen
-    btns=pg.evaluate(VISIBLE_BTNS)
+    btns=(shut_big(pg) or pg.evaluate(VISIBLE_BTNS))
     night=next((b for b in btns if 'रात' in b['t'] and 'do go' in b['cls']),None) or next((b for b in btns if 'do go' in b['cls']),None)
     if not night: issue('dead-end','the nights screen has nothing to start','रातें')
     else: click_btn(pg,night)
     steps=0; seen_dawn=False; last=''; nightlog={}
     while steps<60:
         steps+=1
-        btns=pg.evaluate(VISIBLE_BTNS)
+        btns=(shut_big(pg) or pg.evaluate(VISIBLE_BTNS))
         for b in btns:
             # the floating foot bar is a control that rides over the reading; what it hides
             # is one small scroll away, so it is not counted as a covered button
@@ -125,12 +131,12 @@ with sync_playwright() as p:
     if not seen_dawn: issue('never-ends','the night did not reach its morning in 60 presses',screen_name(pg))
     # 4. the side panels open and close by their own buttons
     for label in ['पोथी','पत्र']:
-        btns=pg.evaluate(VISIBLE_BTNS)
+        btns=(shut_big(pg) or pg.evaluate(VISIBLE_BTNS))
         b=next((x for x in btns if label in x['t']),None)
         if not b: issue('missing',f"no '{label}' button on screen",'सुबह')
         else:
             click_btn(pg,b)
-            btns2=pg.evaluate(VISIBLE_BTNS)
+            btns2=(shut_big(pg) or pg.evaluate(VISIBLE_BTNS))
             ids=pg.evaluate("()=>[...document.querySelectorAll('button')].map(b=>b.id)")
             close=next((x for x in btns2 if ids[x['i']] in ('pcardShut','scrollShut','deepShut')),None) or next((x for x in btns2 if x['t']=='कथा' or 'वापस' in x['t']),None)
             if not close: issue('trap',f"'{label}' opens but offers no visible way back",label)

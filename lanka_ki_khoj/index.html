@@ -1536,6 +1536,40 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .panebody{display:flex;flex-direction:column;min-height:0}
 .panebody>.muhimbar{position:relative;z-index:5;flex:0 0 auto;order:-1}
 .panebody>#story{flex:1 1 auto;min-height:0;position:relative}
+
+/* the full screen show: sky, rays, petals, and a card that lands with a small bounce */
+.bigshow{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bigshow[hidden]{display:none}
+.bsky{position:absolute;inset:0;background:
+ radial-gradient(120% 90% at 50% 8%, color-mix(in srgb,var(--tint) 60%,transparent) 0%, transparent 62%),
+ linear-gradient(180deg, color-mix(in srgb,var(--tint) 24%,#0b0710) 0%, #0b0710 78%)}
+.brays{position:absolute;left:50%;top:-30%;width:180vmax;height:180vmax;transform:translateX(-50%);
+ background:repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.10) 0deg 6deg, transparent 6deg 18deg);
+ animation:bspin 38s linear infinite;opacity:.5;pointer-events:none}
+@keyframes bspin{to{transform:translateX(-50%) rotate(360deg)}}
+.bpetals{position:absolute;inset:0;pointer-events:none}
+.bpetal{position:absolute;top:-8%;width:12px;height:14px;border-radius:70% 0 70% 0;background:#f2b8a0;opacity:.9;
+ animation:bfall linear infinite}
+@keyframes bfall{0%{transform:translateY(-10vh) rotate(0)}100%{transform:translateY(112vh) rotate(420deg)}}
+.bcard{position:relative;z-index:2;max-width:min(92vw,520px);margin:1rem;padding:1.3rem 1.2rem 1rem;text-align:center;
+ border-radius:1.2rem;background:color-mix(in srgb,var(--page) 88%,transparent);border:2px solid color-mix(in srgb,var(--tint) 70%,transparent);
+ box-shadow:0 24px 60px rgba(0,0,0,.5);animation:bland .5s cubic-bezier(.2,1.4,.5,1) both}
+@keyframes bland{0%{transform:scale(.7) translateY(18px);opacity:0}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.btag{display:inline-block;font-size:.8rem;color:var(--page);background:var(--tide);border-radius:99px;padding:.1rem .7rem;font-weight:700}
+.btitle{margin:.5rem 0 .2rem;font-size:1.6rem;line-height:1.25}
+.bline{margin:.2rem 0 .6rem;color:var(--quiet);line-height:1.6}
+.bmani{font-size:1.5rem;font-weight:800;margin:.3rem 0 .5rem}
+.bacts{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem}
+.bigshow.gone{animation:bfade .4s ease forwards}
+@keyframes bfade{to{opacity:0;transform:scale(1.03)}}
+#app.calm .brays,#app.calm .bpetals{display:none}
+
+/* the little game's board */
+.kcanvas{width:100%;max-width:100%;height:auto;border-radius:.8rem;border:2px solid var(--rule);touch-action:manipulation;display:block}
+.kscore{margin:.5rem 0 0;font-weight:700}
+
+/* while it fades away, the show must not stand in the way of a tap */
+.bigshow.gone{pointer-events:none}
 </style>
 </head>
 <body>
@@ -3831,7 +3865,18 @@ function muhimTick(what){
  persist();muhimBar();
 }
 function muhimNote(M,pay){
- try{note("मुहिम पूरी: "+M.n+" · "+pay+" मणि"+(M.boon?", और एक नया हक़":""));}catch(e){}
+ try{
+  const big=(M.size!=="ghadi");
+  /* a small watch mission passes with a quiet line; only the big ones take the whole screen */
+  if(!big){note("मुहिम पूरी: "+M.n+" · "+pay+" मणि");return;}
+  if(typeof bigShow==="function"&&document.getElementById("app")){
+   bigShow({tag:M.size==="safar"?"सफ़र की मुहिम":(M.size==="raat"?"इस रात की मुहिम":"इस घड़ी की मुहिम"),
+    title:M.n+" पूरी",line:M.x,mani:pay,
+    extra:M.boon?'<p class="bline"><b>'+(M.boon==="extra"?"अब हर घड़ी में एक जगह ज़्यादा देख सकते हो।":"अब दीया मिलेगा, जो बताएगा कि कोई बंद बात किस पल में छिपी है।")+"</b></p>":"",
+    act:big?"थोड़ा दम लो":"",shut:"कथा पर लौटो",
+    onGo:()=>{if(typeof khelChalang==="function")khelChalang(()=>{});}});
+  }else note("मुहिम पूरी: "+M.n+" · "+pay+" मणि");
+ }catch(e){}
 }
 
 
@@ -3862,6 +3907,170 @@ function muhimBar(){
    lid.innerHTML="मुहिम: "+M.n+' <span class="mtag">'+have+"/"+M.goal+' · खोलो</span>';}
  }else lid.innerHTML='मुहिमें<span class="mtag">बंद करो</span>';
  lid.onclick=()=>{host.classList.toggle("shut");muhimBar();};
+}
+
+
+/* ============ बड़ा पर्दा: पूरे परदे का दृश्य, जो मुहिम पूरी होने पर खुलता है ============
+   everything here is drawn with the page itself, no picture files, so it stays light on a phone.
+   when the player has asked for less movement, it opens still and quiet. */
+function bigShow(o){
+ o=o||{};
+ const app=document.getElementById("app");
+ const calm=app&&app.classList.contains("calm");
+ let host=document.getElementById("bigshow");
+ if(!host){host=document.createElement("div");host.id="bigshow";host.className="bigshow";document.body.appendChild(host);}
+ const tint=(ROLE[myRole()]&&ROLE[myRole()].c)||"#2a8a80";
+ const petals=calm?0:14;
+ let fl="";for(let i=0;i<petals;i++){
+  fl+='<i class="bpetal" style="left:'+(4+Math.random()*92).toFixed(1)+'%;animation-delay:'+(Math.random()*1.6).toFixed(2)+
+   's;animation-duration:'+(2.6+Math.random()*2.4).toFixed(2)+'s;transform:scale('+(.6+Math.random()*.9).toFixed(2)+')"></i>';}
+ host.innerHTML=
+  '<div class="bsky" style="--tint:'+tint+'"></div>'+
+  '<div class="brays"></div>'+
+  '<div class="bpetals">'+fl+"</div>"+
+  '<div class="bcard">'+
+   (o.tag?'<span class="btag">'+o.tag+"</span>":"")+
+   '<h2 class="btitle">'+(o.title||"")+"</h2>"+
+   (o.line?'<p class="bline">'+o.line+"</p>":"")+
+   (o.mani?'<div class="bmani"><span class="bnum" data-to="'+o.mani+'">0</span> मणि</div>':"")+
+   (o.extra||"")+
+   '<div class="bacts">'+(o.act?'<button class="claim bgo">'+o.act+"</button>":"")+
+    '<button class="claim ghost bshut">'+(o.shut||"आगे चलो")+"</button></div>"+
+  "</div>";
+ host.hidden=false;host.classList.remove("gone");
+ const token=(host.dataset.token=String(Date.now()+Math.random()));
+ /* the coins count up, so the reward is felt and not just read */
+ const num=host.querySelector(".bnum");
+ if(num){const to=+num.dataset.to||0;
+  if(calm)num.textContent=to;
+  else{let at=0;const step=Math.max(1,Math.round(to/24));
+   const tick=setInterval(()=>{at=Math.min(to,at+step);num.textContent=at;if(at>=to)clearInterval(tick);},40);}}
+ /* a later show may open before this one has faded: only clear if this is still the one on screen */
+ const close=()=>{host.classList.add("gone");
+  setTimeout(()=>{if(host.dataset.token!==token)return;host.hidden=true;host.innerHTML="";host.classList.remove("gone");},calm?0:420);
+  if(o.onShut)o.onShut();};
+ const go=host.querySelector(".bgo");if(go)go.onclick=()=>{close();if(o.onGo)o.onGo();};
+ host.querySelector(".bshut").onclick=close;
+ return host;
+}
+
+
+/* ============ छोटा खेल: समुद्र की छलाँग ============
+   no reading at all: three things come at you across the water and you tap at the right moment.
+   it is short on purpose, to rest the eyes between long pages. */
+function khelChalang(after){
+ const app=document.getElementById("app");
+ const calm=app&&app.classList.contains("calm");
+ const host=bigShow({tag:"थोड़ा दम लो",title:"समुद्र की छलाँग",
+  line:"तीन चीज़ें रास्ता रोकेंगी। जब वह पास आए, परदे पर छूओ।",
+  act:"शुरू करो",shut:"अभी नहीं",
+  onGo:()=>runChalang(after),onShut:after});
+ return host;
+}
+function runChalang(after){
+ const app=document.getElementById("app");
+ const calm=app&&app.classList.contains("calm");
+ const host=bigShow({tag:"समुद्र की छलाँग",title:"",line:"",shut:"छोड़ो",
+  extra:'<canvas class="kcanvas" width="640" height="360"></canvas>'+
+   '<p class="kscore"><span class="kdone">0</span> में से 3 पार</p>',
+  onShut:()=>{stop();}});
+ const cv=host.querySelector(".kcanvas"),ctx=cv&&cv.getContext("2d");
+ const out=host.querySelector(".kdone");
+ if(!ctx){if(after)after(0);return;}
+ const W=cv.width,H=cv.height;
+ let t=0,raf=0,dead=false,done=0,hit=0,idx=0,gap=0;
+ /* the three that come: a mountain to touch, a mouth to slip through, a shadow to break */
+ const kinds=[{c:"#c8a04a",r:52,y:H-90},{c:"#8a3a5a",r:64,y:H-120},{c:"#2a2440",r:46,y:H-70}];
+ let foe=null,me={y:H-120,vy:0,small:false,flash:0};
+ const spawn=()=>{if(idx>=3)return;foe={x:W+80,k:kinds[idx],pass:false};idx++;};
+ spawn();
+ const tap=()=>{ if(!foe||foe.pass)return;
+  const d=foe.x-140;
+  if(d<110&&d>-40){foe.pass=true;done++;me.small=true;me.flash=12;out.textContent=done;
+   if(done>=3)finish();}
+  else {hit++;me.flash=-12;}
+ };
+ cv.onpointerdown=tap; host.onkeydown=e=>{if(e.key===" ")tap();};
+ function finish(){
+  stop();
+  const pay=Math.max(3,8-hit*2);
+  save.mani=(save.mani||0)+pay;persist();
+  bigShow({tag:"पार हो गए",title:done>=3?"तीनों पार":"जितना हुआ, उतना",
+   line:hit?("बीच में "+hit+" बार चूक हुई।"):"एक भी चूक नहीं।",
+   mani:pay,shut:"कथा पर लौटो",onShut:()=>{if(after)after(pay);}});
+ }
+ function stop(){dead=true;if(raf)cancelAnimationFrame(raf);}
+ function frame(){
+  if(dead)return;
+  t+=1;
+  /* night sky over the water, with a moon and a little spray */
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#0d1b3a");g.addColorStop(.55,"#13315c");g.addColorStop(1,"#08152c");
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle="#f3e6c4";ctx.globalAlpha=.9;ctx.beginPath();ctx.arc(W-90,66,26,0,7);ctx.fill();ctx.globalAlpha=1;
+  ctx.fillStyle="#ffffff";
+  for(let i=0;i<26;i++){const x=(i*97+((i%3)*31))%W,y=(i*53)%140+12;
+   ctx.globalAlpha=.35+.35*Math.sin((t/30)+i);ctx.fillRect(x,y,2,2);}
+  ctx.globalAlpha=1;
+  /* the sea: three rolling lines of it */
+  for(let i=0;i<4;i++){
+   const y=H-72+i*20,off=(t*(1.2+i*.6))%120;
+   ctx.fillStyle=["#1d4a7a","#20548a","#173f68","#14365c"][i]||"#1d4a7a";
+   ctx.beginPath();ctx.moveTo(-120,y+26);
+   for(let x=-120;x<W+120;x+=60)ctx.quadraticCurveTo(x+off+30,y-10,x+off+60,y+6);
+   ctx.lineTo(W+120,H);ctx.lineTo(-120,H);ctx.closePath();ctx.fill();
+  }
+  /* the one who flies: a body, a long tail, one arm thrown forward */
+  const bob=calm?0:Math.sin(t/11)*9;
+  const y=me.y+bob,sc=me.small?.62:1;
+  ctx.save();ctx.translate(140,y);ctx.scale(sc,sc);
+  ctx.strokeStyle="#c98a4a";ctx.lineWidth=7;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(-14,4);
+  ctx.quadraticCurveTo(-64,-18+Math.sin(t/9)*10,-92,18+Math.sin(t/9)*16);ctx.stroke();   /* the tail */
+  ctx.fillStyle=me.flash>0?"#ffd98a":(me.flash<0?"#e07a5f":"#e2a86a");
+  ctx.beginPath();ctx.ellipse(0,0,26,19,-.18,0,7);ctx.fill();
+  ctx.fillStyle="#f0cfa0";ctx.beginPath();ctx.arc(20,-8,13,0,7);ctx.fill();            /* the head */
+  ctx.fillStyle="#3a2a24";ctx.beginPath();ctx.arc(26,-10,2.6,0,7);ctx.fill();
+  ctx.strokeStyle="#e2a86a";ctx.lineWidth=8;
+  ctx.beginPath();ctx.moveTo(10,-2);ctx.lineTo(44,-16);ctx.stroke();                    /* the arm thrown forward */
+  ctx.restore();
+  if(me.flash)me.flash+=me.flash>0?-1:1;
+  if(me.small&&t%44===0)me.small=false;
+  /* what comes at you: a golden peak, an open mouth, a shadow that pulls from below */
+  if(foe){
+   foe.x-=calm?3:5.4;
+   const k=idx-1;
+   ctx.save();ctx.translate(foe.x,foe.k.y);
+   if(foe.pass)ctx.globalAlpha=.4;
+   if(k===0){                                            /* the mountain that rises to offer rest */
+    ctx.fillStyle="#6a5a3a";ctx.beginPath();ctx.moveTo(-70,70);ctx.lineTo(0,-66);ctx.lineTo(70,70);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#e8c25a";ctx.beginPath();ctx.moveTo(-26,-14);ctx.lineTo(0,-66);ctx.lineTo(26,-14);ctx.closePath();ctx.fill();
+   }else if(k===1){                                      /* the mouth that opens across the sky */
+    ctx.fillStyle="#7a1f46";ctx.beginPath();ctx.ellipse(0,0,72,54,0,0,7);ctx.fill();
+    ctx.fillStyle="#2a0a18";ctx.beginPath();ctx.ellipse(6,4,48,32,0,0,7);ctx.fill();
+    ctx.fillStyle="#f3e6c4";
+    for(let i=-3;i<=3;i++){ctx.beginPath();ctx.moveTo(i*14-6,-28);ctx.lineTo(i*14+6,-28);ctx.lineTo(i*14,-10);ctx.closePath();ctx.fill();
+     ctx.beginPath();ctx.moveTo(i*14-6,30);ctx.lineTo(i*14+6,30);ctx.lineTo(i*14,12);ctx.closePath();ctx.fill();}
+   }else{                                                /* the shadow that catches from under the water */
+    ctx.fillStyle="#120d20";ctx.beginPath();ctx.ellipse(0,26,64,26,0,0,7);ctx.fill();
+    ctx.strokeStyle="#241a3a";ctx.lineWidth=6;
+    for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(i*22,18);
+     ctx.quadraticCurveTo(i*22+Math.sin(t/8+i)*14,-18,i*20,-52);ctx.stroke();}
+   }
+   ctx.restore();
+   if(foe.pass&&!foe.spray){foe.spray=1;}
+   if(foe.x<-120){if(!foe.pass)hit++;foe=null;gap=26;}
+  }else if(idx<3){gap--;if(gap<=0)spawn();}
+  else if(done+hit>=3)finish();
+  /* the ring that tells you the moment is now */
+  if(foe&&!foe.pass){
+   const d=foe.x-140;
+   if(d<130&&d>-40){ctx.strokeStyle="rgba(255,235,180,"+(0.9-Math.abs(d-45)/160).toFixed(2)+")";
+    ctx.lineWidth=4;ctx.beginPath();ctx.arc(140,y,40+Math.abs(d)/4,0,7);ctx.stroke();}
+  }
+  raf=requestAnimationFrame(frame);
+ }
+ frame();
 }
 
 function el(h,c){const d=document.createElement("div");d.className=c||"";d.innerHTML=h;
