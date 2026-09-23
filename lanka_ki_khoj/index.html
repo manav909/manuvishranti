@@ -1515,6 +1515,27 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .note.doneread{opacity:.74;border-style:dashed}
 .note .who{display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap}
 .freshtag{font-size:.74rem;color:var(--page);background:var(--tide);border-radius:99px;padding:.04rem .55rem;font-weight:600}
+
+/* the mission strip */
+.muhimbar{margin:.2rem .1rem .4rem;border:2px solid var(--tide);border-radius:.8rem;overflow:hidden;
+ background:color-mix(in srgb,var(--mark) 55%,transparent)}
+.muhimbar .mlid{display:flex;width:100%;justify-content:space-between;align-items:baseline;background:transparent;border:0;
+ color:var(--ink);font:inherit;font-weight:700;padding:.5rem .75rem;cursor:pointer;min-height:38px;text-align:left}
+.muhimbar .mtag{color:var(--quiet);font-size:.85rem;font-weight:400}
+.muhimbar.shut .mbody{display:none}
+.mbody{padding:.1rem .75rem .6rem;display:flex;flex-direction:column;gap:.35rem}
+.mrow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.mwhen{flex:0 0 auto;font-size:.78rem;color:var(--quiet);border:1px solid var(--rule);border-radius:99px;padding:.02rem .5rem}
+.mname{flex:0 0 auto;font-weight:600}
+.mbar{flex:1 1 90px;height:.5rem;border-radius:99px;background:var(--rule);overflow:hidden;min-width:70px}
+.mbar i{display:block;height:100%;background:var(--tide)}
+.mnum{flex:0 0 auto;color:var(--quiet);font-size:.85rem}
+.mwhat{margin:.2rem 0 0;color:var(--quiet);font-size:.88rem;line-height:1.5}
+
+/* the mission strip sits above the reading, not behind it */
+.panebody{display:flex;flex-direction:column;min-height:0}
+.panebody>.muhimbar{position:relative;z-index:5;flex:0 0 auto;order:-1}
+.panebody>#story{flex:1 1 auto;min-height:0;position:relative}
 </style>
 </head>
 <body>
@@ -1563,6 +1584,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
     <span class="headbtns" id="tabs"></span>
    </div>
    <div class="panebody">
+    <div id="muhimbar" class="muhimbar shut" hidden></div>
     <div id="story" class="panel"></div>
     <div id="pothi" class="panel" hidden></div>
     <div id="reader" class="panel" hidden></div>
@@ -3453,7 +3475,7 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
  lid.onclick=()=>{
   const shut=box.classList.contains("shut");
   if(shut&&!box.classList.contains("read")){box.classList.add("read");
-   save.readCards=save.readCards||{};save.readCards[c]=1;persist();
+   save.readCards=save.readCards||{};save.readCards[c]=1;persist();try{muhimTick("card");}catch(e){}
    const m=document.createElement("span");m.className="giftread";m.textContent="पढ़ी हुई";lid.appendChild(m);
    const bs=box.closest(".basket");if(bs&&bs.count)bs.count();}
   box.classList.toggle("shut",!shut);
@@ -3708,6 +3730,138 @@ function freeActs(v){
  [...body.querySelectorAll(":scope > .fork, :scope > .tease, :scope > .basket, :scope > .gift")].forEach(n=>{
   if(n.className.indexOf("fork")>-1||n.querySelector("button"))v.parentNode.insertBefore(n,v.nextSibling);
  });
+}
+
+
+/* ================= मुहिमें: छोटे काम, साफ़ हिसाब, और वक़्त पर पूरा करने का इनाम =================
+   three sizes: one for a watch, one for a night, one that runs across the whole journey.
+   nothing here punishes a player; a mission that runs out of time simply closes. */
+const MUHIM={
+ /* ---- the watch missions: small, and the same for everyone, but drawn from what this watch holds ---- */
+ g_dogranth:{size:"ghadi",n:"दो कथाएँ",x:"इस घड़ी में यही पल दो अलग ग्रंथों में पढ़ो।",goal:2,count:"read",mani:6},
+ g_dojagah:{size:"ghadi",n:"दो जगहें",x:"इस घड़ी में दो अलग जगहें देखो।",goal:2,count:"place",mani:6},
+ g_dobaat:{size:"ghadi",n:"दो बातें",x:"इस घड़ी में मिली दो बातें खोलकर पढ़ो।",goal:2,count:"card",mani:5},
+ g_chakkar:{size:"ghadi",n:"एक चक्कर",x:"इस घड़ी में अपना कोई चक्कर पूरा घूमो।",goal:1,count:"tour",mani:8},
+ /* ---- the night missions: each role gets its own ---- */
+ n_jigyasu:{size:"raat",only:"jigyasu",n:"जो छूट गया",x:"इस रात चार जगहें देखो और पाँच बातें पढ़ो।",goal:9,count:"placecard",mani:24,padvi:true},
+ n_yatri:{size:"raat",only:"yatri",n:"पूरा नगर",x:"इस रात पाँच अलग जगहें देखो।",goal:5,count:"place",mani:24,padvi:true},
+ n_kathapremi:{size:"raat",only:"kathapremi",n:"कई ज़बानें",x:"इस रात चार अलग ग्रंथों में पढ़ो।",goal:4,count:"read",mani:24,padvi:true},
+ n_balak:{size:"raat",only:"balak",n:"सब देख डालो",x:"इस रात तीन जगहें देखो और अपना एक चक्कर पूरा करो।",goal:4,count:"placetour",mani:22,padvi:true},
+ n_yoddha:{size:"raat",only:"yoddha",n:"हर मोर्चा",x:"इस रात चार जगहें देखो और तीन बातें पढ़ो।",goal:7,count:"placecard",mani:24,padvi:true},
+ n_shastri:{size:"raat",only:"shastri",n:"हवाले मिलाओ",x:"इस रात पाँच बातें पढ़ो और दो ग्रंथ खोलो।",goal:7,count:"cardread",mani:24,padvi:true},
+ n_sadhak:{size:"raat",only:"sadhak",n:"ठहरकर देखो",x:"इस रात तीन जगहें देखो और अपना एक चक्कर पूरा करो।",goal:4,count:"placetour",mani:22,padvi:true},
+ n_raja:{size:"raat",only:"raja",n:"दरबार का हिसाब",x:"इस रात चार जगहें देखो और चार बातें पढ़ो।",goal:8,count:"placecard",mani:26,padvi:true},
+ /* ---- the long ones: these give a real boon, not just coins ---- */
+ s_chakkar:{size:"safar",n:"अपनी सारी राहें",x:"अपनी भूमिका के पाँच चक्कर पूरे घूमो।",goal:5,count:"tourAll",mani:40,boon:"extra"},
+ s_paath:{size:"safar",n:"पढ़ने वाला",x:"पचास बातें खोलकर पढ़ो।",goal:50,count:"cardAll",mani:40,boon:"diya"},
+ s_granth:{size:"safar",n:"दस ज़बानें",x:"दस अलग ग्रंथों में कुछ न कुछ पढ़ो।",goal:10,count:"srcAll",mani:40,boon:"diya"},
+};
+function mstate(){save.muhim=save.muhim||{done:{},boon:{}};return save.muhim;}
+/* what the player has done, counted the way each mission asks */
+function mcount(id){
+ const M=MUHIM[id];if(!M)return 0;const r=run||{};const m=mstate();
+ const g=m.now||{};
+ switch(M.count){
+  case "read":return M.size==="ghadi"?(g.read||0):(m.night&&m.night.read||0);
+  case "place":return M.size==="ghadi"?(g.place||0):(m.night&&m.night.place||0);
+  case "card":return M.size==="ghadi"?(g.card||0):(m.night&&m.night.card||0);
+  case "tour":return M.size==="ghadi"?(g.tour||0):(m.night&&m.night.tour||0);
+  case "placecard":return ((m.night&&m.night.place)||0)+((m.night&&m.night.card)||0);
+  case "placetour":return ((m.night&&m.night.place)||0)+((m.night&&m.night.tour)||0);
+  case "cardread":return ((m.night&&m.night.card)||0)+((m.night&&m.night.read)||0);
+  case "tourAll":return Object.keys(save.tour||{}).length;
+  case "cardAll":return Object.keys(save.readCards||{}).length;
+  case "srcAll":return [...new Set(Object.keys(save.readSrc||{}).map(k=>k.split("|")[1]))].length;
+ }
+ return 0;
+}
+/* which mission is running right now: one for this watch, one for this night, one for the journey */
+function muhimNow(){
+ const m=mstate(),r=myRole();
+ const out={};
+ if(m.gid&&MUHIM[m.gid])out.ghadi=m.gid;
+ const night=Object.keys(MUHIM).find(k=>MUHIM[k].size==="raat"&&MUHIM[k].only===r);
+ if(night&&!(m.done[night+"|"+(run?run.N.id:"")]))out.raat=night;
+ const safar=Object.keys(MUHIM).filter(k=>MUHIM[k].size==="safar"&&!m.done[k]);
+ if(safar.length)out.safar=safar.sort((a,b)=>(MUHIM[a].goal-mcount(a))-(MUHIM[b].goal-mcount(b)))[0];
+ return out;
+}
+/* a watch begins: pick one small mission that this watch can actually hold */
+function muhimGhadi(){
+ const m=mstate();
+ /* a watch mission that ran out of time still pays for what was done, and nothing is lost */
+ if(m.gid&&MUHIM[m.gid]&&!m.done[m.gid]){
+  const M=MUHIM[m.gid],have=Math.min(mcount(m.gid),M.goal);
+  if(have>0&&have<M.goal){const pay=Math.max(1,Math.round(M.mani*have/M.goal/2));
+   save.mani=(save.mani||0)+pay;
+   try{note("घड़ी बीत गई। "+M.n+" में "+have+"/"+M.goal+" हुआ, "+pay+" मणि मिले।");}catch(e){}}
+ }
+ m.now={read:0,place:0,card:0,tour:0};
+ const can=["g_dojagah","g_dobaat","g_dogranth"];
+ if(run&&typeof detoursAt==="function"){
+  const any=mainList(run.w).some(sp=>{const k=run.N.id+"-"+sp+"-"+run.w;
+   return (layersOf(k)||[]).some(L=>detoursAt(k,L.src||"vr").length);});
+  if(any)can.push("g_chakkar");
+ }
+ m.gid=can[((run?run.w:0)+(m.gdone||0))%can.length];
+ delete m.done[m.gid];
+ persist();
+}
+/* a night begins: the night count starts from zero */
+function muhimRaat(){const m=mstate();m.night={read:0,place:0,card:0,tour:0};persist();}
+/* something happened: count it, and pay when a mission is complete */
+function muhimTick(what){
+ const m=mstate();m.now=m.now||{read:0,place:0,card:0,tour:0};m.night=m.night||{read:0,place:0,card:0,tour:0};
+ if(m.now[what]!==undefined)m.now[what]++;
+ if(m.night[what]!==undefined)m.night[what]++;
+ const N=muhimNow();
+ ["ghadi","raat","safar"].forEach(kind=>{
+  const id=N[kind];if(!id)return;const M=MUHIM[id];
+  const key=M.size==="raat"?id+"|"+(run?run.N.id:""):id;
+  if(m.done[key])return;
+  if(mcount(id)>=M.goal){
+   m.done[key]=1;if(M.size==="ghadi")m.gdone=(m.gdone||0)+1;
+   let pay=M.mani||0;
+   if(M.size==="ghadi"&&run&&run.ghadi===0)pay*=2;          /* done inside the first ghadi: twice as much */
+   save.mani=(save.mani||0)+pay;
+   if(M.boon){m.boon=m.boon||{};m.boon[M.boon]=1;}
+   persist();muhimNote(M,pay);
+  }
+ });
+ persist();muhimBar();
+}
+function muhimNote(M,pay){
+ try{note("मुहिम पूरी: "+M.n+" · "+pay+" मणि"+(M.boon?", और एक नया हक़":""));}catch(e){}
+}
+
+
+/* the strip above the reading: what the game is asking for right now, and how far it has come */
+function muhimBar(){
+ const host=document.getElementById("muhimbar");if(!host)return;
+ if(panel!=="story"||!run){host.hidden=true;return;}
+ const N=muhimNow();const rows=[];
+ [["ghadi","इस घड़ी"],["raat","इस रात"],["safar","सफ़र"]].forEach(([k,lbl])=>{
+  const id=N[k];if(!id)return;const M=MUHIM[id];
+  const have=Math.min(mcount(id),M.goal);
+  rows.push('<div class="mrow"><span class="mwhen">'+lbl+'</span>'+
+   '<span class="mname">'+M.n+'</span>'+
+   '<span class="mbar"><i style="width:'+Math.round(have/M.goal*100)+'%"></i></span>'+
+   '<span class="mnum">'+have+"/"+M.goal+"</span></div>");
+ });
+ if(!rows.length){host.hidden=true;return;}
+ host.hidden=false;
+ host.innerHTML='<button class="mlid" type="button">मुहिमें<span class="mtag">खोलो</span></button>'+
+  '<div class="mbody">'+rows.join("")+
+  '<p class="mwhat">'+[["ghadi",""],["raat",""],["safar",""]].map(([k])=>{const id=N[k];return id?MUHIM[id].x:"";}).filter(Boolean).join(" ")+'</p></div>';
+ const lid=host.querySelector(".mlid");
+ if(!host.dataset.init){host.classList.add("shut");host.dataset.init="1";}
+ if(host.classList.contains("shut")){
+  /* shut, the strip is one quiet line that still carries the count */
+  const first=N.ghadi||N.raat||N.safar;
+  if(first){const M=MUHIM[first],have=Math.min(mcount(first),M.goal);
+   lid.innerHTML="मुहिम: "+M.n+' <span class="mtag">'+have+"/"+M.goal+' · खोलो</span>';}
+ }else lid.innerHTML='मुहिमें<span class="mtag">बंद करो</span>';
+ lid.onclick=()=>{host.classList.toggle("shut");muhimBar();};
 }
 
 function el(h,c){const d=document.createElement("div");d.className=c||"";d.innerHTML=h;
@@ -7127,6 +7281,7 @@ function wipeNow(){                 /* a quick curtain when the hour turns */
  else w.classList.add("go");
 }
 function start(id){
+ try{muhimRaat();}catch(e){}
  const N=NIGHTS.find(n=>n.id===id);
  save.nights[id]=(save.nights[id]||0)+1;journeyMark();persist();
  if(mode==="texts")storyMap();
@@ -7177,7 +7332,7 @@ function turn(){
  if(run.w>0){                       /* one line of what the katha just did, so the thread stays in hand */
   const prev=mainList(run.w-1).map(x=>SPINE[run.N.id+"-"+x+"-"+(run.w-1)]).filter(Boolean);
   if(prev.length)el('<p class="recap"><b>अभी अभी:</b> '+prev[prev.length-1]+"</p>");
- }run.used=0;run.pickedHere=[];run.busy=false;run.focus=null;
+ }run.used=0;run.pickedHere=[];run.busy=false;run.focus=null;try{muhimGhadi();muhimBar();}catch(e){}
  stage.classList.remove("focus");hideDio();
  hud();paint();weather();flyTo(watchBox());
  drawTrail();
@@ -7308,7 +7463,7 @@ function visit(id){
  setTimeout(()=>flyTo(around(id,near),1),260);
  stage.classList.add("focus");
  arrive(id);showDio(id);
- openVisit(PLACES[id].n);
+ openVisit(PLACES[id].n);try{muhimTick("place");}catch(e){}
  gloss("granth");gloss("mani");glossSrc(S.src||"vr");
  const cut=splitSay(S.say);
  say(myRole()==="balak"?cut.story.slice(0,3):cut.story);   /* a child gets it shorter */
@@ -8178,8 +8333,10 @@ function openReader(id,w,li,from){
  const key=run?run.N.id+"-"+id+"-"+w:null;if(!key||!SC[key])return;
  const L=layersOf(key),S=L[li];if(!S)return;
  /* what was truly opened: the mark is kept and shown at once */
+ didAct();
  try{const sc=S.src||"vr";save.readSrc=save.readSrc||{};
-  save.readSrc[key+"|"+sc]=1;persist();markRead(key,sc);}catch(e){}
+  const fresh=!save.readSrc[key+"|"+sc];save.readSrc[key+"|"+sc]=1;persist();markRead(key,sc);
+  if(fresh)muhimTick("read");}catch(e){}
  const box=document.getElementById("reader");if(!box)return;
  const src=SRC[S.src||"vr"];
  let tabs="";
