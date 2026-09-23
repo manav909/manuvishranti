@@ -8697,7 +8697,59 @@ const S3DRESS={
   woman:()=>{const p=person({cloth:"#1a1a1e",bun:true,mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.52,.05,8,24),M("#b0202a"),0,.1,0)).rotation.x=Math.PI/2;return p;},
   sage:()=>person({cloth:"#8a2a1a",beard:true,hair:"#e8e8ea",mood:"calm"})},
 };
-const S3REGION={ezhu:"kerala",kannassa:"kerala",ramacharitam:"kerala",mappila:"mappila",bhanubhakta:"newar",siddhi:"newar"};
+
+/* Odisha: mud walls, a straw thatched gable on a bamboo frame, a veranda; temples rise as the curved rekha deul */
+function odishaHouse(){const g=grp();const mud=M("#c08a5a",{roughness:.95}),straw=M("#c9a03a",{roughness:.9}),bam=M("#8a6a3a");
+ g.add(box(2.6,1.2,1.8,mud,0,.6,0));for(let i=0;i<4;i++)g.add(cyl(.07,.08,1.2,bam,-1.05+i*.7,.6,1));
+ [-1,1].forEach(s=>{const r=box(3,.12,1.5,straw,0,1.75,s*.55);r.rotation.x=s*.62;g.add(r);});
+ g.add(box(.5,.9,.05,M("#6a4424"),0,.45,.92));g.add(box(2.8,.12,.12,bam,0,1.95,0));return g;}
+function rekhaDeul(){const g=grp();const st=M("#8a7a62",{roughness:.95});
+ g.add(box(2.4,.5,2.4,st,0,.25,0));
+ const prof=[];for(let i=0;i<=10;i++){const t=i/10;prof.push([1.05*Math.pow(1-t,.62)+.05,t*3.4+.5]);}prof.push([0,4]);
+ g.add(lathe(prof,st,0));
+ g.add(cyl(.75,.8,.3,st,0,4.05,0,20));g.add(sph(.34,M("#e8e2d0"),0,4.4,0,1,.7,1));g.add(cone(.16,.7,M("#f0c040",{metalness:.8}),0,4.9,0));
+ g.add(box(1.8,1.2,1.8,st,1.9,.6,0));const jm=cone(1.4,1.2,st,1.9,1.8,0,4);jm.rotation.y=Math.PI/4;g.add(jm);return g;}
+/* Assam: a wooden frame filled with woven bamboo panels plastered with mud, on a raised plinth, under a steep thatch */
+function assamHouse(){const g=grp();const ikra=M("#cbb388",{roughness:.95}),wood=M("#6a4a2a",{roughness:.7}),thatch=M("#b89a52",{roughness:.95});
+ g.add(box(3,.4,2,M("#8a7a6a",{roughness:.95}),0,.2,0));
+ g.add(box(2.6,1.3,1.7,ikra,0,1.05,0));
+ for(let i=-1;i<=1;i++)g.add(box(.09,1.3,.09,wood,i*1.2,1.05,.86));
+ for(let i=0;i<3;i++)g.add(box(2.62,.08,.09,wood,0,.5+i*.5,.86));
+ [-1,1].forEach(s=>{const r=box(3.4,.14,1.7,thatch,0,2.3,s*.6);r.rotation.x=s*.72;g.add(r);});
+ g.add(box(.5,.9,.06,wood,0,.9,.88));return g;}
+function changGhar(){const g=grp();const bam=M("#a08a5a"),thatch=M("#b89a52",{roughness:.95});
+ [[-1.2,-.8],[1.2,-.8],[-1.2,.8],[1.2,.8]].forEach(p=>g.add(cyl(.1,.11,1.4,bam,p[0],.7,p[1])));
+ g.add(box(3,.2,2,bam,0,1.45,0));g.add(box(2.6,1.1,1.7,M("#c9b48a",{roughness:.95}),0,2.1,0));
+ [-1,1].forEach(s=>{const r=box(3.2,.14,1.6,thatch,0,3.2,s*.55);r.rotation.x=s*.7;g.add(r);});
+ for(let i=0;i<5;i++)g.add(box(.5,.08,.08,bam,1.6,.3+i*.22,.9));return g;}
+/* Kashmir: a limestone plinth, a timber frame filled with brick, a wooden balcony, and a roof of earth where tulips grow */
+function kashmirHouse(){const g=grp();const stone=M("#b8b2a4",{roughness:.95}),brick=M("#9a4a32",{roughness:.9}),wood=M("#6a4a2a",{roughness:.7}),earth=M("#7a6a52",{roughness:1});
+ g.add(box(2.8,.5,2,stone,0,.25,0));
+ g.add(box(2.4,2.6,1.7,brick,0,1.8,0));
+ /* the patchwork of timber: posts, beams and braces across the whole wall */
+ for(let i=-1;i<=1;i++)g.add(box(.1,2.6,.1,wood,i*1.1,1.8,.86));
+ for(let i=0;i<4;i++)g.add(box(2.42,.1,.11,wood,0,.6+i*.7,.86));
+ for(let i=0;i<3;i++){const br=box(.08,1.3,.1,wood,-.8+i*.8,1.3,.87);br.rotation.z=.6;g.add(br);}
+ /* the balcony, screened with lattice */
+ g.add(box(1.6,.7,.5,wood,0,2.5,1.05));for(let i=0;i<7;i++)g.add(box(.05,.5,.05,M("#4a3218"),-.7+i*.23,2.5,1.3));
+ [-1,1].forEach(s=>{const r=box(3.2,.16,1.5,earth,0,3.4,s*.55);r.rotation.x=s*.6;g.add(r);});
+ /* tulips on the roof, as they were planted in the earth above the birch bark */
+ for(let i=0;i<8;i++){const x=-1.2+i*.34,z=(i%2?.35:-.35);g.add(cyl(.02,.02,.22,M("#3f8a3a"),x,3.6+(i%2?.1:.1),z));
+  g.add(sph(.07,M(i%2?"#d0303a":"#e8a030"),x,3.75,z,.8,1.3,.8));}
+ g.add(box(.5,1,.06,wood,0,1,.88));return g;}
+const S3DRESS2={
+ odisha:{man:()=>{const p=person({cloth:"#f4efe2",mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.5,.04,8,20),M("#c8402f"),0,.14,0)).rotation.x=Math.PI/2;return p;},
+  woman:()=>person({cloth:"#c02a3a",sari:"#f4efe2",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#e8752a",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ assam:{man:()=>{const p=person({cloth:"#f6f2e6",mood:S3.mood});p.add(mesh(new THREE.TorusGeometry(.5,.05,8,20),M("#c8302a"),0,1.1,0)).rotation.set(Math.PI/2.4,0,.5);return p;},
+  woman:()=>person({cloth:"#f6f2e6",sari:"#c8302a",bun:true,mood:S3.mood}),
+  sage:()=>person({cloth:"#f6f2e6",beard:true,hair:"#e8e8ea",mood:"calm"})},
+ kashmir:{man:()=>{const p=person({cloth:"#6a5a4a",turban:"#e8e2d4",mood:S3.mood,robe:[[0,0],[.56,0],[.6,.4],[.54,1],[.44,1.3],[.4,1.42],[0,1.45]]});return p;},
+  woman:()=>person({cloth:"#8a3a4a",sari:"#e8dcc0",bun:true,mood:S3.mood,robe:[[0,0],[.58,0],[.62,.4],[.54,1],[.44,1.3],[.4,1.42],[0,1.45]]}),
+  sage:()=>person({cloth:"#e8e2d4",beard:true,hair:"#e8e8ea",mood:"calm"})},
+};
+const S3REGION={ezhu:"kerala",kannassa:"kerala",ramacharitam:"kerala",mappila:"mappila",bhanubhakta:"newar",siddhi:"newar",
+ sarala:"odisha",jagamohan:"odisha",kandali:"assam",kashmiri:"kashmir"};
 function s3regional(name){
  const r=S3.region;if(!r)return null;
  const K=r==="mappila"?"kerala":r;
@@ -8711,7 +8763,20 @@ function s3regional(name){
   if(name==="house"||name==="hillhouse"||name==="hut")return ()=>newarHouse();
   if(name==="palace")return ()=>pagoda();
  }
- const d=S3DRESS[r];if(d&&d[name])return d[name];
+ if(K==="odisha"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>odishaHouse();
+  if(name==="palace")return ()=>rekhaDeul();
+ }
+ if(K==="assam"){
+  if(name==="house"||name==="hillhouse")return ()=>assamHouse();
+  if(name==="hut")return ()=>changGhar();
+  if(name==="palace")return ()=>{const g=assamHouse();g.scale.setScalar(1.4);return g;};
+ }
+ if(K==="kashmir"){
+  if(name==="house"||name==="hillhouse"||name==="hut")return ()=>kashmirHouse();
+  if(name==="palace")return ()=>{const g=kashmirHouse();g.scale.setScalar(1.35);return g;};
+ }
+ const d=S3DRESS[r]||S3DRESS2[r];if(d&&d[name])return d[name];
  return null;
 }
 
