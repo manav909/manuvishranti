@@ -3980,18 +3980,158 @@ function bigShow(o){
    tap when a roof is under you and you land on it; miss and the fire gains a step. */
 /* ============ खेलों का दरवाज़ा ============
    two little games, open whenever the eyes want a rest from reading. */
+/* ============ छोटा खेल: परछाईं पहचानो ============
+   one shape is shown lit, then four shadows; pick the one that matches. no words to read. */
+function khelChhaya(after){
+ bigShow({tag:"थोड़ा दम लो",title:"परछाईं पहचानो",
+  line:"ऊपर एक रूप दिखेगा। नीचे की परछाइयों में से वही चुनो।",
+  act:"शुरू करो",shut:"अभी नहीं",onGo:()=>runChhaya(after),onShut:after});
+}
+function runChhaya(after){
+ const host=bigShow({tag:"परछाईं पहचानो",title:"",shut:"छोड़ो",
+  extra:'<canvas class="kcanvas" width="640" height="360"></canvas>'+
+   '<p class="kscore"><span class="kdone">0</span> में से 5 सही</p>'});
+ const cv=host.querySelector(".kcanvas"),ctx=cv&&cv.getContext("2d");
+ if(!ctx){if(after)after(0);return;}
+ const out=host.querySelector(".kdone");
+ const W=cv.width,H=cv.height;
+ let round=0,right=0,wrong=0,pick=-1,flash=0,raf=0,dead=false,answer=0,order=[];
+ /* five shapes the night already knows: a mace, a bow, a lamp, a leaf, a crown */
+ const shapes=[
+  (c,x,y,sc)=>{c.save();c.translate(x,y);c.scale(sc,sc);
+   c.beginPath();c.arc(0,-26,22,0,7);c.fill();c.fillRect(-6,-6,12,56);c.fillRect(-12,48,24,10);c.restore();},
+  (c,x,y,sc)=>{c.save();c.translate(x,y);c.scale(sc,sc);
+   c.lineWidth=7;c.strokeStyle=c.fillStyle;c.beginPath();c.arc(14,0,40,2.3,4.0);c.stroke();
+   c.lineWidth=3;c.beginPath();c.moveTo(-16,-33);c.lineTo(-16,33);c.stroke();
+   c.lineWidth=5;c.beginPath();c.moveTo(-16,0);c.lineTo(46,0);c.stroke();c.restore();},
+  (c,x,y,sc)=>{c.save();c.translate(x,y);c.scale(sc,sc);
+   c.beginPath();c.ellipse(0,20,34,16,0,0,7);c.fill();
+   c.beginPath();c.moveTo(0,-30);c.quadraticCurveTo(12,-6,0,6);c.quadraticCurveTo(-12,-6,0,-30);c.fill();c.restore();},
+  (c,x,y,sc)=>{c.save();c.translate(x,y);c.scale(sc,sc);
+   c.beginPath();c.moveTo(0,-38);c.quadraticCurveTo(34,0,0,40);c.quadraticCurveTo(-34,0,0,-38);c.fill();
+   c.fillRect(-2,30,4,22);c.restore();},
+  (c,x,y,sc)=>{c.save();c.translate(x,y);c.scale(sc,sc);
+   c.beginPath();c.moveTo(-36,20);c.lineTo(-24,-24);c.lineTo(-8,6);c.lineTo(0,-34);
+   c.lineTo(8,6);c.lineTo(24,-24);c.lineTo(36,20);c.closePath();c.fill();
+   c.fillRect(-36,20,72,12);c.restore();}
+ ];
+ function deal(){
+  answer=Math.floor(Math.random()*shapes.length);
+  order=shapes.map((_,i)=>i).sort(()=>Math.random()-.5).slice(0,4);
+  if(order.indexOf(answer)<0)order[Math.floor(Math.random()*4)]=answer;
+  pick=-1;
+ }
+ deal();
+ cv.onpointerdown=e=>{
+  const r=cv.getBoundingClientRect(),x=((e.clientX||0)-r.left)/r.width*W;
+  const col=Math.min(3,Math.max(0,Math.floor(x/(W/4))));
+  if(order[col]===answer){right++;flash=12;out.textContent=right;}
+  else{wrong++;flash=-12;}
+  round++;
+  if(right>=5||round>=7)return finish();
+  deal();
+ };
+ function finish(){
+  dead=true;if(raf)cancelAnimationFrame(raf);
+  const pay=Math.max(3,right*2-wrong);
+  save.mani=(save.mani||0)+pay;persist();
+  bigShow({obj:"chudamani",tag:"हो गया",title:right+" सही",
+   line:wrong?(wrong+" बार चूक हुई।"):"एक भी चूक नहीं।",mani:pay,shut:"कथा पर लौटो",
+   onShut:()=>{if(after)after(pay);}});
+ }
+ function frame(){
+  if(dead)return;
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#241a3a");g.addColorStop(1,"#120c1e");
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  /* the lit shape at the top */
+  ctx.fillStyle=flash>0?"#ffe6a8":(flash<0?"#e07a5f":"#f0d49a");
+  shapes[answer](ctx,W/2,90,1.05);
+  if(flash)flash+=flash>0?-1:1;
+  /* the four shadows below, on a lit screen */
+  ctx.fillStyle="rgba(255,255,255,.08)";ctx.fillRect(20,200,W-40,140);
+  order.forEach((sh,i)=>{
+   ctx.fillStyle="#0a0710";
+   shapes[sh](ctx,(i+.5)*(W/4),272,.92);
+  });
+  raf=requestAnimationFrame(frame);
+ }
+ frame();
+}
+/* ============ छोटा खेल: दीया जोड़ो ============
+   lamps light one by one in an order; then they go dark and you tap them in the same order. */
+function khelDiya(after){
+ bigShow({tag:"थोड़ा दम लो",title:"दीया जोड़ो",
+  line:"दीये एक एक करके जलेंगे। फिर उन्हें उसी क्रम में छूओ।",
+  act:"शुरू करो",shut:"अभी नहीं",onGo:()=>runDiya(after),onShut:after});
+}
+function runDiya(after){
+ const host=bigShow({tag:"दीया जोड़ो",title:"",shut:"छोड़ो",
+  extra:'<canvas class="kcanvas" width="640" height="360"></canvas>'+
+   '<p class="kscore">दौर <span class="kdone">1</span></p>'});
+ const cv=host.querySelector(".kcanvas"),ctx=cv&&cv.getContext("2d");
+ if(!ctx){if(after)after(0);return;}
+ const out=host.querySelector(".kdone");
+ const W=cv.width,H=cv.height;
+ const spots=[[160,120],[480,120],[160,250],[480,250],[320,185]];
+ let seq=[],at=0,showing=true,shineI=0,t=0,raf=0,dead=false,round=1,lit=-1;
+ function grow(){seq.push(Math.floor(Math.random()*spots.length));showing=true;shineI=0;at=0;t=0;}
+ grow();
+ cv.onpointerdown=e=>{
+  if(showing)return;
+  const r=cv.getBoundingClientRect();
+  const x=((e.clientX||0)-r.left)/r.width*W,y=((e.clientY||0)-r.top)/r.height*H;
+  let hit=-1;spots.forEach((s,i)=>{if(Math.hypot(s[0]-x,s[1]-y)<60)hit=i;});
+  if(hit<0)return;
+  lit=hit;setTimeout(()=>{lit=-1;},180);
+  if(seq[at]===hit){at++;if(at>=seq.length){round++;out.textContent=round;
+    if(round>5)return finish(true);grow();}}
+  else return finish(false);
+ };
+ function finish(win){
+  dead=true;if(raf)cancelAnimationFrame(raf);
+  const pay=Math.max(3,(round-1)*3);
+  save.mani=(save.mani||0)+pay;persist();
+  bigShow({obj:"mudrika",tag:win?"पूरा":"क्रम टूटा",title:(round-1)+" दौर पार",
+   mani:pay,shut:"कथा पर लौटो",onShut:()=>{if(after)after(pay);}});
+ }
+ function frame(){
+  if(dead)return;t++;
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,"#18122a");g.addColorStop(1,"#0b0812");
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  if(showing&&t%40===0){shineI++;if(shineI>seq.length){showing=false;shineI=0;}}
+  spots.forEach((s,i)=>{
+   const on=(showing&&seq[shineI-1]===i)||lit===i;
+   /* the little clay lamp */
+   ctx.fillStyle="#6a4028";ctx.beginPath();ctx.ellipse(s[0],s[1]+18,44,16,0,0,7);ctx.fill();
+   ctx.fillStyle="#8a5836";ctx.beginPath();ctx.ellipse(s[0],s[1]+10,38,14,0,0,7);ctx.fill();
+   if(on){
+    ctx.fillStyle="rgba(255,190,90,.22)";ctx.beginPath();ctx.arc(s[0],s[1]-12,54,0,7);ctx.fill();
+    ctx.fillStyle="#ffd98a";ctx.beginPath();
+    ctx.moveTo(s[0],s[1]-44);ctx.quadraticCurveTo(s[0]+16,s[1]-8,s[0],s[1]+2);
+    ctx.quadraticCurveTo(s[0]-16,s[1]-8,s[0],s[1]-44);ctx.fill();
+   }else{ctx.fillStyle="#3a2a28";ctx.fillRect(s[0]-3,s[1]-10,6,12);}
+  });
+  raf=requestAnimationFrame(frame);
+ }
+ frame();
+}
 function khelChuno(){
  bigShow({obj:"gada",tag:"थोड़ा दम लो",title:"कौन सा खेल",
   line:"दोनों छोटे हैं, और दोनों में कुछ पढ़ना नहीं पड़ता।",
   extra:'<div class="bacts"><button class="claim kpick" data-k="chalang">समुद्र की छलाँग</button>'+
-   '<button class="claim kpick" data-k="chhat">छत दर छत</button></div>',
+   '<button class="claim kpick" data-k="chhat">छत दर छत</button>'+
+   '<button class="claim kpick" data-k="chhaya">परछाईं पहचानो</button>'+
+   '<button class="claim kpick" data-k="diya">दीया जोड़ो</button></div>',
   shut:"अभी नहीं"});
  const host=document.getElementById("bigshow");
  if(!host)return;
  host.querySelectorAll(".kpick").forEach(b=>{b.onclick=()=>{
   const k=b.dataset.k;
   host.querySelector(".bshut").click();
-  setTimeout(()=>{k==="chhat"?khelChhat(()=>{}):khelChalang(()=>{});},80);};});
+  const open={chhat:khelChhat,chhaya:khelChhaya,diya:khelDiya,chalang:khelChalang};
+  setTimeout(()=>{(open[k]||khelChalang)(()=>{});},80);};});
 }
 function khelChhat(after){
  bigShow({tag:"थोड़ा दम लो",title:"छत दर छत",
