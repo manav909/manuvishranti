@@ -7359,13 +7359,18 @@ function visit(id){
  const others=L.map((x,i)=>({x:x,i:i})).filter(o=>o.i!==d);
  if(others.length){
   const rf=el("","fork");
+  {const done=others.filter(o=>{const sc=o.x.src||"vr";
+    return !!(save.readSrc&&save.readSrc[key+"|"+sc])||depthOf(key)>o.i;}).length;
+   el('<p class="leftline" data-key='+JSON.stringify(key)+' data-all='+others.length+'>इस पल की और कथाएँ: <b>'+others.length+' में से '+done+' पढ़ी</b>'+
+    (done<others.length?", "+(others.length-done)+" बाकी":"")+"</p>");}
   others.forEach(o=>{
    const nm=SRC[o.x.src||"vr"].n;
-   const read=depthOf(key)>o.i;
+   const sc=o.x.src||"vr";
+   const read=!!(save.readSrc&&save.readSrc[key+"|"+sc])||depthOf(key)>o.i;
    const hint=(o.x.cards||[]).map(c=>CARDS[c]).find(C=>C&&C.l==="gr");
    const b=document.createElement("button");
-   b.className="do read"+(read?" seen":"");
-   b.innerHTML="यही पल "+nm+" में पढ़ो"+(read?" (पढ़ा हुआ)":"")+
+   b.className="do read"+(read?" seen":"");b.dataset.rkey=key;b.dataset.rsrc=sc;
+   b.innerHTML="यही पल "+nm+" में पढ़ो"+(read?'<span class="seenchip">पढ़ा हुआ</span>':"")+
     (hint?'<span class="hint">'+hint.t+"</span>":"");
    b.onclick=()=>openReader(id,run.w,o.i);
    rf.appendChild(b);
@@ -8147,11 +8152,29 @@ function fullerHere(L,li){
  return out;
 }
 
+
+/* when a telling is opened, its button and the count beside it change at once */
+function markRead(key,src){
+ if(!document.querySelectorAll)return;
+ document.querySelectorAll('button.do.read[data-rkey="'+key+'"][data-rsrc="'+src+'"]').forEach(b=>{
+  if(b.classList.contains("seen"))return;
+  b.classList.add("seen");
+  const chip=document.createElement("span");chip.className="seenchip";chip.textContent="पढ़ा हुआ";
+  const hint=b.querySelector(".hint");hint?b.insertBefore(chip,hint):b.appendChild(chip);});
+ document.querySelectorAll('.leftline[data-key="'+key+'"]').forEach(pp=>{
+  const all=+pp.dataset.all||0;
+  const done=[...document.querySelectorAll('button.do.read[data-rkey="'+key+'"]')].filter(b=>b.classList.contains("seen")).length;
+  pp.innerHTML="इस पल की और कथाएँ: <b>"+all+" में से "+done+" पढ़ी</b>"+(done<all?", "+(all-done)+" बाकी":"");});
+}
+
 function openReader(id,w,li,from){
  if(quizLocked()){lockNote();return;}
  if(from)readerFrom=from;
  const key=run?run.N.id+"-"+id+"-"+w:null;if(!key||!SC[key])return;
  const L=layersOf(key),S=L[li];if(!S)return;
+ /* what was truly opened: the mark is kept and shown at once */
+ try{const sc=S.src||"vr";save.readSrc=save.readSrc||{};
+  save.readSrc[key+"|"+sc]=1;persist();markRead(key,sc);}catch(e){}
  const box=document.getElementById("reader");if(!box)return;
  const src=SRC[S.src||"vr"];
  let tabs="";
