@@ -44,7 +44,9 @@ keys.forEach(k=>{const D=T.DETOUR[k];
 /* walking a detour: it opens, moves, pays once when all stops are seen, and comes back */
 Object.assign(T.save(),T.blankSave());
 T.front();T.start('khoj');
+/* a journey belongs to one role, so the walk is tested as that role */
 const k=keys[0],D=T.DETOUR[k];
+T.save().role=D.only||'jigyasu';T.save().rolePicked=true;
 const before=T.purse();
 T.startTour(k,null);
 must(T.tourOpen(),'the detour did not open');
