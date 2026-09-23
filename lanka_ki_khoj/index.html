@@ -1393,6 +1393,27 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .tcast{margin:.45rem 0 .2rem;font-size:.9rem;color:var(--ink);line-height:1.6}
 .tcast .tme{display:inline-block;padding:.05rem .6rem;border-radius:99px;border:2px solid var(--rc);color:var(--ink);font-weight:600}
 .tcast .tme::before{content:"";display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--rc);margin-right:.35rem;vertical-align:.05rem}
+
+/* the name that appears when you point at something in the scene, and the quiet mark in the corner */
+.tart .s3tip{position:absolute;z-index:6;pointer-events:none;background:var(--page);color:var(--ink);
+ padding:.22rem .6rem;border-radius:99px;font-size:.84rem;font-weight:600;white-space:nowrap;transform:translateX(-50%);
+ border:2px solid var(--tide);box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.tart .s3mark{position:absolute;right:.5rem;bottom:.4rem;z-index:5;pointer-events:none;font-size:.72rem;letter-spacing:.04em;
+ color:var(--quiet);opacity:.75}
+
+/* the detour's own bar: the way out is always in sight, never at the end of the reading */
+.tbar{position:sticky;top:0;z-index:7;display:flex;align-items:center;gap:.6rem;margin:-.2rem -.2rem .5rem;
+ padding:.45rem .5rem;background:var(--barbg,rgba(20,16,24,.92));border-radius:.7rem;backdrop-filter:blur(6px)}
+.tbar .tback{flex:0 0 auto;border:2px solid var(--tide);background:transparent;color:var(--ink);
+ border-radius:99px;padding:.25rem .8rem;font:inherit;font-weight:600;cursor:pointer;min-height:34px}
+.tbar .tback:hover{background:color-mix(in srgb,var(--tide) 18%,transparent)}
+.tbar .tbarname{flex:1 1 auto;color:var(--ink);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbar .tbarno{flex:0 0 auto;color:var(--quiet);font-size:.85rem}
+/* the next and back steps stay reachable at the foot of the frame */
+#chakkar .rbtns{position:sticky;bottom:0;background:var(--page);box-shadow:0 -10px 14px -10px rgba(0,0,0,.45);
+ padding:.55rem .1rem .5rem;display:flex;gap:.5rem;flex-wrap:wrap;border-radius:.6rem}
+#chakkar .rin{padding-bottom:.6rem}
+#chakkar .tart{margin-bottom:.6rem}
 </style>
 </head>
 <body>
@@ -8101,7 +8122,7 @@ const PX_TOUR={
  vr_toran:[
   {bg:"dusk",gr:"stone",it:[["gate",4,10,2.2],["bar",14,16,1.6],["monkey",12,4,1.2],["rakshasi",40,30,1,{q:"#7e2218"}],["demon",48,30,1.1],["demon",56,31,1],["demon",64,30,1.1]],me:[30,31]},
   {bg:"dusk",gr:"stone",it:[["chariot",40,28,1.6],["demon",44,21,1],["rock",14,32,1.4],["tree",4,16,1.3],["monkey",24,28,1.2]],me:[62,31]},
-  {bg:"stone",gr:"stone",it:[["demon",34,28,1],["demon",40,29,1],["demon",46,28,1],["demon",52,29,1],["demon",58,28,1],["demon",64,29,1],["demon",70,28,1],["monkey",16,28,1.4]],me:[4,31]},
+  {bg:"stone",gr:"stone",it:[["demon",34,28,1],["demon",42,29,1],["demon",50,28,1],["demon",58,29,1],["demon",66,28,1],["chariot",20,30,1.1],["bar",30,24,1.2],["monkey",12,28,1.4]],me:[4,31]},
   {bg:"dusk",gr:"stone",it:[["mountain",46,14,1.6],["rock",8,34,1.2],["tree",20,16,1.3],["demon",30,30,1.1],["chariot",56,30,1.2],["monkey",38,20,1.3]],me:[6,24]}],
  vr_vatika:[
   {bg:"night",gr:"grass",it:[["ashoka",24,4,2.6],["monkey",34,10,0.8],["woman",32,32,1.2,{q:"#e0b030"}],["eye",46,8,1]],me:[62,31]},
@@ -8210,7 +8231,7 @@ const PX_TOUR={
   {bg:"day",gr:"water",it:[["boat",16,32,1.6],["wave",40,36,1.3],["road",4,38,1.4],["cloud",40,4,1,{drift:"r"}],["bird",60,8,1,{drift:"l"}]],me:[56,24]}],
  tibbat_gupha:[
   {bg:"day",gr:"sand",it:[["cliffcave",4,10,2.2],["palmleaf",46,34,1.2],["palmleaf",46,30,1],["man",40,28,1,{q:"#7a3524"}],["cloud",50,2,1,{drift:"r"}]],me:[60,31]},
-  {bg:"inner",gr:"sand",it:[["palmleaf",10,20,1.3],["palmleaf",30,26,1.3],["palmleaf",50,18,1.3],["sawal",60,28,1.4]],me:[34,31]},
+  {bg:"inner",gr:"sand",it:[["palmleaf",10,20,1.3],["pothi",30,26,1.2],["cliffcave",44,14,1.2],["sawal",60,28,1.4],["lamp",24,34,1]],me:[34,31]},
   {bg:"dusk",gr:"sand",it:[["camel",6,28,1.4],["camel",24,29,1.3],["road",4,38,2],["man",40,29,1.1,{q:"#7a3524"}],["star",60,4,1]],me:[58,31]},
   {bg:"dawn",gr:"stone",it:[["snowpeak",4,8,2.4],["snowpeak",40,12,1.8],["hillhouse",54,22,1.2],["road",20,38,1.6],["palmleaf",60,34,0.9]],me:[30,31]}],
  mappila_majlis:[
@@ -8460,7 +8481,7 @@ const S3B={
  monkey:()=>monkey(),whitemonkey:()=>monkey({fur:"#f2f0ea",face:"#f8e6d4",crown:true}),tailfire:()=>monkey({fire:true}),
  man:(e)=>person({cloth:e.q||"#3a6ea5"}),woman:(e)=>person({cloth:e.q||"#c0392b",bun:true,sari:"#e2b33a"}),
  child:(e)=>person({cloth:e.q||"#e0b030",h:.62}),oldwoman:()=>person({cloth:"#9a9aa2",hair:"#e8e8ea",bun:true}),
- sleeper:(e)=>{const p=person({cloth:e.q||"#8a5630",mood:"calm"});p.rotation.x=Math.PI/2;p.rotation.z=.12;p.position.z=.5;p.position.y=.4;const g=grp();g.add(p);g.userData.sleep=true;g.userData.inner=p;return g;},
+ sleeper:(e)=>{const g=sleeping({cloth:e.q||"#8a5630",mat:e.mat||"#b08a4a"});return g;},
  guard:(e)=>person({cloth:e.q||"#7e2218",turban:"#5a1810",hold:(()=>{const s=S3B.spear();s.position.set(0,-1.2,0);return s;})()}),
  king:()=>person({cloth:"#c8402f",crown:true}),sage:()=>person({cloth:"#f4efe2",beard:true,hair:"#e8e8ea"}),
  demon:()=>person({cloth:"#7e2218",skin:"#a8402f",horns:true}),rakshasi:()=>person({cloth:"#4a2c66",skin:"#8a4a5a",horns:true,bun:true}),
@@ -9075,6 +9096,55 @@ function s3regional(name){
  return null;
 }
 
+
+/* someone asleep: a mat, a pillow, a body lying on its side, a blanket, and a chest that rises and falls */
+function sleeping(o){
+ o=o||{};const g=grp();const cloth=M(o.cloth||"#8a5630",{roughness:.8}),skin=M(o.skin||SKIN),mat=M(o.mat||"#b08a4a",{roughness:.95});
+ g.add(box(2.1,.12,1.1,mat,0,.06,0));
+ g.add(box(.5,.22,.5,M("#efe6d2",{roughness:.9}),-.7,.22,0));
+ /* the body: a long rounded shape lying down, with a blanket over it */
+ const body=mesh(new THREE.CylinderGeometry(.28,.28,1.2,16),skin,.1,.35,0);
+ body.rotation.z=Math.PI/2;g.add(body);
+ g.add(sph(.28,skin,-.5,.35,0));g.add(sph(.28,skin,.7,.35,0));
+ const bl=mesh(new THREE.CylinderGeometry(.33,.33,1.25,14,1,false,0,Math.PI),cloth,.15,.35,0);bl.rotation.z=Math.PI/2;bl.rotation.x=Math.PI;g.add(bl);
+ const head=grp();head.position.set(-.72,.42,0);g.add(head);
+ head.add(sph(.3,skin,0,0,0));
+ head.add(sph(.3,M(o.hair||HAIR),-.06,.1,-.04,1,.8,1));
+ /* eyes closed: two small dark lines */
+ [-1,1].forEach(q=>head.add(box(.12,.025,.03,M("#3a2a24"),.16,.03,q*.13)));
+ const arm=cyl(.09,.09,.5,skin,.25,.2,.3);arm.rotation.z=1.2;g.add(arm);
+ g.userData.sleep=true;g.userData.chest=bl;g.userData.head2=head;
+ if(o.prop){o.prop.position.set(.7,.25,.45);g.add(o.prop);}
+ return g;}
+/* Ravana asleep: a heavy couch, the ten crowned heads resting, one arm fallen aside */
+function ravanaAsleep(){
+ const g=grp();const gold=M("#e8b23a",{metalness:.7,roughness:.3}),red=M("#6a1020",{roughness:.85});
+ g.add(box(3.4,.5,1.8,M("#5a3418",{roughness:.7}),0,.28,0));
+ [-1,1].forEach(q=>[-1,1].forEach(w=>g.add(cyl(.12,.14,.55,gold,q*1.5,.28,w*.7))));
+ g.add(box(3.2,.25,1.6,red,0,.62,0));
+ const sl=sleeping({cloth:"#7a1424",skin:"#6a4a5a",hair:"#120808",mat:"#5a3418"});
+ sl.position.set(0,.72,0);sl.scale.setScalar(1.25);g.add(sl);
+ /* the other nine heads resting in a fan around the first */
+ const head=sl.userData.head2;
+ for(let i=1;i<=4;i++)[-1,1].forEach(q=>{if(i===4&&q===1)return;
+  const h=grp();h.add(sph(.22,M("#6a4a5a",{roughness:.7}),0,0,0));h.add(cyl(.16,.18,.16,gold,0,.2,0));
+  h.position.set(-.06*i,-.05*i,q*(.3+i*.24));head.add(h);});
+ head.add(cyl(.24,.27,.22,gold,0,.24,0));
+ g.userData.kind="king";return g;}
+
+/* what each thing in a scene is called, for the little name that shows when you point at it */
+const S3REGNAME={kerala:"केरल",mappila:"मालाबार",newar:"नेवारी",odisha:"ओड़िशा",assam:"असम",kashmir:"कश्मीर",tamil:"तमिल",
+ telugu:"तेलुगु",kannada:"कन्नड़",marathi:"मराठी",gujarat:"गुजरात",bengal:"बंगाल",punjab:"पंजाब",thai:"थाई",khmer:"खमेर",
+ lao:"लाओ",malay:"मलय",java:"जावा",burma:"बर्मी",maranao:"मरानाओ",dai:"ताई",tibet:"तिब्बती"};
+const S3TYPE={house:"घर",hillhouse:"घर",hut:"झोपड़ी",palace:"महल",gate:"फाटक",wall:"दीवार",tree:"पेड़"};
+function s3label(name,castKey){
+ if(castKey&&S3NAME[castKey])return S3NAME[castKey];
+ const r=S3.region;
+ if(r&&S3TYPE[name])return (S3REGNAME[r]||"")+" "+S3TYPE[name];
+ const sp=PX_SPR[name];
+ if(sp&&sp.t)return sp.t.split(" ")[0];
+ return S3TYPE[name]||name;
+}
 /* ---------- casting: who each figure in the plan is, read from the stop's words ---------- */
 const S3NAME={sita:"सीता",sitaCalm:"सीता",rama:"राम",lakshmana:"लक्ष्मण",hanuman:"हनुमान",ravana:"रावण",brahma:"ब्रह्मा",shiva:"शिव",
  rakshasi:"राक्षसियाँ",rakshasa:"राक्षस",trijata:"त्रिजटा",mandodari:"मंदोदरी",vibhishana:"विभीषण",vanara:"वानर"};
@@ -9090,7 +9160,8 @@ function s3cast(name,ex,W,used,idx){
  if(name==="whitemonkey"&&!used.hanuman)return pick("hanuman",()=>{const g=divine({skin:"#f4f0ea",cloth:"#d0482a",scarf:"#f2c230",crown:true,kundal:true,hold:gada(),halo:.78});g.userData.hanuman=true;return g;});
  if(name==="monkey"||name==="whitemonkey")return pick("vanara",()=>monkey({fur:name==="whitemonkey"?"#f2f0ea":"#9a6a3a"}));
  if(name==="king"&&has(/(राम|फ्रा राम|प्रेअह रीम)/)&&!has(/रावण/))return pick("rama",()=>S3GOD.rama());
- if(name==="king"&&(has(/(रावण|दस|सोया|दरबार|लंका)/)||lanka))return pick("ravana",()=>ravana());
+ if(name==="king"&&has(/(सोया|सो रहा|सो रहे|नींद|सोते)/))return pick("ravana",()=>ravanaAsleep());
+ if(name==="king"&&(has(/(रावण|दस|दरबार|लंका)/)||lanka))return pick("ravana",()=>ravana());
  if(name==="man"&&q==="#3a6ea5"&&has(/(राम|फ्रा राम|सेरी राम|प्रेअह रीम)/)&&!used.rama)return pick("rama",()=>S3GOD.rama());
  if(name==="man"&&has(/(लक्ष्मण|लक्षमाना|फ्रा लक)/)&&!used.lakshmana&&(q==="#e0b030"||q==="#3a6ea5"))return pick("lakshmana",()=>S3GOD.lakshmana());
  if(name==="man"&&q==="#3f8a3a"&&has(/विभीषण|छोटा भाई|अकेला/))return pick("vibhishana",()=>person({cloth:"#2f7a4a",crown:true,mood:"calm",turban:null}));
@@ -9213,6 +9284,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
   if(!S3SKYTHINGS[name]&&!S3FLOAT[name]&&o.position.y===0)o.position.z+=((i*37)%5-2)*.55;
   if(ex.flip)o.rotation.y=Math.PI;
   o.userData.drift=ex.drift||"";o.userData.home=o.position.clone();o.userData.seed=i*1.37;o.userData.kind=name;
+  o.userData.label=s3label(name,cst&&cst.key);
   o.traverse(c=>{if(c.userData.light&&lights<4){const pl=new THREE.PointLight(new THREE.Color(c.userData.light),1.6,9,2);pl.position.y=c===o?1:0;c.add(pl);c.userData.pl=pl;lights++;}});
   if(o.userData.light&&!o.userData.pl&&lights<4){const pl=new THREE.PointLight(new THREE.Color(o.userData.light),1.6,9,2);pl.position.y=1;o.add(pl);o.userData.pl=pl;lights++;}
   if(o.userData.sparks){const pts=new THREE.BufferGeometry(),n=60,pos=new Float32Array(n*3);for(let k=0;k<n;k++){pos[k*3]=(Math.random()-.5)*1.2;pos[k*3+1]=Math.random()*3;pos[k*3+2]=(Math.random()-.5)*1.2;}
@@ -9226,7 +9298,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
   if(th&&kg){kg.position.set(th.position.x,th.position.y+.62*th.scale.y,th.position.z+.05);kg.rotation.y=th.rotation.y;kg.scale.copy(th.scale).multiplyScalar(.95);
    kg.userData.home=kg.position.clone();if(kg.userData.breathe)kg.userData.breathe.scale.y=.8;}}
  let me=null;
- if(P.me){me=s3role(role);const sp=PX_SPR["r_"+role]||PX_SPR.r_jigyasu;s3place(me,"me",P.me[0],P.me[1],1.25,sp.f[0][0].length,sp.f[0].length);me.scale.multiplyScalar(1.05);me.rotation.y=me.position.x>0?-.45:.45;sc.add(me);live.push(me);}
+ if(P.me){me=s3role(role);me.userData.label="तुम · "+(S3.meLabel||"").replace("तुम · ","");const sp=PX_SPR["r_"+role]||PX_SPR.r_jigyasu;s3place(me,"me",P.me[0],P.me[1],1.25,sp.f[0][0].length,sp.f[0].length);me.scale.multiplyScalar(1.05);me.rotation.y=me.position.x>0?-.45:.45;sc.add(me);live.push(me);}
  /* dust in the air, catching the light: small, slow, everywhere */
  const dg=new THREE.BufferGeometry(),dn=140,dp=new Float32Array(dn*3);for(let k=0;k<dn;k++){dp[k*3]=(Math.random()-.5)*26;dp[k*3+1]=Math.random()*8;dp[k*3+2]=(Math.random()-.5)*14;}
  dg.setAttribute("position",new THREE.BufferAttribute(dp,3));const dust=new THREE.Points(dg,new THREE.PointsMaterial({color:P.bg==="fire"?0xffa050:0xfff2d0,size:.05,transparent:true,opacity:.55}));sc.add(dust);
@@ -9288,6 +9360,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
     /* a neck turns only so far */
     u.head.rotation.y=Math.max(-.32,Math.min(.32,d*.4))+Math.sin(k*.5+s)*.05;}
    if(u.breathe)u.breathe.scale.y=1+Math.sin(k*2+s)*.02;
+   if(u.sleep&&u.chest){u.chest.scale.set(1+Math.sin(k*1.1+s)*.04,1,1+Math.sin(k*1.1+s)*.04);}
    if(u.arms&&u.arms[0]&&!u.player){const A=u.arms;
     if(S3.mood==="alarm"&&!u.divine){A.forEach((a2,j)=>{a2.rotation.z=(j?1:-1)*(.9+Math.sin(k*4+s)*.25);a2.rotation.x=-.5;});o.position.z=u.home.z-Math.abs(Math.sin(k*1.6+s))*.18+((s*7)%3-1)*.35;}
     else if(S3.mood==="sad"&&!u.divine){A.forEach(a2=>a2.rotation.x=-.35);u.head.rotation.x=.22;}
@@ -9350,6 +9423,30 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
  }
  function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();if(calm)frame();}
  window.addEventListener("resize",resize);
+ /* point at anything in the scene and it tells you what it is;
+    the listener is put on the canvas once, and always asks the scene showing right now */
+ S3.hover={cam:cam,live:live};
+ if(!canvas.__named){canvas.__named=true;
+  const ray=new THREE.Raycaster(),pt=new THREE.Vector2();
+  const nameAt=ev=>{
+   const H=S3.hover;if(!H)return;
+   const r=canvas.getBoundingClientRect();
+   const cx=(ev.touches&&ev.touches[0]?ev.touches[0].clientX:ev.clientX),cy=(ev.touches&&ev.touches[0]?ev.touches[0].clientY:ev.clientY);
+   if(cx===undefined)return;
+   pt.x=((cx-r.left)/r.width)*2-1;pt.y=-((cy-r.top)/r.height)*2+1;
+   ray.setFromCamera(pt,H.cam);
+   let lab="";
+   try{const hits=ray.intersectObjects(H.live,true);
+    for(const h of hits){let o=h.object;while(o&&!o.userData.label)o=o.parent;if(o&&o.userData.label){lab=o.userData.label;break;}}}catch(e){}
+   const tip=canvas.parentElement&&canvas.parentElement.querySelector(".s3tip");
+   if(!tip)return;
+   if(lab){tip.textContent=lab;tip.style.left=Math.max(30,Math.min(r.width-30,cx-r.left))+"px";tip.style.top=Math.max(4,cy-r.top-34)+"px";tip.hidden=false;}
+   else tip.hidden=true;
+  };
+  ["pointermove","mousemove","pointerdown","touchstart","touchmove"].forEach(t=>canvas.addEventListener(t,nameAt,{passive:true}));
+  ["pointerleave","mouseleave","touchend"].forEach(t=>canvas.addEventListener(t,()=>{
+   const tip=canvas.parentElement&&canvas.parentElement.querySelector(".s3tip");if(tip)tip.hidden=true;},{passive:true}));
+ }
  S3.cur={R,raf:()=>raf,stop(){dead=true;cancelAnimationFrame(raf);window.removeEventListener("resize",resize);
   sc.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>m.dispose());}});
   tex.dispose();R.renderLists.dispose();}};
@@ -9365,7 +9462,10 @@ const S3ROLECOL=r=>S3E.S3ROLE[r]||S3E.S3ROLE.jigyasu,scene3d=S3E.scene3d,s3stop=
 
 function startTour(k,backTo){
  const D=DETOUR[k];if(!D)return;
- tour={k:k,i:0,back:backTo||null,seen:{}};
+ /* remember how far the page was scrolled, so coming back does not lose the place */
+ const rb=document.getElementById("readerBox"),st=document.getElementById("story");
+ const keep=(rb&&rb.scrollTop)||(rb&&rb.parentElement&&rb.parentElement.scrollTop)||(st&&st.scrollTop)||0;
+ tour={k:k,i:0,back:backTo||null,seen:{},scroll:keep};
  save.tour=save.tour||{};
  drawTour();
 }
@@ -9377,6 +9477,9 @@ function drawTour(){
  D.stops.forEach((x,i)=>{strip+='<button class="tstep'+(i===tour.i?" on":"")+(tour.seen[i]?" been":"")+
   '" data-stop="'+i+'">'+x.n+"</button>";});
  box.innerHTML='<div class="rin">'+
+  '<div class="tbar"><button class="tback">← वापस</button>'+
+   '<span class="tbarname">'+D.n+'</span>'+
+   '<span class="tbarno">'+(tour.i+1)+"/"+D.stops.length+"</span></div>"+
   '<p class="rwhere">'+SRC[D.src].n+" के भीतर एक चक्कर</p>"+
   '<h2 class="rtitle">'+D.n+"</h2>"+
   '<p class="rmeta">'+D.why+"</p>"+
@@ -9394,6 +9497,7 @@ function drawTour(){
    '<p class="tcount">'+D.stops.length+" में से "+(tour.i+1)+"</p></div>";
  /* the stop's own 3D scene; the pixel scene stays underneath as the fallback */
  {const art=box.querySelector(".tart");
+  if(art){art.insertAdjacentHTML("beforeend",'<span class="s3tip" hidden></span><span class="s3mark">© मनु विश्रांति</span>');}
   if(art&&st.px&&s3ok()){const cv=s3canvas();art.appendChild(cv);
    const words=D.n+" "+D.why+" "+st.n+" "+st.say.join(" ");
    const mood=/(दुख|शोक|रो |रोत|आँसू|अकेल|बंदी|कोसती|बिछड़|टूट|उदास|भारी पड़|आँखें भर)/.test(words)?"sad":
@@ -9405,6 +9509,7 @@ function drawTour(){
     const cap=document.createElement("p");cap.className="tcast";
     cap.innerHTML=(who.length?"इस दृश्य में: <b>"+who.join(", ")+"</b>. ":"")+'<span class="tme" style="--rc:'+(S3ROLECOL(myRole()))+'">तुम ('+(RWHO[myRole()]||"खोजी")+')</span>';
     art.after(cap);}catch(e){cv.remove();s3stop();}}}
+ const tb=box.querySelector(".tback");if(tb)tb.onclick=()=>endTour();
  box.querySelectorAll("[data-stop]").forEach(b=>{b.onclick=()=>{tour.i=+b.dataset.stop;drawTour();};});
  const nx=box.querySelector(".rnext");if(nx)nx.onclick=()=>{tour.i++;drawTour();};
  const pv=box.querySelector(".rprev");if(pv)pv.onclick=()=>{tour.i--;drawTour();};
@@ -9416,9 +9521,14 @@ function drawTour(){
 }
 function endTour(){
  s3stop();
- const back=tour&&tour.back;tour=null;
+ const back=tour&&tour.back,keep=(tour&&tour.scroll)||0;tour=null;
  if(back&&back.kind==="reader")openReader(back.id,back.w,back.li);
  else showPanel("story");
+ /* put the reader back at the very line they left from */
+ setTimeout(()=>{const rb=document.getElementById("readerBox"),st=document.getElementById("story");
+  if(rb&&rb.scrollHeight>rb.clientHeight)rb.scrollTop=keep;
+  else if(rb&&rb.parentElement)rb.parentElement.scrollTop=keep;
+  if(st&&st.scrollHeight>st.clientHeight&&!rb)st.scrollTop=keep;},60);
 }
 function tourOpen(){const c=document.getElementById("chakkar");return c&&!c.hidden;}
 function openKatha(k){
