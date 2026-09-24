@@ -1698,6 +1698,17 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 /* the ways across, under every picture */
 .crosslinks{margin-top:.4rem;gap:.4rem}
 .crosslinks .claim{font-size:.9rem}
+
+/* the leaf strip under the place you stand in */
+.leafstrip{margin:.5rem 0 0;padding:.7rem .8rem .8rem;border-radius:.7rem;
+ background:linear-gradient(180deg,var(--leaf1) 0%,var(--leaf2) 60%,var(--leaf3) 100%);
+ border:1px solid var(--leafEdge);color:var(--leafInk);text-align:left}
+.leafstrip .lsrc{margin:0 0 .3rem;font-size:.86rem;color:var(--leafQuiet)}
+.leafstrip .lsay p{margin:0 0 .5rem;line-height:1.65;color:var(--leafInk)}
+.leafstrip .lacts{justify-content:flex-start;flex-wrap:wrap;margin-top:.3rem}
+.leafstrip .lacts .claim{color:var(--leafInk);border-color:var(--leafBtn)}
+.dcanvas.inside{aspect-ratio:21/10}
+@media (max-width:560px){.dcanvas.inside{aspect-ratio:4/3}}
 </style>
 </head>
 <body>
@@ -4537,7 +4548,7 @@ function foldList(title,build){
  return box;
 }
 function autoOnce(key,fn){
- if(!run)return false;
+ if(!run||insideOn)return false;   /* inside a place, nothing else may butt in */
  run.shown=run.shown||{};
  if(run.shown[key])return false;
  run.shown[key]=1;
@@ -4679,6 +4690,66 @@ function bhumikaOpen(list){
  const shut=host.querySelector(".bshut");
  if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
 }
+/* ============ भीतर की कथा ============
+   you stay in the place: the telling runs on a leaf strip under it, and every way on is here. */
+let insideLive=null,insideOn=false;
+function andarChalo(id){
+ if(!run)return;
+ insideOn=true;
+ try{visit(id);}catch(e){}          /* the written page keeps the record, quietly */
+ setTimeout(()=>andarDikhao(id),120);
+}
+function andarDikhao(id){
+ const key=run.N.id+"-"+id+"-"+run.w;
+ const L=layersOf(key)||[];
+ const wn=(run.N.watches[run.w]||{}).n||"";
+ const P=PLACES[id]||{};
+ let li=0;
+ const host=bigShow({wide:true,tag:wn,title:P.n||"",
+  line:"",
+  extra:'<canvas class="dcanvas inside"></canvas>'+
+   '<div class="leafstrip"><p class="lsrc"></p><div class="lsay"></div>'+
+   '<div class="bacts lacts"></div></div>',
+  shut:"नक्शे पर लौटो"});
+ host.dataset.auto="1";
+ const cv=host.querySelector(".dcanvas");if(!cv)return;
+ cv.width=1100;cv.height=520;
+ try{
+  if(insideLive&&insideLive.stop)insideLive.stop();
+  insideLive=S3E.insideScene(cv,{kind:S3E.doorKind(P.n||""),tone:S3E.toneOf(wn),role:myRole()});
+ }catch(e){}
+ const src=host.querySelector(".lsrc"),say=host.querySelector(".lsay"),acts=host.querySelector(".lacts");
+ function paint2(){
+  const x=L[li];if(!x)return;
+  const S=SRC[x.src||"vr"];
+  src.textContent=S.n+(L.length>1?(" · "+(li+1)+" में से "+L.length):"");
+  say.innerHTML=(x.say||[]).map(t=>"<p>"+t+"</p>").join("");
+  /* reading it here counts as reading it */
+  try{const sc2=x.src||"vr";save.readSrc=save.readSrc||{};
+   if(!save.readSrc[key+"|"+sc2]){save.readSrc[key+"|"+sc2]=1;persist();muhimTick("read");}}catch(e){}
+  acts.innerHTML="";
+  const add=(label,cls,fn)=>{const b=document.createElement("button");b.className="claim"+(cls?" "+cls:"");
+   b.textContent=label;b.onclick=fn;acts.appendChild(b);};
+  if(li<L.length-1)add("इसी पल की अगली कथा","",()=>{li++;paint2();});
+  const bk=[...story.querySelectorAll(".basket")].pop();
+  if(bk&&[...(bk.body||bk).children].some(z=>z.dataset&&z.dataset.card))
+   add("यहाँ मिली बातें","ghost",()=>{const b=host.querySelector(".bshut");if(b)b.click();
+    setTimeout(()=>thaalDikhao(bk),140);});
+  /* and the way on, without ever leaving the picture */
+  const open=(typeof ghadiSpots==="function")?ghadiSpots().filter(z=>!run.pickedHere.includes(z)):[];
+  if(open.length&&visitsHere()-run.used>0)
+   add("अगला दरवाज़ा","",()=>{const b=host.querySelector(".bshut");if(b)b.click();
+    setTimeout(()=>darwazeDikhao(open),140);});
+  else add("वक़्त आगे बढ़ाओ","",()=>{const b=host.querySelector(".bshut");if(b)b.click();
+   setTimeout(()=>{const f=aageBtn();if(f)f.click();},160);});
+ }
+ paint2();
+ const shut=host.querySelector(".bshut");
+ if(shut){const old=shut.onclick;shut.onclick=()=>{
+  insideOn=false;
+  if(insideLive&&insideLive.stop){insideLive.stop();insideLive=null;}
+  if(old)old();};}
+}
 function raateinDikhao(){
  if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return false;
  const first=RFIRST[myRole()];
@@ -4780,12 +4851,12 @@ function darwazeOpen(ids){
  };
  try{
   live=S3E.doorScene(cv,{doors:doors,tone:S3E.toneOf(w.n||""),role:myRole(),onNear:near,
-   onPick:d=>{
+   onPick:d=>{   /* you walk in and stay in: the katha is told inside the place */
     /* the light of the doorway floods the screen, and the story begins inside it */
     const veil=document.createElement("div");veil.className="dveil";host.appendChild(veil);
     requestAnimationFrame(()=>veil.classList.add("on"));
     setTimeout(()=>{const b=host.querySelector(".bshut");if(b)b.click();
-     if(d&&d.id)visit(d.id);},520);
+     if(d&&d.id)andarChalo(d.id);},520);
    }});
  }catch(e){note("दरवाज़ों वाला दृश्य नहीं खुल सका।");return;}
  paarJao(host,"dwar");
@@ -12088,6 +12159,64 @@ function makeThing(kind,tint){
 /* ================= भूमिकाओं की क़तार =================
    the eight roles standing in a row, each in its own clothes and colour, each with a board
    saying who it is and what it looks for. the ones not yet earned stand in shadow. */
+/* ================= जगह के भीतर =================
+   once you step through a door you stay inside: the place stands around you and the katha
+   is told on a palm leaf strip below it. nothing sends you back to a written page. */
+function insideScene(canvas,opts){
+ const kind=opts.kind||"ghar",role=opts.role||"jigyasu";
+ const T=DOORTONE[opts.tone||"raat"]||DOORTONE.raat;
+ const W=canvas.clientWidth||640,H=canvas.clientHeight||380;
+ const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+ R.setPixelRatio(Math.min(1.6,window.devicePixelRatio||1));R.setSize(W,H,false);
+ R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=T.exp;
+ R.shadowMap.enabled=W>560;R.shadowMap.type=THREE.PCFSoftShadowMap;
+ const sc=new THREE.Scene();
+ sc.background=new THREE.Color(T.sky);sc.fog=new THREE.Fog(T.fog,16,60);
+ const cam=new THREE.PerspectiveCamera(40,W/H,.1,160);
+ cam.position.set(0,2.6,7.4);const look=new THREE.Vector3(0,1.6,-4);cam.lookAt(look);
+ sc.add(new THREE.HemisphereLight(T.hemiA,T.hemiB,Math.max(.45,T.hemi)));
+ const key=new THREE.DirectionalLight(T.keyC,T.key);key.position.set(3,8,5);key.castShadow=true;sc.add(key);
+ if(T.stars){const st=grp();sc.add(st);
+  for(let i=0;i<40;i++)st.add(sph(.07,M("#ffffff",{emissive:new THREE.Color("#ffffff"),emissiveIntensity:1}),
+   (Math.random()-.5)*44,8+Math.random()*12,-10-Math.random()*26));}
+ const gr=mesh(new THREE.PlaneGeometry(90,90),M(T.ground,{roughness:.95}),0,0,0);
+ gr.rotation.x=-Math.PI/2;gr.receiveShadow=true;sc.add(gr);
+ /* the place itself, the same one that was seen through the door */
+ const place=doorBeyond(kind,!!T.lamps);place.position.set(0,0,-2);
+ place.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+ sc.add(place);
+ /* the door you came through, behind you */
+ const back=makeDoor(kind,!!T.lamps);back.position.set(0,0,6.4);back.rotation.y=Math.PI;
+ if(back.userData.L)back.userData.L.rotation.y=1.2;
+ if(back.userData.R)back.userData.R.rotation.y=-1.2;
+ sc.add(back);
+ /* you, standing in it */
+ const me=s3role(role);me.position.set(1.4,0,3.4);me.rotation.y=Math.PI*.92;me.scale.setScalar(.92);
+ me.traverse(o=>{if(o.isSprite)o.visible=false;if(o.userData&&o.userData.pulse)o.visible=false;
+  if(o.isMesh&&o.geometry&&o.geometry.type==="ConeGeometry"&&o.position.y>1.8)o.visible=false;
+  if(o.isMesh)o.castShadow=true;});
+ sc.add(me);
+ let raf=0,dead=false,t=0,drift=0;
+ let last=(performance&&performance.now)?performance.now():Date.now();
+ function frame(){
+  if(dead)return;
+  const now=(performance&&performance.now)?performance.now():Date.now();
+  const dt=Math.min(.12,(now-last)/1000);last=now;t+=dt;
+  const calm=lessMove();
+  if(!calm){
+   drift+=dt*.12;
+   cam.position.x=Math.sin(drift)*.7;
+   cam.position.y=2.6+Math.sin(drift*.7)*.12;
+   me.position.y=Math.abs(Math.sin(t*1.1))*.02;
+   cam.lookAt(look);
+  }
+  R.render(sc,cam);raf=requestAnimationFrame(frame);
+ }
+ frame();
+ return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}},
+  /* looking back at the door you came through, for when you leave */
+  toDoor(){look.set(0,1.6,6.4);cam.lookAt(look);}};
+}
 function roleScene(canvas,opts){
  const list=opts.list||[],onPick=opts.onPick||function(){};
  const T=DOORTONE[opts.tone||"saanjh"]||DOORTONE.saanjh;
@@ -12393,10 +12522,11 @@ function doorScene(canvas,opts){
  function goTo(i){
   const g=doors[i];if(!g||opening)return;
   mode="walk";aim=i;
-  const p=g.userData.home,hgt=g.userData.H||4;
-  meTo.set(p.x+.9,0,p.z+2.8);                          /* he steps to one side, not in the way */
-  camTo.set(p.x+.35,hgt*.62,p.z+6.6);
-  lookTo.set(p.x,hgt*.5,p.z);
+  const p=g.userData.home,hgt=g.userData.H||4,wide=g.userData.W||2.6;
+  /* far enough back that the whole door is seen, whatever its size */
+  meTo.set(p.x+wide*.55,0,p.z+3.2);
+  camTo.set(p.x+.3,hgt*.55,p.z+Math.max(7.6,hgt*1.7));
+  lookTo.set(p.x,hgt*.45,p.z);
   meFace=Math.PI+Math.atan2(p.x-me.position.x,-(p.z-me.position.z))*0;
   onNear(g.userData.pick);
  }
@@ -12776,7 +12906,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
 function s3stop(){if(S3.cur){try{S3.cur.stop();}catch(e){}S3.cur=null;}}
 
 function s3canvas(){if(!S3.canvas){S3.canvas=document.createElement("canvas");S3.canvas.className="s3";}return S3.canvas;}
-return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,trayScene,roleScene,toneOf,s3role};
+return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,trayScene,roleScene,insideScene,toneOf,s3role};
 })();
 const S3ROLECOL=r=>S3E.S3ROLE[r]||S3E.S3ROLE.jigyasu,scene3d=S3E.scene3d,s3stop=S3E.s3stop,s3ok=S3E.s3ok,s3canvas=S3E.s3canvas,S3NOW=()=>S3E.S3.cur;
 
