@@ -10941,21 +10941,36 @@ function makeDoor(kind,night){
  const L=grp(),Rt=grp();leaves.add(L);leaves.add(Rt);
  let W=2.6,H=4.2;
  if(kind==="mandir"){
-  W=2.4;H=4.4;
+  W=2.6;H=5.0;
   /* the frame: five bands of carved stone, and a block over the lintel */
   for(let i=0;i<3;i++){const w=.22-i*.04,x=W/2+.12+i*.22;
    [-1,1].forEach(q=>g.add(box(w,H,.3,i%2?M("#9a8f80",{roughness:.8}):stone,q*x,H/2,0)));
    g.add(box(W+2*x+w,w,.3,i%2?M("#9a8f80",{roughness:.8}):stone,0,H+i*.22+.1,0));}
   g.add(box(1.0,.5,.36,M("#b0a48c",{roughness:.7}),0,H+.62,0));      /* ललाटबिंब */
   g.add(sph(.18,brass,0,H+.66,.2));
-  [-1,1].forEach(q=>{const dp=person({cloth:"#6a5a4a",skin:"#c99a6a"});
-   dp.position.set(q*(W/2+.85),0,.35);dp.scale.setScalar(.95);dp.rotation.y=-q*.4;g.add(dp);});
+  [-1,1].forEach(q=>{                       /* द्वारपाल: heavier than a man, crowned, club in hand */
+   const dp=grp();dp.position.set(q*(W/2+1.0),0,.4);dp.rotation.y=-q*.45;dp.scale.setScalar(1.18);g.add(dp);
+   const skin=M("#8a6a4a",{roughness:.7}),cloth=M("#6a3a2a",{roughness:.8}),gold2=M("#d8a83a",{metalness:.85,roughness:.25});
+   dp.add(cyl(.5,.62,1.5,cloth,0,.75,0));                 /* the lower cloth */
+   dp.add(sph(.55,skin,0,1.55,0,1,1.15,.9));              /* the chest */
+   dp.add(sph(.34,skin,0,2.35,0));                        /* the head */
+   dp.add(cyl(.3,.36,.34,gold2,0,2.66,0));                /* the crown */
+   dp.add(cone(.1,.3,gold2,0,2.95,0,8));
+   [-1,1].forEach(w=>dp.add(sph(.06,M("#2a1a14"),w*.13,2.4,.3)));
+   dp.add(box(.26,.06,.06,M("#2a1a14"),0,2.22,.32));
+   const arm=cyl(.14,.14,1.0,skin,q*.52,1.7,.1);arm.rotation.z=q*.5;dp.add(arm);   /* one arm raised */
+   const club=grp();club.position.set(q*.95,2.2,.1);club.rotation.z=q*.35;dp.add(club);
+   club.add(cyl(.08,.1,1.2,M("#6a4a24",{roughness:.7}),0,.6,0));
+   club.add(sph(.28,gold2,0,1.35,0));
+   dp.add(cyl(.16,.16,.8,skin,-q*.5,1.5,.05));            /* the other arm at rest */
+   dp.add(cyl(.5,.5,.12,M("#4a3a2a",{roughness:.9}),0,.06,0));  /* the step he stands on */
+  });
   g.add(box(W+1.6,.22,.7,M("#b5ab96",{roughness:.8}),0,.11,.25));     /* देहरी */
   L.add(box(W/2,H,.14,M("#6a4a2a",{roughness:.6}),-W/4,H/2,0));
   Rt.add(box(W/2,H,.14,M("#6a4a2a",{roughness:.6}),W/4,H/2,0));
   for(let i=0;i<4;i++)[-1,1].forEach(q=>{(q<0?L:Rt).add(sph(.09,brass,q*W/4,1+i*.9,.09));});
  }else if(kind==="mahal"){
-  W=3.4;H=5.4;
+  W=3.8;H=6.6;
   [-1,1].forEach(q=>g.add(box(.7,H+1.2,1.0,M("#7a6a58",{roughness:.8}),q*(W/2+.5),(H+1.2)/2,0)));
   g.add(box(W+2.4,.8,1.0,M("#7a6a58",{roughness:.8}),0,H+.9,0));
   /* the arch over the gate */
@@ -10973,7 +10988,7 @@ function makeDoor(kind,night){
   });
   g.add(box(W+2.6,.3,1.2,M("#6a5a4a",{roughness:.85}),0,.15,.4));
  }else if(kind==="bagh"){
-  W=2.6;H=2.9;
+  W=2.6;H=2.7;
   [-1,1].forEach(q=>g.add(cyl(.16,.18,H+.5,M("#6a4a28",{roughness:.7}),q*(W/2+.25),(H+.5)/2,0)));
   g.add(box(W+1.0,.22,.3,M("#6a4a28",{roughness:.7}),0,H+.5,0));
   /* the garden leaning over the gate */
@@ -10986,7 +11001,7 @@ function makeDoor(kind,night){
    for(let i=0;i<5;i++)side.add(box(W/2-.2,.06,.14,M("#8a6a3a"),sgn*W/4,.5+i*.6,.08));
    for(let i=0;i<3;i++)side.add(box(.06,H-.6,.14,M("#8a6a3a"),sgn*(.3+i*.5),H/2,.08));});
  }else if(kind==="pahra"){
-  W=2.8;H=3.6;
+  W=2.9;H=3.9;
   [-1,1].forEach(q=>g.add(cyl(.24,.26,H+.4,M("#5a4430",{roughness:.85}),q*(W/2+.3),(H+.4)/2,0)));
   g.add(box(W+1.2,.3,.4,M("#5a4430",{roughness:.85}),0,H+.4,0));
   [-1,1].forEach(q=>{const sp=cyl(.05,.05,3.2,M("#6a5a3a"),q*(W/2+.55),1.7,.3);
@@ -10999,7 +11014,7 @@ function makeDoor(kind,night){
    side.add(box(W/2,H,.2,M("#6a5238",{roughness:.8}),sgn*W/4,H/2,0));
    for(let i=0;i<4;i++)side.add(box(W/2-.1,.14,.24,M("#4a3a28"),sgn*W/4,.7+i*.9,.08));});
  }else if(kind==="samudra"){
-  W=3.0;H=4.0;
+  W=3.4;H=4.6;
   [-1,1].forEach(q=>g.add(box(.5,H,.6,M("#9a8f7a",{roughness:.85}),q*(W/2+.3),H/2,0)));
   for(let i=0;i<9;i++){const a=Math.PI*(i/8),x=Math.cos(a)*(W/2+.3),y=H+Math.sin(a)*1.0;
    g.add(box(.42,.34,.6,M("#a89b84",{roughness:.85}),x,y,0));}
@@ -11030,8 +11045,8 @@ function makeDoor(kind,night){
    side.add(box(W/2,H,.1,M("#7a6446",{roughness:.75}),sgn*W/4,H/2,0));
    for(let i=0;i<3;i++)side.add(box(W/2-.2,.08,.14,M("#8a7450"),sgn*W/4,.7+i*.9,.07));});
  }else{
-  W=2.0;H=3.2;
-  [-1,1].forEach(q=>g.add(box(.26,H,.3,M("#6a4a2a",{roughness:.7}),q*(W/2+.18),H/2,0)));
+  W=1.7;H=2.6;
+  [-1,1].forEach(q=>g.add(box(.24,H,.3,M("#6a4a2a",{roughness:.7}),q*(W/2+.16),H/2,0)));
   g.add(box(W+.9,.3,.34,M("#6a4a2a",{roughness:.7}),0,H+.14,0));
   /* the tulsi beside a house door */
   const tp=grp();tp.position.set(-(W/2+.9),0,.4);g.add(tp);
