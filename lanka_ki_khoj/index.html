@@ -4166,6 +4166,17 @@ function moharCount(){const m=save.muhim||{};return Object.keys(m.mohar||{}).len
 /* ============ राह पट्टी ============
    one row that always sits over the reading: where you are, what is read here, what is still
    lying about, the way on, and a door back into each of the three pictures. */
+/* the one button that truly carries the night forward, wherever it sits on the page */
+/* a button that carries the night forward wears a mark, so the road bar can find it */
+function aage(b){if(b&&b.dataset)b.dataset.aage="1";return b;}
+function aageBtn(){
+ const marked=[...story.querySelectorAll("button[data-aage]")].filter(b=>b.getBoundingClientRect().width>2);
+ if(marked.length)return marked[marked.length-1];
+ const st=[...story.querySelectorAll(".step:not(.shut)")].pop();if(!st)return null;
+ const want=/वक़्त आगे|घड़ी में चलो|कथा आगे चलती है|सुबह हुई|रात पूरी/;
+ const all=[...st.querySelectorAll("button")].filter(b=>want.test(String(b.textContent||"")));
+ return all.length?all[all.length-1]:null;
+}
 function raahBar(){
  const host=document.getElementById("raahbar");if(!host)return;
  if(panel!=="story"||!run){host.hidden=true;return;}
@@ -4192,6 +4203,9 @@ function raahBar(){
  /* and where the night stands */
  const W=run.N.watches[run.w];
  bits.push({k:"ghadi",n:W?W.n.split(",")[0]:"",c:(run.ghadi===0?"कथा की घड़ी":"तुम्हारी घड़ी"),on:false});
+ /* and the way on, so the next step is never hunted for */
+ {const fwd=aageBtn();
+  if(fwd)bits.push({k:"aage",n:"आगे",c:String(fwd.textContent||"").replace(/\s+/g," ").slice(0,22),on:true});}
  /* the mission rides in the same row, so the reading keeps its room */
  try{const N2=muhimNow();const id2=N2.ghadi||N2.raat||N2.safar;
   if(id2){const M=MUHIM[id2],have=Math.min(mcount(id2),M.goal);
@@ -4204,6 +4218,7 @@ function raahBar(){
   if(k==="pothi"&&run.hereOthers)pothiDikhao(run.hereId,run.w,run.hereOthers,run.hereKey);
   else if(k==="thaal"){const bk=[...story.querySelectorAll(".basket")].pop();if(bk)thaalDikhao(bk);}
   else if(k==="dwar"&&open.length)darwazeDikhao(open);
+  else if(k==="aage"){const fwd=aageBtn();if(fwd)fwd.click();}
   else if(k==="muhim"){muhimOpen=!muhimOpen;
    const mb=document.getElementById("muhimbar");if(mb)mb.classList.remove("shut");
    muhimBar();}
@@ -4945,7 +4960,8 @@ function showObject(kind){
 function el(h,c){const d=document.createElement("div");d.className=c||"";d.innerHTML=h;
  (curStep||story).appendChild(d);return d;}
 function say(list){(list||[]).forEach(p=>el("<p>"+p+"</p>"));}
-function btn(t,c,fn){const b=document.createElement("button");b.className=c;b.textContent=t;if(fn)b.onclick=fn;else b.disabled=true;return b;}
+function btn(t,c,fn){
+ try{if(typeof raahBar==="function")setTimeout(()=>{try{raahBar();}catch(e){}},60);}catch(e){}const b=document.createElement("button");b.className=c;b.textContent=t;if(fn)b.onclick=fn;else b.disabled=true;return b;}
 let anchorNode=null,anchorT=0;
 function markPoint(){return story.children.length;}
 function stepPoint(){return story.children.length;}
@@ -8640,7 +8656,7 @@ function offer(only){
  if(run.ghadi===1){
   const skip=document.createElement("button");
   skip.className="do go";skip.type="button";
-  skip.textContent="कहीं नहीं, वक़्त आगे बढ़ाओ";
+  skip.textContent="कहीं नहीं, वक़्त आगे बढ़ाओ";skip.dataset.aage="1";
   skip.onclick=()=>{f.remove();endWatch();};
   f.appendChild(skip);
  }
@@ -8820,7 +8836,9 @@ function visit(id){
    });
   });
  }
- run.busy=false;paint();try{raahBar();}catch(e){}
+ run.busy=false;paint();
+ /* the row is drawn again once the buttons below are in place */
+ try{raahBar();setTimeout(()=>{try{raahBar();}catch(e){}},120);}catch(e){}
  const rest=ghadiSpots().filter(x=>!run.pickedHere.includes(x));
  const more=run.ghadi===1&&visitsHere()-run.used>0&&rest.length>0;
  el('<p class="ask">अब क्या करोगे?</p>');
@@ -8828,24 +8846,25 @@ function visit(id){
  if(more)f.appendChild(btn("इसी घड़ी एक और जगह देखो","do",()=>{f.remove();offer();}));
  if(run.ghadi===0&&ghadiSpots().length){
   const nxt=ghadiSpots()[0];
-  f.appendChild(btn("कथा आगे चलती है: "+PLACES[nxt].n,"do go",()=>{f.remove();
-   run.busy=false;visit(nxt);}));      /* no list to pick from, so go straight there */
+  f.appendChild(aage(btn("कथा आगे चलती है: "+PLACES[nxt].n,"do go",()=>{f.remove();
+    run.busy=false;visit(nxt);})));      /* no list to pick from, so go straight there */
   anchorFrom(at);return;
  }
  if(run.ghadi===0&&!spotsFor(run.w).filter(x=>mainList(run.w).indexOf(x)<0).length){
-  f.appendChild(btn("वक़्त आगे बढ़ाओ","do go",()=>{f.remove();endWatch();}));
+  f.appendChild(aage(btn("वक़्त आगे बढ़ाओ","do go",()=>{f.remove();endWatch();})));
   anchorFrom(at);return;
  }
  if(run.ghadi===0){
-  f.appendChild(btn("दूसरी घड़ी में चलो","do go",()=>{f.remove();
+  f.appendChild(aage(btn("दूसरी घड़ी में चलो","do go",()=>{f.remove();
    const atg=markPoint();
    run.ghadi=1;run.used=0;run.busy=false;run.focus=null;
    stage.classList.remove("focus");hideDio();
    step(run.N.watches[run.w].n+", दूसरी घड़ी");
-   hud();paint();offer();anchorFrom(atg);}));
+   hud();paint();offer();anchorFrom(atg);})));
   anchorFrom(at);return;
  }
- f.appendChild(btn("वक़्त आगे बढ़ाओ","do go",()=>{f.remove();endWatch();}));
+ {const b2=aage(btn("वक़्त आगे बढ़ाओ","do go",()=>{f.remove();endWatch();}));
+  if(b2.dataset)b2.dataset.aage="1";f.appendChild(b2);}
  anchorFrom(at);
 }
 
