@@ -11617,10 +11617,20 @@ function doorBeyond(kind,night){
   for(let i=0;i<5;i++)g.add(box(1.1,.7,.8,M("#6a5c4a",{roughness:.85}),(i-2)*3,4.5,-5));
   g.add(sph(.22,M("#ff9a40",{emissive:new THREE.Color("#ff7a20"),emissiveIntensity:1.2}),-3,3.4,-4.6));
  }else if(kind==="samudra"){
-  /* water to the far edge, and one wave line after another */
-  const w=mesh(new THREE.PlaneGeometry(40,30),M(night?"#14304e":"#2a6a9a",{roughness:.25,metalness:.4}),0,.02,-10);
+  /* water to the far edge, with waves, a moon lying on it, a rock and two small boats */
+  const w=mesh(new THREE.PlaneGeometry(60,44),M(night?"#14304e":"#2a6a9a",{roughness:.25,metalness:.4}),0,.02,-14);
   w.rotation.x=-Math.PI/2;g.add(w);
-  for(let i=0;i<8;i++)g.add(box(16,.12,.5,M(night?"#5a8fb0":"#8fd0e8",{emissive:new THREE.Color("#4a86a8"),emissiveIntensity:.4}),0,.1,-3-i*2.2));
+  for(let i=0;i<9;i++)g.add(box(18-i,.12,.45,M(night?"#5a8fb0":"#8fd0e8",{emissive:new THREE.Color("#4a86a8"),emissiveIntensity:.4}),
+   ((i%2)?1:-1)*i*.5,.1,-3-i*2.4));
+  if(night){                                   /* the moon lying broken on the water */
+   for(let i=0;i<6;i++)g.add(box(1.4-i*.12,.1,.7,M("#f3e6c4",{emissive:new THREE.Color("#f3e6c4"),emissiveIntensity:.7}),-3,.12,-6-i*2.2));
+  }
+  g.add(sph(1.1,M(night?"#2a2438":"#6a6258",{roughness:.9}),6,.4,-9,1,.6,1));
+  [[-7,-12,.9],[8,-17,.7]].forEach(([bx,bz,sc2])=>{   /* two boats, far out */
+   const bo=grp();bo.position.set(bx,.15,bz);bo.scale.setScalar(sc2);g.add(bo);
+   bo.add(sph(.9,M("#5a3a22",{roughness:.8}),0,0,0,1,.3,.5));
+   bo.add(cyl(.05,.05,1.2,M("#6a5a3a"),0,.6,0));
+   bo.add(box(.06,.7,.5,M("#e8dcc0",{roughness:.8}),.02,.75,.2));});
  }else if(kind==="mandir"){
   /* the lamp of the sanctum, and the pillars before it */
   g.add(box(6,5,.6,M("#7a7064",{roughness:.85}),0,2.5,-6));
@@ -12111,7 +12121,8 @@ function doorScene(canvas,opts){
     by.position.set(hp.x,0,hp.z-3.4);by.rotation.y=opening.rotation.y;
     sc.add(by);opening.userData.beyond=by;}
    const p=opening.userData.home;
-   camTo.set(p.x,2.3,p.z+4.2-e*5.6);lookTo.set(p.x,2.1,p.z-3);
+   /* going in, the eye stays at head height and looks a little up, so the far side is seen */
+   camTo.set(p.x,2.5+e*.5,p.z+4.2-e*5.6);lookTo.set(p.x,2.4+e*.8,p.z-4);
    meTo.set(p.x*.95,0,p.z+2.2-e*2.0);
    if(kk>=1){dead=true;cancelAnimationFrame(raf);setTimeout(()=>onPick(picked),80);return;}
   }
