@@ -11171,6 +11171,19 @@ function doorScene(canvas,opts){
   g.position.set(x,0,z);g.rotation.y=-t*.42;
   g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
   g.userData.pick=d;g.userData.home=g.position.clone();
+  /* a board over the door with its name, so the eye knows before the feet move */
+  {const cv2=document.createElement("canvas");cv2.width=640;cv2.height=150;
+   const x2=cv2.getContext("2d");
+   x2.fillStyle="rgba(24,18,30,.88)";x2.strokeStyle="#e0c07a";x2.lineWidth=7;
+   const rr=44;x2.beginPath();x2.moveTo(rr,10);x2.arcTo(630,10,630,140,rr);x2.arcTo(630,140,10,140,rr);
+   x2.arcTo(10,140,10,10,rr);x2.arcTo(10,10,630,10,rr);x2.fill();x2.stroke();
+   x2.fillStyle="#f6ecd6";x2.textAlign="center";x2.textBaseline="middle";
+   x2.font="bold 62px 'Noto Sans Devanagari','Mangal',serif";
+   x2.fillText(String(d.n||"").slice(0,22),320,80);
+   const tx=new THREE.CanvasTexture(cv2);tx.anisotropy=4;
+   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
+   sp.scale.set(3.4,.8,1);sp.position.set(x,(g.userData.H||4)+1.5,z+.2);
+   sp.renderOrder=6;sc.add(sp);g.userData.plate=sp;}
   const kind=doorKind(d.n);
   const by=doorBeyond(kind,night);                      /* the place waiting on the other side */
   by.position.set(x,0,z-3.4);by.rotation.y=g.rotation.y;
@@ -11266,6 +11279,10 @@ function doorScene(canvas,opts){
    d.position.y=ease(d.position.y,lit&&!opening?.1:0,.12);
    const gl=d.userData.glow;
    if(gl)gl.material.opacity=ease(gl.material.opacity,(aim===i?.32:(hover===i?.22:.08))+(opening===d?.85:0),.1);
+   const pl=d.userData.plate;
+   if(pl){const want=(opening?0:(aim<0?1:(aim===i?.9:.35)));
+    pl.material.opacity=ease(pl.material.opacity===undefined?1:pl.material.opacity,want,.1);
+    pl.visible=pl.material.opacity>.03;}
   });
   if(mode==="enter"&&opening){
    const L=opening.userData.L,Rt=opening.userData.R;
