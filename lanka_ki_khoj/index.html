@@ -4670,8 +4670,11 @@ function pothiOpen(id,w,others,key){
  let live=null;
  try{
   live=S3E.scrollScene(cv,{list:list,role:myRole(),tone:S3E.toneOf(wn),
-   onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
-    setTimeout(()=>openReader(id,w,d.li),120);}});
+   onPick:d=>{
+    /* the telling opens where you stand, not on a page somewhere else */
+    if(run&&run.hereId===id&&typeof andarDikhao==="function"){stopInside();andarDikhao(id,d.li);}
+    else{const b=host.querySelector(".bshut");if(b)b.click();setTimeout(()=>openReader(id,w,d.li),120);}
+   }});
  }catch(e){return false;}
  paarJao(host,"pothi");
  sunoList(host,list.map(d=>d.n+(d.read?", पढ़ी हुई":", अभी पढ़नी है")),
@@ -4753,12 +4756,12 @@ function andarChalo(id){
  try{visit(id);}catch(e){}          /* the written page keeps the record, quietly */
  setTimeout(()=>andarDikhao(id),120);
 }
-function andarDikhao(id){
+function andarDikhao(id,startLi){
  const key=run.N.id+"-"+id+"-"+run.w;
  const L=layersOf(key)||[];
  const wn=(run.N.watches[run.w]||{}).n||"";
  const P=PLACES[id]||{};
- let li=0;
+ let li=(typeof startLi==="number"&&L[startLi])?startLi:0;
  const host=bigShow({sig:"andar|"+key,wide:true,tag:wn,title:P.n||"",
   line:"",
   extra:'<div class="inrow"><canvas class="dcanvas inside"></canvas>'+
@@ -4924,8 +4927,7 @@ function darwazeOpen(ids){
     /* the light of the doorway floods the screen, and the story begins inside it */
     const veil=document.createElement("div");veil.className="dveil";host.appendChild(veil);
     requestAnimationFrame(()=>veil.classList.add("on"));
-    setTimeout(()=>{const b=host.querySelector(".bshut");if(b)b.click();
-     if(d&&d.id)andarChalo(d.id);},520);
+    setTimeout(()=>{if(d&&d.id)andarChalo(d.id);},520);   /* the same screen becomes the place inside */
    }});
  }catch(e){note("दरवाज़ों वाला दृश्य नहीं खुल सका।");return;}
  paarJao(host,"dwar");
