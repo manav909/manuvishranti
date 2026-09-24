@@ -23,6 +23,10 @@ if(!/mine&&busy\.dataset\.auto==="1"/.test(page))bad.push('a screen the player a
 /* names on things, so nothing needs a written list beside it */
 ["CanvasTexture","SpriteMaterial"].forEach(k=>{
  if(page.indexOf(k)<0)bad.push('the things carry no name boards ('+k+')');});
+/* what a mission won must show where the choice is made, not only on a page */
+if(page.indexOf('यहाँ कुछ छिपा है')<0)bad.push('the lamp boon does not mark the door that still hides something');
+if(page.indexOf('एक तुम्हारे हक़ से')<0)bad.push('the extra visit boon is never named at the doors');
+if(!/इस घड़ी में .*जगहें देख सकते हो/.test(page))bad.push('the doors do not say how much of the watch is left');
 /* a picture alone is not enough: the same choices must stand as plain buttons, read aloud and reachable */
 if(page.indexOf('function sunoList(')<0)bad.push('the pictures carry no plain list beside them');
 if(page.indexOf('.srlist{')<0)bad.push('the plain list has no place to stand');
