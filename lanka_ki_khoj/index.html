@@ -1610,6 +1610,12 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .dbar .dname{font-size:1.05rem}
 .dbar .dwhat{color:var(--quiet);font-size:.9rem;flex:1 1 100%;line-height:1.5}
 .dbar .dacts{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;flex:1 1 100%}
+
+/* the doorway's light washing over the screen as the story takes over */
+.dveil{position:fixed;inset:0;z-index:95;background:radial-gradient(60% 50% at 50% 55%,#ffe6b0 0%,#ffcf82 45%,#2a1a10 100%);
+ opacity:0;transition:opacity .42s ease-in;pointer-events:none}
+.dveil.on{opacity:1}
+#app.calm .dveil{transition:none}
 </style>
 </head>
 <body>
@@ -4235,7 +4241,7 @@ function darwazeDikhao(ids){
   note("इस फ़ोन पर दरवाज़ों वाला दृश्य नहीं चल पाता।");return;}
  const w=run.N.watches[run.w]||{};
  const night=!/दिन|दोपहर|सुबह|भोर|प्रात/.test(w.n||"");
- const doors=ids.slice(0,4).map(id=>({id:id,n:(PLACES[id]||{}).n||"",x:(PLACES[id]||{}).lore||(PLACES[id]||{}).t||"",been:!!(run.gone&&run.gone.indexOf(id)>-1)}));
+ const doors=ids.slice(0,3).map(id=>({id:id,n:(PLACES[id]||{}).n||"",x:(PLACES[id]||{}).lore||(PLACES[id]||{}).t||"",been:!!(run.gone&&run.gone.indexOf(id)>-1)}));
  const host=bigShow({tag:w.n||"",title:"कौन सा दरवाज़ा",
   line:"किसी दरवाज़े को छूओ, वहाँ तक चलकर पहुँचोगे।",
   extra:'<canvas class="dcanvas"></canvas>'+
@@ -4256,8 +4262,13 @@ function darwazeDikhao(ids){
  };
  try{
   live=S3E.doorScene(cv,{doors:doors,tone:S3E.toneOf(w.n||""),role:myRole(),onNear:near,
-   onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
-    setTimeout(()=>{if(d&&d.id)visit(d.id);},140);}});
+   onPick:d=>{
+    /* the light of the doorway floods the screen, and the story begins inside it */
+    const veil=document.createElement("div");veil.className="dveil";host.appendChild(veil);
+    requestAnimationFrame(()=>veil.classList.add("on"));
+    setTimeout(()=>{const b=host.querySelector(".bshut");if(b)b.click();
+     if(d&&d.id)visit(d.id);},520);
+   }});
  }catch(e){note("दरवाज़ों वाला दृश्य नहीं खुल सका।");return;}
  din.onclick=()=>live.enter();
  dbk.onclick=()=>{live.back();near(null);};
@@ -11147,15 +11158,15 @@ function doorScene(canvas,opts){
  const onPick=opts.onPick||function(){},onNear=opts.onNear||function(){};
  const W=canvas.clientWidth||640,H=canvas.clientHeight||380;
  const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
- R.setPixelRatio(Math.min(2,window.devicePixelRatio||1));R.setSize(W,H,false);
+ R.setPixelRatio(Math.min(1.6,window.devicePixelRatio||1));R.setSize(W,H,false);
  R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=T.exp;
- R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;
+ R.shadowMap.enabled=W>560;R.shadowMap.type=THREE.PCFSoftShadowMap;   /* a small board carries no shadows */
  let slow=0,frames=0,t0=(performance&&performance.now)?performance.now():Date.now();
  const sc=new THREE.Scene();
  sc.background=new THREE.Color(T.sky);
  sc.fog=new THREE.Fog(T.fog,16,58);
  if(T.stars){const st=grp();sc.add(st);
-  for(let i=0;i<90;i++){const a=Math.random()*Math.PI*2,r=18+Math.random()*16;
+  for(let i=0;i<44;i++){const a=Math.random()*Math.PI*2,r=18+Math.random()*16;
    st.add(sph(.07+Math.random()*.06,M("#ffffff",{emissive:new THREE.Color("#ffffff"),emissiveIntensity:1}),
     Math.cos(a)*r,7+Math.random()*14,-8-Math.random()*20));}}
  const cam=new THREE.PerspectiveCamera(38,W/H,.1,200);
@@ -11177,8 +11188,8 @@ function doorScene(canvas,opts){
   if(o.isMesh)o.castShadow=true;});
  sc.add(me);
  /* the doors: some near, some far, each turned a little towards you */
- const doors=[];const n=Math.max(1,list.length);
- list.forEach((d,i)=>{
+ const doors=[];const use=list.slice(0,3);const n=Math.max(1,use.length);
+ use.forEach((d,i)=>{
   const t=n===1?0:(i/(n-1))-.5;
   const g=makeDoor(doorKind(d.n),night);
   const near=(i%2===0)?0:1;                       /* every other one stands further back */
@@ -11199,10 +11210,7 @@ function doorScene(canvas,opts){
    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
    sp.scale.set(3.4,.8,1);sp.position.set(x,(g.userData.H||4)+1.5,z+.2);
    sp.renderOrder=6;sc.add(sp);g.userData.plate=sp;}
-  const kind=doorKind(d.n);
-  const by=doorBeyond(kind,night);                      /* the place waiting on the other side */
-  by.position.set(x,0,z-3.4);by.rotation.y=g.rotation.y;
-  by.visible=false;sc.add(by);g.userData.beyond=by;
+  g.userData.kind=doorKind(d.n);                       /* what waits beyond is built when it is needed */
   if(doorKind(d.n)==="mahal"){          /* a gate of that size is never left unwatched */
    [-1,1].forEach(q=>{const gd=person({cloth:"#5a2a2a",skin:"#c99a6a",mood:"calm"});
     gd.position.set(x+q*2.6,0,z+1.6);gd.rotation.y=Math.PI-q*.35;gd.scale.setScalar(.95);
@@ -11265,9 +11273,12 @@ function doorScene(canvas,opts){
   if(i===aim&&mode==="near")enter();else goTo(i);};
  /* a smooth follow: everything eases, nothing snaps */
  const ease=(a,b,k)=>a+(b-a)*k;
+ let last=(performance&&performance.now)?performance.now():Date.now();
  function frame(){
-  if(dead)return;t++;
-  const k=mode==="enter"?.10:.055;
+  if(dead)return;
+  const now=(performance&&performance.now)?performance.now():Date.now();
+  const dt=Math.min(.12,(now-last)/1000);last=now;t+=dt*60;
+  const k=Math.min(1,(mode==="enter"?6.0:3.3)*dt);
   cam.position.x=ease(cam.position.x,camTo.x,k);
   cam.position.y=ease(cam.position.y,camTo.y,k);
   cam.position.z=ease(cam.position.z,camTo.z,k);
@@ -11277,34 +11288,40 @@ function doorScene(canvas,opts){
   const dx=meTo.x-me.position.x,dz=meTo.z-me.position.z;
   const far=Math.hypot(dx,dz);
   if(far>.05){
-   me.position.x+=dx*.055;me.position.z+=dz*.055;
-   walk+=Math.min(.34,far*.06);
+   const mk=Math.min(1,3.3*dt);
+   me.position.x+=dx*mk;me.position.z+=dz*mk;
+   walk+=Math.min(.34,far*.06)*dt*60;
    me.position.y=Math.abs(Math.sin(walk))*.09;
    me.rotation.z=Math.sin(walk)*.045;
    me.rotation.y=Math.PI+Math.atan2(dx,-dz)*.55;
    me.rotation.x=-.06;
   }else{
-   me.position.y=ease(me.position.y,Math.sin(t/30)*.02,.1);
-   me.rotation.z=ease(me.rotation.z,0,.1);me.rotation.x=ease(me.rotation.x,0,.1);
-   me.rotation.y=ease(me.rotation.y,meFace,.08);
+   const sk=Math.min(1,6*dt);
+   me.position.y=ease(me.position.y,Math.sin(t/30)*.02,sk);
+   me.rotation.z=ease(me.rotation.z,0,sk);me.rotation.x=ease(me.rotation.x,0,sk);
+   me.rotation.y=ease(me.rotation.y,meFace,Math.min(1,5*dt));
    if(mode==="walk"){mode="near";}
   }
   doors.forEach((d,i)=>{
    const lit=(hover===i||aim===i);
-   d.position.y=ease(d.position.y,lit&&!opening?.1:0,.12);
+   d.position.y=ease(d.position.y,lit&&!opening?.1:0,Math.min(1,7*dt));
    const gl=d.userData.glow;
-   if(gl)gl.material.opacity=ease(gl.material.opacity,(aim===i?.32:(hover===i?.22:.08))+(opening===d?.85:0),.1);
+   if(gl)gl.material.opacity=ease(gl.material.opacity,(aim===i?.32:(hover===i?.22:.08))+(opening===d?.85:0),Math.min(1,6*dt));
    const pl=d.userData.plate;
    if(pl){const want=(opening?0:(aim<0?1:(aim===i?.9:.35)));
-    pl.material.opacity=ease(pl.material.opacity===undefined?1:pl.material.opacity,want,.1);
+    pl.material.opacity=ease(pl.material.opacity===undefined?1:pl.material.opacity,want,Math.min(1,6*dt));
     pl.visible=pl.material.opacity>.03;}
   });
   if(mode==="enter"&&opening){
    const L=opening.userData.L,Rt=opening.userData.R;
-   const kk=Math.min(1,(opening.userData.k=(opening.userData.k||0)+.016));
+   const kk=Math.min(1,(opening.userData.k=(opening.userData.k||0)+dt*.95));   /* the leaves take about a second */
    const e=kk<.5?4*kk*kk*kk:1-Math.pow(-2*kk+2,3)/2;    /* slow, then quick, then slow again */
    if(L)L.rotation.y=e*1.2;if(Rt)Rt.rotation.y=-e*1.2;
-   if(opening.userData.beyond)opening.userData.beyond.visible=true;
+   if(!opening.userData.beyond){
+    const by=doorBeyond(opening.userData.kind,night);
+    const hp=opening.userData.home;
+    by.position.set(hp.x,0,hp.z-3.4);by.rotation.y=opening.rotation.y;
+    sc.add(by);opening.userData.beyond=by;}
    const p=opening.userData.home;
    camTo.set(p.x,2.3,p.z+4.2-e*5.6);lookTo.set(p.x,2.1,p.z-3);
    meTo.set(p.x*.95,0,p.z+2.2-e*2.0);
@@ -11320,7 +11337,8 @@ function doorScene(canvas,opts){
  frame();
  return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}},
   enter:enter,back:wide,
-  at(){return aim;}};
+  at(){return aim;},
+  how(){return {mode:mode,aim:aim,open:!!opening,k:opening?opening.userData.k:0,dead:dead};}};
 }
 
 function s3role(role){
