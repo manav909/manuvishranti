@@ -4712,7 +4712,13 @@ function bhumikaOpen(list){
  try{
   live=S3E.roleScene(cv,{list:list,tone:"saanjh",
    onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
-    setTimeout(()=>{if(d&&d.id)pickRole(d.id);},140);}});
+    setTimeout(()=>{
+     if(!d||!d.id)return;
+     /* the role is taken on, and the nights come next: never back to this same screen */
+     try{switchRole(d.id);}catch(e){save.role=d.id;save.rolePicked=true;persist();roleTint();}
+     front();
+     setTimeout(()=>{try{raateinDikhao();}catch(e){}},260);
+    },140);}});
  }catch(e){return;}
  sunoList(host,list.map(d=>d.n+(d.open?", "+d.t:", "+d.why)),
   i=>{if(live.take)live.take(i);},"कौन सी भूमिका");
