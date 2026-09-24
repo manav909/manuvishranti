@@ -30,6 +30,19 @@ if(page.indexOf('function paarJao(')<0)bad.push('the screens do not lead to one 
  if(i>-1&&page.slice(i,i+2600).indexOf('paarJao(')<0)bad.push(fn+' is a dead end: it leads nowhere else');});
 if(page.indexOf('function raahBar(')<0)bad.push('there is no road bar over the reading');
 if(page.indexOf('id="raahbar"')<0)bad.push('the road bar has no place on the page');
+/* the bar must carry all six: what is read here, what lies here, the ways out,
+   where the night stands, the way on, and the mission */
+['"pothi"','"thaal"','"dwar"','"ghadi"','"aage"','"muhim"'].forEach(k=>{
+ const i=page.indexOf('function raahBar(');
+ if(page.slice(i,i+3200).indexOf('k:'+k)<0)bad.push('the road bar has lost its '+k.replace(/"/g,'')+' box');});
+/* and each of those boxes must lead somewhere */
+{const i=page.indexOf('host.querySelectorAll(".raah")');
+ const seg=page.slice(i,i+900);
+ ['pothiDikhao','thaalDikhao','darwazeDikhao','aageBtn'].forEach(fn=>{
+  if(seg.indexOf(fn)<0)bad.push('the road bar box for '+fn+' does nothing when pressed');});}
+/* the buttons that carry the night forward must wear their mark */
+{const marks=(page.match(/aage\(btn\(/g)||[]).length+(page.match(/dataset\.aage="1"/g)||[]).length;
+ if(marks<4)bad.push('only '+marks+' ways on are marked for the bar to find');}
 /* nothing behind a door may be bare: each kind of place must hold enough to look at */
 {const i=page.indexOf('function doorBeyond(');
  if(i<0)bad.push('nothing is built behind the doors');
