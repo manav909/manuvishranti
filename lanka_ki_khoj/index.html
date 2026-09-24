@@ -105,7 +105,7 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
 .tchip.full i{background:#3f9d5a}
 .tchip.now{border-color:var(--haldi);color:var(--haldi)}
 .tmiss{flex:0 0 auto;font-size:.78rem;color:var(--quiet);white-space:nowrap;padding:0 .2rem;opacity:.8}
-.mini{position:absolute;left:.5rem;top:.5rem;z-index:5;width:min(30%,7.6rem);
+.mini{position:absolute;left:.5rem;top:.5rem;z-index:9;   /* over the trail strip, so its button is never buried */width:min(30%,7.6rem);
  background:var(--page);border:1px solid var(--rule);border-radius:.6rem;overflow:hidden;
  box-shadow:0 6px 18px rgba(0,0,0,.24)}
 .mini.shut{width:auto}
@@ -1373,7 +1373,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 }
 
 /* the corner map stays above the trail of visited places, and the hour dots never spill onto buttons */
-.mini{z-index:7}
+.mini{z-index:7;top:2.6rem}   /* on a phone the trail runs along the top, so the small map sits below it */
 #bar{flex-wrap:wrap;row-gap:.25rem}
 #bar .pip{position:relative;z-index:0}
 #bar button{position:relative;z-index:1}
@@ -1458,7 +1458,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .trail{top:0;bottom:auto;z-index:8;padding:.2rem .3rem;overflow-x:auto;flex-wrap:nowrap;
   background:linear-gradient(to bottom,var(--barbg,rgba(20,16,24,.88)) 70%,transparent)}
  .trail .tchip{flex:0 0 auto}
- .mini{z-index:7}
+ .mini{z-index:7;top:2.6rem}   /* on a phone the trail runs along the top, so the small map sits below it */
 }
 
 /* carrying the game to another phone: a code you copy, a box you paste into */
@@ -1660,6 +1660,14 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  background:rgba(90,60,28,.22);box-shadow:0 0 0 3px rgba(255,255,255,.25) inset}
 #reader button{border-color:var(--leafBtn);color:var(--leafInk)}
 #reader button.on,#reader .rtabs button.on{background:var(--leafWood2);color:var(--leaf1);border-color:var(--leafWood2)}
+
+/* the written list, folded behind the picture */
+.listfold{margin:.5rem 0;border:1px dashed var(--rule);border-radius:.7rem;overflow:hidden}
+.listlid{display:flex;width:100%;justify-content:space-between;align-items:baseline;gap:.6rem;
+ background:transparent;border:0;color:var(--quiet);font:inherit;padding:.45rem .7rem;cursor:pointer;min-height:36px;text-align:left}
+.listlid b{color:var(--ink);font-weight:600}
+.listfold.shut .listbody{display:none}
+.listbody{padding:.2rem .7rem .6rem}
 </style>
 </head>
 <body>
@@ -4400,13 +4408,26 @@ function stageAsk(fn,mine){
 /* ============ अपने आप खुलने वाले परदों का हिसाब ============
    a screen that opens by itself may open once for its own moment, and a watch never carries more than two.
    where there is no real choice, no screen opens at all: the game just goes on. */
+/* ============ सूची पीछे, दृश्य आगे ============
+   the picture is the way to choose; the written list stays folded behind it, for whoever wants it. */
+function foldList(title,build){
+ const box=document.createElement("div");box.className="listfold shut";
+ const lid=document.createElement("button");lid.className="listlid";lid.type="button";
+ lid.innerHTML="<b>"+title+"</b><span class='listtag'>खोलो</span>";
+ const body=document.createElement("div");body.className="listbody";
+ lid.onclick=()=>{box.classList.toggle("shut");
+  lid.querySelector(".listtag").textContent=box.classList.contains("shut")?"खोलो":"बंद करो";};
+ box.appendChild(lid);box.appendChild(body);
+ (curStep||story).appendChild(box);
+ const keep=curStep;curStep=body;
+ try{build();}finally{curStep=keep;}
+ return box;
+}
 function autoOnce(key,fn){
  if(!run)return false;
  run.shown=run.shown||{};
  if(run.shown[key])return false;
- run.autoN=run.autoN||0;
- if(run.autoN>=2)return false;
- run.shown[key]=1;run.autoN++;
+ run.shown[key]=1;
  fn();return true;
 }
 function thaalDikhao(basket){
@@ -8382,7 +8403,7 @@ function offer(only){
  if(only==="seen")open=open.filter(x=>freshAt(x)===0);
  const left=visitsHere()-run.used;
  /* the choice is shown as doors, not as a list of words: it opens by itself */
- if(open.length>1&&left>0&&only!=="seen"&&typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
+ if(open.length&&left>0&&only!=="seen"&&typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
   const mark="dwar-"+run.N.id+"-"+run.w+"-"+run.ghadi+"-"+run.used;
   autoOnce(mark,()=>setTimeout(()=>{try{darwazeDikhao(open);}catch(e){}},340));
  }
@@ -8398,7 +8419,15 @@ function offer(only){
  }else{
   el('<p class="ask">उसी वक़्त यहाँ भी कुछ चल रहा है। कहाँ जाओगे?</p>');
  }
+ /* the doors are the way to choose; the cards below are the same thing, folded */
+ if(open.length&&typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
+  const again=el("","fork");
+  again.appendChild(btn("दरवाज़े सामने लाओ","do go",()=>darwazeDikhao(open)));
+ }
+ const fold=(open.length&&typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok())
+  ?foldList("जगहें, सूची में",()=>{}):null;    /* without a picture, the list stands open */
  const f=el("","fork");
+ if(fold){const body=fold.querySelector(".listbody");if(body)body.appendChild(f);}
  if(run.ghadi===1){
   const skip=document.createElement("button");
   skip.className="do go";skip.type="button";
@@ -8552,26 +8581,32 @@ function visit(id){
  }
  const others=L.map((x,i)=>({x:x,i:i})).filter(o=>o.i!==d);
  if(others.length){
-  const rf=el("","fork");
-  /* the books come out by themselves, once for this moment */
-  {const unread=others.filter(o=>{const sc=o.x.src||"vr";
-    return !(save.readSrc&&save.readSrc[key+"|"+sc])&&!(depthOf(key)>o.i);}).length;
-   if(unread>1)autoOnce("pothi-"+key,()=>setTimeout(()=>{try{pothiDikhao(id,run.w,others,key);}catch(e){}},420));}
+  /* the books come out by themselves; the written list waits folded behind them */
+  autoOnce("pothi-"+key,()=>setTimeout(()=>{try{pothiDikhao(id,run.w,others,key);}catch(e){}},420));
+  if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
+   const again=el("","fork");
+   again.appendChild(btn("पोथियाँ सामने रखो","do go",()=>pothiDikhao(id,run.w,others,key)));
+  }
   {const done=others.filter(o=>{const sc=o.x.src||"vr";
     return !!(save.readSrc&&save.readSrc[key+"|"+sc])||depthOf(key)>o.i;}).length;
    el('<p class="leftline" data-key='+JSON.stringify(key)+' data-all='+others.length+'>इस पल की और कथाएँ: <b>'+others.length+' में से '+done+' पढ़ी</b>'+
     (done<others.length?", "+(others.length-done)+" बाकी":"")+"</p>");}
-  others.forEach(o=>{
-   const nm=SRC[o.x.src||"vr"].n;
-   const sc=o.x.src||"vr";
-   const read=!!(save.readSrc&&save.readSrc[key+"|"+sc])||depthOf(key)>o.i;
-   const hint=(o.x.cards||[]).map(c=>CARDS[c]).find(C=>C&&C.l==="gr");
-   const b=document.createElement("button");
-   b.className="do read"+(read?" seen":"");b.dataset.rkey=key;b.dataset.rsrc=sc;
-   b.innerHTML="यही पल "+nm+" में पढ़ो"+(read?'<span class="seenchip">पढ़ा हुआ</span>':"")+
-    (hint?'<span class="hint">'+hint.t+"</span>":"");
-   b.onclick=()=>openReader(id,run.w,o.i);
-   rf.appendChild(b);
+  const canSee=(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok());
+  const put=fn=>canSee?foldList("इसी पल की कथाएँ, सूची में",fn):fn();
+  put(()=>{
+   const rf=el("","fork");
+   others.forEach(o=>{
+    const nm=SRC[o.x.src||"vr"].n;
+    const sc=o.x.src||"vr";
+    const read=!!(save.readSrc&&save.readSrc[key+"|"+sc])||depthOf(key)>o.i;
+    const hint=(o.x.cards||[]).map(c=>CARDS[c]).find(C=>C&&C.l==="gr");
+    const b=document.createElement("button");
+    b.className="do read"+(read?" seen":"");b.dataset.rkey=key;b.dataset.rsrc=sc;
+    b.innerHTML="यही पल "+nm+" में पढ़ो"+(read?'<span class="seenchip">पढ़ा हुआ</span>':"")+
+     (hint?'<span class="hint">'+hint.t+"</span>":"");
+    b.onclick=()=>openReader(id,run.w,o.i);
+    rf.appendChild(b);
+   });
   });
  }
  run.busy=false;paint();
