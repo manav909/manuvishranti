@@ -1732,6 +1732,9 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .lchips{margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap}
 .lchips i{font-style:normal;font-size:.78rem;color:var(--leafQuiet);
  border:1px solid var(--leafEdge);border-radius:99px;padding:.06rem .5rem;white-space:nowrap}
+
+/* the one way into the pictures */
+.scrollbtn.drishya{margin-right:.35rem}
 </style>
 </head>
 <body>
@@ -4766,6 +4769,32 @@ function chhotaNaksha(host,id){
  x.fillText((PLACES[id]||{}).n||"",130,140);
  box.innerHTML="";box.appendChild(cv);
 }
+/* ============ दृश्य का एक ही दरवाज़ा ============
+   one button, top of the page: it opens whichever picture belongs to where you stand.
+   nothing opens by itself, and nothing is scattered through the reading. */
+function drishyaAbhi(){
+ if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return;
+ try{
+  if(!save.rolePicked){bhumikaDikhao();return;}
+  if(!run){raateinDikhao();return;}
+  /* where you stand comes first; the doors only when you are not anywhere yet */
+  if(run.hereId){const was=autoDrishya;autoDrishya=true;andarDikhao(run.hereId);autoDrishya=was;return;}
+  const open=(typeof ghadiSpots==="function")?ghadiSpots().filter(x=>!run.pickedHere.includes(x)):[];
+  if(open.length&&visitsHere()-run.used>0){darwazeDikhao(open);return;}
+  raateinDikhao();
+ }catch(e){}
+}
+function drishyaBtn(){
+ const bar=document.querySelector(".topbar")||document.querySelector("header");
+ if(!bar||document.getElementById("drishyaBtn"))return;
+ if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return;
+ const b=document.createElement("button");
+ b.id="drishyaBtn";b.className="scrollbtn drishya";b.type="button";b.textContent="दृश्य";
+ b.title="जहाँ तुम हो, वही दृश्य में देखो";
+ b.onclick=drishyaAbhi;
+ const sb=document.getElementById("scrollBtn");
+ if(sb&&sb.parentElement)sb.parentElement.insertBefore(b,sb);else bar.appendChild(b);
+}
 function andarChalo(id){
  if(!run)return;
  if(!autoDrishya){visit(id);return;}   /* the written page is the home of the katha */
@@ -7022,11 +7051,7 @@ function roleScreen(){
  el('<p class="steps"><b>पहला क़दम:</b> भूमिका चुनो <span>फिर रात चुनना</span></p>');
  el('<h1>तुम कौन होकर चलोगे</h1>');
  /* the roles come and stand in front of you; the written list waits behind them */
- if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
-  const again=el("","fork");
-  again.appendChild(btn("भूमिकाएँ सामने बुलाओ","do go",()=>bhumikaDikhao()));
-  if(autoDrishya)setTimeout(()=>{try{bhumikaDikhao();}catch(e){}},460);
- }
+
  el("<p>यह चुनाव पूरे खेल का रंग, तुम्हारी राह और तुम्हारी नज़र तय करता है। कथा सबको पूरी मिलती है, फ़र्क़ यह है कि तुम उसमें क्या देखोगे। एक बार यात्रा शुरू होने के बाद भूमिका नहीं बदलती।</p>");
  if(save.journey&&save.journey.role){
   const J=ROLE[save.journey.role];
@@ -8913,10 +8938,7 @@ function offer(only){
   el('<p class="ask">उसी वक़्त यहाँ भी कुछ चल रहा है। कहाँ जाओगे?</p>');
  }
  /* the doors are the way to choose; the cards below are the same thing, folded */
- if(open.length&&typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
-  const again=el("","fork");
-  again.appendChild(btn("दरवाज़े सामने लाओ","do go",()=>darwazeDikhao(open)));
- }
+
  const fold=(open.length&&typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok())
   ?foldList("जगहें, सूची में",()=>{}):null;    /* without a picture, the list stands open */
  const f=el("","fork");
@@ -9078,10 +9100,7 @@ function visit(id){
  if(others.length){
   /* the books come out by themselves; the written list waits folded behind them */
   autoOnce("pothi-"+key,()=>setTimeout(()=>{try{pothiDikhao(id,run.w,others,key);}catch(e){}},420));
-  if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
-   const again=el("","fork");
-   again.appendChild(btn("पोथियाँ सामने रखो","do go",()=>pothiDikhao(id,run.w,others,key)));
-  }
+
   {const done=others.filter(o=>{const sc=o.x.src||"vr";
     return !!(save.readSrc&&save.readSrc[key+"|"+sc])||depthOf(key)>o.i;}).length;
    el('<p class="leftline" data-key='+JSON.stringify(key)+' data-all='+others.length+'>इस पल की और कथाएँ: <b>'+others.length+' में से '+done+' पढ़ी</b>'+
@@ -10164,12 +10183,7 @@ function dawn(){
    earned=[];earn(MANI_JAGAH,"role",ROLE[r].n);earned=[];persist();
    el('<p class="rolebar"><b>'+ROLE[r].n+" की मुद्रा:</b> यह रात इस भूमिका में पूरी हुई। हर भूमिका की अपनी मुद्राएँ अलग गिनी जाती हैं। +"+MANI_JAGAH+" मणि</p>");}}
  el("<h2>"+(N.id==="khoj"?"भोर हो गई":N.id==="aag"?"दिन ढल गया":"ख़बर पहुँच गई")+"</h2>");
- /* the night is over: the other nights come and stand as doors again */
- if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
-  const again=el("","fork");
-  again.appendChild(btn("रातों के दरवाज़े","do go",()=>raateinDikhao()));
-  if(autoDrishya)setTimeout(()=>{try{raateinDikhao();}catch(e){}},900);
- }
+
  try{if(moharMili())el('<p class="found gift"><b>मुहर:</b> इस रात की मुहिम सुबह होने से पहले पूरी हुई। अब तक '+moharCount()+" मुहर।</p>");}catch(e){}
  el('<p class="quiet">तुम यहाँ थे: '+run.went.join(", ")+"।</p>");
  if(run.lost.length)el('<p class="quiet">और यह सब तुम्हारे बिना हुआ: '+run.lost.join(", ")+"।</p>");
@@ -10250,11 +10264,7 @@ function front(){
   else rf.appendChild(btn("भूमिका बदलो","do",roleScreen));}
  el('<p class="ask">कहाँ से शुरू करोगे?</p>');
  /* the nights come as doors; the written list waits behind them */
- if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
-  const again=el("","fork");
-  again.appendChild(btn("रातों के दरवाज़े","do go",()=>raateinDikhao()));
-  if(autoDrishya)setTimeout(()=>{try{raateinDikhao();}catch(e){}},420);
- }
+
  const f=el("","fork");
  const first=RFIRST[myRole()];
  const order=NIGHTS.slice().sort((a,b)=>(b.id===first?1:0)-(a.id===first?1:0));
@@ -13740,6 +13750,7 @@ document.getElementById("deepShut").onclick=closeDeep;
 document.getElementById("deepBack").onclick=closeDeep;
 document.getElementById("scrollBack").onclick=closeScroll;
 document.getElementById("scrollBtn").onclick=openScroll;
+try{drishyaBtn();}catch(e){}
 document.getElementById("pcardBack").onclick=closeCard;
 document.getElementById("tally").onclick=openCard;
 document.getElementById("lamp").onclick=()=>{
