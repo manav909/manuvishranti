@@ -14,7 +14,7 @@
  --mark:#e2e8df;--sea:#9dc2d4;--sea2:#c4dce7;--land:#d9d2b4;--land2:#ece5cb;--wall:#8f7c50;--walldark:#6f6040;
  --rock:#bdb493;--rocklit:#d8d2b6;--grove:#95b487;--grovedark:#75996c;--street:#c6bda3;--roof:#c9b795;
  --roofdark:#a08e6d;--roofside:#b3a17f;--wave:#8fb4c4;--shade:#6f7d80;--shoal:#bcd8e0;--gone:#8b9aa1;
- --shell:#e3e7e0;--barbg:#e7ebe3
+ --shell:#e3e7e0;--barbg:#e7ebe3;
  /* ताड़पत्र: the colours of a palm leaf page */
  --leaf1:#f3e4bd; --leaf2:#eedcb0; --leaf3:#e6d2a2;
  --leafEdge:#c9ad76; --leafInk:#3a2a16; --leafDeep:#2c1d0c; --leafQuiet:#6a5236;
@@ -1631,7 +1631,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  .bcard.wide .dcanvas{aspect-ratio:4/3}}
 
 /* ताड़पत्र का पन्ना: the reading sits on a palm leaf page, wood at both ends */
-#reader{
+#app #reader.panel{
  background:
   repeating-linear-gradient(180deg, rgba(120,84,40,.05) 0 1px, transparent 1px 34px),
   radial-gradient(120% 60% at 50% 0%, rgba(255,240,205,.16) 0%, transparent 60%),
@@ -1640,11 +1640,16 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  box-shadow:inset 0 0 0 10px rgba(201,173,118,.18), 0 14px 34px rgba(0,0,0,.35);
  color:var(--leafInk);
  position:relative;padding-top:1.5rem;padding-bottom:1.5rem}
-#reader:before,#reader:after{content:"";position:absolute;left:0;right:0;height:16px;
+#app #reader.panel:before,#app #reader.panel:after{content:"";position:absolute;left:0;right:0;height:16px;
  background:linear-gradient(180deg,var(--leafWood1),var(--leafWood2));box-shadow:0 2px 6px rgba(0,0,0,.3)}
 #reader:before{top:0;border-radius:.5rem .5rem 0 0}
 #reader:after{bottom:0;border-radius:0 0 .5rem .5rem}
+/* everything on the leaf takes the leaf's own ink, whatever it wore on the dark page */
+#reader,#reader *{color:var(--leafInk)}
 #reader h2,#reader h3,#reader b,#reader strong{color:var(--leafDeep)}
+#reader .rin,#reader .rtabs,#reader .rbtns{color:var(--leafInk)}
+#reader .rback,#reader .rtour,#reader .rtab{color:var(--leafInk);border-color:var(--leafBtn);background:transparent}
+#reader .rtab.on{background:var(--leafWood2);color:var(--leaf1)}
 #reader p{color:var(--leafInk)}
 #reader .rsrc,#reader .rnote,#reader .quiet{color:var(--leafQuiet)}
 #reader .hint{color:var(--leafQuiet)}
@@ -4322,7 +4327,7 @@ function thaalDikhao(basket){
 }
 function thaalOpen(list,wn){
  const host=bigShow({wide:true,tag:wn,title:"यहाँ मिली बातें",
-  line:list.length+" चीज़ें थाल पर रखी हैं। किसी को छूकर पढ़ो।",
+  line:(list.length>6?("6 चीज़ें थाल पर हैं, "+(list.length-6)+" और बाकी। "):(list.length+" चीज़ें थाल पर रखी हैं। "))+"किसी को छूकर पढ़ो।",
   extra:'<canvas class="dcanvas"></canvas>',shut:"कथा पर लौटो"});
  const cv=host.querySelector(".dcanvas");if(!cv)return;
  cv.width=1100;cv.height=620;
@@ -11430,7 +11435,7 @@ function makeThing(kind,tint){
  return g;
 }
 function trayScene(canvas,opts){
- const list=opts.list||[],onPick=opts.onPick||function(){};
+ const list=(opts.list||[]).slice(0,6),onPick=opts.onPick||function(){};   /* six at a time, so every name has room */
  const T=DOORTONE[opts.tone||"raat"]||DOORTONE.raat;
  const W=canvas.clientWidth||640,H=canvas.clientHeight||380;
  const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
@@ -11459,7 +11464,7 @@ function trayScene(canvas,opts){
   const t0=n===1?0:(i/(n-1))-.5;
   const g=makeThing(d.kind||kinds[i%kinds.length],d.tint);
   g.scale.setScalar(1.25);
-  g.position.set(t0*Math.min(4.6,n*1.5),.72,(i%2?.55:-.25));
+  g.position.set(t0*Math.min(5.4,n*1.9),.72,(i%3===1?.75:(i%3===2?-.45:.1)));
   g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
   g.userData.pick=d;sc.add(g);things.push(g);
   const cv2=document.createElement("canvas");cv2.width=520;cv2.height=120;
@@ -11468,12 +11473,13 @@ function trayScene(canvas,opts){
   const rr=34;x2.beginPath();x2.moveTo(rr,8);x2.arcTo(512,8,512,112,rr);x2.arcTo(512,112,8,112,rr);
   x2.arcTo(8,112,8,8,rr);x2.arcTo(8,8,512,8,rr);x2.fill();x2.stroke();
   x2.textAlign="center";x2.textBaseline="middle";x2.fillStyle="#f6ecd6";
-  x2.font="bold 40px 'Noto Sans Devanagari','Mangal',serif";
-  x2.fillText(String(d.n||"").slice(0,22),260,60);
+  x2.font="bold 38px 'Noto Sans Devanagari','Mangal',serif";
+  let nm=String(d.n||"");if(nm.length>14)nm=nm.slice(0,13)+"…";
+  x2.fillText(nm,260,60);
   const tx=new THREE.CanvasTexture(cv2);tx.anisotropy=4;
   const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
-  sp.scale.set(2.0,.46,1);
-  sp.position.set(g.position.x,(i%2?1.72:2.24),g.position.z);sp.renderOrder=6;sc.add(sp);
+  sp.scale.set(1.5,.35,1);
+  sp.position.set(g.position.x,[2.5,1.7,2.1][i%3],g.position.z);sp.renderOrder=6;sc.add(sp);
   g.userData.plateY=sp.position.y;
   g.userData.plate=sp;
  });
