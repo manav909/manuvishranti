@@ -205,8 +205,10 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
  .lamp{animation:lampglow 2.2s ease-in-out infinite}
  @keyframes lampglow{0%,100%{box-shadow:0 0 0 0 rgba(212,160,23,.5)}50%{box-shadow:0 0 0 7px rgba(212,160,23,0)}}
 }
-.claim{background:var(--haldi);color:var(--page);border:none;border-radius:99px;padding:.1rem .7rem;
- font:inherit;font-size:.8rem;cursor:pointer;white-space:nowrap;margin-top:.3rem}
+/* big enough for a finger, on every screen */
+.claim{background:var(--haldi);color:var(--page);border:none;border-radius:99px;padding:.42rem 1rem;
+ font:inherit;font-size:.92rem;cursor:pointer;white-space:nowrap;margin-top:.3rem;
+ min-height:40px;display:inline-flex;align-items:center;justify-content:center}
 .pcell.ready{opacity:1;border-color:var(--haldi);background:rgba(212,160,23,.1)}
 .mypad{margin:0 0 .3rem;font-size:1.05rem}
 .mypad b{font-weight:400;font-family:"Rozha One",serif;font-size:1.35rem;color:var(--haldi)}
