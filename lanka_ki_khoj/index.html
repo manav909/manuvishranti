@@ -1709,6 +1709,22 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .leafstrip .lacts .claim{color:var(--leafInk);border-color:var(--leafBtn)}
 .dcanvas.inside{aspect-ratio:21/10}
 @media (max-width:560px){.dcanvas.inside{aspect-ratio:4/3}}
+
+/* the inside screen in compartments: the place on the left, the night's map on the right */
+.inrow{display:flex;gap:.5rem;align-items:stretch}
+.inrow .dcanvas.inside{flex:1 1 auto;aspect-ratio:16/9}
+.minimapbox{flex:0 0 auto;width:min(30%,260px);display:flex;align-items:flex-start;justify-content:center}
+.mmcv{width:100%;height:auto;border-radius:.6rem;border:1px solid var(--rule)}
+.leafstrip .lhead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;margin-bottom:.35rem;
+ padding-bottom:.3rem;border-bottom:1px solid var(--leafEdge)}
+.leafstrip .lplace{font-size:1.05rem;color:var(--leafDeep)}
+.leafstrip .lsrc{font-size:.86rem;color:var(--leafQuiet);margin:0}
+@media (max-width:640px){.inrow{flex-direction:column}
+ .minimapbox{width:100%;max-width:320px;align-self:center}}
+
+/* the map keeps its own room beside the place, and the picture gives way to it */
+.inrow .dcanvas.inside{width:auto;min-width:0;max-width:100%}
+.inrow{width:100%}
 </style>
 </head>
 <body>
@@ -4695,6 +4711,32 @@ function bhumikaOpen(list){
 /* ============ भीतर की कथा ============
    you stay in the place: the telling runs on a leaf strip under it, and every way on is here. */
 let insideLive=null,insideOn=false;
+/* ============ भीतर का छोटा नक्शा ============
+   the night drawn small: every place of this watch a dot, the one you stand in lit. */
+function chhotaNaksha(host,id){
+ const box=host.querySelector(".minimapbox");if(!box||!run)return;
+ const spots=(run.N.watches[run.w]||{}).spots||[];
+ const cv=document.createElement("canvas");cv.width=260;cv.height=150;cv.className="mmcv";
+ const x=cv.getContext("2d");
+ const tint=(ROLE[myRole()]&&ROLE[myRole()].tint)||"#2a8a80";
+ x.fillStyle="rgba(20,16,26,.75)";x.fillRect(0,0,260,150);
+ /* the places, laid out the way the night runs: left to right */
+ const n=Math.max(1,spots.length);
+ spots.forEach((sp,i)=>{
+  const px=30+i*((200)/Math.max(1,n-1||1)),py=80+((i%2)?-22:22);
+  const been=run.gone&&run.gone.indexOf(sp)>-1, here=(sp===id);
+  if(i){const qx=30+(i-1)*((200)/Math.max(1,n-1||1)),qy=80+(((i-1)%2)?-22:22);
+   x.strokeStyle="rgba(255,255,255,.25)";x.lineWidth=2;x.beginPath();x.moveTo(qx,qy);x.lineTo(px,py);x.stroke();}
+  x.beginPath();x.arc(px,py,here?9:6,0,7);
+  x.fillStyle=here?tint:(been?"#8a8272":"rgba(255,255,255,.35)");x.fill();
+  if(here){x.strokeStyle="#ffffff";x.lineWidth=2;x.stroke();}
+ });
+ x.fillStyle="#f6ecd6";x.font="16px 'Noto Sans Devanagari','Mangal',serif";x.textAlign="center";
+ x.fillText((run.N.watches[run.w]||{}).n||"",130,24);
+ x.fillStyle="#d8c9ae";x.font="14px 'Noto Sans Devanagari','Mangal',serif";
+ x.fillText((PLACES[id]||{}).n||"",130,140);
+ box.innerHTML="";box.appendChild(cv);
+}
 function andarChalo(id){
  if(!run)return;
  insideOn=true;
@@ -4709,9 +4751,10 @@ function andarDikhao(id){
  let li=0;
  const host=bigShow({sig:"andar|"+key,wide:true,tag:wn,title:P.n||"",
   line:"",
-  extra:'<canvas class="dcanvas inside"></canvas>'+
-   '<div class="leafstrip"><p class="lsrc"></p><div class="lsay"></div>'+
-   '<div class="bacts lacts"></div></div>',
+  extra:'<div class="inrow"><canvas class="dcanvas inside"></canvas>'+
+   '<div class="minimapbox"></div></div>'+
+   '<div class="leafstrip"><div class="lhead"><b class="lplace"></b><span class="lsrc"></span></div>'+
+   '<div class="lsay"></div><div class="bacts lacts"></div></div>',
   shut:"नक्शे पर लौटो"});
  host.dataset.auto="1";
  const cv=host.querySelector(".dcanvas");if(!cv)return;
@@ -4721,6 +4764,9 @@ function andarDikhao(id){
   insideLive=S3E.insideScene(cv,{kind:S3E.doorKind(P.n||""),tone:S3E.toneOf(wn),role:myRole()});
  }catch(e){}
  const src=host.querySelector(".lsrc"),say=host.querySelector(".lsay"),acts=host.querySelector(".lacts");
+ const plc=host.querySelector(".lplace");
+ if(plc)plc.textContent=P.n||"";
+ try{chhotaNaksha(host,id);}catch(e){}
  function paint2(){
   const x=L[li];if(!x)return;
   const S=SRC[x.src||"vr"];
@@ -12165,6 +12211,50 @@ function makeThing(kind,tint){
 /* ================= जगह के भीतर =================
    once you step through a door you stay inside: the place stands around you and the katha
    is told on a palm leaf strip below it. nothing sends you back to a written page. */
+/* ============ भूमिका की अपनी चीज़ ============
+   each role carries its own thing, and it stands in the scene with them. */
+function roleThing(role){
+ const g=grp();
+ const gold=M("#d8a83a",{metalness:.85,roughness:.25}),wood=M("#6a4a24",{roughness:.7}),
+  clay=M("#b06a40",{roughness:.85}),leafg=M("#3f7a4a",{roughness:.8}),cloth=M("#e8dcc0",{roughness:.8});
+ if(role==="jigyasu"){                    /* a lamp on a small stand */
+  g.add(cyl(.18,.24,.9,wood,0,.45,0));
+  g.add(cyl(.3,.24,.16,clay,0,.98,0));
+  g.add(sph(.15,M("#ffd98a",{emissive:new THREE.Color("#ffb54a"),emissiveIntensity:1.6}),.1,1.12,0));
+ }else if(role==="yatri"){                /* a staff and a milestone */
+  const st=cyl(.05,.06,2.2,wood,0,1.1,0);st.rotation.z=.12;g.add(st);
+  g.add(box(.5,.8,.4,M("#9a9184",{roughness:.9}),.7,.4,.2));
+ }else if(role==="kathapremi"){           /* an open book on a low stand */
+  g.add(box(1.1,.16,.8,wood,0,.5,0));
+  [-1,1].forEach(q=>{const pg2=box(.5,.05,.7,M("#efe3c8",{roughness:.7}),q*.26,.6,0);
+   pg2.rotation.z=q*.1;g.add(pg2);});
+  g.add(cyl(.12,.14,.5,wood,0,.25,0));
+ }else if(role==="balak"){                /* a ball and a little kite */
+  g.add(sph(.22,M("#e0622c",{roughness:.7}),0,.22,0));
+  const k=box(.4,.4,.04,M("#3a6ea5",{roughness:.7}),.6,1.1,0);k.rotation.z=.8;g.add(k);
+  g.add(cyl(.01,.01,1.1,M("#8a7a5a"),.6,.55,0));
+ }else if(role==="yoddha"){               /* a spear stuck in the ground and a shield */
+  const sp=cyl(.05,.05,2.4,wood,0,1.2,0);sp.rotation.z=.1;g.add(sp);
+  g.add(cone(.1,.4,M("#3a3a42",{metalness:.8,roughness:.4}),.12,2.4,0,6));
+  const sh=cyl(.45,.45,.1,M("#7a3524",{roughness:.7}),.7,.45,.1);sh.rotation.x=Math.PI/2.2;g.add(sh);
+ }else if(role==="shastri"){              /* palm leaves and an ink pot */
+  g.add(box(1.2,.1,.7,M("#e7d6a8",{roughness:.85}),0,.55,0));
+  g.add(box(1.1,.08,.6,M("#dfcc9a",{roughness:.85}),.06,.64,.04));
+  g.add(cyl(.14,.16,.2,clay,.7,.6,.2));
+  g.add(cyl(.1,.14,.5,wood,0,.25,0));
+ }else if(role==="sadhak"){               /* a lotus on the water and a seat of grass */
+  g.add(cyl(.5,.5,.1,M("#6a5a3a",{roughness:.9}),0,.05,0));
+  for(let i=0;i<6;i++){const a=i/6*Math.PI*2;
+   g.add(sph(.18,M("#e8a0c0",{roughness:.7}),Math.cos(a)*.22,.18,Math.sin(a)*.22,1,.4,1.6));}
+  g.add(sph(.12,gold,0,.22,0));
+ }else{                                   /* the king: a seat and a staff of office */
+  g.add(box(.9,.3,.7,gold,0,.5,0));
+  g.add(box(.9,.9,.2,gold,0,.95,-.3));
+  g.add(box(1.1,.25,.9,M("#8a6a26",{metalness:.6,roughness:.5}),0,.2,0));
+  g.add(cyl(.05,.05,1.6,wood,.8,.8,0));
+ }
+ return g;
+}
 function insideScene(canvas,opts){
  const kind=opts.kind||"ghar",role=opts.role||"jigyasu";
  const T=DOORTONE[opts.tone||"raat"]||DOORTONE.raat;
@@ -12176,7 +12266,7 @@ function insideScene(canvas,opts){
  const sc=new THREE.Scene();
  sc.background=new THREE.Color(T.sky);sc.fog=new THREE.Fog(T.fog,16,60);
  const cam=new THREE.PerspectiveCamera(40,W/H,.1,160);
- cam.position.set(0,2.6,7.4);const look=new THREE.Vector3(0,1.6,-4);cam.lookAt(look);
+ cam.position.set(-.3,3.2,8.6);const look=new THREE.Vector3(0,1.8,-6);cam.lookAt(look);
  sc.add(new THREE.HemisphereLight(T.hemiA,T.hemiB,Math.max(.45,T.hemi)));
  const key=new THREE.DirectionalLight(T.keyC,T.key);key.position.set(3,8,5);key.castShadow=true;sc.add(key);
  if(T.stars){const st=grp();sc.add(st);
@@ -12184,21 +12274,28 @@ function insideScene(canvas,opts){
    (Math.random()-.5)*44,8+Math.random()*12,-10-Math.random()*26));}
  const gr=mesh(new THREE.PlaneGeometry(90,90),M(T.ground,{roughness:.95}),0,0,0);
  gr.rotation.x=-Math.PI/2;gr.receiveShadow=true;sc.add(gr);
+ /* the light of this night carries a little of the role's own colour */
+ try{const rc=new THREE.Color(S3ROLE[role]||"#2a8a80");
+  const rim=new THREE.DirectionalLight(rc,.55);rim.position.set(-4,3,-2);sc.add(rim);
+  sc.fog.color.lerp(rc,.12);}catch(e){}
  /* the place itself, the same one that was seen through the door */
- const place=doorBeyond(kind,!!T.lamps);place.position.set(0,0,-2);
+ const place=doorBeyond(kind,!!T.lamps);place.position.set(0,0,0);
  place.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
  sc.add(place);
  /* the door you came through, behind you */
- const back=makeDoor(kind,!!T.lamps);back.position.set(0,0,6.4);back.rotation.y=Math.PI;
+ const back=makeDoor(kind,!!T.lamps);back.position.set(0,0,12.5);back.rotation.y=Math.PI;
  if(back.userData.L)back.userData.L.rotation.y=1.2;
  if(back.userData.R)back.userData.R.rotation.y=-1.2;
  sc.add(back);
  /* you, standing in it */
- const me=s3role(role);me.position.set(1.4,0,3.4);me.rotation.y=Math.PI*.92;me.scale.setScalar(.92);
+ const me=s3role(role);me.position.set(3.4,0,5.4);me.rotation.y=Math.PI*.84;me.scale.setScalar(.66);
  me.traverse(o=>{if(o.isSprite)o.visible=false;if(o.userData&&o.userData.pulse)o.visible=false;
   if(o.isMesh&&o.geometry&&o.geometry.type==="ConeGeometry"&&o.position.y>1.8)o.visible=false;
   if(o.isMesh)o.castShadow=true;});
  sc.add(me);
+ /* and the thing this role carries, standing beside them */
+ try{const th=roleThing(role);th.position.set(4.6,0,4.8);th.rotation.y=-.7;
+  th.traverse(o=>{if(o.isMesh)o.castShadow=true;});sc.add(th);}catch(e){}
  let raf=0,dead=false,t=0,drift=0;
  let last=(performance&&performance.now)?performance.now():Date.now();
  function frame(){
@@ -12909,7 +13006,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
 function s3stop(){if(S3.cur){try{S3.cur.stop();}catch(e){}S3.cur=null;}}
 
 function s3canvas(){if(!S3.canvas){S3.canvas=document.createElement("canvas");S3.canvas.className="s3";}return S3.canvas;}
-return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,trayScene,roleScene,insideScene,toneOf,s3role};
+return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,trayScene,roleScene,insideScene,roleThing,toneOf,s3role};
 })();
 const S3ROLECOL=r=>S3E.S3ROLE[r]||S3E.S3ROLE.jigyasu,scene3d=S3E.scene3d,s3stop=S3E.s3stop,s3ok=S3E.s3ok,s3canvas=S3E.s3canvas,S3NOW=()=>S3E.S3.cur;
 
