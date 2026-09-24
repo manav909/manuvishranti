@@ -11612,10 +11612,17 @@ function doorBeyond(kind,night){
    g.add(sph(1.3,M(night?"#1f4a2c":"#2f6b3a",{roughness:.85}),x,3.2,z,1,.85,1));}
   for(let i=0;i<10;i++)g.add(sph(.1,M("#e0622c"),(Math.random()-.5)*8,.1,-3-Math.random()*8));
  }else if(kind==="pahra"){
-  /* the wall behind the post, with a torch on it */
-  g.add(box(16,4.2,.7,M("#5a4e40",{roughness:.85}),0,2.1,-5));
-  for(let i=0;i<5;i++)g.add(box(1.1,.7,.8,M("#6a5c4a",{roughness:.85}),(i-2)*3,4.5,-5));
-  g.add(sph(.22,M("#ff9a40",{emissive:new THREE.Color("#ff7a20"),emissiveIntensity:1.2}),-3,3.4,-4.6));
+  /* a wall with a walk along its top, a watchman on it, a barred gate below and spears leaning */
+  g.add(box(18,4.4,.8,M("#4a4036",{roughness:.9}),0,2.2,-6));
+  for(let i=0;i<6;i++)g.add(box(1.2,.8,.9,M("#6a5c4a",{roughness:.85}),(i-2.5)*3,4.8,-6));
+  g.add(box(18,.3,1.6,M("#6a5c4a",{roughness:.85}),0,4.3,-5.2));      /* the walk */
+  {const wm=person({cloth:"#5a2a2a",skin:"#c99a6a"});wm.position.set(2,4.4,-5.2);wm.scale.setScalar(.8);
+   wm.rotation.y=Math.PI;g.add(wm);
+   const sp=cyl(.05,.05,2.2,M("#6a5a3a"),2.5,5.4,-5.2);sp.rotation.z=.2;g.add(sp);}
+  g.add(box(2.6,3,.3,M("#3a2f28",{roughness:.9}),-4,1.5,-5.6));        /* the barred gate below */
+  for(let i=0;i<5;i++)g.add(box(.12,3,.36,M("#6a5a3a"),-5+ i*.5,1.5,-5.5));
+  [-1,1].forEach(q=>{const sp=cyl(.05,.05,2.8,M("#6a5a3a"),q*7,1.4,-4.4);sp.rotation.z=q*.24;g.add(sp);});
+  g.add(sph(.24,M("#ff9a40",{emissive:new THREE.Color("#ff7a20"),emissiveIntensity:1.3}),-2.4,3.6,-5.4));
  }else if(kind==="samudra"){
   /* water to the far edge, with waves, a moon lying on it, a rock and two small boats */
   const w=mesh(new THREE.PlaneGeometry(60,44),M(night?"#14304e":"#2a6a9a",{roughness:.25,metalness:.4}),0,.02,-14);
@@ -11637,15 +11644,30 @@ function doorBeyond(kind,night){
   g.add(sph(.3,M("#ffd98a",{emissive:new THREE.Color("#ffc25a"),emissiveIntensity:1.5}),0,1.6,-5.4));
   [-1,1].forEach(q=>g.add(cyl(.28,.3,4.4,M("#8a8072",{roughness:.8}),q*2,2.2,-3)));
  }else if(kind==="raasta"){
-  /* the road going on, with stones along it */
-  for(let i=0;i<9;i++)g.add(box(3.2,.06,1.4,M(night?"#2a2438":"#9a8464",{roughness:.95}),0,.04,-2-i*2.2));
-  for(let i=0;i<6;i++)[-1,1].forEach(q=>g.add(sph(.22,M(night?"#3a3450":"#8a7a60",{roughness:.9}),q*2.4,.1,-3-i*2.6)));
+  /* a road that narrows away, stones along its sides, a milestone, a tree and a cart left behind */
+  for(let i=0;i<10;i++)g.add(box(3.4-i*.2,.06,1.6,M(night?"#3a3448":"#9a8464",{roughness:.95}),0,.04,-2-i*2.3));
+  for(let i=0;i<7;i++)[-1,1].forEach(q=>g.add(sph(.24-i*.015,M(night?"#4a4460":"#8a7a60",{roughness:.9}),
+   q*(2.4-i*.14),.12,-3-i*2.5)));
+  g.add(box(.6,1,.5,M("#9a9184",{roughness:.9}),-2.6,.5,-4));          /* the milestone */
+  g.add(cyl(.3,.4,3,M("#5a3a22",{roughness:.85}),4.2,1.5,-7));
+  [0,1,2].forEach(i=>g.add(sph(1.5-i*.3,M(night?"#1f4a2c":"#2f6b3a",{roughness:.85}),4.2+(i-1)*.5,3.4+i*.5,-7,1,.8,1)));
+  {const cart=grp();cart.position.set(-3.6,.3,-9);cart.rotation.y=.4;g.add(cart);
+   cart.add(box(1.8,.5,1,M("#6a4a2a",{roughness:.8}),0,.3,0));
+   [-1,1].forEach(q=>{const wh=mesh(new THREE.TorusGeometry(.42,.09,8,18),M("#5a3a22",{roughness:.8}),0,0,q*.6);
+    cart.add(wh);});}
  }else if(kind==="chaukhat"){
-  /* a small room, a mat, a lamp: a place to sit with a question */
-  g.add(box(8,4,.5,M(night?"#2e2740":"#a8977c",{roughness:.9}),0,2,-5));
-  g.add(box(3,.1,2,M("#8a6a3a",{roughness:.9}),0,.06,-2.4));
-  g.add(cyl(.22,.26,.16,M("#b06a40",{roughness:.85}),1.4,.3,-2));
-  g.add(sph(.15,M("#ffd98a",{emissive:new THREE.Color("#ffb54a"),emissiveIntensity:1.2}),1.4,.5,-2));
+  /* a small room: a mat on the floor, a lamp beside it, books on a shelf, a window open to the night */
+  g.add(box(9,4.4,.5,M(night?"#2e2740":"#a8977c",{roughness:.9}),0,2.2,-6));
+  [-1,1].forEach(q=>g.add(box(.5,4.4,7,M(night?"#282238":"#9a8a70",{roughness:.9}),q*4.3,2.2,-3)));
+  g.add(box(9,.4,7,M(night?"#231d32":"#8a7a62",{roughness:.9}),0,4.4,-3));   /* the roof */
+  g.add(box(1.8,1.4,.2,M(night?"#0d0a18":"#cfe0ee",{emissive:new THREE.Color(night?"#1a2a4a":"#cfe0ee"),
+   emissiveIntensity:night?.5:.2}),2.6,2.6,-5.8));                            /* the window */
+  g.add(box(3,.12,2,M("#8a6a3a",{roughness:.9}),-.4,.07,-2.6));               /* the mat */
+  for(let i=0;i<3;i++)g.add(box(2.2,.16,.9,M("#6a4a2a",{roughness:.85}),-2.8,1+i*.8,-5.2));
+  for(let i=0;i<6;i++)g.add(box(.22,.5,.7,M(["#b0302a","#2a6a9a","#c8912a"][i%3],{roughness:.8}),
+   -3.6+(i%3)*.4,1.4+Math.floor(i/3)*.8,-5.2));                               /* the books on it */
+  g.add(cyl(.24,.28,.16,M("#b06a40",{roughness:.85}),1.2,.3,-2.2));
+  g.add(sph(.16,M("#ffd98a",{emissive:new THREE.Color("#ffb54a"),emissiveIntensity:1.4}),1.2,.52,-2.2));
  }else{
   /* a lane of small houses, a lamp at a doorway */
   for(let i=0;i<5;i++){const x=(i-2)*3.2,z=-4-((i*2)%5);
