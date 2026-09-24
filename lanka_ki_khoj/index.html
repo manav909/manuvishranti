@@ -1727,6 +1727,11 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 /* the map keeps its own room beside the place, and the picture gives way to it */
 .inrow .dcanvas.inside{width:auto;min-width:0;max-width:100%}
 .inrow{width:100%}
+
+/* the count in the corner of the leaf strip */
+.lchips{margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap}
+.lchips i{font-style:normal;font-size:.78rem;color:var(--leafQuiet);
+ border:1px solid var(--leafEdge);border-radius:99px;padding:.06rem .5rem;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -4755,9 +4760,10 @@ function andarDikhao(id){
   line:"",
   extra:'<div class="inrow"><canvas class="dcanvas inside"></canvas>'+
    '<div class="minimapbox"></div></div>'+
-   '<div class="leafstrip"><div class="lhead"><b class="lplace"></b><span class="lsrc"></span></div>'+
+   '<div class="leafstrip"><div class="lhead"><b class="lplace"></b><span class="lsrc"></span>'+
+   '<span class="lchips"></span></div>'+
    '<div class="lsay"></div><div class="bacts lacts"></div></div>',
-  shut:"नक्शे पर लौटो"});
+  shut:"बाहर निकलो"});
  host.dataset.auto="1";
  const cv=host.querySelector(".dcanvas");if(!cv)return;
  cv.width=1100;cv.height=520;
@@ -4768,6 +4774,17 @@ function andarDikhao(id){
  const src=host.querySelector(".lsrc"),say=host.querySelector(".lsay"),acts=host.querySelector(".lacts");
  const plc=host.querySelector(".lplace");
  if(plc)plc.textContent=P.n||"";
+ /* the journey's own count, kept in the corner of the strip */
+ try{const ch=host.querySelector(".lchips");
+  if(ch){const N2=muhimNow();const mid=N2.raat||N2.ghadi||N2.safar;
+   const bits2=[];
+   bits2.push('<i>'+purse()+" मणि</i>");
+   if(mid)bits2.push("<i>"+MUHIM[mid].n+" "+Math.min(mcount(mid),MUHIM[mid].goal)+"/"+MUHIM[mid].goal+"</i>");
+   const bk2=[...story.querySelectorAll(".basket")].pop();
+   if(bk2){const all=[...(bk2.body||bk2).children].filter(z=>z.dataset&&z.dataset.card);
+    const rd=all.filter(z=>z.classList.contains("read")).length;
+    if(all.length)bits2.push("<i>बातें "+rd+"/"+all.length+"</i>");}
+   ch.innerHTML=bits2.join("");}}catch(e){}
  try{chhotaNaksha(host,id);}catch(e){}
  function paint2(){
   const x=L[li];if(!x)return;
