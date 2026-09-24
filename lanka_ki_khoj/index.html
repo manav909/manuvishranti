@@ -3565,7 +3565,7 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
  }
  const kind=C.l||"chh";
  const box=document.createElement("div");
- box.className="gift shut g-"+kind;
+ box.className="gift shut g-"+kind;box.dataset.card=c;   /* so the tray knows which find this is */
  const lid=document.createElement("button");
  lid.className="giftlid";lid.type="button";
  const tag=document.createElement("span");tag.className="gifttag";tag.textContent=L[kind]||"बात";
@@ -4278,6 +4278,8 @@ function runDiya(after){
 let stageWait=null;
 function stageAsk(fn,mine){
  if(stageWait){clearTimeout(stageWait);stageWait=null;}
+ /* once the player opens something himself, the screens that open by themselves keep quiet here */
+ if(mine&&typeof run!=="undefined"&&run){run.doorAt="hand";run.pothiAt="hand";}
  let tries=0;
  const go=()=>{
   const busy=document.getElementById("bigshow");
@@ -11355,6 +11357,118 @@ function scrollScene(canvas,opts){
  frame();
  return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}}};
 }
+/* ================= बातों का थाल =================
+   the finds of a moment, lying as small things on a tray: a lamp, a ring, a leaf, a feather, a pot. */
+function makeThing(kind,tint){
+ const g=grp();
+ const gold=M("#d8a83a",{metalness:.85,roughness:.25}),clay=M("#b06a40",{roughness:.85}),
+  leafg=M("#3f7a4a",{roughness:.8}),bone=M("#efe3c8",{roughness:.6}),ink=M("#4a3a28",{roughness:.7});
+ if(kind==="diya"){
+  g.add(cyl(.34,.26,.16,clay,0,.08,0));
+  g.add(sph(.13,M("#ffd98a",{emissive:new THREE.Color("#ffb54a"),emissiveIntensity:1.5}),.12,.2,0));
+ }else if(kind==="ring"){
+  const r=mesh(new THREE.TorusGeometry(.24,.06,12,28),gold,0,.24,0);r.rotation.x=Math.PI/2.4;g.add(r);
+ }else if(kind==="leaf"){
+  g.add(sph(.3,leafg,0,.08,0,1,.18,1.5));
+  g.add(cyl(.02,.02,.5,ink,0,.08,.36));
+ }else if(kind==="feather"){
+  const f=sph(.12,bone,0,.22,0,1,2.2,.5);f.rotation.z=.5;g.add(f);
+  g.add(cyl(.02,.02,.5,ink,-.12,.1,0));
+ }else if(kind==="pot"){
+  g.add(sph(.26,clay,0,.26,0,1,1.1,1));
+  g.add(cyl(.12,.16,.1,clay,0,.5,0));
+ }else{
+  g.add(box(.42,.1,.3,M(tint||"#7a5632",{roughness:.7}),0,.06,0));
+  g.add(box(.36,.02,.24,bone,0,.12,0));
+ }
+ return g;
+}
+function trayScene(canvas,opts){
+ const list=opts.list||[],onPick=opts.onPick||function(){};
+ const T=DOORTONE[opts.tone||"raat"]||DOORTONE.raat;
+ const W=canvas.clientWidth||640,H=canvas.clientHeight||380;
+ const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+ R.setPixelRatio(Math.min(1.6,window.devicePixelRatio||1));R.setSize(W,H,false);
+ R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=T.exp;
+ R.shadowMap.enabled=W>560;R.shadowMap.type=THREE.PCFSoftShadowMap;
+ const sc=new THREE.Scene();
+ sc.background=new THREE.Color(T.sky);sc.fog=new THREE.Fog(T.fog,10,34);
+ const cam=new THREE.PerspectiveCamera(40,W/H,.1,120);
+ cam.position.set(0,3.4,6.2);cam.lookAt(0,.9,0);
+ sc.add(new THREE.HemisphereLight(T.hemiA,T.hemiB,Math.max(.55,T.hemi)));
+ const key=new THREE.DirectionalLight(T.keyC,T.key);key.position.set(2,7,4);key.castShadow=true;sc.add(key);
+ const pl=new THREE.PointLight(0xffb54a,1.5,9,2);pl.position.set(-2,2,1.5);sc.add(pl);
+ const gr=mesh(new THREE.PlaneGeometry(50,50),M(T.ground,{roughness:.95}),0,0,0);
+ gr.rotation.x=-Math.PI/2;gr.receiveShadow=true;sc.add(gr);
+ /* the tray itself, a round brass one */
+ const tray=grp();sc.add(tray);
+ tray.add(cyl(3.1,3.1,.12,M("#b08a3a",{metalness:.8,roughness:.35}),0,.66,0));
+ tray.add(mesh(new THREE.TorusGeometry(3.1,.12,10,40),M("#8a6a26",{metalness:.85,roughness:.3}),0,.72,0)).rotation&&0;
+ tray.children[1].rotation.x=Math.PI/2;
+ [-1,1].forEach(q=>[-1,1].forEach(w=>tray.add(cyl(.16,.2,.66,M("#6a5220",{metalness:.7,roughness:.45}),q*2,.33,w*2))));
+ tray.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+ const kinds=["diya","ring","leaf","feather","pot","box"];
+ const things=[],n=Math.max(1,list.length);
+ list.forEach((d,i)=>{
+  const a=(i/n)*Math.PI*2-Math.PI/2,rad=n>1?1.9:0;
+  const g=makeThing(d.kind||kinds[i%kinds.length],d.tint);
+  g.position.set(Math.cos(a)*rad,.72,Math.sin(a)*rad*.55);
+  g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+  g.userData.pick=d;sc.add(g);things.push(g);
+  const cv2=document.createElement("canvas");cv2.width=520;cv2.height=120;
+  const x2=cv2.getContext("2d");
+  x2.fillStyle="rgba(22,16,28,.9)";x2.strokeStyle=d.read?"#8a8272":"#e0c07a";x2.lineWidth=6;
+  const rr=34;x2.beginPath();x2.moveTo(rr,8);x2.arcTo(512,8,512,112,rr);x2.arcTo(512,112,8,112,rr);
+  x2.arcTo(8,112,8,8,rr);x2.arcTo(8,8,512,8,rr);x2.fill();x2.stroke();
+  x2.textAlign="center";x2.textBaseline="middle";x2.fillStyle="#f6ecd6";
+  x2.font="bold 40px 'Noto Sans Devanagari','Mangal',serif";
+  x2.fillText(String(d.n||"").slice(0,22),260,60);
+  const tx=new THREE.CanvasTexture(cv2);tx.anisotropy=4;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
+  sp.scale.set(2.0,.46,1);sp.position.set(g.position.x,1.5,g.position.z);sp.renderOrder=6;sc.add(sp);
+  g.userData.plate=sp;
+ });
+ let raf=0,dead=false,hover=-1,taken=null,k=0,t=0;
+ const ray=new THREE.Raycaster(),pt=new THREE.Vector2();
+ function at(ev){
+  const r=canvas.getBoundingClientRect();
+  const cx=(ev.touches&&ev.touches[0]?ev.touches[0].clientX:ev.clientX);
+  const cy=(ev.touches&&ev.touches[0]?ev.touches[0].clientY:ev.clientY);
+  if(cx===undefined)return -1;
+  pt.x=((cx-r.left)/r.width)*2-1;pt.y=-((cy-r.top)/r.height)*2+1;
+  ray.setFromCamera(pt,cam);
+  const hit=ray.intersectObjects(things,true);
+  if(!hit.length)return -1;
+  let o=hit[0].object;while(o&&!o.userData.pick)o=o.parent;
+  return o?things.indexOf(o):-1;
+ }
+ canvas.onpointermove=e=>{hover=at(e);canvas.style.cursor=hover>=0?"pointer":"default";};
+ canvas.onpointerdown=e=>{const i=at(e);if(i>=0&&!taken)taken=things[i];};
+ let last=(performance&&performance.now)?performance.now():Date.now();
+ function frame(){
+  if(dead)return;
+  const now=(performance&&performance.now)?performance.now():Date.now();
+  const dt=Math.min(.12,(now-last)/1000);last=now;t+=dt;
+  tray.rotation.y=Math.sin(t*.3)*.06;
+  things.forEach((g,i)=>{
+   const up=(hover===i||taken===g)?.28:0;
+   g.position.y+=(.72+up-g.position.y)*Math.min(1,8*dt);
+   g.rotation.y+=dt*(hover===i?1.6:.35);
+   if(g.userData.plate)g.userData.plate.position.y=1.5+up*.5;
+  });
+  if(taken){
+   k=Math.min(1,k+dt*1.4);
+   const e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+   cam.position.set(taken.position.x*.7,3.4-e*1.6,6.2-e*3.6);
+   cam.lookAt(taken.position.x,1,taken.position.z);
+   taken.scale.setScalar(1+e*.8);
+   if(k>=1){dead=true;cancelAnimationFrame(raf);setTimeout(()=>onPick(taken.userData.pick),60);return;}
+  }
+  R.render(sc,cam);raf=requestAnimationFrame(frame);
+ }
+ frame();
+ return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}}};
+}
 function doorScene(canvas,opts){
  const list=opts.doors||[],role=opts.role||"jigyasu";
  const T=DOORTONE[opts.tone||(opts.night?"raat":"din")]||DOORTONE.raat;
@@ -11835,7 +11949,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
 function s3stop(){if(S3.cur){try{S3.cur.stop();}catch(e){}S3.cur=null;}}
 
 function s3canvas(){if(!S3.canvas){S3.canvas=document.createElement("canvas");S3.canvas.className="s3";}return S3.canvas;}
-return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,toneOf,s3role};
+return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,trayScene,toneOf,s3role};
 })();
 const S3ROLECOL=r=>S3E.S3ROLE[r]||S3E.S3ROLE.jigyasu,scene3d=S3E.scene3d,s3stop=S3E.s3stop,s3ok=S3E.s3ok,s3canvas=S3E.s3canvas,S3NOW=()=>S3E.S3.cur;
 
