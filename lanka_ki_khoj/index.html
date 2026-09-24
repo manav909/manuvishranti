@@ -10156,6 +10156,12 @@ function dawn(){
    earned=[];earn(MANI_JAGAH,"role",ROLE[r].n);earned=[];persist();
    el('<p class="rolebar"><b>'+ROLE[r].n+" की मुद्रा:</b> यह रात इस भूमिका में पूरी हुई। हर भूमिका की अपनी मुद्राएँ अलग गिनी जाती हैं। +"+MANI_JAGAH+" मणि</p>");}}
  el("<h2>"+(N.id==="khoj"?"भोर हो गई":N.id==="aag"?"दिन ढल गया":"ख़बर पहुँच गई")+"</h2>");
+ /* the night is over: the other nights come and stand as doors again */
+ if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
+  const again=el("","fork");
+  again.appendChild(btn("रातों के दरवाज़े","do go",()=>raateinDikhao()));
+  setTimeout(()=>{try{raateinDikhao();}catch(e){}},900);
+ }
  try{if(moharMili())el('<p class="found gift"><b>मुहर:</b> इस रात की मुहिम सुबह होने से पहले पूरी हुई। अब तक '+moharCount()+" मुहर।</p>");}catch(e){}
  el('<p class="quiet">तुम यहाँ थे: '+run.went.join(", ")+"।</p>");
  if(run.lost.length)el('<p class="quiet">और यह सब तुम्हारे बिना हुआ: '+run.lost.join(", ")+"।</p>");
