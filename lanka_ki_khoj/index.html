@@ -4537,6 +4537,8 @@ function runDiya(after){
 /* ============ परदे की क़तार ============
    only one full screen at a time, and whoever asked last is the one that opens. */
 let stageWait=null,muhimOpen=false;
+/* दृश्य अपने आप नहीं खुलते: they open when the player asks */
+let autoDrishya=false;
 function stageAsk(fn,mine){
  if(stageWait){clearTimeout(stageWait);stageWait=null;}
  /* once the player opens something himself, the screens that open by themselves keep quiet here */
@@ -4561,6 +4563,9 @@ function stageAsk(fn,mine){
 /* ============ सूची पीछे, दृश्य आगे ============
    the picture is the way to choose; the written list stays folded behind it, for whoever wants it. */
 function foldList(title,build){
+ /* the written page stands open again: the picture is an extra, never a replacement */
+ build();return null;
+ /* eslint-disable no-unreachable */
  const box=document.createElement("div");box.className="listfold shut";
  const lid=document.createElement("button");lid.className="listlid";lid.type="button";
  lid.innerHTML="<b>"+title+"</b><span class='listtag'>खोलो</span>";
@@ -4574,7 +4579,9 @@ function foldList(title,build){
  return box;
 }
 function autoOnce(key,fn){
- if(!run||insideOn)return false;   /* inside a place, nothing else may butt in */
+ /* pictures open only when the player asks for them */
+ if(!autoDrishya)return false;
+ if(!run||insideOn)return false;
  run.shown=run.shown||{};
  if(run.shown[key])return false;
  run.shown[key]=1;
@@ -4761,6 +4768,7 @@ function chhotaNaksha(host,id){
 }
 function andarChalo(id){
  if(!run)return;
+ if(!autoDrishya){visit(id);return;}   /* the written page is the home of the katha */
  insideOn=true;
  try{visit(id);}catch(e){}          /* the written page keeps the record, quietly */
  setTimeout(()=>andarDikhao(id),120);
@@ -7017,7 +7025,7 @@ function roleScreen(){
  if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
   const again=el("","fork");
   again.appendChild(btn("भूमिकाएँ सामने बुलाओ","do go",()=>bhumikaDikhao()));
-  setTimeout(()=>{try{bhumikaDikhao();}catch(e){}},460);
+  if(autoDrishya)setTimeout(()=>{try{bhumikaDikhao();}catch(e){}},460);
  }
  el("<p>यह चुनाव पूरे खेल का रंग, तुम्हारी राह और तुम्हारी नज़र तय करता है। कथा सबको पूरी मिलती है, फ़र्क़ यह है कि तुम उसमें क्या देखोगे। एक बार यात्रा शुरू होने के बाद भूमिका नहीं बदलती।</p>");
  if(save.journey&&save.journey.role){
@@ -10160,7 +10168,7 @@ function dawn(){
  if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
   const again=el("","fork");
   again.appendChild(btn("रातों के दरवाज़े","do go",()=>raateinDikhao()));
-  setTimeout(()=>{try{raateinDikhao();}catch(e){}},900);
+  if(autoDrishya)setTimeout(()=>{try{raateinDikhao();}catch(e){}},900);
  }
  try{if(moharMili())el('<p class="found gift"><b>मुहर:</b> इस रात की मुहिम सुबह होने से पहले पूरी हुई। अब तक '+moharCount()+" मुहर।</p>");}catch(e){}
  el('<p class="quiet">तुम यहाँ थे: '+run.went.join(", ")+"।</p>");
@@ -10245,7 +10253,7 @@ function front(){
  if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
   const again=el("","fork");
   again.appendChild(btn("रातों के दरवाज़े","do go",()=>raateinDikhao()));
-  setTimeout(()=>{try{raateinDikhao();}catch(e){}},420);
+  if(autoDrishya)setTimeout(()=>{try{raateinDikhao();}catch(e){}},420);
  }
  const f=el("","fork");
  const first=RFIRST[myRole()];
