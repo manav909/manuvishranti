@@ -11715,6 +11715,13 @@ function scrollScene(canvas,opts){
  }
  canvas.onpointermove=e=>{hover=at(e);canvas.style.cursor=hover>=0?"pointer":"default";};
  canvas.onpointerdown=e=>{const i=at(e);if(i>=0&&!taken){taken=books[i];}};
+ /* by keyboard too: arrows move along the books, Enter picks one up */
+ canvas.tabIndex=0;
+ canvas.onkeydown=e=>{const k=e.key;
+  if(k==="ArrowRight"||k==="ArrowDown"){hover=Math.min(books.length-1,hover+1);e.preventDefault();}
+  else if(k==="ArrowLeft"||k==="ArrowUp"){hover=Math.max(0,(hover<0?books.length:hover)-1);e.preventDefault();}
+  else if(k==="Enter"||k===" "){if(!taken)taken=books[Math.max(0,hover)];e.preventDefault();}
+ };
  let last=(performance&&performance.now)?performance.now():Date.now();
  function frame(){
   if(dead)return;
@@ -11832,6 +11839,13 @@ function trayScene(canvas,opts){
  }
  canvas.onpointermove=e=>{hover=at(e);canvas.style.cursor=hover>=0?"pointer":"default";};
  canvas.onpointerdown=e=>{const i=at(e);if(i>=0&&!taken)taken=things[i];};
+ /* by keyboard too: arrows move along the things, Enter takes one */
+ canvas.tabIndex=0;
+ canvas.onkeydown=e=>{const k=e.key;
+  if(k==="ArrowRight"||k==="ArrowDown"){hover=Math.min(things.length-1,hover+1);e.preventDefault();}
+  else if(k==="ArrowLeft"||k==="ArrowUp"){hover=Math.max(0,(hover<0?things.length:hover)-1);e.preventDefault();}
+  else if(k==="Enter"||k===" "){if(!taken)taken=things[Math.max(0,hover)];e.preventDefault();}
+ };
  let last=(performance&&performance.now)?performance.now():Date.now();
  function frame(){
   if(dead)return;
@@ -11993,6 +12007,15 @@ function doorScene(canvas,opts){
  canvas.onpointermove=e=>{hover=at(e);canvas.style.cursor=hover>=0?"pointer":"default";};
  canvas.onpointerdown=e=>{const i=at(e);if(i<0)return;
   if(i===aim&&mode==="near")enter();else goTo(i);};
+ /* the same choice by keyboard: arrows walk along the doors, Enter steps inside */
+ canvas.tabIndex=0;
+ canvas.onkeydown=e=>{
+  const k=e.key;
+  if(k==="ArrowRight"||k==="ArrowDown"){goTo(Math.min(doors.length-1,(aim<0?-1:aim)+1));e.preventDefault();}
+  else if(k==="ArrowLeft"||k==="ArrowUp"){goTo(Math.max(0,(aim<0?doors.length:aim)-1));e.preventDefault();}
+  else if(k==="Enter"||k===" "){if(aim>=0)enter();else goTo(0);e.preventDefault();}
+  else if(k==="Escape"){wide();e.preventDefault();}
+ };
  /* a smooth follow: everything eases, nothing snaps */
  const ease=(a,b,k)=>a+(b-a)*k;
  let last=(performance&&performance.now)?performance.now():Date.now();

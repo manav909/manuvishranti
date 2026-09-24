@@ -23,6 +23,15 @@ if(!/mine&&busy\.dataset\.auto==="1"/.test(page))bad.push('a screen the player a
 /* names on things, so nothing needs a written list beside it */
 ["CanvasTexture","SpriteMaterial"].forEach(k=>{
  if(page.indexOf(k)<0)bad.push('the things carry no name boards ('+k+')');});
+/* the pictures must also answer to a keyboard, not only to a finger */
+['doorScene','scrollScene','trayScene'].forEach(fn=>{
+ const i=page.indexOf('function '+fn+'(');
+ if(i<0)return;
+ const seg=page.slice(i,i+9000);
+ if(seg.indexOf('canvas.onkeydown')<0)bad.push(fn+' cannot be used with a keyboard');
+ if(seg.indexOf('canvas.tabIndex')<0)bad.push(fn+' cannot even be reached by the tab key');
+ if(seg.indexOf('"ArrowRight"')<0)bad.push(fn+' does not answer to the arrow keys');
+ if(seg.indexOf('"Enter"')<0)bad.push(fn+' has no key that chooses');});
 /* less movement: the scenes must hold still when the player has asked for that */
 if(page.indexOf('function lessMove(')<0)bad.push('the scenes do not know about the less movement setting');
 ['doorScene','scrollScene','trayScene'].forEach(fn=>{
