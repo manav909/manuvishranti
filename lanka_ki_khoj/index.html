@@ -4544,8 +4544,12 @@ function darwazeOpen(ids){
   x:(PLACES[id]||{}).lore||(PLACES[id]||{}).t||"",
   left:freshAt(id),been:!!(run.gone&&run.gone.indexOf(id)>-1),
   lamp:!!(canLamp&&hidesOne(id))}));
+ /* how much of this watch is still yours, said where the choice is made */
+ const baki=Math.max(0,visitsHere()-run.used);
+ const extra=!!(save.muhim&&save.muhim.boon&&save.muhim.boon.extra);
  const host=bigShow({tag:w.n||"",title:"कौन सा दरवाज़ा",
-  line:"किसी दरवाज़े को छूओ, वहाँ तक चलकर पहुँचोगे।",
+  line:"किसी दरवाज़े को छूओ, वहाँ तक चलकर पहुँचोगे।"+
+   (baki>1?(" इस घड़ी में "+baki+" जगहें देख सकते हो"+(extra?", एक तुम्हारे हक़ से।":"।")):" इस घड़ी में एक ही जगह।"),
   wide:true,
   extra:'<canvas class="dcanvas"></canvas>'+
    '<div class="dbar"><b class="dname"></b><span class="dwhat"></span>'+
