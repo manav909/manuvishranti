@@ -3944,6 +3944,30 @@ function diyaJalao(){
    SRC[found.src].n+" के पन्ने पर।",
   shut:"ठीक है",onShut:()=>muhimBar()});
 }
+/* ============ रात की शुरुआत का परदा ============
+   the night opens with its own emblem and one line of what this role is asked for. */
+function raatShow(N){
+ if(typeof bigShow!=="function")return;
+ const r=myRole();
+ const night=Object.keys(MUHIM).find(k=>MUHIM[k].size==="raat"&&MUHIM[k].only===r);
+ const emblem={jigyasu:"mudrika",yatri:"gada",kathapremi:"veena",balak:"gada",
+  yoddha:"gada",shastri:"kodanda",sadhak:"chudamani",raja:"surya"}[r]||"gada";
+ bigShow({obj:emblem,tag:N.name,title:ROLE[r].n+" की रात",
+  line:night?MUHIM[night].x:"जहाँ मन करे वहाँ जाओ।",
+  shut:"चलो"});
+}
+/* ============ मुहर: सुबह से पहले रात की मुहिम पूरी करने पर ============ */
+function moharMili(){
+ const m=(save.muhim=save.muhim||{});
+ const r=myRole(),night=Object.keys(MUHIM).find(k=>MUHIM[k].size==="raat"&&MUHIM[k].only===r);
+ if(!night||!run)return false;
+ const key=night+"|"+run.N.id;
+ if(!m.done[key])return false;
+ m.mohar=m.mohar||{};
+ if(m.mohar[key])return true;
+ m.mohar[key]=1;persist();return true;
+}
+function moharCount(){const m=save.muhim||{};return Object.keys(m.mohar||{}).length;}
 function muhimBar(){
  const host=document.getElementById("muhimbar");if(!host)return;
  if(panel!=="story"||!run){host.hidden=true;return;}   /* the strip belongs to the reading only */
@@ -7869,6 +7893,7 @@ function wipeNow(){                 /* a quick curtain when the hour turns */
 function start(id){
  try{muhimRaat();}catch(e){}
  const N=NIGHTS.find(n=>n.id===id);
+ try{setTimeout(()=>raatShow(N),260);}catch(e){}
  save.nights[id]=(save.nights[id]||0)+1;journeyMark();persist();
  if(mode==="texts")storyMap();
  run={N,w:0,went:[],lost:[],gone:[],used:0,pickedHere:[],busy:false,path:[]};
@@ -9179,6 +9204,7 @@ function dawn(){
    earned=[];earn(MANI_JAGAH,"role",ROLE[r].n);earned=[];persist();
    el('<p class="rolebar"><b>'+ROLE[r].n+" की मुद्रा:</b> यह रात इस भूमिका में पूरी हुई। हर भूमिका की अपनी मुद्राएँ अलग गिनी जाती हैं। +"+MANI_JAGAH+" मणि</p>");}}
  el("<h2>"+(N.id==="khoj"?"भोर हो गई":N.id==="aag"?"दिन ढल गया":"ख़बर पहुँच गई")+"</h2>");
+ try{if(moharMili())el('<p class="found gift"><b>मुहर:</b> इस रात की मुहिम सुबह होने से पहले पूरी हुई। अब तक '+moharCount()+" मुहर।</p>");}catch(e){}
  el('<p class="quiet">तुम यहाँ थे: '+run.went.join(", ")+"।</p>");
  if(run.lost.length)el('<p class="quiet">और यह सब तुम्हारे बिना हुआ: '+run.lost.join(", ")+"।</p>");
  const mine=Object.keys(SC).filter(k=>k.indexOf(N.id+"-")===0);
@@ -11629,7 +11655,9 @@ function fill(){
   const m=(save.muhim=save.muhim||{done:{},boon:{}});
   const mine=Object.keys(MUHIM).filter(k=>!MUHIM[k].only||MUHIM[k].only===myRole());
   const done=mine.filter(k=>m.done[k]||Object.keys(m.done||{}).some(d=>d.indexOf(k+"|")===0));
-  out+='<p class="shut-note">मुहिमें: '+mine.length+" में से "+done.length+" पूरी।</p>";
+  out+='<p class="shut-note">मुहिमें: '+mine.length+" में से "+done.length+" पूरी। मुहरें: "+
+   (typeof moharCount==="function"?moharCount():0)+"।</p>";
+  out+='<p class="quiet">मुहर उस रात मिलती है जब रात की मुहिम सुबह होने से पहले पूरी हो जाए।</p>';
   [["ghadi","घड़ी की मुहिमें"],["raat","रात की मुहिम"],["safar","सफ़र की मुहिमें"]].forEach(([sz,head])=>{
    const list=mine.filter(k=>MUHIM[k].size===sz);
    if(!list.length)return;
