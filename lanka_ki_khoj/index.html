@@ -4643,6 +4643,100 @@ function pothiOpen(id,w,others,key){
  if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
  return true;
 }
+/* ============ रातों के दरवाज़े ============
+   the six nights as six doors, each with its own name, what is still unread there, and whether it is open. */
+/* ============ भूमिकाएँ, सामने खड़ी ============ */
+function bhumikaDikhao(){
+ if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return false;
+ const list=Object.keys(ROLE).map(k=>{
+  const R=ROLE[k],open=roleOpen(k);
+  /* a shut role says in words what would open it */
+  let why="अभी बंद";
+  try{if(!open&&R.need&&R.need.length){
+   const left=R.need.map(f=>{try{const c=f();return c&&!c.t()?c.x:null;}catch(e){return null;}}).filter(Boolean);
+   if(left.length)why=left.join(", ");}}catch(e){}
+  return {id:k,n:R.n,t:R.t,tint:R.tint,open:open,why:why};
+ });
+ stageAsk(()=>bhumikaOpen(list),true);
+ return true;
+}
+function bhumikaOpen(list){
+ const open=list.filter(x=>x.open).length;
+ const host=bigShow({wide:true,tag:"पहला क़दम",title:"तुम कौन होकर चलोगे",
+  line:open+" भूमिकाएँ खुली हैं। जिसके साथ चलना हो, उसे छूओ।",
+  extra:'<canvas class="dcanvas"></canvas>',shut:"सूची में देखो"});
+ host.dataset.auto="1";
+ const cv=host.querySelector(".dcanvas");if(!cv)return;
+ cv.width=1100;cv.height=620;
+ let live=null;
+ try{
+  live=S3E.roleScene(cv,{list:list,tone:"saanjh",
+   onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
+    setTimeout(()=>{if(d&&d.id)pickRole(d.id);},140);}});
+ }catch(e){return;}
+ sunoList(host,list.map(d=>d.n+(d.open?", "+d.t:", "+d.why)),
+  i=>{if(live.take)live.take(i);},"कौन सी भूमिका");
+ const shut=host.querySelector(".bshut");
+ if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
+}
+function raateinDikhao(){
+ if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return false;
+ const first=RFIRST[myRole()];
+ const list=NIGHTS.slice().sort((a,b)=>(b.id===first?1:0)-(a.id===first?1:0)).map(N=>{
+  const been=!!(save.nights&&save.nights[N.id]);
+  const ok=been||((!N.needs||save.nights[N.needs])&&(!N.katha||(save.katha&&save.katha[N.katha])));
+  const mine=Object.keys(SC).filter(k=>k.indexOf(N.id+"-")===0);
+  const deep=mine.reduce((n,k)=>n+layersOf(k).length,0);
+  const got=mine.reduce((n,k)=>n+Math.min(depthOf(k),layersOf(k).length),0);
+  return {id:N.id,n:N.name,x:N.about||"",left:Math.max(0,deep-got),been:been,ok:ok,
+   why:ok?"":(N.katha&&!(save.katha&&save.katha[N.katha])?(KATHA[N.katha].n+" पढ़नी बाकी है"):"पहले की रात बाकी है")};
+ });
+ stageAsk(()=>raateinOpen(list),true);
+ return true;
+}
+function raateinOpen(list){
+ const open=list.filter(x=>x.ok);
+ const host=bigShow({wide:true,tag:ROLE[myRole()].n+" की नज़र से",title:"कहाँ से शुरू करोगे",
+  line:open.length+" रातें खुली हैं। किसी दरवाज़े को छूकर भीतर जाओ।",
+  extra:'<canvas class="dcanvas"></canvas>'+
+   '<div class="dbar"><b class="dname"></b><span class="dwhat"></span>'+
+   '<span class="dacts"><button class="claim din" hidden>यह रात शुरू करो</button>'+
+   '<button class="claim ghost dback" hidden>पीछे हटो</button></span></div>',
+  shut:"सूची में देखो"});
+ host.dataset.auto="1";
+ const cv=host.querySelector(".dcanvas");if(!cv)return;
+ cv.width=1100;cv.height=620;
+ const nm=host.querySelector(".dname"),wh=host.querySelector(".dwhat"),
+  din=host.querySelector(".din"),dbk=host.querySelector(".dback");
+ let live=null;
+ const near=d=>{
+  if(!d){nm.textContent="";wh.textContent="";din.hidden=true;dbk.hidden=true;return;}
+  nm.textContent=d.n;
+  wh.textContent=d.ok?(String(d.x||"").split("।")[0]+"।"+(d.left?(" "+d.left+" रूप अभी बाकी।"):"")):("अभी बंद: "+d.why);
+  din.hidden=!d.ok;dbk.hidden=false;
+ };
+ try{
+  live=S3E.doorScene(cv,{doors:open.map(d=>({id:d.id,n:d.n,x:d.x,left:d.left,been:d.been})),
+   tone:"raat",role:myRole(),onNear:near,
+   onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
+    setTimeout(()=>{if(d&&d.id)start(d.id);},140);}});
+ }catch(e){return;}
+ din.onclick=()=>live.enter();
+ dbk.onclick=()=>{live.back();near(null);};
+ paarJaoRaat(host,list);
+ sunoList(host,open.map(d=>d.n+(d.left?(", "+d.left+" रूप बाकी"):"")),
+  i=>{live.go(i);setTimeout(()=>live.enter(),900);},"कौन सी रात");
+ const shut=host.querySelector(".bshut");
+ if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
+}
+/* the nights that are still shut are named under the picture, with what opens them */
+function paarJaoRaat(host,list){
+ const shutOnes=list.filter(x=>!x.ok);
+ if(!shutOnes.length)return;
+ const p2=document.createElement("p");p2.className="bline";
+ p2.textContent="अभी बंद: "+shutOnes.map(x=>x.n+" ("+x.why+")").join("; ");
+ const card=host.querySelector(".bcard");if(card)card.appendChild(p2);
+}
 function darwazeDikhao(ids){
  if(!run||!ids||!ids.length)return;
  stageAsk(()=>darwazeOpen(ids));
@@ -6763,6 +6857,12 @@ function roleScreen(){
  roleTint();build();paint();flyTo(fitAll(),1.05);      /* the whole map, before any road is drawn */
  el('<p class="steps"><b>पहला क़दम:</b> भूमिका चुनो <span>फिर रात चुनना</span></p>');
  el('<h1>तुम कौन होकर चलोगे</h1>');
+ /* the roles come and stand in front of you; the written list waits behind them */
+ if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
+  const again=el("","fork");
+  again.appendChild(btn("भूमिकाएँ सामने बुलाओ","do go",()=>bhumikaDikhao()));
+  setTimeout(()=>{try{bhumikaDikhao();}catch(e){}},460);
+ }
  el("<p>यह चुनाव पूरे खेल का रंग, तुम्हारी राह और तुम्हारी नज़र तय करता है। कथा सबको पूरी मिलती है, फ़र्क़ यह है कि तुम उसमें क्या देखोगे। एक बार यात्रा शुरू होने के बाद भूमिका नहीं बदलती।</p>");
  if(save.journey&&save.journey.role){
   const J=ROLE[save.journey.role];
@@ -9979,6 +10079,12 @@ function front(){
   if(journeyOn())rf.appendChild(btn("यात्रा से बाहर निकलो","do",exitScreen));
   else rf.appendChild(btn("भूमिका बदलो","do",roleScreen));}
  el('<p class="ask">कहाँ से शुरू करोगे?</p>');
+ /* the nights come as doors; the written list waits behind them */
+ if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
+  const again=el("","fork");
+  again.appendChild(btn("रातों के दरवाज़े","do go",()=>raateinDikhao()));
+  setTimeout(()=>{try{raateinDikhao();}catch(e){}},420);
+ }
  const f=el("","fork");
  const first=RFIRST[myRole()];
  const order=NIGHTS.slice().sort((a,b)=>(b.id===first?1:0)-(a.id===first?1:0));
@@ -11979,6 +12085,100 @@ function makeThing(kind,tint){
  }
  return g;
 }
+/* ================= भूमिकाओं की क़तार =================
+   the eight roles standing in a row, each in its own clothes and colour, each with a board
+   saying who it is and what it looks for. the ones not yet earned stand in shadow. */
+function roleScene(canvas,opts){
+ const list=opts.list||[],onPick=opts.onPick||function(){};
+ const T=DOORTONE[opts.tone||"saanjh"]||DOORTONE.saanjh;
+ const W=canvas.clientWidth||640,H=canvas.clientHeight||380;
+ const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+ R.setPixelRatio(Math.min(1.6,window.devicePixelRatio||1));R.setSize(W,H,false);
+ R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=T.exp;
+ R.shadowMap.enabled=W>560;R.shadowMap.type=THREE.PCFSoftShadowMap;
+ const sc=new THREE.Scene();
+ sc.background=new THREE.Color(T.sky);sc.fog=new THREE.Fog(T.fog,18,60);
+ const cam=new THREE.PerspectiveCamera(38,W/H,.1,150);
+ cam.position.set(0,2.6,10.5);const look=new THREE.Vector3(0,1.5,0);cam.lookAt(look);
+ sc.add(new THREE.HemisphereLight(T.hemiA,T.hemiB,Math.max(.6,T.hemi)));
+ const key=new THREE.DirectionalLight(T.keyC,T.key);key.position.set(3,8,6);key.castShadow=true;sc.add(key);
+ const gr=mesh(new THREE.PlaneGeometry(80,80),M(T.ground,{roughness:.95}),0,0,0);
+ gr.rotation.x=-Math.PI/2;gr.receiveShadow=true;sc.add(gr);
+ const folk=[],n=Math.max(1,list.length);
+ list.forEach((d,i)=>{
+  const g=s3role(d.id);
+  g.traverse(o=>{
+   if(o.isSprite)o.visible=false;
+   if(o.userData&&o.userData.pulse)o.visible=false;
+   if(o.isMesh){o.castShadow=true;
+    if(!d.open&&o.material&&o.material.color)o.material=o.material.clone(),o.material.color.multiplyScalar(.35);}
+  });
+  const t0=n===1?0:(i/(n-1))-.5;
+  g.position.set(t0*Math.min(9.5,n*1.45),0,(i%2?.6:-.4));
+  g.rotation.y=-t0*.5;g.scale.setScalar(.95);
+  g.userData.pick=d;sc.add(g);folk.push(g);
+  /* the board over each one */
+  const cv2=document.createElement("canvas");cv2.width=520;cv2.height=180;
+  const x2=cv2.getContext("2d");
+  x2.fillStyle="rgba(22,16,28,.9)";x2.strokeStyle=d.open?(d.tint||"#e0c07a"):"#6a6258";x2.lineWidth=7;
+  const rr=40;x2.beginPath();x2.moveTo(rr,10);x2.arcTo(510,10,510,170,rr);x2.arcTo(510,170,10,170,rr);
+  x2.arcTo(10,170,10,10,rr);x2.arcTo(10,10,510,10,rr);x2.fill();x2.stroke();
+  x2.textAlign="center";x2.textBaseline="middle";
+  x2.fillStyle="#f6ecd6";x2.font="bold 50px 'Noto Sans Devanagari','Mangal',serif";
+  x2.fillText(String(d.n||"").slice(0,16),260,60);
+  x2.fillStyle=d.open?"#d8c9ae":"#a89c88";x2.font="30px 'Noto Sans Devanagari','Mangal',serif";
+  x2.fillText(String(d.open?(d.t||""):(d.why||"अभी बंद")).slice(0,30),260,118);
+  const tx=new THREE.CanvasTexture(cv2);tx.anisotropy=4;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
+  sp.scale.set(2.5,.86,1);sp.position.set(g.position.x,[3.5,2.9][i%2],g.position.z);
+  sp.renderOrder=6;sc.add(sp);g.userData.plate=sp;
+ });
+ let raf=0,dead=false,hover=-1,taken=null,k=0,t=0;
+ const ray=new THREE.Raycaster(),pt=new THREE.Vector2();
+ function at(ev){
+  const r=canvas.getBoundingClientRect();
+  const cx=(ev.touches&&ev.touches[0]?ev.touches[0].clientX:ev.clientX);
+  const cy=(ev.touches&&ev.touches[0]?ev.touches[0].clientY:ev.clientY);
+  if(cx===undefined)return -1;
+  pt.x=((cx-r.left)/r.width)*2-1;pt.y=-((cy-r.top)/r.height)*2+1;
+  ray.setFromCamera(pt,cam);
+  const hit=ray.intersectObjects(folk,true);
+  if(!hit.length)return -1;
+  let o=hit[0].object;while(o&&!o.userData.pick)o=o.parent;
+  return o?folk.indexOf(o):-1;
+ }
+ canvas.onpointermove=e=>{hover=at(e);canvas.style.cursor=hover>=0?"pointer":"default";};
+ canvas.onpointerdown=e=>{const i=at(e);if(i>=0&&!taken&&folk[i].userData.pick.open)taken=folk[i];};
+ canvas.tabIndex=0;
+ canvas.onkeydown=e=>{const kk=e.key;
+  if(kk==="ArrowRight"||kk==="ArrowDown"){hover=Math.min(folk.length-1,hover+1);e.preventDefault();}
+  else if(kk==="ArrowLeft"||kk==="ArrowUp"){hover=Math.max(0,(hover<0?folk.length:hover)-1);e.preventDefault();}
+  else if(kk==="Enter"||kk===" "){const g=folk[Math.max(0,hover)];
+   if(g&&g.userData.pick.open&&!taken)taken=g;e.preventDefault();}};
+ let last=(performance&&performance.now)?performance.now():Date.now();
+ function frame(){
+  if(dead)return;
+  const now=(performance&&performance.now)?performance.now():Date.now();
+  const dt=Math.min(.12,(now-last)/1000);last=now;t+=dt;
+  const calm=lessMove();
+  folk.forEach((g,i)=>{
+   const up=(calm&&taken!==g)?0:((hover===i||taken===g)?.22:0);
+   g.position.y+=(up-g.position.y)*Math.min(1,8*dt);
+   if(g.userData.plate)g.userData.plate.material.opacity=(taken&&taken!==g)?.3:1;
+  });
+  if(taken){
+   k=Math.min(1,k+dt*1.2);
+   const e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+   cam.position.set(taken.position.x*.8,2.6-e*.5,10.5-e*6.2);
+   look.set(taken.position.x,1.5,taken.position.z);cam.lookAt(look);
+   if(k>=1){dead=true;cancelAnimationFrame(raf);setTimeout(()=>onPick(taken.userData.pick),60);return;}
+  }
+  R.render(sc,cam);raf=requestAnimationFrame(frame);
+ }
+ frame();
+ return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}},
+  take(i){const g=folk[i];if(g&&g.userData.pick.open&&!taken)taken=g;}};
+}
 function trayScene(canvas,opts){
  const list=(opts.list||[]).slice(0,6),onPick=opts.onPick||function(){};   /* six at a time, so every name has room */
  const T=DOORTONE[opts.tone||"raat"]||DOORTONE.raat;
@@ -12576,7 +12776,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
 function s3stop(){if(S3.cur){try{S3.cur.stop();}catch(e){}S3.cur=null;}}
 
 function s3canvas(){if(!S3.canvas){S3.canvas=document.createElement("canvas");S3.canvas.className="s3";}return S3.canvas;}
-return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,trayScene,toneOf,s3role};
+return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,trayScene,roleScene,toneOf,s3role};
 })();
 const S3ROLECOL=r=>S3E.S3ROLE[r]||S3E.S3ROLE.jigyasu,scene3d=S3E.scene3d,s3stop=S3E.s3stop,s3ok=S3E.s3ok,s3canvas=S3E.s3canvas,S3NOW=()=>S3E.S3.cur;
 
