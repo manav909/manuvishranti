@@ -4360,6 +4360,7 @@ function bigShow(o){
     '<button class="claim ghost bshut">'+(o.shut||"आगे चलो")+"</button></div>"+
   "</div>";
  if(o.sig&&host.dataset.sig===o.sig&&!host.hidden){return host;}   /* already open for this very thing */
+ if(typeof stopInside==="function"&&o.sig&&String(o.sig).indexOf("andar|")!==0)stopInside();
  host.hidden=false;host.classList.remove("gone");
  host.dataset.sig=o.sig||"";
  /* the show lives outside the game's box, so it must carry the calm setting itself */
@@ -4718,6 +4719,8 @@ function bhumikaOpen(list){
 /* ============ भीतर की कथा ============
    you stay in the place: the telling runs on a leaf strip under it, and every way on is here. */
 let insideLive=null,insideOn=false;
+/* the place stops drawing the moment its screen is handed to another picture */
+function stopInside(){insideOn=false;if(insideLive&&insideLive.stop){insideLive.stop();insideLive=null;}}
 /* ============ भीतर का छोटा नक्शा ============
    the night drawn small: every place of this watch a dot, the one you stand in lit. */
 function chhotaNaksha(host,id){
@@ -4800,13 +4803,11 @@ function andarDikhao(id){
   if(li<L.length-1)add("इसी पल की अगली कथा","",()=>{li++;paint2();});
   const bk=[...story.querySelectorAll(".basket")].pop();
   if(bk&&[...(bk.body||bk).children].some(z=>z.dataset&&z.dataset.card))
-   add("यहाँ मिली बातें","ghost",()=>{const b=host.querySelector(".bshut");if(b)b.click();
-    setTimeout(()=>thaalDikhao(bk),140);});
+   add("यहाँ मिली बातें","ghost",()=>{stopInside();thaalDikhao(bk);});
   /* and the way on, without ever leaving the picture */
   const open=(typeof ghadiSpots==="function")?ghadiSpots().filter(z=>!run.pickedHere.includes(z)):[];
   if(open.length&&visitsHere()-run.used>0)
-   add("अगला दरवाज़ा","",()=>{const b=host.querySelector(".bshut");if(b)b.click();
-    setTimeout(()=>darwazeDikhao(open),140);});
+   add("अगला दरवाज़ा","",()=>{stopInside();darwazeDikhao(open);});
   else add("वक़्त आगे बढ़ाओ","",()=>{const b=host.querySelector(".bshut");if(b)b.click();
    setTimeout(()=>{const f=aageBtn();if(f)f.click();},160);});
  }
