@@ -1673,6 +1673,13 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .bigshow.calm .brays,.bigshow.calm .bpetals{display:none}
 .bigshow.calm .bcard{animation:none}
 .bigshow.calm.gone{animation:none;opacity:0}
+
+/* the plain list: off the screen, but reachable by tab and read aloud */
+.srlist{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.srlist button:focus,.srlist p:focus{position:static;width:auto;height:auto;clip:auto;
+ background:var(--page);color:var(--ink);border:2px solid var(--tide);border-radius:.5rem;padding:.3rem .6rem}
+.srlist:focus-within{position:static;width:auto;height:auto;clip:auto;white-space:normal;
+ display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;margin:.4rem 0 0}
 </style>
 </head>
 <body>
@@ -4447,6 +4454,20 @@ function autoOnce(key,fn){
  run.shown[key]=1;
  fn();return true;
 }
+/* ============ बिना देखे चुनने की सूची ============
+   beside every picture stands a plain list of the same choices, off the screen but reachable by
+   tab and read aloud by a screen reader. */
+function sunoList(host,items,pick,title){
+ if(!host)return;
+ const box=document.createElement("div");box.className="srlist";
+ const h=document.createElement("p");h.textContent=title||"चुनने के लिए";box.appendChild(h);
+ items.forEach((it,i)=>{const b=document.createElement("button");b.type="button";
+  b.textContent=it;b.onclick=()=>pick(i);box.appendChild(b);});
+ host.appendChild(box);
+ const cv=host.querySelector("canvas");
+ if(cv){cv.setAttribute("role","img");
+  cv.setAttribute("aria-label",(title||"")+": "+items.join(", "));}
+}
 function thaalDikhao(basket){
  if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return false;
  const boxes=[...(basket.body||basket).children].filter(x=>x.dataset&&x.dataset.card);
@@ -4473,6 +4494,7 @@ function thaalOpen(list,wn){
      if(!save.readCards[d.c]){save.readCards[d.c]=1;persist();try{muhimTick("card");}catch(e){}}
      deepCard(d.c);},120);}});
  }catch(e){return;}
+ sunoList(host,list.map(d=>d.n),i=>{if(live.take)live.take(i);},"कौन सी चीज़ उठानी है");
  const shut=host.querySelector(".bshut");
  if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
 }
@@ -4499,6 +4521,8 @@ function pothiOpen(id,w,others,key){
    onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
     setTimeout(()=>openReader(id,w,d.li),120);}});
  }catch(e){return false;}
+ sunoList(host,list.map(d=>d.n+(d.read?", पढ़ी हुई":", अभी पढ़नी है")),
+  i=>{if(live.take)live.take(i);},"कौन सी पोथी उठानी है");
  const shut=host.querySelector(".bshut");
  if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
  return true;
@@ -4546,6 +4570,8 @@ function darwazeOpen(ids){
      if(d&&d.id)visit(d.id);},520);
    }});
  }catch(e){note("दरवाज़ों वाला दृश्य नहीं खुल सका।");return;}
+ sunoList(host,doors.map(d=>d.n+(d.left?(", "+d.left+" रूप बाकी"):"")),
+  i=>{live.go(i);setTimeout(()=>live.enter(),900);},"किस दरवाज़े से जाना है");
  din.onclick=()=>live.enter();
  dbk.onclick=()=>{live.back();near(null);};
  const shut=host.querySelector(".bshut");
@@ -11746,7 +11772,8 @@ function scrollScene(canvas,opts){
   raf=requestAnimationFrame(frame);
  }
  frame();
- return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}}};
+ return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}},
+  take(i){if(!taken&&books[i])taken=books[i];}};   /* so a plain list of buttons can pick the same book */
 }
 /* ================= बातों का थाल =================
    the finds of a moment, lying as small things on a tray: a lamp, a ring, a leaf, a feather, a pot. */
@@ -11870,7 +11897,8 @@ function trayScene(canvas,opts){
   R.render(sc,cam);raf=requestAnimationFrame(frame);
  }
  frame();
- return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}}};
+ return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}},
+  take(i){if(!taken&&things[i])taken=things[i];}};
 }
 function doorScene(canvas,opts){
  const list=opts.doors||[],role=opts.role||"jigyasu";
@@ -12082,6 +12110,7 @@ function doorScene(canvas,opts){
  frame();
  return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}},
   enter:enter,back:wide,
+  go(i){goTo(i);},                 /* so a plain list of buttons can choose the same doors */
   at(){return aim;},
   how(){return {mode:mode,aim:aim,open:!!opening,k:opening?opening.userData.k:0,dead:dead};}};
 }

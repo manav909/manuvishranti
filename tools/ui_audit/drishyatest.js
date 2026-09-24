@@ -23,6 +23,14 @@ if(!/mine&&busy\.dataset\.auto==="1"/.test(page))bad.push('a screen the player a
 /* names on things, so nothing needs a written list beside it */
 ["CanvasTexture","SpriteMaterial"].forEach(k=>{
  if(page.indexOf(k)<0)bad.push('the things carry no name boards ('+k+')');});
+/* a picture alone is not enough: the same choices must stand as plain buttons, read aloud and reachable */
+if(page.indexOf('function sunoList(')<0)bad.push('the pictures carry no plain list beside them');
+if(page.indexOf('.srlist{')<0)bad.push('the plain list has no place to stand');
+if(!/cv\.setAttribute\("aria-label"/.test(page))bad.push('the picture has no name to be read aloud');
+['darwazeOpen','pothiOpen','thaalOpen'].forEach(fn=>{
+ const i=page.indexOf('function '+fn+'(');
+ if(i<0)return;
+ if(page.slice(i,i+2600).indexOf('sunoList(')<0)bad.push(fn+' offers no plain list of its choices');});
 /* the pictures must also answer to a keyboard, not only to a finger */
 ['doorScene','scrollScene','trayScene'].forEach(fn=>{
  const i=page.indexOf('function '+fn+'(');
