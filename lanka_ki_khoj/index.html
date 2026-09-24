@@ -1541,7 +1541,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 
 /* the mission strip floats over the top of the reading, which stays its own scroller */
 .panebody{position:relative}
-.panebody>.muhimbar{position:absolute;left:.4rem;right:.4rem;top:.3rem;z-index:6;margin:0}
+.panebody>.muhimbar{position:absolute;left:.4rem;right:.4rem;top:var(--mtop,3.2rem);z-index:6;margin:0}
 .panebody>#story{top:var(--mstrip,0px)}   /* the reading begins below the strip, never under it */
 
 /* the full screen show: sky, rays, petals, and a card that lands with a small bounce */
@@ -1680,6 +1680,18 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  background:var(--page);color:var(--ink);border:2px solid var(--tide);border-radius:.5rem;padding:.3rem .6rem}
 .srlist:focus-within{position:static;width:auto;height:auto;clip:auto;white-space:normal;
  display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;margin:.4rem 0 0}
+
+/* the row that keeps everything within reach */
+.raahbar{position:absolute;left:.4rem;right:.4rem;top:.3rem;z-index:7;display:flex;gap:.4rem;flex-wrap:wrap;
+ padding:.1rem 0}
+.raahbar[hidden]{display:none}
+.raah{display:flex;flex-direction:column;align-items:flex-start;gap:.05rem;flex:1 1 auto;min-width:5.4rem;
+ background:color-mix(in srgb,var(--mark) 60%,transparent);border:1px solid var(--rule);border-radius:.7rem;
+ color:var(--ink);font:inherit;padding:.3rem .55rem;cursor:pointer;min-height:40px;text-align:left}
+.raah b{font-size:.86rem;font-weight:600}
+.raah span{font-size:.78rem;color:var(--quiet)}
+.raah.live{border-color:var(--tide);box-shadow:inset 0 0 0 1px var(--tide)}
+.raah:last-child{cursor:default}
 </style>
 </head>
 <body>
@@ -1729,6 +1741,7 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
    </div>
    <div class="panebody">
     <div id="muhimbar" class="muhimbar shut" hidden></div>
+    <div id="raahbar" class="raahbar" hidden></div>
     <div id="story" class="panel"></div>
     <div id="pothi" class="panel" hidden></div>
     <div id="reader" class="panel" hidden></div>
@@ -4146,11 +4159,68 @@ function moharMili(){
  m.mohar[key]=1;persist();return true;
 }
 function moharCount(){const m=save.muhim||{};return Object.keys(m.mohar||{}).length;}
+/* ============ राह पट्टी ============
+   one row that always sits over the reading: where you are, what is read here, what is still
+   lying about, the way on, and a door back into each of the three pictures. */
+function raahBar(){
+ const host=document.getElementById("raahbar");if(!host)return;
+ if(panel!=="story"||!run){host.hidden=true;return;}
+ const bits=[];
+ /* the place you stand in, and its tellings */
+ if(run.hereKey&&run.hereOthers&&run.hereOthers.length){
+  const key=run.hereKey;
+  const done=run.hereOthers.filter(o=>{const sc=o.x.src||"vr";
+   return !!(save.readSrc&&save.readSrc[key+"|"+sc])||depthOf(key)>o.i;}).length;
+  bits.push({k:"pothi",n:"पोथियाँ",c:done+"/"+run.hereOthers.length,
+   on:done<run.hereOthers.length});
+ }
+ /* the finds lying here */
+ const basket=[...story.querySelectorAll(".basket")].pop();
+ if(basket){
+  const boxes=[...(basket.body||basket).children].filter(x=>x.dataset&&x.dataset.card);
+  const read=boxes.filter(b=>b.classList.contains("read")).length;
+  if(boxes.length)bits.push({k:"thaal",n:"बातें",c:read+"/"+boxes.length,on:read<boxes.length});
+ }
+ /* the ways out of this watch */
+ const open=(typeof ghadiSpots==="function")?ghadiSpots().filter(x=>!run.pickedHere.includes(x)):[];
+ const left=Math.max(0,visitsHere()-run.used);
+ if(open.length&&left>0)bits.push({k:"dwar",n:"दरवाज़े",c:String(open.length),on:true});
+ /* and where the night stands */
+ const W=run.N.watches[run.w];
+ bits.push({k:"ghadi",n:W?W.n.split(",")[0]:"",c:(run.ghadi===0?"कथा की घड़ी":"तुम्हारी घड़ी"),on:false});
+ /* the mission rides in the same row, so the reading keeps its room */
+ try{const N2=muhimNow();const id2=N2.ghadi||N2.raat||N2.safar;
+  if(id2){const M=MUHIM[id2],have=Math.min(mcount(id2),M.goal);
+   bits.push({k:"muhim",n:M.n,c:have+"/"+M.goal,on:have<M.goal});}}catch(e){}
+ host.hidden=false;
+ host.innerHTML=bits.map(b=>'<button class="raah'+(b.on?" live":"")+'" type="button" data-k="'+b.k+'">'+
+  '<b>'+b.n+"</b><span>"+b.c+"</span></button>").join("");
+ host.querySelectorAll(".raah").forEach(b=>{b.onclick=()=>{
+  const k=b.dataset.k;
+  if(k==="pothi"&&run.hereOthers)pothiDikhao(run.hereId,run.w,run.hereOthers,run.hereKey);
+  else if(k==="thaal"){const bk=[...story.querySelectorAll(".basket")].pop();if(bk)thaalDikhao(bk);}
+  else if(k==="dwar"&&open.length)darwazeDikhao(open);
+  else if(k==="muhim"){muhimOpen=!muhimOpen;
+   const mb=document.getElementById("muhimbar");if(mb)mb.classList.remove("shut");
+   muhimBar();}
+ };});
+ /* the reading starts below both strips */
+ try{const pb=host.parentElement;if(pb&&pb.style){
+  const rh=host.getBoundingClientRect().height||0;
+  pb.style.setProperty("--mtop",(rh+8)+"px");       /* the mission line sits under this row */
+  const mb=document.getElementById("muhimbar");
+  const mh=(mb&&!mb.hidden)?mb.getBoundingClientRect().height:0;
+  pb.style.setProperty("--mstrip",(rh+mh+16)+"px"); /* and the reading under them both */
+ }}catch(e){}
+}
 function muhimBar(){
+ try{raahBar();}catch(e){}
  const host=document.getElementById("muhimbar");if(!host)return;
+ if(!muhimOpen){host.hidden=true;return;}   /* the mission line lives in the road row now */
  if(panel!=="story"||!run){host.hidden=true;
-  try{const pb=host.parentElement;if(pb&&pb.style)pb.style.setProperty("--mstrip","0px");}catch(e){}
-  return;}   /* the strip belongs to the reading only */
+  try{const rb=document.getElementById("raahbar");if(rb)rb.hidden=true;
+   const pb=host.parentElement;if(pb&&pb.style)pb.style.setProperty("--mstrip","0px");}catch(e){}
+  return;}   /* the strips belong to the reading only */
  const N=muhimNow();const rows=[];
  [["ghadi","इस घड़ी"],["raat","इस रात"],["safar","सफ़र"]].forEach(([k,lbl])=>{
   const id=N[k];if(!id)return;const M=MUHIM[id];
@@ -4167,12 +4237,8 @@ function muhimBar(){
   '<p class="mwhat">'+[["ghadi",""],["raat",""],["safar",""]].map(([k])=>{const id=N[k];return id?MUHIM[id].x:"";}).filter(Boolean).join(" ")+'</p></div>';
  const lid=host.querySelector(".mlid");
  /* the reading starts below the strip, whatever its height */
- try{const pb=host.parentElement;
-  if(pb&&pb.style&&pb.style.setProperty){
-   const put=()=>{const h=host.getBoundingClientRect().height||0;
-    pb.style.setProperty("--mstrip",(h?h+8:0)+"px");};
-   put();if(typeof requestAnimationFrame==="function")requestAnimationFrame(put);
-   setTimeout(put,120);}}catch(e){}
+ try{if(typeof requestAnimationFrame==="function")requestAnimationFrame(()=>raahBar());
+  setTimeout(()=>{try{raahBar();}catch(e){}},120);}catch(e){}
  if(!host.dataset.init){host.classList.add("shut");host.dataset.init="1";}
  if(host.classList.contains("shut")){
   /* shut, the strip is one quiet line that still carries the count */
@@ -4410,7 +4476,7 @@ function runDiya(after){
 /* ============ पोथियों वाला परदा ============ */
 /* ============ परदे की क़तार ============
    only one full screen at a time, and whoever asked last is the one that opens. */
-let stageWait=null;
+let stageWait=null,muhimOpen=false;
 function stageAsk(fn,mine){
  if(stageWait){clearTimeout(stageWait);stageWait=null;}
  /* once the player opens something himself, the screens that open by themselves keep quiet here */
@@ -8692,6 +8758,8 @@ function visit(id){
  }
  const others=L.map((x,i)=>({x:x,i:i})).filter(o=>o.i!==d);
  if(others.length){
+  /* the bar above must know what stands in front of you */
+  run.hereId=id;run.hereKey=key;run.hereOthers=others;
   /* the books come out by themselves; the written list waits folded behind them */
   autoOnce("pothi-"+key,()=>setTimeout(()=>{try{pothiDikhao(id,run.w,others,key);}catch(e){}},420));
   if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
@@ -8720,7 +8788,7 @@ function visit(id){
    });
   });
  }
- run.busy=false;paint();
+ run.busy=false;paint();try{raahBar();}catch(e){}
  const rest=ghadiSpots().filter(x=>!run.pickedHere.includes(x));
  const more=run.ghadi===1&&visitsHere()-run.used>0&&rest.length>0;
  el('<p class="ask">अब क्या करोगे?</p>');
