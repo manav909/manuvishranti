@@ -4256,7 +4256,9 @@ function darwazeDikhao(ids,tries){
   note("इस फ़ोन पर दरवाज़ों वाला दृश्य नहीं चल पाता।");return;}
  const w=run.N.watches[run.w]||{};
  const night=!/दिन|दोपहर|सुबह|भोर|प्रात/.test(w.n||"");
- const doors=ids.slice(0,3).map(id=>({id:id,n:(PLACES[id]||{}).n||"",x:(PLACES[id]||{}).lore||(PLACES[id]||{}).t||"",been:!!(run.gone&&run.gone.indexOf(id)>-1)}));
+ const doors=ids.slice(0,3).map(id=>({id:id,n:(PLACES[id]||{}).n||"",
+  x:(PLACES[id]||{}).lore||(PLACES[id]||{}).t||"",
+  left:freshAt(id),been:!!(run.gone&&run.gone.indexOf(id)>-1)}));
  const host=bigShow({tag:w.n||"",title:"कौन सा दरवाज़ा",
   line:"किसी दरवाज़े को छूओ, वहाँ तक चलकर पहुँचोगे।",
   wide:true,
@@ -11214,24 +11216,32 @@ function doorScene(canvas,opts){
   g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
   g.userData.pick=d;g.userData.home=g.position.clone();
   /* a board over the door with its name, so the eye knows before the feet move */
-  {const cv2=document.createElement("canvas");cv2.width=760;cv2.height=250;
+  {const cv2=document.createElement("canvas");cv2.width=760;cv2.height=290;
    const x2=cv2.getContext("2d");
    x2.fillStyle="rgba(22,16,28,.9)";x2.strokeStyle="#e0c07a";x2.lineWidth=8;
-   const rr=46;x2.beginPath();x2.moveTo(rr,10);x2.arcTo(750,10,750,240,rr);x2.arcTo(750,240,10,240,rr);
-   x2.arcTo(10,240,10,10,rr);x2.arcTo(10,10,750,10,rr);x2.fill();x2.stroke();
+   const rr=46;x2.beginPath();x2.moveTo(rr,10);x2.arcTo(750,10,750,280,rr);x2.arcTo(750,280,10,280,rr);
+   x2.arcTo(10,280,10,10,rr);x2.arcTo(10,10,750,10,rr);x2.fill();x2.stroke();
    x2.textAlign="center";x2.textBaseline="middle";
    x2.fillStyle="#f6ecd6";x2.font="bold 64px 'Noto Sans Devanagari','Mangal',serif";
    x2.fillText(String(d.n||"").slice(0,22),380,84);
    /* a second line, so standing close never loses the thread */
-   x2.fillStyle="#d8c9ae";x2.font="38px 'Noto Sans Devanagari','Mangal',serif";
+   x2.fillStyle="#d8c9ae";x2.font="34px 'Noto Sans Devanagari','Mangal',serif";
    const line=String(d.x||"").split("।")[0];
-   const words=line.split(" ");let row="",y=160;
+   /* at most two lines of detail, so the count below always has its own room */
+   const words=line.split(" ");const rows=[];let row="";
    words.forEach(wd=>{const test=row?row+" "+wd:wd;
-    if(x2.measureText(test).width>680){x2.fillText(row,380,y);y+=46;row=wd;}else row=test;});
-   if(row&&y<=210)x2.fillText(row,380,y);
+    if(x2.measureText(test).width>680){rows.push(row);row=wd;}else row=test;});
+   if(row)rows.push(row);
+   const show=rows.slice(0,2);
+   if(rows.length>2)show[1]=show[1].replace(/\s+\S*$/,"")+" …";
+   show.forEach((r2,k2)=>x2.fillText(r2,380,152+k2*42));
+   /* what is still unread there, and whether you have been before */
+   const tag=(d.been?"जा चुके हो":"")+((d.been&&d.left)?" · ":"")+(d.left?d.left+" रूप बाकी":"");
+   if(tag){x2.fillStyle=d.left?"#8fd8b0":"#c8a88a";x2.font="34px 'Noto Sans Devanagari','Mangal',serif";
+    x2.fillText(tag,380,252);}
    const tx=new THREE.CanvasTexture(cv2);tx.anisotropy=4;
    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
-   sp.scale.set(4.6,1.5,1);sp.position.set(x,(g.userData.H||4)+1.9,z+.2);
+   sp.scale.set(4.8,1.83,1);sp.position.set(x,(g.userData.H||4)+1.9,z+.2);
    sp.renderOrder=6;sc.add(sp);g.userData.plate=sp;}
   g.userData.kind=doorKind(d.n);                       /* what waits beyond is built when it is needed */
   if(doorKind(d.n)==="mahal"){          /* a gate of that size is never left unwatched */
