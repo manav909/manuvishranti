@@ -4336,7 +4336,9 @@ function bigShow(o){
    '<div class="bacts">'+(o.act?'<button class="claim bgo">'+o.act+"</button>":"")+
     '<button class="claim ghost bshut">'+(o.shut||"आगे चलो")+"</button></div>"+
   "</div>";
+ if(o.sig&&host.dataset.sig===o.sig&&!host.hidden){return host;}   /* already open for this very thing */
  host.hidden=false;host.classList.remove("gone");
+ host.dataset.sig=o.sig||"";
  /* the show lives outside the game's box, so it must carry the calm setting itself */
  host.classList.toggle("calm",!!calm);
  const token=(host.dataset.token=String(Date.now()+Math.random()));
@@ -4605,7 +4607,7 @@ function thaalDikhao(basket){
  return true;
 }
 function thaalOpen(list,wn){
- const host=bigShow({wide:true,tag:wn,title:"यहाँ मिली बातें",
+ const host=bigShow({sig:"thaal|"+(run?run.N.id+"-"+run.w:"")+"|"+list.length,wide:true,tag:wn,title:"यहाँ मिली बातें",
   line:(list.length>6?("6 चीज़ें थाल पर हैं, "+(list.length-6)+" और बाकी। "):(list.length+" चीज़ें थाल पर रखी हैं। "))+"किसी को छूकर पढ़ो।",
   extra:'<canvas class="dcanvas"></canvas>',shut:"कथा पर लौटो"});
  const cv=host.querySelector(".dcanvas");if(!cv)return;
@@ -4635,7 +4637,7 @@ function pothiOpen(id,w,others,key){
  const list=others.map((o,i)=>({li:o.i,n:SRC[o.x.src||"vr"].n,tint:tints[i%tints.length],
   read:!!(save.readSrc&&save.readSrc[key+"|"+(o.x.src||"vr")])||depthOf(key)>o.i}));
  const left=list.filter(x=>!x.read).length;
- const host=bigShow({wide:true,tag:wn,title:"इस पल की कथाएँ",
+ const host=bigShow({sig:"pothi|"+key,wide:true,tag:wn,title:"इस पल की कथाएँ",
   line:list.length+" में से "+left+" अभी पढ़नी हैं। किसी पोथी को छूओ।",
   extra:'<canvas class="dcanvas"></canvas>',shut:"कथा पर लौटो"});
  host.dataset.auto="1";
@@ -4705,7 +4707,7 @@ function andarDikhao(id){
  const wn=(run.N.watches[run.w]||{}).n||"";
  const P=PLACES[id]||{};
  let li=0;
- const host=bigShow({wide:true,tag:wn,title:P.n||"",
+ const host=bigShow({sig:"andar|"+key,wide:true,tag:wn,title:P.n||"",
   line:"",
   extra:'<canvas class="dcanvas inside"></canvas>'+
    '<div class="leafstrip"><p class="lsrc"></p><div class="lsay"></div>'+
@@ -4828,7 +4830,8 @@ function darwazeOpen(ids){
  /* how much of this watch is still yours, said where the choice is made */
  const baki=Math.max(0,visitsHere()-run.used);
  const extra=!!(save.muhim&&save.muhim.boon&&save.muhim.boon.extra);
- const host=bigShow({tag:w.n||"",title:"कौन सा दरवाज़ा",
+ const host=bigShow({sig:"dwar|"+run.N.id+"|"+run.w+"|"+ids.join(","),
+  tag:w.n||"",title:"कौन सा दरवाज़ा",
   line:"किसी दरवाज़े को छूओ, वहाँ तक चलकर पहुँचोगे।"+
    (baki>1?(" इस घड़ी में "+baki+" जगहें देख सकते हो"+(extra?", एक तुम्हारे हक़ से।":"।")):" इस घड़ी में एक ही जगह।"),
   wide:true,
