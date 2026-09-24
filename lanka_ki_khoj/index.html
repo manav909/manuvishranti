@@ -11600,11 +11600,19 @@ function doorBeyond(kind,night){
  const floor=mesh(new THREE.PlaneGeometry(26,26),M(night?"#1d1830":"#b49c78",{roughness:.95}),0,0,0);
  floor.rotation.x=-Math.PI/2;g.add(floor);
  if(kind==="mahal"){
-  /* a hall of pillars with lamps burning down it */
+  /* a hall of pillars with lamps burning down it, a carpet, a throne at its end and two guards */
   for(let i=0;i<4;i++)[-1,1].forEach(q=>{
    g.add(cyl(.34,.38,5.4,M("#6a5a46",{roughness:.7}),q*2.6,2.7,-2-i*3.4));
+   g.add(box(.6,.5,.6,M("#8a7a62",{roughness:.8}),q*2.6,5.5,-2-i*3.4));
    g.add(sph(.18,M("#ffd98a",{emissive:new THREE.Color("#ffb54a"),emissiveIntensity:1.2}),q*2.6,4.2,-2-i*3.4));});
   g.add(box(9,.3,16,M("#7a6a52",{roughness:.8}),0,5.6,-8));
+  g.add(box(3.2,.06,14,M("#7a2a2a",{roughness:.9}),0,.05,-8));                 /* the carpet down the hall */
+  {const th=grp();th.position.set(0,0,-14);g.add(th);
+   th.add(box(2.2,.5,1.4,M("#c8912a",{metalness:.7,roughness:.4}),0,.8,0));
+   th.add(box(2.2,2,.3,M("#c8912a",{metalness:.7,roughness:.4}),0,1.8,-.6));
+   th.add(box(2.6,.4,1.8,M("#8a6a26",{metalness:.6,roughness:.5}),0,.25,0));}
+  [-1,1].forEach(q=>{const gd=person({cloth:"#5a2a2a",skin:"#c99a6a"});
+   gd.position.set(q*1.9,0,-11.5);gd.rotation.y=Math.PI;gd.scale.setScalar(.95);g.add(gd);});
  }else if(kind==="bagh"){
   /* trees, and a flowering one standing alone */
   for(let i=0;i<7;i++){const x=(i-3)*2.2,z=-3-((i*3)%7);
@@ -11639,10 +11647,17 @@ function doorBeyond(kind,night){
    bo.add(cyl(.05,.05,1.2,M("#6a5a3a"),0,.6,0));
    bo.add(box(.06,.7,.5,M("#e8dcc0",{roughness:.8}),.02,.75,.2));});
  }else if(kind==="mandir"){
-  /* the lamp of the sanctum, and the pillars before it */
-  g.add(box(6,5,.6,M("#7a7064",{roughness:.85}),0,2.5,-6));
-  g.add(sph(.3,M("#ffd98a",{emissive:new THREE.Color("#ffc25a"),emissiveIntensity:1.5}),0,1.6,-5.4));
-  [-1,1].forEach(q=>g.add(cyl(.28,.3,4.4,M("#8a8072",{roughness:.8}),q*2,2.2,-3)));
+  /* the sanctum: its lamp, the steps up to it, carved pillars, a bell hanging and flowers on the floor */
+  g.add(box(6.4,5.2,.7,M("#7a7064",{roughness:.85}),0,2.6,-6.4));
+  g.add(box(3.2,3.4,.4,M(night?"#2a2434":"#6a6258",{roughness:.9}),0,1.7,-6));      /* the dark doorway */
+  g.add(sph(.34,M("#ffd98a",{emissive:new THREE.Color("#ffc25a"),emissiveIntensity:1.7}),0,1.5,-5.6));
+  for(let i=0;i<3;i++)g.add(box(5-i*.6,.24,1-i*.2,M("#8a8072",{roughness:.85}),0,.12+i*.24,-3.4-i*.5));
+  [-1,1].forEach(q=>{g.add(cyl(.3,.34,4.6,M("#8a8072",{roughness:.8}),q*2.3,2.3,-3));
+   g.add(box(.8,.4,.8,M("#9a9083",{roughness:.8}),q*2.3,4.7,-3));});
+  {const bell=grp();bell.position.set(0,3.6,-2.6);g.add(bell);
+   bell.add(cyl(.02,.02,1.2,M("#6a5a3a"),0,.6,0));
+   bell.add(cyl(.26,.34,.5,M("#c8912a",{metalness:.85,roughness:.3}),0,-.1,0));}
+  for(let i=0;i<7;i++)g.add(sph(.1,M(["#e0622c","#e0b030","#f0e2c0"][i%3]),(i-3)*.5,.08,-2.6));
  }else if(kind==="raasta"){
   /* a road that narrows away, stones along its sides, a milestone, a tree and a cart left behind */
   for(let i=0;i<10;i++)g.add(box(3.4-i*.2,.06,1.6,M(night?"#3a3448":"#9a8464",{roughness:.95}),0,.04,-2-i*2.3));

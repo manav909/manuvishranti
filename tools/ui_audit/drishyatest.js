@@ -23,6 +23,19 @@ if(!/mine&&busy\.dataset\.auto==="1"/.test(page))bad.push('a screen the player a
 /* names on things, so nothing needs a written list beside it */
 ["CanvasTexture","SpriteMaterial"].forEach(k=>{
  if(page.indexOf(k)<0)bad.push('the things carry no name boards ('+k+')');});
+/* nothing behind a door may be bare: each kind of place must hold enough to look at */
+{const i=page.indexOf('function doorBeyond(');
+ if(i<0)bad.push('nothing is built behind the doors');
+ else{
+  const body=page.slice(i,page.indexOf('\nfunction doorScene('));
+  ['mahal','bagh','pahra','samudra','mandir','raasta','chaukhat'].forEach(k=>{
+   const at=body.indexOf('kind==="'+k+'"');
+   if(at<0){bad.push('nothing stands behind a '+k+' door');return;}
+   const next=body.slice(at).search(/\}else/);
+   const seg=body.slice(at,at+(next>0?next:1400));
+   const things=(seg.match(/add\(/g)||[]).length;
+   if(things<6)bad.push('the place behind a '+k+' door is bare: only '+things+' things in it');});
+ }}
 /* what a mission won must show where the choice is made, not only on a page */
 if(page.indexOf('यहाँ कुछ छिपा है')<0)bad.push('the lamp boon does not mark the door that still hides something');
 if(page.indexOf('एक तुम्हारे हक़ से')<0)bad.push('the extra visit boon is never named at the doors');
