@@ -3613,7 +3613,10 @@ function foundBox(c,how){                /* a find arrives shut, and opens when 
   const bc=document.createElement("span");bc.className="basketno";
   bl.appendChild(bn);bl.appendChild(bc);
   const bb=document.createElement("div");bb.className="basketbody";
-  bl.onclick=()=>{basket.classList.toggle("shut");count();};
+  bl.onclick=()=>{
+   /* the finds come out on a tray, as things; the written list stays behind it */
+   if(!thaalDikhao(basket)){basket.classList.toggle("shut");count();}
+  };
   basket.appendChild(bl);basket.appendChild(bb);basket.body=bb;basket.cnt=bc;
   function count(){const n=bb.children.length;
    const left=[...bb.children].filter(x=>!x.classList.contains("read")).length;
@@ -4291,6 +4294,37 @@ function stageAsk(fn,mine){
   stageWait=null;fn();
  };
  go();
+}
+/* ============ बातों का थाल, परदे पर ============
+   the finds of this moment, handed over as things on a brass tray. */
+function thaalDikhao(basket){
+ if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return false;
+ const boxes=[...(basket.body||basket).children].filter(x=>x.dataset&&x.dataset.card);
+ if(!boxes.length)return false;
+ const kinds=["diya","ring","leaf","feather","pot","box"];
+ const list=boxes.map((b,i)=>({c:b.dataset.card,n:(CARDS[b.dataset.card]||{}).t||"",
+  kind:kinds[i%kinds.length],read:b.classList.contains("read")}));
+ const wn=(run&&run.N.watches[run.w]||{}).n||"";
+ stageAsk(()=>thaalOpen(list,wn),true);
+ return true;
+}
+function thaalOpen(list,wn){
+ const host=bigShow({wide:true,tag:wn,title:"यहाँ मिली बातें",
+  line:list.length+" चीज़ें थाल पर रखी हैं। किसी को छूकर पढ़ो।",
+  extra:'<canvas class="dcanvas"></canvas>',shut:"कथा पर लौटो"});
+ const cv=host.querySelector(".dcanvas");if(!cv)return;
+ cv.width=1100;cv.height=620;
+ let live=null;
+ try{
+  live=S3E.trayScene(cv,{list:list,tone:S3E.toneOf(wn),
+   onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
+    setTimeout(()=>{
+     save.readCards=save.readCards||{};
+     if(!save.readCards[d.c]){save.readCards[d.c]=1;persist();try{muhimTick("card");}catch(e){}}
+     deepCard(d.c);},120);}});
+ }catch(e){return;}
+ const shut=host.querySelector(".bshut");
+ if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
 }
 function pothiDikhao(id,w,others,key){
  if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return false;
