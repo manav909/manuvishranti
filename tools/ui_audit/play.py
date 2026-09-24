@@ -23,6 +23,9 @@ VISIBLE_BTNS="""()=>{const out=[];document.querySelectorAll('button').forEach((b
   out.push({i,t:(b.textContent||b.getAttribute('aria-label')||'').trim().slice(0,50),cls:String(b.className),x:Math.round(cx),y:Math.round(cy),inView:shown,covered,by:String(by).slice(0,30)});});return out;}"""
 def screen_name(pg):
     return pg.evaluate("()=>{const h=document.querySelector('#story h1, #story h2');return (h?h.textContent:'').trim().slice(0,30)}")
+def stage_up(pg):
+    return pg.evaluate("""()=>{const x=document.getElementById('bigshow');return !!(x&&!x.hidden);}""")
+
 def shut_big(pg):
     # a full screen show may open when a mission is finished; a player would close it, so close it
     pg.evaluate("""()=>{const x=document.getElementById('bigshow');
@@ -123,8 +126,9 @@ with sync_playwright() as p:
         key=fw['t']+fw['cls']
         before=pg.evaluate("()=>document.getElementById('story').innerText.length")
         click_btn(pg,fw)
+        opened_stage=stage_up(pg)      # a full screen opening is an effect, even if we close it at once
         after=pg.evaluate("()=>document.getElementById('story').innerText.length")
-        if after==before and key==last: issue('no-effect',f"pressing '{fw['t'][:30]}' changes nothing",screen_name(pg))
+        if after==before and key==last and not opened_stage: issue('no-effect',f"pressing '{fw['t'][:30]}' changes nothing",screen_name(pg))
         last=key
         if 'वक़्त आगे' in fw['t'] or 'दूसरी घड़ी' in fw['t']: pass
         if pg.evaluate("()=>!run"): break

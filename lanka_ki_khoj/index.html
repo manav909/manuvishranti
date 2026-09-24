@@ -4243,15 +4243,57 @@ function runDiya(after){
  frame();
 }
 /* ============ दरवाज़ों वाला परदा ============ */
-function darwazeDikhao(ids,tries){
+/* ============ पोथियों वाला परदा ============ */
+/* ============ परदे की क़तार ============
+   only one full screen at a time, and whoever asked last is the one that opens. */
+let stageWait=null;
+function stageAsk(fn,mine){
+ if(stageWait){clearTimeout(stageWait);stageWait=null;}
+ let tries=0;
+ const go=()=>{
+  const busy=document.getElementById("bigshow");
+  if(busy&&!busy.hidden){
+   /* a screen the player asked for pushes aside one that opened by itself */
+   if(mine&&busy.dataset.auto==="1"){busy.hidden=true;busy.innerHTML="";delete busy.dataset.auto;}
+   else{tries++;if(tries<14)stageWait=setTimeout(go,420);return;}
+  }
+  stageWait=null;fn();
+ };
+ go();
+}
+function pothiDikhao(id,w,others,key){
+ if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return false;
+ stageAsk(()=>pothiOpen(id,w,others,key),true);
+ return true;
+}
+function pothiOpen(id,w,others,key){
+ const wn=(run&&run.N.watches[w]||{}).n||"";
+ const tints=["#b0302a","#2a6a9a","#c8912a","#4a7a3a","#7a3a8a","#a05a20"];
+ const list=others.map((o,i)=>({li:o.i,n:SRC[o.x.src||"vr"].n,tint:tints[i%tints.length],
+  read:!!(save.readSrc&&save.readSrc[key+"|"+(o.x.src||"vr")])||depthOf(key)>o.i}));
+ const left=list.filter(x=>!x.read).length;
+ const host=bigShow({wide:true,tag:wn,title:"इस पल की कथाएँ",
+  line:list.length+" में से "+left+" अभी पढ़नी हैं। किसी पोथी को छूओ।",
+  extra:'<canvas class="dcanvas"></canvas>',shut:"कथा पर लौटो"});
+ host.dataset.auto="1";
+ const cv=host.querySelector(".dcanvas");if(!cv)return true;
+ cv.width=1100;cv.height=620;
+ let live=null;
+ try{
+  live=S3E.scrollScene(cv,{list:list,role:myRole(),tone:S3E.toneOf(wn),
+   onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
+    setTimeout(()=>openReader(id,w,d.li),120);}});
+ }catch(e){return false;}
+ const shut=host.querySelector(".bshut");
+ if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
+ return true;
+}
+function darwazeDikhao(ids){
  if(!run||!ids||!ids.length)return;
- /* if another screen is up, wait for it: two full screens must never sit on each other */
- const busy=document.getElementById("bigshow");
- if(busy&&!busy.hidden){
-  const n=(tries||0)+1;
-  if(n<12)setTimeout(()=>darwazeDikhao(ids,n),450);
-  return;
- }
+ stageAsk(()=>darwazeOpen(ids));
+}
+function darwazeOpen(ids){
+ if(!run||!ids||!ids.length)return;
  if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok()){
   note("इस फ़ोन पर दरवाज़ों वाला दृश्य नहीं चल पाता।");return;}
  const w=run.N.watches[run.w]||{};
@@ -4267,6 +4309,7 @@ function darwazeDikhao(ids,tries){
    '<span class="dacts"><button class="claim din" hidden>भीतर जाओ</button>'+
    '<button class="claim ghost dback" hidden>पीछे हटो</button></span></div>',
   shut:"नक्शे पर लौटो"});
+ host.dataset.auto="1";
  const cv=host.querySelector(".dcanvas");if(!cv)return;
  cv.width=1100;cv.height=620;
  const nm=host.querySelector(".dname"),wh=host.querySelector(".dwhat"),
@@ -8213,6 +8256,10 @@ function visit(id){
  const others=L.map((x,i)=>({x:x,i:i})).filter(o=>o.i!==d);
  if(others.length){
   const rf=el("","fork");
+  /* the books come out by themselves, once for this moment */
+  {const mark="pothi-"+key;
+   if(run.pothiAt!==mark){run.pothiAt=mark;
+    setTimeout(()=>{try{pothiDikhao(id,run.w,others,key);}catch(e){}},420);}}
   {const done=others.filter(o=>{const sc=o.x.src||"vr";
     return !!(save.readSrc&&save.readSrc[key+"|"+sc])||depthOf(key)>o.i;}).length;
    el('<p class="leftline" data-key='+JSON.stringify(key)+' data-all='+others.length+'>इस पल की और कथाएँ: <b>'+others.length+' में से '+done+' पढ़ी</b>'+
@@ -11169,6 +11216,116 @@ function toneOf(name){
  if(/भोर|उजाला|पहले/.test(n))return "bhor";
  return "raat";
 }
+/* ================= पोथियों की चौकी =================
+   the tellings of this moment, lying as rolled palm leaf books on a low table.
+   the ones already read lie open; the rest are still tied with their cord. */
+function makeScroll(open,tint){
+ const g=grp();
+ const leaf=M("#e7d6a8",{roughness:.85}),wood=M("#6a4424",{roughness:.7}),
+  cord=M(tint||"#b0302a",{roughness:.8});
+ if(open){
+  g.add(box(2.6,.07,1.15,leaf,0,.05,0));
+  for(let i=0;i<7;i++)g.add(box(2.1,.012,.03,M("#6a5a44"),0,.1,-.34+i*.11));
+  [-1,1].forEach(q=>{g.add(cyl(.11,.11,1.25,wood,q*1.35,.11,0)).rotation&&0;
+   const r=g.children[g.children.length-1];r.rotation.x=Math.PI/2;});
+ }else{
+  const roll=cyl(.19,.19,1.3,leaf,0,.19,0);roll.rotation.x=Math.PI/2;g.add(roll);
+  [-1,1].forEach(q=>{const cap=cyl(.21,.21,.07,wood,0,.19,q*.66);cap.rotation.x=Math.PI/2;g.add(cap);});
+  const tie=cyl(.205,.205,.09,cord,0,.19,0);tie.rotation.x=Math.PI/2;g.add(tie);
+ }
+ return g;
+}
+function scrollScene(canvas,opts){
+ const list=opts.list||[],role=opts.role||"jigyasu",onPick=opts.onPick||function(){};
+ const T=DOORTONE[opts.tone||"raat"]||DOORTONE.raat;
+ const W=canvas.clientWidth||640,H=canvas.clientHeight||380;
+ const R=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+ R.setPixelRatio(Math.min(1.6,window.devicePixelRatio||1));R.setSize(W,H,false);
+ R.outputEncoding=THREE.sRGBEncoding;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=T.exp;
+ R.shadowMap.enabled=W>560;R.shadowMap.type=THREE.PCFSoftShadowMap;
+ const sc=new THREE.Scene();
+ sc.background=new THREE.Color(T.sky);sc.fog=new THREE.Fog(T.fog,12,40);
+ const cam=new THREE.PerspectiveCamera(40,W/H,.1,120);
+ cam.position.set(0,3.2,7.2);cam.lookAt(0,1.1,0);
+ sc.add(new THREE.HemisphereLight(T.hemiA,T.hemiB,Math.max(.5,T.hemi)));
+ const key=new THREE.DirectionalLight(T.keyC,T.key);key.position.set(3,7,5);key.castShadow=true;sc.add(key);
+ /* the lamp that lights the reading */
+ const lamp=grp();lamp.position.set(-2.6,.9,.4);sc.add(lamp);
+ lamp.add(cyl(.22,.3,.18,M("#b06a40",{roughness:.85}),0,0,0));
+ lamp.add(sph(.15,M("#ffd98a",{emissive:new THREE.Color("#ffb54a"),emissiveIntensity:1.4}),0,.2,0));
+ const pl=new THREE.PointLight(0xffb54a,1.7,9,2);pl.position.set(0,.3,0);lamp.add(pl);
+ const gr=mesh(new THREE.PlaneGeometry(60,60),M(T.ground,{roughness:.95}),0,0,0);
+ gr.rotation.x=-Math.PI/2;gr.receiveShadow=true;sc.add(gr);
+ /* the low table */
+ const table=grp();sc.add(table);
+ table.add(box(7.4,.22,2.6,M("#6a4a2a",{roughness:.7}),0,.86,0));
+ [-1,1].forEach(q=>[-1,1].forEach(w=>table.add(cyl(.14,.16,.86,M("#5a3a22",{roughness:.8}),q*3.3,.43,w*1))));
+ table.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+ /* the books, side by side */
+ const books=[],n=Math.max(1,list.length);
+ list.forEach((d,i)=>{
+  const g=makeScroll(!!d.read,d.tint);
+  const x=(i-(n-1)/2)*Math.min(2.5,6.6/n);
+  g.position.set(x,.97,0);g.rotation.y=(i%2?1:-1)*.08;
+  g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+  g.userData.pick=d;sc.add(g);books.push(g);
+  /* a small board with the telling's name */
+  const cv2=document.createElement("canvas");cv2.width=520;cv2.height=150;
+  const x2=cv2.getContext("2d");
+  x2.fillStyle="rgba(22,16,28,.9)";x2.strokeStyle=d.read?"#8a8272":"#e0c07a";x2.lineWidth=7;
+  const rr=40;x2.beginPath();x2.moveTo(rr,10);x2.arcTo(510,10,510,140,rr);x2.arcTo(510,140,10,140,rr);
+  x2.arcTo(10,140,10,10,rr);x2.arcTo(10,10,510,10,rr);x2.fill();x2.stroke();
+  x2.textAlign="center";x2.textBaseline="middle";
+  x2.fillStyle="#f6ecd6";x2.font="bold 46px 'Noto Sans Devanagari','Mangal',serif";
+  x2.fillText(String(d.n||"").slice(0,20),260,62);
+  x2.fillStyle=d.read?"#b8ab94":"#8fd8b0";x2.font="32px 'Noto Sans Devanagari','Mangal',serif";
+  x2.fillText(d.read?"पढ़ी हुई":"अभी पढ़नी है",260,110);
+  const tx=new THREE.CanvasTexture(cv2);tx.anisotropy=4;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
+  sp.scale.set(2.2,.64,1);sp.position.set(x,1.95,0);sp.renderOrder=6;sc.add(sp);
+  g.userData.plate=sp;
+ });
+ let raf=0,dead=false,hover=-1,taken=null,k=0;
+ const ray=new THREE.Raycaster(),pt=new THREE.Vector2();
+ function at(ev){
+  const r=canvas.getBoundingClientRect();
+  const cx=(ev.touches&&ev.touches[0]?ev.touches[0].clientX:ev.clientX);
+  const cy=(ev.touches&&ev.touches[0]?ev.touches[0].clientY:ev.clientY);
+  if(cx===undefined)return -1;
+  pt.x=((cx-r.left)/r.width)*2-1;pt.y=-((cy-r.top)/r.height)*2+1;
+  ray.setFromCamera(pt,cam);
+  const hit=ray.intersectObjects(books,true);
+  if(!hit.length)return -1;
+  let o=hit[0].object;while(o&&!o.userData.pick)o=o.parent;
+  return o?books.indexOf(o):-1;
+ }
+ canvas.onpointermove=e=>{hover=at(e);canvas.style.cursor=hover>=0?"pointer":"default";};
+ canvas.onpointerdown=e=>{const i=at(e);if(i>=0&&!taken){taken=books[i];}};
+ let last=(performance&&performance.now)?performance.now():Date.now();
+ function frame(){
+  if(dead)return;
+  const now=(performance&&performance.now)?performance.now():Date.now();
+  const dt=Math.min(.12,(now-last)/1000);last=now;
+  books.forEach((b,i)=>{
+   const up=(hover===i||taken===b)?.16:0;
+   b.position.y+= (0.97+up-b.position.y)*Math.min(1,8*dt);
+   b.rotation.z+=((taken===b?.25:0)-b.rotation.z)*Math.min(1,6*dt);
+  });
+  if(taken){
+   k=Math.min(1,k+dt*1.3);
+   const e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+   cam.position.set(taken.position.x*.6,3.2-e*1.1,7.2-e*4.4);
+   cam.lookAt(taken.position.x,1.1,0);
+   taken.scale.setScalar(1+e*.5);
+   if(k>=1){dead=true;cancelAnimationFrame(raf);
+    setTimeout(()=>onPick(taken.userData.pick),60);return;}
+  }
+  R.render(sc,cam);
+  raf=requestAnimationFrame(frame);
+ }
+ frame();
+ return {stop(){dead=true;if(raf)cancelAnimationFrame(raf);try{R.dispose();}catch(e){}}};
+}
 function doorScene(canvas,opts){
  const list=opts.doors||[],role=opts.role||"jigyasu";
  const T=DOORTONE[opts.tone||(opts.night?"raat":"din")]||DOORTONE.raat;
@@ -11649,7 +11806,7 @@ function scene3d(P,role,canvas,mood,words,meLabel,src){
 function s3stop(){if(S3.cur){try{S3.cur.stop();}catch(e){}S3.cur=null;}}
 
 function s3canvas(){if(!S3.canvas){S3.canvas=document.createElement("canvas");S3.canvas.className="s3";}return S3.canvas;}
-return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,toneOf,s3role};
+return {scene3d,s3stop,s3ok,S3,s3canvas,S3NAME,S3ROLE,gadaBig,kodandaBow,suryaDisc,chudamani,mudrika,veena,makeDoor,doorKind,doorScene,scrollScene,toneOf,s3role};
 })();
 const S3ROLECOL=r=>S3E.S3ROLE[r]||S3E.S3ROLE.jigyasu,scene3d=S3E.scene3d,s3stop=S3E.s3stop,s3ok=S3E.s3ok,s3canvas=S3E.s3canvas,S3NOW=()=>S3E.S3.cur;
 
