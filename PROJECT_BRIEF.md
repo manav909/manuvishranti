@@ -5,9 +5,47 @@ A static site. One self-contained HTML file per experience, no build step, no se
 Each experience lives in its own folder, so the root stays free for a home page later.
 
 Live experience: **लंका की खोज** at `/lanka_ki_khoj`, a Hindi discovery game built on the Sundar Kand,
-covering 41 tellings from India and beyond, 6 playable nights, 108 moments, 307 hidden findings,
-96 places, 53 detours inside tellings, 38 people, 34 boons and weapons, 12 stories told inside the story,
-14 side by side differences, 22 badges, 32 titles and 15 original lines in their own script, all with citations.
+covering 41 tellings from India and beyond, 6 playable nights, 108 moments, 259 telling pages,
+382 hidden findings, 96 places, 74 detours inside tellings with 296 stops, 38 people, 34 boons and weapons,
+12 stories told inside the story, 14 side by side differences, 22 badges, 32 titles and 15 original lines
+in their own script, all with citations.
+
+Every detour belongs to a single role, none shared, and every role has its own in every one of the six
+nights: jigyasu 10, kathapremi 10, yoddha 10, yatri 9, balak 9, shastri 9, sadhak 9, raja 8.
+
+## Choosing without words
+The game is chosen through pictures, not lists. Three full screen scenes carry it, each built in 3D
+and opening by itself, each able to be called back by a button, with the written list folded behind it
+(and standing open where 3D cannot run):
+- **The doors.** You stand with your back to us in the clothes of your role, and the ways out of this
+  watch stand before you as doors built to the place they lead to: a fort gate with the iron spikes that
+  stopped war elephants and domed brass studs, a temple door with its shakhas, its lalatabimba and two
+  dvarapalas, a low garden gate with trees leaning over it, a guard post with spears and a brazier, an
+  open sea arch, a house door with a tulsi pot, a rope gate for a road, a plain threshold with a lamp for
+  a question. Each carries a board with its name, a line of detail and what is still unread there. The
+  light is the light of that watch: dusk, midnight, first light or noon. Tapping one walks you to it;
+  other doors stay open; stepping inside is its own choice, and the leaves swing, the place beyond comes
+  into view, and the doorway's light washes into the story.
+- **The books.** The tellings of a moment lie on a low table as palm leaf books, tied with their own
+  cord, the read ones lying open, a lamp burning beside them.
+- **The tray.** The finds of a moment lie on a brass tray as things: a lamp, a ring, a leaf, a feather,
+  a pot. Six at a time, each turning slowly with its name above it.
+
+The reading itself sits on a palm leaf page, cream, ruled, wood at both ends, its ink dark brown.
+
+## Missions and rewards
+Three sizes run at once, shown in a strip above the reading: a watch mission (two places, two tellings,
+two finds, one detour), a night mission of the role's own, and journey missions that give real boons:
+one more place in every watch, and a lamp that points once a night at a find still waiting. Finishing a
+night mission before dawn earns a seal. Finished missions open a full screen show with the role's own
+emblem turning in its own light: gada, kodanda, the twelve rayed sun, chudamani, mudrika or veena, each
+built from researched detail. A page in the notebook holds the emblems won and the best score of each
+little game.
+
+## The little games
+Four short games, none of which asks the player to read: the leap across the sea, roof to roof with the
+fire behind, match the shadow, and light the lamps in order. They open from the mission strip whenever
+the eyes want a rest.
 
 ## How a night runs
 - Each night is four prahars, and each prahar splits into two ghadis
@@ -64,6 +102,30 @@ covering 41 tellings from India and beyond, 6 playable nights, 108 moments, 307 
 - `lanka_ki_khoj/index.html`: the game, complete and standalone
 - `PROJECT_BRIEF.md`: this file
 - root `index.html`: not made yet, kept free for the home page
+
+## The checks
+49 file checks run on the extracted script before anything is published, plus three browser audits:
+the colour audit in light and dark, the click-through that plays the game by pressing what a player
+would press, and the 3D sweep over all 296 detour stops. The 3D sweep is slow, about five seconds a
+stop, so it is run in batches of twenty to fifty, never in one go.
+
+Checks worth naming, each added after a real fault was found:
+- `kathatest.js`: every telling page must tell its own moment; at most one line may talk about the
+  telling itself. It took the count of offending pages from 87 to zero
+- `covertest.js`: everything a page names by word must stand in its picture
+- `pixtest.js`: every detour stop has its own moving scene with the player in it, none alike
+- `sprite3d.js`: nothing in a scene plan may lack a 3D shape, or it vanishes without a word
+- `detourtest.js`: every detour belongs to one role, none shared, each role covered in every night
+- `muhimtest.js`: every role can actually finish its night mission with what that night allows
+- `raattest.js`: a night once played stays open, and the dawn always offers a way on
+- `doortest.js`: every place gets a door of its own kind, all four hours lit, a way in and back
+- `drishyatest.js`: the three wordless screens open full and wide, name what they show, wait their turn
+- `smoothtest.js`: the pictures open by themselves and can be called back, the written lists sit folded
+  behind them, and no screen opens twice for the same moment
+- `rangtest.js`: every colour name used is set somewhere, and none is lost to a missing semicolon.
+  It was written after one missing semicolon silently killed the whole palm leaf page
+- `focus.py`: through fifty six moves across four roles and three nights, only the place you stand in
+  stays open, and the way on is never folded away
 
 ## Working rules carried over
 - Complete files only, never patches

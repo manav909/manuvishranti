@@ -23,6 +23,8 @@ VISIBLE_BTNS="""()=>{const out=[];document.querySelectorAll('button').forEach((b
   out.push({i,t:(b.textContent||b.getAttribute('aria-label')||'').trim().slice(0,50),cls:String(b.className),x:Math.round(cx),y:Math.round(cy),inView:shown,covered,by:String(by).slice(0,30)});});return out;}"""
 def screen_name(pg):
     return pg.evaluate("()=>{const h=document.querySelector('#story h1, #story h2');return (h?h.textContent:'').trim().slice(0,30)}")
+last_stage=False
+
 def stage_up(pg):
     return pg.evaluate("""()=>{const x=document.getElementById('bigshow');return !!(x&&!x.hidden);}""")
 
@@ -32,12 +34,22 @@ def shut_big(pg):
       if(x&&!x.hidden){const c=x.querySelector('.bshut');if(c)c.click();x.hidden=true;}}""")
 
 def click_btn(pg, b):
+    # a picture that opens on a press IS the effect; note it before anything closes it
     shut_big(pg)
+    global last_stage
+    last_stage=False
     loc=pg.locator('button').nth(b['i'])
     try:
         pg.wait_for_timeout(450); loc.scroll_into_view_if_needed(timeout=4000); loc.click(timeout=5000)
-        pg.wait_for_timeout(260); return True
+        pg.wait_for_timeout(600)
+        last_stage=stage_up(pg)
+        return True
     except Exception as e:
+        # a player would press the floating bar that carries the same words
+        done=pg.evaluate('''i=>{const b=document.querySelectorAll('button')[i];const d=document.getElementById('dobar');
+          if(b&&d&&!d.hidden&&String(d.textContent).trim()===String(b.textContent).trim()){d.click();return true;}return false;}''',b['i'])
+        if done:
+            pg.wait_for_timeout(500); return True
         diag=pg.evaluate('''i=>{const b=document.querySelectorAll('button')[i];if(!b)return 'gone';const r=b.getBoundingClientRect();
           const par=[];for(let a=b;a&&par.length<7;a=a.parentElement){const c=getComputedStyle(a);if(c.animationName!=='none'||c.transform!=='none'||c.position!=='static')par.push(String(a.id||a.className).slice(0,14)+':'+c.animationName+'/'+c.animationIterationCount+'/'+c.position+'/'+c.transform.slice(0,14));}
           const sc=[];for(let a=b.parentElement;a;a=a.parentElement){const c=getComputedStyle(a);if(/(auto|scroll)/.test(c.overflowY))sc.push(String(a.id||a.className).slice(0,14)+' h='+Math.round(a.clientHeight)+' sh='+Math.round(a.scrollHeight));}
@@ -126,7 +138,7 @@ with sync_playwright() as p:
         key=fw['t']+fw['cls']
         before=pg.evaluate("()=>document.getElementById('story').innerText.length")
         click_btn(pg,fw)
-        opened_stage=stage_up(pg)      # a full screen opening is an effect, even if we close it at once
+        opened_stage=last_stage or stage_up(pg)   # a full screen opening is an effect, even if we close it at once
         after=pg.evaluate("()=>document.getElementById('story').innerText.length")
         if after==before and key==last and not opened_stage: issue('no-effect',f"pressing '{fw['t'][:30]}' changes nothing",screen_name(pg))
         last=key

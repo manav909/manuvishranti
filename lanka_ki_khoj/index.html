@@ -1539,10 +1539,10 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .mnum{flex:0 0 auto;color:var(--quiet);font-size:.85rem}
 .mwhat{margin:.2rem 0 0;color:var(--quiet);font-size:.88rem;line-height:1.5}
 
-/* the mission strip sits above the reading, not behind it */
-.panebody{display:flex;flex-direction:column;min-height:0}
-.panebody>.muhimbar{position:relative;z-index:5;flex:0 0 auto;order:-1}
-.panebody>#story{flex:1 1 auto;min-height:0;position:relative}
+/* the mission strip floats over the top of the reading, which stays its own scroller */
+.panebody{position:relative}
+.panebody>.muhimbar{position:absolute;left:.4rem;right:.4rem;top:.3rem;z-index:6;margin:0}
+.panebody>#story{top:var(--mstrip,0px)}   /* the reading begins below the strip, never under it */
 
 /* the full screen show: sky, rays, petals, and a card that lands with a small bounce */
 .bigshow{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -4136,7 +4136,9 @@ function moharMili(){
 function moharCount(){const m=save.muhim||{};return Object.keys(m.mohar||{}).length;}
 function muhimBar(){
  const host=document.getElementById("muhimbar");if(!host)return;
- if(panel!=="story"||!run){host.hidden=true;return;}   /* the strip belongs to the reading only */
+ if(panel!=="story"||!run){host.hidden=true;
+  try{const pb=host.parentElement;if(pb&&pb.style)pb.style.setProperty("--mstrip","0px");}catch(e){}
+  return;}   /* the strip belongs to the reading only */
  const N=muhimNow();const rows=[];
  [["ghadi","इस घड़ी"],["raat","इस रात"],["safar","सफ़र"]].forEach(([k,lbl])=>{
   const id=N[k];if(!id)return;const M=MUHIM[id];
@@ -4152,6 +4154,13 @@ function muhimBar(){
   '<div class="mbody">'+rows.join("")+
   '<p class="mwhat">'+[["ghadi",""],["raat",""],["safar",""]].map(([k])=>{const id=N[k];return id?MUHIM[id].x:"";}).filter(Boolean).join(" ")+'</p></div>';
  const lid=host.querySelector(".mlid");
+ /* the reading starts below the strip, whatever its height */
+ try{const pb=host.parentElement;
+  if(pb&&pb.style&&pb.style.setProperty){
+   const put=()=>{const h=host.getBoundingClientRect().height||0;
+    pb.style.setProperty("--mstrip",(h?h+8:0)+"px");};
+   put();if(typeof requestAnimationFrame==="function")requestAnimationFrame(put);
+   setTimeout(put,120);}}catch(e){}
  if(!host.dataset.init){host.classList.add("shut");host.dataset.init="1";}
  if(host.classList.contains("shut")){
   /* shut, the strip is one quiet line that still carries the count */
@@ -4229,7 +4238,8 @@ function bigShow(o){
   setTimeout(()=>{if(host.dataset.token!==token)return;host.hidden=true;host.innerHTML="";host.classList.remove("gone");},calm?0:420);
   if(o.onShut)o.onShut();};
  const go=host.querySelector(".bgo");if(go)go.onclick=()=>{close();if(o.onGo)o.onGo();};
- host.querySelector(".bshut").onclick=close;
+ const shutBtn=host.querySelector(".bshut");
+ if(shutBtn)shutBtn.onclick=close;    /* a bare page has no buttons: the show must still not fall over */
  return host;
 }
 
@@ -5137,9 +5147,9 @@ const DETOUR={
   why:"यह रात हर रामायण में नहीं मिलती, और जहाँ मिलती है वहाँ भी अलग ढंग से। यहाँ से चार जगह देखी जा सकती हैं।",
   ref:"अद्भुत रामायण",
   stops:[
-   {n:"जो वाल्मीकि में नहीं है",say:["सबसे पुरानी कथा में हज़ार मुँह वाला कोई नहीं है।",
-     "वहाँ अंत दस सिर वाले पर होता है, और उसके बाद कथा दूसरी तरफ़ मुड़ जाती है।",
-     "यह रात उसके बहुत बाद की है, और अपने आप में पूरी है।"],
+   {n:"जो वाल्मीकि में नहीं है",say:["सात कांडों वाली पुरानी पोथी में इस रूप का नाम तक नहीं आता।",
+     "वहाँ सब कुछ दस सिरों पर आकर ठहर जाता है, और उसके आगे दूसरी राह खुलती है।",
+     "यह रात उससे बहुत बाद जुड़ी, और अपने पैरों पर खड़ी है।"],
     px:{bg:"inner",gr:"floor",it:[["pothi",22,26,1.4],["sage",42,28,1.2],["sawal",54,16,1.2],["lamp",12,34,1],["pillar",64,18,1.6]],me:[4,31]}},
    {n:"पुष्कर में बैठकर",say:["यह कथा एक तालाब के किनारे सुनाई जाती है।",
      "सुनने वाले ऋषि हैं, और सुनाने वाला वही है जिसकी पोथी सबसे पुरानी मानी जाती है।",
@@ -5297,10 +5307,10 @@ const DETOUR={
   why:"यह रात पढ़ी कम और गाई ज़्यादा गई, और उसी से उसका रूप बना। यहाँ से चार जगह देखी जा सकती हैं।",
   ref:"अद्भुत रामायण",
   stops:[
-   {n:"ताल पर बँधी पंक्तियाँ",say:["पंक्तियाँ ऐसी बनी हैं कि वे ताल पर बैठ जाती हैं।",
-     "गाने वाला हाथ से ताल देता है, और सुनने वाले सिर हिलाते हैं।",
-     "जो बात ताल में बँध जाए, वह याद रह जाती है।"],
-    px:{bg:"inner",gr:"floor",it:[["man",28,28,1.2,{q:"#c8901a"}],["drum",42,32,1.2],["chant",34,16,1,{drift:"u"}],["lamp",12,34,1],["pillar",62,18,1.6]],me:[4,31]}},
+   {n:"ताल पर बँधी पंक्तियाँ",say:["हर पंक्ति की लंबाई नापी हुई है, ताकि वह बजते ढोल पर सीधी बैठ जाए।",
+     "ढोल की टोली हाथ से ताल देती है, और घेरे में बैठे लोग उसी पर हिलने लगते हैं।",
+     "नाप में बँधी बात भूलती नहीं।"],
+    px:{bg:"inner",gr:"floor",it:[["man",28,28,1.2,{q:"#c8901a"}],["drumcircle",44,32,1.1],["drum",36,33,1],["chant",30,16,1,{drift:"u"}],["lamp",12,34,1]],me:[4,31]}},
    {n:"जहाँ आवाज़ ऊँची होती है",say:["जब वह रूप सामने आता है, गाने वाले की आवाज़ ऊपर चढ़ जाती है।",
      "ढोल तेज़ होता है, आग की लपट ऊपर उठती है, और सुनने वाले सीधे बैठ जाते हैं।",
      "कथा का सबसे बड़ा मोड़ यहीं से पहचाना जाता है।"],
