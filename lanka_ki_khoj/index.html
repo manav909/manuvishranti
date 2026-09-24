@@ -4614,6 +4614,9 @@ function paarJao(host,which){
   if(bk&&[...(bk.body||bk).children].some(x=>x.dataset&&x.dataset.card))
    add("मिली बातें देखो",()=>thaalDikhao(bk));
  }
+ /* the notebook and the letter, reachable from inside any picture */
+ add("खोजी की पोथी",()=>{showPanel("pothi");fill();});
+ add("खोजी का पत्र",()=>{try{openCard();}catch(e){}});
  if(row.children.length){
   const card=host.querySelector(".bcard");
   if(card)card.appendChild(row);
@@ -4819,6 +4822,11 @@ function andarDikhao(id,startLi){
    add("अगला दरवाज़ा","",()=>{stopInside();darwazeDikhao(open);});
   else add("वक़्त आगे बढ़ाओ","",()=>{const b=host.querySelector(".bshut");if(b)b.click();
    setTimeout(()=>{const f=aageBtn();if(f)f.click();},160);});
+  /* the notebook is always within reach from inside a place */
+  add("खोजी की पोथी","ghost",()=>{stopInside();
+   const b3=host.querySelector(".bshut");if(b3)b3.click();
+   setTimeout(()=>{showPanel("pothi");fill();},200);});
+
  }
  paint2();
  const shut=host.querySelector(".bshut");
