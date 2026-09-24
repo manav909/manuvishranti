@@ -1616,6 +1616,14 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
  opacity:0;transition:opacity .42s ease-in;pointer-events:none}
 .dveil.on{opacity:1}
 #app.calm .dveil{transition:none}
+
+/* the doors need room: a wide card, and a board that fills it */
+.bcard.wide{max-width:min(98vw,1180px);padding:.8rem .7rem .7rem}
+.bcard.wide .dcanvas{aspect-ratio:16/9;border-width:1px}
+.bcard.wide .btitle{font-size:1.25rem;margin:.3rem 0 .1rem}
+.bcard.wide .bline{margin:.1rem 0 .4rem}
+@media (max-width:560px){.bcard.wide{max-width:99vw;padding:.6rem .4rem .5rem}
+ .bcard.wide .dcanvas{aspect-ratio:4/3}}
 </style>
 </head>
 <body>
@@ -4057,7 +4065,7 @@ function bigShow(o){
   '<div class="bsky" style="--tint:'+tint+'"></div>'+
   '<div class="brays"></div>'+
   '<div class="bpetals">'+fl+"</div>"+
-  '<div class="bcard">'+
+  '<div class="bcard'+(o.wide?" wide":"")+'">'+
    (o.obj?'<div class="bobj"></div>':"")+
    (o.tag?'<span class="btag">'+o.tag+"</span>":"")+
    '<h2 class="btitle">'+(o.title||"")+"</h2>"+
@@ -4235,8 +4243,15 @@ function runDiya(after){
  frame();
 }
 /* ============ दरवाज़ों वाला परदा ============ */
-function darwazeDikhao(ids){
+function darwazeDikhao(ids,tries){
  if(!run||!ids||!ids.length)return;
+ /* if another screen is up, wait for it: two full screens must never sit on each other */
+ const busy=document.getElementById("bigshow");
+ if(busy&&!busy.hidden){
+  const n=(tries||0)+1;
+  if(n<12)setTimeout(()=>darwazeDikhao(ids,n),450);
+  return;
+ }
  if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok()){
   note("इस फ़ोन पर दरवाज़ों वाला दृश्य नहीं चल पाता।");return;}
  const w=run.N.watches[run.w]||{};
@@ -4244,13 +4259,14 @@ function darwazeDikhao(ids){
  const doors=ids.slice(0,3).map(id=>({id:id,n:(PLACES[id]||{}).n||"",x:(PLACES[id]||{}).lore||(PLACES[id]||{}).t||"",been:!!(run.gone&&run.gone.indexOf(id)>-1)}));
  const host=bigShow({tag:w.n||"",title:"कौन सा दरवाज़ा",
   line:"किसी दरवाज़े को छूओ, वहाँ तक चलकर पहुँचोगे।",
+  wide:true,
   extra:'<canvas class="dcanvas"></canvas>'+
    '<div class="dbar"><b class="dname"></b><span class="dwhat"></span>'+
    '<span class="dacts"><button class="claim din" hidden>भीतर जाओ</button>'+
    '<button class="claim ghost dback" hidden>पीछे हटो</button></span></div>',
   shut:"नक्शे पर लौटो"});
  const cv=host.querySelector(".dcanvas");if(!cv)return;
- cv.width=760;cv.height=440;
+ cv.width=1100;cv.height=620;
  const nm=host.querySelector(".dname"),wh=host.querySelector(".dwhat"),
   din=host.querySelector(".din"),dbk=host.querySelector(".dback");
  let live=null;
@@ -8023,10 +8039,10 @@ function offer(only){
  if(only==="fresh")open=open.filter(x=>freshAt(x)>0);
  if(only==="seen")open=open.filter(x=>freshAt(x)===0);
  const left=visitsHere()-run.used;
- /* the same choice, seen as doors standing in front of you */
- if(open.length&&left>0&&typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
-  const f=el("","fork");
-  f.appendChild(btn("दरवाज़े देखो","do go",()=>darwazeDikhao(open)));
+ /* the choice is shown as doors, not as a list of words: it opens by itself */
+ if(open.length&&left>0&&only!=="seen"&&typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
+  const mark=run.N.id+"-"+run.w+"-"+run.ghadi+"-"+run.used;
+  if(run.doorAt!==mark){run.doorAt=mark;setTimeout(()=>{try{darwazeDikhao(open);}catch(e){}},340);}
  }
  if(only==="seen")
   el('<p class="quiet">ये जगहें तुम पहले ही पूरी पढ़ चुके हो।</p>');
@@ -11198,17 +11214,24 @@ function doorScene(canvas,opts){
   g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
   g.userData.pick=d;g.userData.home=g.position.clone();
   /* a board over the door with its name, so the eye knows before the feet move */
-  {const cv2=document.createElement("canvas");cv2.width=640;cv2.height=150;
+  {const cv2=document.createElement("canvas");cv2.width=760;cv2.height=250;
    const x2=cv2.getContext("2d");
-   x2.fillStyle="rgba(24,18,30,.88)";x2.strokeStyle="#e0c07a";x2.lineWidth=7;
-   const rr=44;x2.beginPath();x2.moveTo(rr,10);x2.arcTo(630,10,630,140,rr);x2.arcTo(630,140,10,140,rr);
-   x2.arcTo(10,140,10,10,rr);x2.arcTo(10,10,630,10,rr);x2.fill();x2.stroke();
-   x2.fillStyle="#f6ecd6";x2.textAlign="center";x2.textBaseline="middle";
-   x2.font="bold 62px 'Noto Sans Devanagari','Mangal',serif";
-   x2.fillText(String(d.n||"").slice(0,22),320,80);
+   x2.fillStyle="rgba(22,16,28,.9)";x2.strokeStyle="#e0c07a";x2.lineWidth=8;
+   const rr=46;x2.beginPath();x2.moveTo(rr,10);x2.arcTo(750,10,750,240,rr);x2.arcTo(750,240,10,240,rr);
+   x2.arcTo(10,240,10,10,rr);x2.arcTo(10,10,750,10,rr);x2.fill();x2.stroke();
+   x2.textAlign="center";x2.textBaseline="middle";
+   x2.fillStyle="#f6ecd6";x2.font="bold 64px 'Noto Sans Devanagari','Mangal',serif";
+   x2.fillText(String(d.n||"").slice(0,22),380,84);
+   /* a second line, so standing close never loses the thread */
+   x2.fillStyle="#d8c9ae";x2.font="38px 'Noto Sans Devanagari','Mangal',serif";
+   const line=String(d.x||"").split("।")[0];
+   const words=line.split(" ");let row="",y=160;
+   words.forEach(wd=>{const test=row?row+" "+wd:wd;
+    if(x2.measureText(test).width>680){x2.fillText(row,380,y);y+=46;row=wd;}else row=test;});
+   if(row&&y<=210)x2.fillText(row,380,y);
    const tx=new THREE.CanvasTexture(cv2);tx.anisotropy=4;
    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
-   sp.scale.set(3.4,.8,1);sp.position.set(x,(g.userData.H||4)+1.5,z+.2);
+   sp.scale.set(4.6,1.5,1);sp.position.set(x,(g.userData.H||4)+1.9,z+.2);
    sp.renderOrder=6;sc.add(sp);g.userData.plate=sp;}
   g.userData.kind=doorKind(d.n);                       /* what waits beyond is built when it is needed */
   if(doorKind(d.n)==="mahal"){          /* a gate of that size is never left unwatched */
@@ -11308,7 +11331,7 @@ function doorScene(canvas,opts){
    const gl=d.userData.glow;
    if(gl)gl.material.opacity=ease(gl.material.opacity,(aim===i?.32:(hover===i?.22:.08))+(opening===d?.85:0),Math.min(1,6*dt));
    const pl=d.userData.plate;
-   if(pl){const want=(opening?0:(aim<0?1:(aim===i?.9:.35)));
+   if(pl){const want=(opening?(opening===d?.55:0):(aim<0?1:(aim===i?1:.55)));
     pl.material.opacity=ease(pl.material.opacity===undefined?1:pl.material.opacity,want,Math.min(1,6*dt));
     pl.visible=pl.material.opacity>.03;}
   });
