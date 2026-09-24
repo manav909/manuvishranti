@@ -23,6 +23,13 @@ if(!/mine&&busy\.dataset\.auto==="1"/.test(page))bad.push('a screen the player a
 /* names on things, so nothing needs a written list beside it */
 ["CanvasTexture","SpriteMaterial"].forEach(k=>{
  if(page.indexOf(k)<0)bad.push('the things carry no name boards ('+k+')');});
+/* no screen may be a dead end: each must carry the way into the other two, and the road bar must stand over the reading */
+if(page.indexOf('function paarJao(')<0)bad.push('the screens do not lead to one another');
+['darwazeOpen','pothiOpen','thaalOpen'].forEach(fn=>{
+ const i=page.indexOf('function '+fn+'(');
+ if(i>-1&&page.slice(i,i+2600).indexOf('paarJao(')<0)bad.push(fn+' is a dead end: it leads nowhere else');});
+if(page.indexOf('function raahBar(')<0)bad.push('there is no road bar over the reading');
+if(page.indexOf('id="raahbar"')<0)bad.push('the road bar has no place on the page');
 /* nothing behind a door may be bare: each kind of place must hold enough to look at */
 {const i=page.indexOf('function doorBeyond(');
  if(i<0)bad.push('nothing is built behind the doors');
@@ -33,8 +40,11 @@ if(!/mine&&busy\.dataset\.auto==="1"/.test(page))bad.push('a screen the player a
    if(at<0){bad.push('nothing stands behind a '+k+' door');return;}
    const next=body.slice(at).search(/\}else/);
    const seg=body.slice(at,at+(next>0?next:1400));
-   const things=(seg.match(/add\(/g)||[]).length;
-   if(things<6)bad.push('the place behind a '+k+' door is bare: only '+things+' things in it');});
+   /* a loop that adds counts for more than one thing, since it draws a row of them */
+   const calls=(seg.match(/add\(/g)||[]).length;
+   const loops=(seg.match(/for\(/g)||[]).length;
+   const things=calls+loops*3;
+   if(things<8)bad.push('the place behind a '+k+' door is bare: only '+things+' things in it');});
  }}
 /* what a mission won must show where the choice is made, not only on a page */
 if(page.indexOf('यहाँ कुछ छिपा है')<0)bad.push('the lamp boon does not mark the door that still hides something');

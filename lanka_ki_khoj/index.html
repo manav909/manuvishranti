@@ -1692,6 +1692,10 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .raah span{font-size:.78rem;color:var(--quiet)}
 .raah.live{border-color:var(--tide);box-shadow:inset 0 0 0 1px var(--tide)}
 .raah:last-child{cursor:default}
+
+/* the ways across, under every picture */
+.crosslinks{margin-top:.4rem;gap:.4rem}
+.crosslinks .claim{font-size:.9rem}
 </style>
 </head>
 <body>
@@ -4534,6 +4538,31 @@ function sunoList(host,items,pick,title){
  if(cv){cv.setAttribute("role","img");
   cv.setAttribute("aria-label",(title||"")+": "+items.join(", "));}
 }
+/* ============ एक दृश्य से दूसरे तक ============
+   every full screen carries the way into the other two, so no screen is a dead end. */
+function paarJao(host,which){
+ if(!host)return;
+ const row=document.createElement("div");row.className="bacts crosslinks";
+ const add=(label,fn)=>{const b=document.createElement("button");b.className="claim ghost";
+  b.textContent=label;b.onclick=()=>{
+   const x=host.querySelector(".bshut");if(x)x.click();
+   setTimeout(fn,140);};row.appendChild(b);};
+ if(which!=="dwar"&&run){
+  const open=(typeof ghadiSpots==="function")?ghadiSpots().filter(x=>!run.pickedHere.includes(x)):[];
+  if(open.length&&visitsHere()-run.used>0)add("दरवाज़े देखो",()=>darwazeDikhao(open));
+ }
+ if(which!=="pothi"&&run&&run.hereOthers&&run.hereOthers.length)
+  add("पोथियाँ देखो",()=>pothiDikhao(run.hereId,run.w,run.hereOthers,run.hereKey));
+ if(which!=="thaal"){
+  const bk=[...story.querySelectorAll(".basket")].pop();
+  if(bk&&[...(bk.body||bk).children].some(x=>x.dataset&&x.dataset.card))
+   add("मिली बातें देखो",()=>thaalDikhao(bk));
+ }
+ if(row.children.length){
+  const card=host.querySelector(".bcard");
+  if(card)card.appendChild(row);
+ }
+}
 function thaalDikhao(basket){
  if(typeof S3E==="undefined"||!S3E.s3ok||!S3E.s3ok())return false;
  const boxes=[...(basket.body||basket).children].filter(x=>x.dataset&&x.dataset.card);
@@ -4560,6 +4589,7 @@ function thaalOpen(list,wn){
      if(!save.readCards[d.c]){save.readCards[d.c]=1;persist();try{muhimTick("card");}catch(e){}}
      deepCard(d.c);},120);}});
  }catch(e){return;}
+ paarJao(host,"thaal");
  sunoList(host,list.map(d=>d.n),i=>{if(live.take)live.take(i);},"कौन सी चीज़ उठानी है");
  const shut=host.querySelector(".bshut");
  if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
@@ -4587,6 +4617,7 @@ function pothiOpen(id,w,others,key){
    onPick:d=>{const b=host.querySelector(".bshut");if(b)b.click();
     setTimeout(()=>openReader(id,w,d.li),120);}});
  }catch(e){return false;}
+ paarJao(host,"pothi");
  sunoList(host,list.map(d=>d.n+(d.read?", पढ़ी हुई":", अभी पढ़नी है")),
   i=>{if(live.take)live.take(i);},"कौन सी पोथी उठानी है");
  const shut=host.querySelector(".bshut");
@@ -4644,6 +4675,7 @@ function darwazeOpen(ids){
      if(d&&d.id)visit(d.id);},520);
    }});
  }catch(e){note("दरवाज़ों वाला दृश्य नहीं खुल सका।");return;}
+ paarJao(host,"dwar");
  sunoList(host,doors.map(d=>d.n+(d.left?(", "+d.left+" रूप बाकी"):"")+(d.lamp?", यहाँ कुछ छिपा है":"")),
   i=>{live.go(i);setTimeout(()=>live.enter(),900);},"किस दरवाज़े से जाना है");
  din.onclick=()=>live.enter();
@@ -8757,9 +8789,9 @@ function visit(id){
    SRC[L[readIdx[1]].src||"vr"].n,"do",()=>sideBySide(id,run.w,readIdx[0],readIdx[1])));
  }
  const others=L.map((x,i)=>({x:x,i:i})).filter(o=>o.i!==d);
+ /* the road bar must know the place even when only one telling stands here */
+ run.hereId=id;run.hereKey=key;run.hereOthers=others;
  if(others.length){
-  /* the bar above must know what stands in front of you */
-  run.hereId=id;run.hereKey=key;run.hereOthers=others;
   /* the books come out by themselves; the written list waits folded behind them */
   autoOnce("pothi-"+key,()=>setTimeout(()=>{try{pothiDikhao(id,run.w,others,key);}catch(e){}},420));
   if(typeof S3E!=="undefined"&&S3E.s3ok&&S3E.s3ok()){
