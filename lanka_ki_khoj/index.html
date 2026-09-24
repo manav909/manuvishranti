@@ -1668,6 +1668,11 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 .listlid b{color:var(--ink);font-weight:600}
 .listfold.shut .listbody{display:none}
 .listbody{padding:.2rem .7rem .6rem}
+
+/* less movement: the show stands still, whatever is on it */
+.bigshow.calm .brays,.bigshow.calm .bpetals{display:none}
+.bigshow.calm .bcard{animation:none}
+.bigshow.calm.gone{animation:none;opacity:0}
 </style>
 </head>
 <body>
@@ -4225,6 +4230,8 @@ function bigShow(o){
     '<button class="claim ghost bshut">'+(o.shut||"आगे चलो")+"</button></div>"+
   "</div>";
  host.hidden=false;host.classList.remove("gone");
+ /* the show lives outside the game's box, so it must carry the calm setting itself */
+ host.classList.toggle("calm",!!calm);
  const token=(host.dataset.token=String(Date.now()+Math.random()));
  /* the coins count up, so the reward is felt and not just read */
  if(o.obj){try{chinhMila(o.obj);}catch(e){}try{showObject(o.obj);}catch(e){}}
@@ -11398,6 +11405,11 @@ function s3cast(name,ex,W,used,idx){
    a guard post is plain posts with spears and a brazier;
    a house door is a small wooden leaf with a tulsi pot beside it;
    the sea mouth is an open arch with the water shining behind.                                        */
+/* हरकत कम: when the player has asked for less movement, the scenes hold still
+   and only the chosen thing moves, without the idle sway. */
+function lessMove(){
+ try{const a=document.getElementById("app");return !!(a&&a.classList&&a.classList.contains("calm"));}catch(e){return false;}
+}
 function doorKind(name){
  const n=name||"";
  if(/मंदिर|चैत्य|देवालय|यज्ञ|निकुंभिला|मुहर|पूजा/.test(n))return "mandir";
@@ -11708,8 +11720,9 @@ function scrollScene(canvas,opts){
   if(dead)return;
   const now=(performance&&performance.now)?performance.now():Date.now();
   const dt=Math.min(.12,(now-last)/1000);last=now;
+  const calm2=lessMove();
   books.forEach((b,i)=>{
-   const up=(hover===i||taken===b)?.16:0;
+   const up=(calm2&&taken!==b)?0:((hover===i||taken===b)?.16:0);
    b.position.y+= (0.97+up-b.position.y)*Math.min(1,8*dt);
    b.rotation.z+=((taken===b?.25:0)-b.rotation.z)*Math.min(1,6*dt);
   });
@@ -11824,11 +11837,12 @@ function trayScene(canvas,opts){
   if(dead)return;
   const now=(performance&&performance.now)?performance.now():Date.now();
   const dt=Math.min(.12,(now-last)/1000);last=now;t+=dt;
-  tray.rotation.y=Math.sin(t*.3)*.06;
+  const calm3=lessMove();
+  tray.rotation.y=calm3?0:Math.sin(t*.3)*.06;
   things.forEach((g,i)=>{
-   const up=(hover===i||taken===g)?.28:0;
+   const up=(calm3&&taken!==g)?0:((hover===i||taken===g)?.28:0);
    g.position.y+=(.72+up-g.position.y)*Math.min(1,8*dt);
-   g.rotation.y+=dt*(hover===i?1.6:.35);
+   g.rotation.y+=calm3?0:dt*(hover===i?1.6:.35);
    if(g.userData.plate)g.userData.plate.position.y=(g.userData.plateY||1.5)+up*.5;
   });
   if(taken){
@@ -12005,14 +12019,14 @@ function doorScene(canvas,opts){
    me.rotation.x=-.06;
   }else{
    const sk=Math.min(1,6*dt);
-   me.position.y=ease(me.position.y,Math.sin(t/30)*.02,sk);
+   me.position.y=ease(me.position.y,lessMove()?0:Math.sin(t/30)*.02,sk);
    me.rotation.z=ease(me.rotation.z,0,sk);me.rotation.x=ease(me.rotation.x,0,sk);
    me.rotation.y=ease(me.rotation.y,meFace,Math.min(1,5*dt));
    if(mode==="walk"){mode="near";}
   }
   doors.forEach((d,i)=>{
    const lit=(hover===i||aim===i);
-   d.position.y=ease(d.position.y,lit&&!opening?.1:0,Math.min(1,7*dt));
+   d.position.y=ease(d.position.y,(lit&&!opening&&!lessMove())?.1:0,Math.min(1,7*dt));
    const gl=d.userData.glow;
    if(gl)gl.material.opacity=ease(gl.material.opacity,(aim===i?.32:(hover===i?.22:.08))+(opening===d?.85:0),Math.min(1,6*dt));
    const pl=d.userData.plate;

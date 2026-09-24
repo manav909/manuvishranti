@@ -23,6 +23,15 @@ if(!/mine&&busy\.dataset\.auto==="1"/.test(page))bad.push('a screen the player a
 /* names on things, so nothing needs a written list beside it */
 ["CanvasTexture","SpriteMaterial"].forEach(k=>{
  if(page.indexOf(k)<0)bad.push('the things carry no name boards ('+k+')');});
+/* less movement: the scenes must hold still when the player has asked for that */
+if(page.indexOf('function lessMove(')<0)bad.push('the scenes do not know about the less movement setting');
+['doorScene','scrollScene','trayScene'].forEach(fn=>{
+ const i=page.indexOf('function '+fn+'(');
+ if(i<0)return;
+ if(page.slice(i,i+7000).indexOf('lessMove()')<0&&page.slice(i,i+7000).indexOf('calm')<0)
+  bad.push(fn+' keeps moving even when the player asked for less movement');});
+if(page.indexOf('.bigshow.calm .brays')<0)bad.push('the full screen show keeps its rays and petals moving in calm');
+if(!/host\.classList\.toggle\("calm"/.test(page))bad.push('the show does not carry the calm setting, since it lives outside the game box');
 /* every motion must be counted in time, not in frames, so a slow phone behaves the same */
 const timed=(page.match(/performance&&performance\.now/g)||[]).length;
 if(timed<3)bad.push('some of these scenes still move by frame count, not by the clock');
