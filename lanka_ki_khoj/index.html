@@ -4184,6 +4184,11 @@ function diyaJalao(){
    the night opens with its own emblem and one line of what this role is asked for. */
 function raatShow(N){
  if(typeof bigShow!=="function")return;
+ /* it waits its turn: a picture the player opened is never pushed aside by it */
+ if(typeof stageAsk==="function"){const go=()=>raatShowNow(N);stageAsk(go);return;}
+ raatShowNow(N);
+}
+function raatShowNow(N){
  const r=myRole();
  const night=Object.keys(MUHIM).find(k=>MUHIM[k].size==="raat"&&MUHIM[k].only===r);
  const emblem={jigyasu:"mudrika",yatri:"gada",kathapremi:"veena",balak:"gada",
