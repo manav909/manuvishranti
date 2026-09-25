@@ -4695,7 +4695,8 @@ function pothiOpen(id,w,others,key){
  sunoList(host,list.map(d=>d.n+(d.read?", पढ़ी हुई":", अभी पढ़नी है")),
   i=>{if(live.take)live.take(i);},"कौन सी पोथी उठानी है");
  const shut=host.querySelector(".bshut");
- if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();if(old)old();};}
+ if(shut&&live){const old=shut.onclick;shut.onclick=()=>{live.stop();
+  host.querySelectorAll(".dveil").forEach(v=>v.remove());if(old)old();};}
  return true;
 }
 /* ============ रातों के दरवाज़े ============
@@ -4980,7 +4981,12 @@ function darwazeOpen(ids){
     /* the light of the doorway floods the screen, and the story begins inside it */
     const veil=document.createElement("div");veil.className="dveil";host.appendChild(veil);
     requestAnimationFrame(()=>veil.classList.add("on"));
-    setTimeout(()=>{if(d&&d.id)andarChalo(d.id);},520);   /* the same screen becomes the place inside */
+    setTimeout(()=>{
+     /* the wash of light must always be cleared, and the screen closed unless the place takes it over */
+     try{veil.remove();}catch(e){}
+     if(!autoDrishya){const b=host.querySelector(".bshut");if(b)b.click();}
+     if(d&&d.id)andarChalo(d.id);
+    },520);
    }});
  }catch(e){note("दरवाज़ों वाला दृश्य नहीं खुल सका।");return;}
  paarJao(host,"dwar");

@@ -27,7 +27,7 @@ if(!/mine&&busy\.dataset\.auto==="1"/.test(page))bad.push('a screen the player a
 if(page.indexOf('function paarJao(')<0)bad.push('the screens do not lead to one another');
 ['darwazeOpen','pothiOpen','thaalOpen'].forEach(fn=>{
  const i=page.indexOf('function '+fn+'(');
- if(i>-1&&page.slice(i,i+2600).indexOf('paarJao(')<0)bad.push(fn+' is a dead end: it leads nowhere else');});
+ if(i>-1&&page.slice(i,i+4200).indexOf('paarJao(')<0)bad.push(fn+' is a dead end: it leads nowhere else');});
 if(page.indexOf('function raahBar(')<0)bad.push('there is no road bar over the reading');
 if(page.indexOf('id="raahbar"')<0)bad.push('the road bar has no place on the page');
 /* the bar must carry all six: what is read here, what lies here, the ways out,
@@ -70,7 +70,7 @@ if(!/cv\.setAttribute\("aria-label"/.test(page))bad.push('the picture has no nam
 ['darwazeOpen','pothiOpen','thaalOpen'].forEach(fn=>{
  const i=page.indexOf('function '+fn+'(');
  if(i<0)return;
- if(page.slice(i,i+2600).indexOf('sunoList(')<0)bad.push(fn+' offers no plain list of its choices');});
+ if(page.slice(i,i+4200).indexOf('sunoList(')<0)bad.push(fn+' offers no plain list of its choices');});
 /* the pictures must also answer to a keyboard, not only to a finger */
 ['doorScene','scrollScene','trayScene'].forEach(fn=>{
  const i=page.indexOf('function '+fn+'(');
