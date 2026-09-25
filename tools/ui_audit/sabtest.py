@@ -71,6 +71,27 @@ with sync_playwright() as p:
         if 'सही' not in said and 'ठीक' not in said: bad.append('answering a question says nothing back')
         else: ok.append('जवाब देने पर: '+said.split('\n')[0][:36])
 
+    # 5b. the task that lasts a real day
+    d=pg.evaluate("()=>{const M=dinMuhim();return {n:M.n,goal:M.goal,have:dinCount(),mani:M.mani};}")
+    if not d or not d['n']: bad.append('there is no task for the day')
+    else: ok.append('आज की मुहिम: %s %d/%d, +%d मणि'%(d['n'],d['have'],d['goal'],d['mani']))
+    mani=pg.evaluate("()=>purse()")
+    pg.evaluate("()=>{const M=dinMuhim();for(let i=0;i<M.goal+1;i++)dinTick(M.count);}")
+    pg.wait_for_timeout(1200)
+    if not pg.evaluate("()=>!!(save.din&&save.din.done)"): bad.append('the day task never finishes')
+    elif pg.evaluate("()=>purse()")<=mani: bad.append('the day task pays nothing')
+    else: ok.append('आज की मुहिम पूरी: मणि %d से %d'%(mani,pg.evaluate("()=>purse()")))
+    seven=pg.evaluate("""()=>{const s=new Set();
+      for(let k=0;k<7;k++){const d=new Date(Date.now()+k*86400000);
+        const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        const t=Math.floor(Date.parse(key+'T00:00:00')/86400000);
+        s.add(((t%DIN.length)+DIN.length)%DIN.length);}
+      return s.size;}""")
+    if seven<7: bad.append('the day task repeats inside a week (%d different in seven days)'%seven)
+    else: ok.append('सात दिन, सात अलग मुहिमें')
+    pg.evaluate("()=>{const b=document.querySelector('#bigshow .bshut');if(b)b.click();}")
+    pg.wait_for_timeout(700)
+
     # 6. badges and titles counted
     b=pg.evaluate("()=>({badges:Object.keys(ACH).length,titles:(typeof PADVI!=='undefined')?Object.keys(PADVI).length:0,mani:purse()})")
     ok.append('बैज %d, पदवियाँ %d, मणि %d'%(b['badges'],b['titles'],b['mani']))

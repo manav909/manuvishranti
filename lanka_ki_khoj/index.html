@@ -4074,6 +4074,48 @@ const MUHIM={
  s_paath:{size:"safar",n:"पढ़ने वाला",x:"पचास बातें खोलकर पढ़ो।",goal:50,count:"cardAll",mani:40,boon:"diya"},
  s_granth:{size:"safar",n:"दस ज़बानें",x:"दस अलग ग्रंथों में कुछ न कुछ पढ़ो।",goal:10,count:"srcAll",mani:40,boon:"diya"},
 };
+/* ============ आज की मुहिम ============
+   one task that lasts a real day: it changes at midnight, counts whatever the player does that day,
+   and pays in mani. seven tasks turn by turn, so the same one does not come back for a week. */
+const DIN=[
+ {n:"आज पाँच कथाएँ",x:"आज के दिन पाँच पाठ पढ़ो, किसी भी रात में, किसी भी ग्रंथ से।",goal:5,count:"read",mani:14},
+ {n:"आज पाँच बातें",x:"आज के दिन पाँच छिपी बातें खोलकर पढ़ो।",goal:5,count:"card",mani:14},
+ {n:"आज चार जगहें",x:"आज के दिन चार अलग जगहें देखो।",goal:4,count:"place",mani:12},
+ {n:"आज दो चक्कर",x:"आज के दिन अपने दो चक्कर पूरे घूमो।",goal:2,count:"tour",mani:16},
+ {n:"आज तीन ग्रंथ",x:"आज के दिन कोई भी तीन पाठ पढ़ो, चाहे एक ही पल के हों।",goal:3,count:"read",mani:10},
+ {n:"आज छह बातें",x:"आज के दिन छह बातें खोलो, चाहे वे कहीं भी मिली हों।",goal:6,count:"card",mani:16},
+ {n:"आज पूरी एक घड़ी",x:"आज के दिन किसी एक घड़ी में तीन जगहें देखो।",goal:3,count:"place",mani:12}
+];
+function aajKaDin(){
+ const d=new Date();
+ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function dinState(){
+ save.din=save.din||{};
+ const today=aajKaDin();
+ if(save.din.day!==today){
+  /* a new day: a new task, and the day's count starts again */
+  const t=Math.floor(Date.parse(today+"T00:00:00")/86400000);
+  save.din={day:today,i:((t%DIN.length)+DIN.length)%DIN.length,read:0,card:0,place:0,tour:0,done:false};
+  persist();
+ }
+ return save.din;
+}
+function dinMuhim(){const st=dinState();return DIN[st.i]||DIN[0];}
+function dinCount(){const st=dinState(),M=dinMuhim();return Math.min(st[M.count]||0,M.goal);}
+function dinTick(what){
+ const st=dinState();
+ if(st[what]===undefined)return;
+ st[what]++;
+ const M=dinMuhim();
+ if(!st.done&&(st[M.count]||0)>=M.goal){
+  st.done=true;persist();
+  try{earned=[];earn(M.mani,"din",M.n);earned=[];}catch(e){}
+  try{bigShow({obj:"surya",tag:"आज की मुहिम",title:M.n,
+   line:"आज का काम पूरा हुआ। +"+M.mani+" मणि। कल नई मुहिम मिलेगी।",shut:"चलो"});}catch(e){}
+ }
+ persist();
+}
 function mstate(){save.muhim=save.muhim||{done:{},boon:{}};return save.muhim;}
 /* what the player has done, counted the way each mission asks */
 function mcount(id){
@@ -4129,6 +4171,7 @@ function muhimGhadi(){
 function muhimRaat(){const m=mstate();m.night={read:0,place:0,card:0,tour:0};persist();}
 /* something happened: count it, and pay when a mission is complete */
 function muhimTick(what){
+ try{dinTick(what);}catch(e){}   /* the day's own task counts the same things */
  const m=mstate();m.now=m.now||{read:0,place:0,card:0,tour:0};m.night=m.night||{read:0,place:0,card:0,tour:0};
  if(m.now[what]!==undefined)m.now[what]++;
  if(m.night[what]!==undefined)m.night[what]++;
@@ -4270,6 +4313,9 @@ function raahBar(){
  /* and the way on, so the next step is never hunted for */
  {const fwd=aageBtn();
   if(fwd)bits.push({k:"aage",n:"आगे",c:String(fwd.textContent||"").replace(/\s+/g," ").slice(0,22),on:true});}
+ /* the day's task rides here too, so it is never hunted for */
+ try{const M=dinMuhim(),have=dinCount();
+  bits.push({k:"din",n:M.n,c:(save.din&&save.din.done)?"पूरी":(have+"/"+M.goal),on:!(save.din&&save.din.done)});}catch(e){}
  /* the mission rides in the same row, so the reading keeps its room */
  try{const N2=muhimNow();const id2=N2.ghadi||N2.raat||N2.safar;
   if(id2){const M=MUHIM[id2],have=Math.min(mcount(id2),M.goal);
@@ -4283,6 +4329,9 @@ function raahBar(){
   else if(k==="thaal"){const bk=[...story.querySelectorAll(".basket")].pop();if(bk)thaalDikhao(bk);}
   else if(k==="dwar"&&open.length)darwazeDikhao(open);
   else if(k==="aage"){const fwd=aageBtn();if(fwd)fwd.click();}
+  else if(k==="din"){try{const M=dinMuhim();
+   bigShow({obj:"surya",tag:"आज की मुहिम",title:M.n,
+    line:M.x+" अभी "+dinCount()+" में से "+M.goal+"। पूरी होने पर +"+M.mani+" मणि।",shut:"चलो"});}catch(e){}}
   else if(k==="muhim"){muhimOpen=!muhimOpen;
    const mb=document.getElementById("muhimbar");if(mb)mb.classList.remove("shut");
    muhimBar();}
