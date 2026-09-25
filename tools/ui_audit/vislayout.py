@@ -100,19 +100,25 @@ with sync_playwright() as p:
         pg.wait_for_timeout(400)
 
     # भूमिकाएँ
+    # the pictures open only when asked for, so ask each time
     pg.evaluate("()=>{try{localStorage.clear()}catch(e){};Object.assign(save,blankSave());persist();roleScreen();}")
+    pg.wait_for_timeout(1000); pg.evaluate("()=>{bhumikaDikhao();}")
     wait_for(pg,"()=>!!document.querySelector('#bigshow .dcanvas')"); grab('भूमिकाएँ'); clear()
     # रातें
     pg.evaluate("""()=>{Object.assign(save,blankSave());save.role='yatri';save.rolePicked=true;roleTint();
       save.nights={khoj:1};persist();front();}""")
+    pg.wait_for_timeout(900); pg.evaluate("()=>{raateinDikhao();}")
     wait_for(pg,"()=>!!document.querySelector('#bigshow .dcanvas')"); grab('रातें'); clear()
     # दरवाज़े
     pg.evaluate("()=>{start('khoj');}")
     wait_for(pg,"()=>!!document.querySelector('#bigshow .bshut')")
     pg.evaluate("()=>{const b=document.querySelector('#bigshow .bshut');if(b)b.click();}")
+    pg.wait_for_timeout(900); pg.evaluate("()=>{darwazeDikhao(ghadiSpots());}")
     wait_for(pg,"()=>!!document.querySelector('.dcanvas')"); grab('दरवाज़े'); clear()
     # भीतर
-    pg.evaluate("()=>{andarChalo(ghadiSpots()[0]);}")
+    pg.evaluate("()=>{visit(ghadiSpots()[0]);}")
+    pg.wait_for_timeout(1400)
+    pg.evaluate("()=>{const w=autoDrishya;autoDrishya=true;andarDikhao(run.hereId);autoDrishya=w;}")
     wait_for(pg,"()=>!!document.querySelector('.leafstrip')"); grab('भीतर'); clear()
     if VIEW[0]<600 and len(sys.argv)<3:   # the last two only on a phone: the big scenes are slow to build here
       # पोथियाँ
