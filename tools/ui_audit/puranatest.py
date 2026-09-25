@@ -72,6 +72,32 @@ with sync_playwright() as p:
     pg.evaluate("()=>{try{closeCard();}catch(e){}}")
     pg.wait_for_timeout(500)
 
+    # 5b. the strips that ride above the reading
+    st=pg.evaluate("""()=>{const r=document.getElementById('raahbar'),m=document.getElementById('muhimbar');
+      const rr=r&&!r.hidden?r.getBoundingClientRect():null, s2=document.getElementById('story').getBoundingClientRect();
+      return {raah:r&&!r.hidden?[...r.querySelectorAll('.raah b')].map(x=>x.textContent):null,
+        over:rr?(rr.bottom>s2.top+2):false,
+        trail:document.querySelectorAll('.trail .tchip').length,
+        mini:!!document.querySelector('#minimap, .mini svg, .mini canvas')};}""")
+    if not st['raah']: note('the road bar is missing over the reading')
+    else: ok.append('राह पट्टी: '+', '.join(st['raah']))
+    if st['over']: note('the road bar sits on top of the reading')
+    if st['trail']<1: note('the trail of places is empty')
+    else: ok.append('पगडंडी: %d चिप'%st['trail'])
+    if not st['mini']: note('the corner map is gone')
+    else: ok.append('कोने का नक्शा: है')
+
+    # 5c. the five questions of the night
+    q=pg.evaluate("""()=>{const b=[...document.querySelectorAll('button')].find(x=>/पाँच सवाल/.test(x.textContent||''));
+      if(!b)return null;b.click();return true;}""")
+    pg.wait_for_timeout(1200)
+    if q:
+        opts=pg.evaluate("()=>document.querySelectorAll('.qopt, .quizopt, #quiz button').length")
+        if opts<2: note('the questions open but offer nothing to answer')
+        else: ok.append('पाँच सवाल: %d जवाब सामने'%opts)
+        pg.evaluate("()=>{const b=[...document.querySelectorAll('button')].find(x=>/बंद|लौटो/.test(x.textContent||''));if(b)b.click();}")
+        pg.wait_for_timeout(600)
+
     # 6. the night runs to its end
     for i in range(24):
         st=pg.evaluate("""()=>{const b=document.getElementById('bigshow');if(b&&!b.hidden){b.hidden=true;b.innerHTML='';}

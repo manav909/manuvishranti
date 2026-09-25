@@ -95,7 +95,9 @@ body{margin:0;background:var(--shell);color:var(--ink);overflow:hidden;
  padding:.35rem .5rem;overflow-x:auto;overflow-y:hidden;background:var(--barbg);
  border-top:1px solid var(--rule)}
 .trail:empty{display:none}
-.twatch{flex:0 0 auto;font-size:.78rem;color:var(--quiet);padding:0 .2rem;white-space:nowrap}
+/* the watch's name rides over the map, so it carries its own patch to be read on */
+.twatch{flex:0 0 auto;font-size:.78rem;color:var(--ink);padding:.06rem .45rem;white-space:nowrap;
+ background:color-mix(in srgb,var(--page) 88%,transparent);border:1px solid var(--rule);border-radius:99px}
 .tchip{flex:0 0 auto;display:flex;align-items:center;gap:.35rem;white-space:nowrap;cursor:pointer;
  background:var(--page);border:1px solid var(--rule);border-radius:99px;padding:.16rem .6rem;
  font:inherit;font-size:.82rem;color:var(--ink)}
@@ -9124,8 +9126,8 @@ function visit(id){
   });
  }
  run.busy=false;paint();
- /* the row is drawn again once the buttons below are in place */
- try{raahBar();setTimeout(()=>{try{raahBar();}catch(e){}},120);}catch(e){}
+ /* the row is drawn again once the buttons below are in place, and the trail of places with it */
+ try{raahBar();drawTrail();setTimeout(()=>{try{raahBar();drawTrail();}catch(e){}},120);}catch(e){}
  const rest=ghadiSpots().filter(x=>!run.pickedHere.includes(x));
  const more=run.ghadi===1&&visitsHere()-run.used>0&&rest.length>0;
  el('<p class="ask">अब क्या करोगे?</p>');
