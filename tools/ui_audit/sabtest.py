@@ -89,6 +89,18 @@ with sync_playwright() as p:
       return s.size;}""")
     if seven<7: bad.append('the day task repeats inside a week (%d different in seven days)'%seven)
     else: ok.append('सात दिन, सात अलग मुहिमें')
+    # the run of days: it grows one a day, and a missed day breaks it
+    r=pg.evaluate("""()=>{const day=n=>{const d=new Date(Date.now()+n*86400000);
+        return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+      const out={};out.one=save.din.run;
+      save.din.day=day(-1);persist();dinState();let M=dinMuhim();for(let i=0;i<M.goal;i++)dinTick(M.count);
+      out.two=save.din.run;
+      save.din.day=day(-3);save.din.done=false;persist();dinState();
+      out.broken=save.din.run;out.best=save.din.best;return out;}""")
+    if r['two']!=r['one']+1: bad.append('the run of days does not grow by one a day')
+    elif r['broken']!=0: bad.append('a missed day does not break the run')
+    elif r['best']<r['two']: bad.append('the longest run is not remembered')
+    else: ok.append('लगातार दिन: %d, फिर %d, छूटने पर 0, सबसे लंबा %d'%(r['one'],r['two'],r['best']))
     pg.evaluate("()=>{const b=document.querySelector('#bigshow .bshut');if(b)b.click();}")
     pg.wait_for_timeout(700)
 

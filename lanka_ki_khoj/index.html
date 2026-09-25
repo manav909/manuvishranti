@@ -4094,9 +4094,15 @@ function dinState(){
  save.din=save.din||{};
  const today=aajKaDin();
  if(save.din.day!==today){
-  /* a new day: a new task, and the day's count starts again */
+  /* a new day: a new task, and the day's count starts again.
+     the run of days is kept only if yesterday's task was finished */
   const t=Math.floor(Date.parse(today+"T00:00:00")/86400000);
-  save.din={day:today,i:((t%DIN.length)+DIN.length)%DIN.length,read:0,card:0,place:0,tour:0,done:false};
+  const was=save.din.day?Math.floor(Date.parse(save.din.day+"T00:00:00")/86400000):null;
+  /* the run is added to only when a day is finished, so a new day just keeps it or breaks it */
+  let run2=save.din.run||0;
+  if(was!==null&&!(save.din.done&&t-was===1))run2=0;
+  save.din={day:today,i:((t%DIN.length)+DIN.length)%DIN.length,read:0,card:0,place:0,tour:0,done:false,
+   run:run2,best:Math.max(save.din.best||0,run2)};
   persist();
  }
  return save.din;
@@ -4109,10 +4115,11 @@ function dinTick(what){
  st[what]++;
  const M=dinMuhim();
  if(!st.done&&(st[M.count]||0)>=M.goal){
-  st.done=true;persist();
+  st.done=true;st.run=(st.run||0)+1;st.best=Math.max(st.best||0,st.run);persist();
   try{earned=[];earn(M.mani,"din",M.n);earned=[];}catch(e){}
   try{bigShow({obj:"surya",tag:"आज की मुहिम",title:M.n,
-   line:"आज का काम पूरा हुआ। +"+M.mani+" मणि। कल नई मुहिम मिलेगी।",shut:"चलो"});}catch(e){}
+   line:"आज का काम पूरा हुआ। +"+M.mani+" मणि।"+
+    (st.run>1?(" लगातार "+st.run+" दिन।"):"")+" कल नई मुहिम मिलेगी।",shut:"चलो"});}catch(e){}
  }
  persist();
 }
@@ -4314,8 +4321,10 @@ function raahBar(){
  {const fwd=aageBtn();
   if(fwd)bits.push({k:"aage",n:"आगे",c:String(fwd.textContent||"").replace(/\s+/g," ").slice(0,22),on:true});}
  /* the day's task rides here too, so it is never hunted for */
- try{const M=dinMuhim(),have=dinCount();
-  bits.push({k:"din",n:M.n,c:(save.din&&save.din.done)?"पूरी":(have+"/"+M.goal),on:!(save.din&&save.din.done)});}catch(e){}
+ try{const M=dinMuhim(),have=dinCount(),run2=(save.din&&save.din.run)||0;
+  bits.push({k:"din",n:M.n,
+   c:((save.din&&save.din.done)?"पूरी":(have+"/"+M.goal))+(run2>1?(" · लगातार "+run2+" दिन"):""),
+   on:!(save.din&&save.din.done)});}catch(e){}
  /* the mission rides in the same row, so the reading keeps its room */
  try{const N2=muhimNow();const id2=N2.ghadi||N2.raat||N2.safar;
   if(id2){const M=MUHIM[id2],have=Math.min(mcount(id2),M.goal);
@@ -4331,7 +4340,9 @@ function raahBar(){
   else if(k==="aage"){const fwd=aageBtn();if(fwd)fwd.click();}
   else if(k==="din"){try{const M=dinMuhim();
    bigShow({obj:"surya",tag:"आज की मुहिम",title:M.n,
-    line:M.x+" अभी "+dinCount()+" में से "+M.goal+"। पूरी होने पर +"+M.mani+" मणि।",shut:"चलो"});}catch(e){}}
+    line:M.x+" अभी "+dinCount()+" में से "+M.goal+"। पूरी होने पर +"+M.mani+" मणि।"+
+     (((save.din&&save.din.run)||0)>1?(" अब तक लगातार "+save.din.run+" दिन, सबसे लंबा "+(save.din.best||save.din.run)+"।"):""),
+    shut:"चलो"});}catch(e){}}
   else if(k==="muhim"){muhimOpen=!muhimOpen;
    const mb=document.getElementById("muhimbar");if(mb)mb.classList.remove("shut");
    muhimBar();}
