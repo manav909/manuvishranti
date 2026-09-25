@@ -13,10 +13,14 @@ in their own script, all with citations.
 Every detour belongs to a single role, none shared, and every role has its own in every one of the six
 nights: jigyasu 10, kathapremi 10, yoddha 10, yatri 9, balak 9, shastri 9, sadhak 9, raja 8.
 
-## Choosing without words
-The game is chosen through pictures, not lists. Three full screen scenes carry it, each built in 3D
-and opening by itself, each able to be called back by a button, with the written list folded behind it
-(and standing open where 3D cannot run):
+## The pictures, and what they are for
+The game itself is the map, the written page and the detours: that is where it is played, and nothing
+is folded away or replaced. Beside it sit optional 3D scenes, reached only when the player asks. One
+button in the top bar, **दृश्य**, opens whichever picture belongs to where the player stands: the roles
+before a role is taken, the nights before a night is chosen, the doors while a place is being chosen,
+and the place itself once inside one. Nothing opens by itself (`autoDrishya` is false), nothing is
+scattered through the reading, and every scene can be driven by touch, by keyboard, or from a plain
+list of buttons beside it for whoever reads by ear. The scenes:
 - **The doors.** You stand with your back to us in the clothes of your role, and the ways out of this
   watch stand before you as doors built to the place they lead to: a fort gate with the iron spikes that
   stopped war elephants and domed brass studs, a temple door with its shakhas, its lalatabimba and two
@@ -104,7 +108,15 @@ the eyes want a rest.
 - root `index.html`: not made yet, kept free for the home page
 
 ## The checks
-49 file checks run on the extracted script before anything is published, plus three browser audits:
+50 file checks run on the extracted script before anything is published (`runall.sh`, which counts a
+crashed check as a failure, never a pass), plus these browser checks:
+- `puranatest.py`: the game as built, eleven things in a row — map, places, tellings, reading page,
+  detours, notebook, letter, road bar, trail, corner map, and a night played to its dawn
+- `bahav.py`: the whole journey from the first screen to standing in a place, and it fails if a veil is
+  left covering the screen, a screen is open with nothing to press, or there is no way on after a door
+- `vislayout.py`: nothing overlapping, no text under 12.5px, no button under 34px, no line wider than
+  about 92 letters, and clear space between compartments. Slow, so it is run on its own: `runui.sh all`
+Older audits still run:
 the colour audit in light and dark, the click-through that plays the game by pressing what a player
 would press, and the 3D sweep over all 296 detour stops. The 3D sweep is slow, about five seconds a
 stop, so it is run in batches of twenty to fifty, never in one go.
@@ -120,8 +132,8 @@ Checks worth naming, each added after a real fault was found:
 - `raattest.js`: a night once played stays open, and the dawn always offers a way on
 - `doortest.js`: every place gets a door of its own kind, all four hours lit, a way in and back
 - `drishyatest.js`: the three wordless screens open full and wide, name what they show, wait their turn
-- `smoothtest.js`: the pictures open by themselves and can be called back, the written lists sit folded
-  behind them, and no screen opens twice for the same moment
+- `smoothtest.js`: the pictures never open by themselves, one button opens the one that fits where the
+  player stands, and the written page stays whole
 - `rangtest.js`: every colour name used is set somewhere, and none is lost to a missing semicolon.
   It was written after one missing semicolon silently killed the whole palm leaf page
 - `focus.py`: through fifty six moves across four roles and three nights, only the place you stand in
