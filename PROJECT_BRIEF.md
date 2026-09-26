@@ -2,7 +2,7 @@
 
 ## What this repo is
 A static site. One self-contained HTML file per experience, no build step, no server.
-Each experience lives in its own folder, so the root stays free for a home page later.
+Each experience lives in its own folder. The root holds the home page, Manu Vishranti's own page.
 
 Live experience: **लंका की खोज** at `/lanka_ki_khoj`, a Hindi discovery game built on the Sundar Kand,
 covering 41 tellings from India and beyond, 6 playable nights, 108 moments, 259 telling pages,
@@ -16,6 +16,20 @@ five-novel series and its companion volume. It has its own section below and sha
 Every detour belongs to a single role, none shared, and every role has its own in every one of the six
 nights: jigyasu 10, kathapremi 10, yoddha 10, yatri 9, balak 9, shastri 9, sadhak 9, raja 8.
 
+## The home page (`/`)
+The artist page for Manu Vishranti (मनु विश्रांति), one self-contained file.
+- **Hero.** The name in Devanagari on one line, the credit line ध्यान साधक, लेखक और शोधकर्ता, one English
+  line, and what the two words of the name mean
+- **The work.** One panel per body of work, each dressed as its own world: The Five Wounds in black and
+  gold with the key art, the six titles and the launch window; लंका की खोज on a palm leaf with its numbers
+  (41 tellings, 6 nights, 96 places, 108 moments) and a play button; नेति नेति as a dark ink field with a
+  red margin rule, like its cover, with the five study volumes
+- **About.** The back cover bio he chose (the school register, the ten rupee note), and one paragraph on
+  the diary and the game
+- Only works published as Manu Vishranti are listed. The jungle comic and the maths novels carry the
+  name Manav Sharma and stay off this page unless he says otherwise
+- Hindi on the page is written natively, in plain spoken words; no कॉपी, no बैठक
+
 ## The Five Wounds (`/novel/TheFiveWounds`)
 The site for the series by Manu Vishranti: *Clean Hands*, *Peacetime*, *All the Summers at Once*,
 *The House of Auspicious Hours*, *Dead Letter*, and the companion volume *The Third Woman*.
@@ -24,10 +38,12 @@ Published by Walnut Publication, coming the last week of October 2026.
 How the page runs, top to bottom:
 - **Opening.** A drop of water, rings, a ruled diary page with Nandita's own drawings, a line written in
   green ink, then the cover title and the byline. Skippable, with a sound button that is off until pressed
-- **The series, line by line.** One line per book
-- **The roll call, book by book.** A chapter card for each book (no reading-level seals), then its
-  characters as white and silver pencil portraits on black, then its scenes as wide film frames with a
-  title and one line, then a panel of the things that book keeps. 46 panels in one pinned scroll
+- **Contents.** The series set as a novel's contents page: one row per book, number, title and its line,
+  lighting up one by one as the reader scrolls
+- **The roll call, book by book.** A chapter card for each book (no reading-level seals), then one page
+  from that book set like a printed page (running head, drop cap, justified; short lines set centred as
+  an epigraph), then its characters as white and silver pencil portraits on black, then its scenes as wide film frames with a
+  title and one line, then a panel of the things that book keeps. 52 panels in one pinned scroll
 - **Key art.** The whole family in one drawing, under "Every one of them is carrying something."
 - **Footer.** Series, publisher and launch window, and a note that every face is invented
 
@@ -49,7 +65,7 @@ Rules for this site, all standing:
 - Every scene is a moment from the books that readers should carry away, with its reason recorded;
   no invented or filler scenes
 - Roll-call portraits are white and silver pencil on pure black paper. Myra is 14 and must look it
-- The surname Adatia never appears on the site
+- Ashu's surname, the reveal of Dead Letter, never appears on the site or in this repo
 - Captions are written for readers who have not read the books: no deaths, no endings
 - Drawings are made in ChatGPT from the image packs, reviewed, and only approved ones are published.
   The packs, the approved originals and the build files live in the handoff kit, not in this repo
@@ -144,6 +160,7 @@ the eyes want a rest.
 - Host: Vercel (static). Framework preset: Other. Build command: none. Output directory: repo root
 - Domain: manuvishranti.com (apex + www)
 - The game answers at manuvishranti.com/lanka_ki_khoj
+- The home page answers at manuvishranti.com
 - The Five Wounds answers at manuvishranti.com/novel/TheFiveWounds
 - Publish = push to `main`. Vercel rebuilds automatically
 
@@ -152,7 +169,8 @@ the eyes want a rest.
 - `novel/TheFiveWounds/index.html`: The Five Wounds site
 - `novel/TheFiveWounds/img/`: its 17 scenes, 11 objects and the link preview image
 - `PROJECT_BRIEF.md`: this file
-- root `index.html`: not made yet, kept free for the home page
+- `index.html`: the home page, the artist page for Manu Vishranti
+- `favicon.svg`: the lamp icon every page uses
 
 ## The checks
 50 file checks run on the extracted script before anything is published (`runall.sh`, which counts a
@@ -192,8 +210,8 @@ Checks worth naming, each added after a real fault was found:
 - Verify before publishing: `node --check` on the extracted script, plus the test suite
 - Commit messages: plain ASCII, single quotes
 - Stage finals in outputs, then one paste-able command
-- The Five Wounds ships as one zip, `the_five_wounds_site.zip`, holding `novel/TheFiveWounds/` and this
-  brief, unzipped over the repo root
+- Site updates ship as one zip, `manuvishranti_site.zip`, holding every changed file at its repo path,
+  unzipped over the repo root
 
 ## The unbreakable rule
 Whenever anything is added, removed or renamed - a scene, a place, a character, a find, a line, a citation,
