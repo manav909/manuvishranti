@@ -1,0 +1,180 @@
+<!-- title screen: start -->
+<style>
+#gi{position:fixed;inset:0;z-index:2147483000;overflow-y:auto;overflow-x:hidden;background:#07131B;color:#F3EAD3;
+  font-family:"Tiro Devanagari Hindi",serif;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;
+  transition:opacity .9s ease,transform .9s cubic-bezier(.6,0,.3,1)}
+#gi.gone{opacity:0;transform:scale(1.06);pointer-events:none}
+#gi *{box-sizing:border-box}
+#gi button{font:inherit;color:inherit;cursor:pointer}
+#gi :focus-visible{outline:3px solid #FFCA7A;outline-offset:3px}
+#gi .gi-wrap{width:min(100%,1160px);margin:0 auto;padding:0 max(16px,4vw)}
+/* hero */
+#gi .gi-hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;isolation:isolate}
+#gi canvas.gi-cv{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+#gi .gi-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:max(12px,env(safe-area-inset-top)) max(14px,3vw);z-index:3}
+#gi .gi-home{font-size:15px;color:#CFE0E6;text-decoration:none;opacity:.85}
+#gi .gi-pill{background:rgba(7,19,27,.55);border:1px solid rgba(243,234,211,.25);border-radius:999px;padding:7px 14px;font-size:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#gi .gi-pill[aria-pressed="true"]{border-color:#FFCA7A;color:#FFCA7A}
+#gi .gi-center{position:absolute;left:0;right:0;top:50%;transform:translateY(-58%);text-align:center;padding:0 16px;z-index:2}
+#gi .gi-pre{margin:0;font-size:clamp(16px,1.8vw,21px);color:#9DC2D4;letter-spacing:.04em;opacity:0}
+#gi h1.gi-title{margin:4px 0 0;font:400 clamp(66px,12vw,170px)/1.02 "Rozha One","Tiro Devanagari Hindi",serif;color:#FFF4DA;white-space:nowrap;opacity:0;
+  text-shadow:0 0 18px rgba(255,160,60,.55),0 0 60px rgba(201,73,47,.6),0 6px 0 #6B2A14,0 10px 24px rgba(0,0,0,.6)}
+#gi .gi-tag{margin:12px auto 0;max-width:30em;font-size:clamp(18px,1.9vw,23px);line-height:1.55;color:#EFE3C4;opacity:0;text-wrap:balance}
+#gi .gi-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 16px;margin-top:28px;opacity:0}
+#gi .gi-start{position:relative;display:inline-flex;align-items:center;gap:12px;border:0;border-radius:999px;padding:18px 34px 15px;overflow:hidden;
+  font:400 clamp(22px,2.4vw,28px)/1 "Rozha One","Tiro Devanagari Hindi",serif;color:#1A0E06;
+  background:linear-gradient(180deg,#FFE3A1,#F2B24C 55%,#D7832A);box-shadow:0 0 0 3px rgba(255,202,122,.35),0 10px 30px rgba(215,131,42,.45),inset 0 -4px 0 rgba(107,42,20,.35);
+  animation:giPulse 2.2s ease-in-out infinite}
+#gi .gi-start::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg);animation:giShine 3.2s ease-in-out infinite 1s}
+#gi .gi-start .gi-tri{width:0;height:0;border-left:14px solid #1A0E06;border-top:9px solid transparent;border-bottom:9px solid transparent}
+@keyframes giPulse{50%{box-shadow:0 0 0 9px rgba(255,202,122,.12),0 14px 40px rgba(215,131,42,.6),inset 0 -4px 0 rgba(107,42,20,.35)}}
+@keyframes giShine{0%{left:-60%}35%,100%{left:130%}}
+#gi .gi-more{background:none;border:1px solid rgba(243,234,211,.35);border-radius:999px;padding:14px 24px;font-size:19px;color:#F3EAD3}
+#gi .gi-more:hover{border-color:#FFCA7A}
+#gi .gi-hint{margin:14px 0 0;font-size:14px;color:#9FB6BE;opacity:0}
+#gi .gi-hint kbd{font:600 12px/1 system-ui,sans-serif;border:1px solid rgba(243,234,211,.4);border-bottom-width:3px;border-radius:5px;padding:3px 6px;margin:0 3px;color:#F3EAD3}
+#gi .gi-back{margin:10px 0 0;font-size:16px;color:#FFCA7A;opacity:0}
+#gi.play .gi-pre{animation:giUp 1s ease .3s forwards}
+#gi.play h1.gi-title{animation:giSlam .9s cubic-bezier(.2,1.6,.4,1) 3.3s forwards}
+#gi.play .gi-tag{animation:giUp 1s ease 4s forwards}
+#gi.play .gi-cta{animation:giUp 1s ease 4.4s forwards}
+#gi.play .gi-hint,#gi.play .gi-back{animation:giUp 1s ease 4.8s forwards}
+#gi.shake .gi-hero{animation:giShake .45s linear}
+@keyframes giUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes giSlam{0%{opacity:0;transform:scale(2.2);filter:blur(14px)}60%{opacity:1;filter:none}100%{opacity:1;transform:none}}
+@keyframes giShake{15%{transform:translate(-8px,4px)}30%{transform:translate(7px,-5px)}45%{transform:translate(-5px,-3px)}60%{transform:translate(4px,5px)}80%{transform:translate(-2px,2px)}}
+#gi .gi-down{position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);background:none;border:0;color:#CFE0E6;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.8}
+#gi .gi-down i{width:22px;height:34px;border:2px solid currentColor;border-radius:12px;position:relative}
+#gi .gi-down i::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:7px;margin-left:-2px;border-radius:2px;background:currentColor;animation:giWheel 1.6s ease-in-out infinite}
+@keyframes giWheel{60%{transform:translateY(9px);opacity:0}}
+/* feature sections: the game's own paper and ink */
+#gi .gi-body{background:#F0F2ED;color:#17222F}
+#gi .gi-sec{padding:clamp(64px,9vw,120px) 0;border-top:1px solid #C6CFC8;overflow:hidden}
+#gi .gi-kick{display:inline-block;margin:0 0 10px;padding:4px 12px 2px;border-radius:999px;background:#17222F;color:#F0F2ED;font-size:14px;letter-spacing:.04em}
+#gi h2{margin:0;font:400 clamp(36px,5vw,64px)/1.12 "Rozha One","Tiro Devanagari Hindi",serif;color:#17222F;text-wrap:balance}
+#gi .gi-lead{margin:14px 0 0;max-width:38em;font-size:clamp(19px,1.9vw,23px);line-height:1.7;color:#344553}
+#gi .gi-rv{opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+#gi .gi-rv.in{opacity:1;transform:none}
+/* roles: a dealt hand of cards */
+#gi .gi-roles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:clamp(30px,4vw,48px);perspective:1400px}
+#gi .gi-role{position:relative;height:250px;border:0;padding:0;background:none;transform-style:preserve-3d;
+  transform:translateY(120px) rotate(var(--rot,0deg)) rotateY(0deg);opacity:0;transition:transform .8s cubic-bezier(.2,1.2,.4,1),opacity .5s;transition-delay:calc(var(--i)*90ms)}
+#gi .gi-roles.in .gi-role{transform:none;opacity:1}
+#gi .gi-roles.in .gi-role:hover,#gi .gi-roles.in .gi-role:focus-visible,#gi .gi-roles.in .gi-role.flip{transform:rotateY(180deg);transition-delay:0s}
+#gi .gi-face{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;text-align:left;padding:16px;display:flex;flex-direction:column}
+#gi .gi-front{background:linear-gradient(170deg,#fff 0%,color-mix(in srgb,var(--t) 16%,#fff) 100%);border:2px solid color-mix(in srgb,var(--t) 55%,#fff);box-shadow:0 12px 26px rgba(23,34,47,.12)}
+#gi .gi-front svg{width:100%;height:120px;flex:none}
+#gi .gi-front b{display:block;margin-top:8px;font:400 26px/1.2 "Rozha One","Tiro Devanagari Hindi",serif;color:var(--t)}
+#gi .gi-front span{display:block;margin-top:4px;font-size:16px;line-height:1.45;color:#344553}
+#gi .gi-lock{position:absolute;top:12px;right:12px;background:#17222F;color:#FFCA7A;border-radius:999px;padding:3px 10px 1px;font-size:13px}
+#gi .gi-back-face{transform:rotateY(180deg);background:var(--t);color:#fff;justify-content:center;font-size:17px;line-height:1.55}
+#gi .gi-back-face b{font:400 24px/1.2 "Rozha One","Tiro Devanagari Hindi",serif;margin-bottom:8px}
+#gi .gi-note{margin:18px 0 0;font-size:15px;color:#4E5F6D}
+/* nights: six doors */
+#gi .gi-nights{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-top:clamp(30px,4vw,48px)}
+#gi .gi-night{text-align:center}
+#gi .gi-door{position:relative;aspect-ratio:3/4.4;border-radius:999px 999px 8px 8px;overflow:hidden;border:3px solid #8F7C50;perspective:600px;
+  background:radial-gradient(70% 60% at 50% 70%,var(--glow),#2A1E14 90%);box-shadow:0 14px 28px rgba(23,34,47,.2)}
+#gi .gi-leaf{position:absolute;inset:0;transform-origin:left center;background:linear-gradient(90deg,#6F6040,#8F7C50 50%,#6F6040);transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+#gi .gi-leaf::before{content:"";position:absolute;inset:12% 18% 8%;border:2px solid rgba(255,230,180,.25);border-radius:999px 999px 4px 4px}
+#gi .gi-leaf::after{content:"";position:absolute;right:16%;top:55%;width:8px;height:8px;border-radius:50%;background:#E2B24A}
+#gi .gi-nights.in .gi-night:not(.shut) .gi-leaf{transform:rotateY(-80deg);transition-delay:calc(.3s + var(--i)*180ms)}
+#gi .gi-night.shut .gi-door{filter:grayscale(.5)}
+#gi .gi-night.shut .gi-door::after{content:"";position:absolute;left:50%;top:48%;width:26px;height:22px;margin:-6px 0 0 -13px;border-radius:4px;background:#17222F;box-shadow:0 -12px 0 -4px transparent}
+#gi .gi-night.shut .gi-door::before{content:"";position:absolute;left:50%;top:48%;width:16px;height:18px;margin:-20px 0 0 -8px;border:4px solid #17222F;border-bottom:0;border-radius:10px 10px 0 0;z-index:2}
+#gi .gi-night b{display:block;margin-top:10px;font:400 19px/1.25 "Rozha One","Tiro Devanagari Hindi",serif;color:#17222F}
+#gi .gi-night span{display:block;margin-top:4px;font-size:14.5px;line-height:1.45;color:#4E5F6D}
+#gi .gi-night em{display:block;margin-top:6px;font-style:normal;font-size:13px;color:#A5311F}
+/* map */
+#gi .gi-mapgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:center;margin-top:clamp(24px,4vw,40px)}
+#gi .gi-map{position:relative;border-radius:18px;overflow:hidden;background:#9DC2D4;box-shadow:0 26px 60px rgba(23,34,47,.25),0 0 0 1px #8F7C50;aspect-ratio:1/1.05}
+#gi .gi-map canvas{width:100%;height:100%;display:block}
+#gi .gi-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#gi .gi-stats div{background:#fff;border:1px solid #C6CFC8;border-radius:16px;padding:18px 18px 16px;box-shadow:0 8px 20px rgba(23,34,47,.06)}
+#gi .gi-stats b{display:block;font:400 clamp(46px,5vw,70px)/1 "Rozha One","Tiro Devanagari Hindi",serif;color:#216761}
+#gi .gi-stats span{display:block;margin-top:6px;font-size:16px;color:#4E5F6D}
+/* missions */
+#gi .gi-missions{display:grid;gap:14px;margin-top:clamp(28px,4vw,44px);max-width:860px}
+#gi .gi-m{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 16px;align-items:center;background:#fff;border:1px solid #C6CFC8;border-radius:16px;padding:16px 18px}
+#gi .gi-m i{grid-row:span 2;width:46px;height:46px;border-radius:12px;background:var(--c);display:grid;place-items:center;color:#fff;font:400 22px/1 "Rozha One",serif;font-style:normal}
+#gi .gi-m b{font:400 21px/1.3 "Rozha One","Tiro Devanagari Hindi",serif;color:#17222F}
+#gi .gi-m span{grid-column:2;font-size:16px;color:#4E5F6D;line-height:1.45}
+#gi .gi-m em{grid-row:1/span 2;grid-column:3;font-style:normal;font-size:14px;color:var(--c);font-weight:600}
+#gi .gi-bar{grid-column:2/4;height:10px;border-radius:10px;background:#E4E9E5;overflow:hidden}
+#gi .gi-bar u{display:block;height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 55%,#fff));transition:width 1.8s cubic-bezier(.2,.7,.2,1)}
+#gi .gi-missions.in .gi-bar u{width:var(--w)}
+#gi .gi-seal{display:flex;align-items:center;gap:18px;margin-top:22px;max-width:860px}
+#gi .gi-seal svg{width:78px;height:78px;flex:none;transform:scale(0) rotate(-40deg);transition:transform .6s cubic-bezier(.3,1.6,.5,1) 1.6s}
+#gi .gi-missions.in ~ .gi-seal svg{transform:none}
+#gi .gi-seal p{margin:0;font-size:18px;line-height:1.6;color:#344553}
+#gi .gi-mani{font:400 26px/1 "Rozha One",serif;color:#86590A}
+/* emblems */
+#gi .gi-sec.dark{background:radial-gradient(70% 70% at 50% 30%,#2A1C10,#120C07 80%);color:#F3EAD3;border-top:0}
+#gi .gi-sec.dark h2{color:#FFE3A1}
+#gi .gi-sec.dark .gi-lead{color:#D8CBAE}
+#gi .gi-sec.dark .gi-kick{background:#FFCA7A;color:#1A0E06}
+#gi .gi-emb{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;margin-top:clamp(30px,4vw,48px);perspective:900px}
+#gi .gi-e{text-align:center}
+#gi .gi-coin{width:min(100%,140px);aspect-ratio:1/1;margin:0 auto;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#FFF1C4,#E8B94F 40%,#9A6420 80%,#6B4214);box-shadow:0 0 0 4px #6B4214,0 0 34px rgba(255,190,90,.35),inset 0 -8px 16px rgba(80,40,10,.5);
+  animation:giSpin 6s ease-in-out infinite;animation-delay:calc(var(--i)*-1s)}
+#gi .gi-coin svg{width:62%;height:62%}
+@keyframes giSpin{0%,20%{transform:rotateY(0)}50%,70%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
+#gi .gi-e b{display:block;margin-top:14px;font:400 21px/1.2 "Rozha One","Tiro Devanagari Hindi",serif;color:#FFE3A1}
+#gi .gi-e span{display:block;margin-top:6px;font-size:14.5px;line-height:1.5;color:#CDBF9F}
+/* little games */
+#gi .gi-games{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:clamp(30px,4vw,48px)}
+#gi .gi-g{border-radius:18px;overflow:hidden;background:#fff;border:1px solid #C6CFC8;box-shadow:0 10px 24px rgba(23,34,47,.08);transition:transform .3s}
+#gi .gi-g:hover{transform:translateY(-6px) rotate(-1deg)}
+#gi .gi-g svg{display:block;width:100%;aspect-ratio:4/3}
+#gi .gi-g b{display:block;padding:12px 14px 14px;font:400 21px/1.2 "Rozha One","Tiro Devanagari Hindi",serif;color:#17222F}
+/* final */
+#gi .gi-final{position:relative;text-align:center;padding:clamp(80px,11vw,140px) 0;background:radial-gradient(60% 70% at 50% 100%,rgba(201,73,47,.45),transparent 70%),linear-gradient(180deg,#0B2530,#07131B);color:#F3EAD3;overflow:hidden}
+#gi .gi-final h2{color:#FFF4DA;text-shadow:0 0 30px rgba(255,160,60,.45)}
+#gi .gi-final p{margin:14px auto 0;max-width:34em;font-size:clamp(18px,1.8vw,22px);color:#D8CBAE}
+#gi .gi-final .gi-cta{opacity:1}
+/* sticky start */
+#gi .gi-float{position:fixed;right:max(14px,3vw);bottom:max(14px,env(safe-area-inset-bottom));z-index:5;transform:translateY(140%);transition:transform .5s cubic-bezier(.2,1.2,.4,1)}
+#gi .gi-float.on{transform:none}
+#gi .gi-float .gi-start{padding:14px 24px 12px;font-size:21px}
+@media (max-width:900px){
+  #gi .gi-roles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #gi .gi-nights{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #gi .gi-mapgrid{grid-template-columns:minmax(0,1fr)}
+  #gi .gi-emb{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #gi .gi-games{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  #gi .gi-role{height:236px}
+  #gi .gi-front svg{height:100px}
+  #gi .gi-front b{font-size:22px}
+  #gi .gi-front span{font-size:14.5px}
+  #gi .gi-m{grid-template-columns:auto minmax(0,1fr)}
+  #gi .gi-m em{grid-row:auto;grid-column:2}
+  #gi .gi-hint{display:none}
+  #gi .gi-float .gi-start{padding:12px 18px 10px;font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  #gi *,#gi *::before,#gi *::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01s!important;transition-delay:0s!important}
+}
+</style>
+<div id="gi" role="dialog" aria-modal="true" aria-labelledby="giTitle" lang="hi">
+  <section class="gi-hero">
+    <canvas class="gi-cv" id="giCv" aria-hidden="true"></canvas>
+    <div class="gi-top"><a class="gi-home" href="/">← मनु विश्रांति</a><button class="gi-pill" id="giSnd" type="button" aria-pressed="false">आवाज़</button></div>
+    <div class="gi-center">
+      <p class="gi-pre">सुंदरकांड पर बना एक खेल</p>
+      <h1 class="gi-title" id="giTitle">लंका की खोज</h1>
+      <p class="gi-tag">समुद्र पार करो, लंका में घूमो, और वो बातें ढूँढो जो बहुत कम लोगों ने सुनी हैं।</p>
+      <div class="gi-cta"><button class="gi-start" type="button" data-go><span class="gi-tri" aria-hidden="true"></span><span class="gi-lbl">खेल शुरू करो</span></button><button class="gi-more" type="button" id="giMore">अंदर क्या है</button></div>
+      <p class="gi-back" id="giBackLine" hidden></p>
+      <p class="gi-hint">शुरू करने के लिए <kbd>Enter</kbd> दबाओ</p>
+    </div>
+    <button class="gi-down" type="button" id="giDown"><i aria-hidden="true"></i>नीचे देखो</button>
+  </section>
+  <div class="gi-body" id="giBody"></div>
+  <div class="gi-float" id="giFloat"><button class="gi-start" type="button" data-go><span class="gi-tri" aria-hidden="true"></span><span class="gi-lbl">खेल शुरू करो</span></button></div>
+</div>
+<script>/* the title screen stays away from automated checks unless asked for with ?intro=1 */
+(function(){var force=/[?&]intro=1/.test(location.search);if(navigator.webdriver&&!force){var g=document.getElementById('gi');if(g)g.remove();}})();</script>
+<!-- title screen: end -->

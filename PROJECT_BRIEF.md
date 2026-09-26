@@ -166,16 +166,14 @@ emblem turning in its own light: gada, kodanda, the twelve rayed sun, chudamani,
 built from researched detail. A page in the notebook holds the emblems won and the best score of each
 little game.
 
-## The title screen (inside `lanka_ki_khoj/index.html`)
-A full screen opening that sits over the game until the player presses खेल शुरू करो (or जारी रखो for a
-returning player, named with the role they walk as). It lives between the markers `<!-- title screen: start -->`
-and `<!-- title screen: end -->` after `<body>`, and its script between `<!-- title screen script: start -->`
-and `<!-- title screen script: end -->` before `</body>`. It never touches the game's own code: it reads the
-game's data (ROLE, NIGHTS, CHINH, KHEL, PLACES, COAST_IN, COAST_LK, BRIDGE_N, BRIDGE_S, CITY, HILLS, save)
-so every name, count and line stays in step with the game.
-- **Opening.** Dusk over the real coastline, a comet leaps from Mahendra hill across the sea, a flash and a
-  shake on landing, night falls, every place on the map lights up, embers rise over the city, and the title
-  slams in with fire. Enter starts the game
+## The game's front page (`/game/LankaKiKhoj`)
+The game's own intro page, separate from the game. The game at `/lanka_ki_khoj` is untouched and opens
+exactly as before; every खेल शुरू करो button here is a plain link to it. The home page's अभी खेलें points
+here.
+- **Opening.** Dusk over the game's own coastline, a comet leaps from Mahendra hill across the sea, a flash
+  and a shake on landing, night falls, every place on the map lights up, embers rise over the city, and the
+  title slams in with fire. Enter starts the game. A returning player (found through the game's own save,
+  `lanka_map_v3`) sees जारी रखो and the role they walk as
 - **Below it, why one would play:** the eight roles as a dealt hand of cards that flip to show where each
   role leads (three marked खेलते खेलते खुलेगी); the six nights as doors, the open one lit, the rest locked
   with what opens them; the map with every place popping in as a pin and the counts; the three missions
@@ -183,8 +181,10 @@ so every name, count and line stays in step with the game.
   game's own line for each; the four little games as looping tiles
 - A floating start button follows the reader down. Sound is off until turned on. Reduced motion, or the
   game's own हरकत कम, rests on the finished frame
-- Automated browsers (navigator.webdriver) never see it, so the game's own checks run untouched; add
-  `?intro=1` to the address to test it
+- **Data.** Every name, count and line comes from the game: `tools/lanka_intro/dump.js` reads ROLE, NIGHTS,
+  CHINH, KHEL, PLACES, the coastline, CITY and HILLS out of the running game into JSON, and
+  `tools/lanka_intro/buildlk.py` builds the page from that JSON and the title screen parts. Whenever the
+  game's roles, nights, emblems, little games or places change, run both again so this page stays in step
 
 ## The little games
 Four short games, none of which asks the player to read: the leap across the sea, roof to roof with the
@@ -243,11 +243,13 @@ the eyes want a rest.
 - The home page answers at manuvishranti.com
 - The Five Wounds answers at manuvishranti.com/novel/TheFiveWounds
 - The comic answers at manuvishranti.com/comic/SapnonWalaJangal
+- The game's front page answers at manuvishranti.com/game/LankaKiKhoj
 - The diary answers at manuvishranti.com/diary/NetiNeti
 - Publish = push to `main`. Vercel rebuilds automatically
 
 ## Files
 - `lanka_ki_khoj/index.html`: the game, complete and standalone
+- `game/LankaKiKhoj/index.html` and its `img/`: the game's front page, built by `tools/lanka_intro/`
 - `novel/TheFiveWounds/index.html`: The Five Wounds site
 - `novel/TheFiveWounds/img/`: its 17 scenes, 11 objects and the link preview image
 - `PROJECT_BRIEF.md`: this file
