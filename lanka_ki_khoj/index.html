@@ -1740,6 +1740,187 @@ h3{font-family:"Rozha One",serif;font-weight:400;font-size:1.15rem;margin:1rem 0
 </style>
 </head>
 <body>
+<!-- title screen: start -->
+<style>
+#gi{position:fixed;inset:0;z-index:2147483000;overflow-y:auto;overflow-x:hidden;background:#07131B;color:#F3EAD3;
+  font-family:"Tiro Devanagari Hindi",serif;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;
+  transition:opacity .9s ease,transform .9s cubic-bezier(.6,0,.3,1)}
+#gi.gone{opacity:0;transform:scale(1.06);pointer-events:none}
+#gi *{box-sizing:border-box}
+#gi button{font:inherit;color:inherit;cursor:pointer}
+#gi :focus-visible{outline:3px solid #FFCA7A;outline-offset:3px}
+#gi .gi-wrap{width:min(100%,1160px);margin:0 auto;padding:0 max(16px,4vw)}
+/* hero */
+#gi .gi-hero{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;isolation:isolate}
+#gi canvas.gi-cv{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+#gi .gi-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:max(12px,env(safe-area-inset-top)) max(14px,3vw);z-index:3}
+#gi .gi-home{font-size:15px;color:#CFE0E6;text-decoration:none;opacity:.85}
+#gi .gi-pill{background:rgba(7,19,27,.55);border:1px solid rgba(243,234,211,.25);border-radius:999px;padding:7px 14px;font-size:14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#gi .gi-pill[aria-pressed="true"]{border-color:#FFCA7A;color:#FFCA7A}
+#gi .gi-center{position:absolute;left:0;right:0;top:50%;transform:translateY(-58%);text-align:center;padding:0 16px;z-index:2}
+#gi .gi-pre{margin:0;font-size:clamp(16px,1.8vw,21px);color:#9DC2D4;letter-spacing:.04em;opacity:0}
+#gi h1.gi-title{margin:4px 0 0;font:400 clamp(66px,12vw,170px)/1.02 "Rozha One","Tiro Devanagari Hindi",serif;color:#FFF4DA;white-space:nowrap;opacity:0;
+  text-shadow:0 0 18px rgba(255,160,60,.55),0 0 60px rgba(201,73,47,.6),0 6px 0 #6B2A14,0 10px 24px rgba(0,0,0,.6)}
+#gi .gi-tag{margin:12px auto 0;max-width:30em;font-size:clamp(18px,1.9vw,23px);line-height:1.55;color:#EFE3C4;opacity:0;text-wrap:balance}
+#gi .gi-cta{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 16px;margin-top:28px;opacity:0}
+#gi .gi-start{position:relative;display:inline-flex;align-items:center;gap:12px;border:0;border-radius:999px;padding:18px 34px 15px;overflow:hidden;
+  font:400 clamp(22px,2.4vw,28px)/1 "Rozha One","Tiro Devanagari Hindi",serif;color:#1A0E06;
+  background:linear-gradient(180deg,#FFE3A1,#F2B24C 55%,#D7832A);box-shadow:0 0 0 3px rgba(255,202,122,.35),0 10px 30px rgba(215,131,42,.45),inset 0 -4px 0 rgba(107,42,20,.35);
+  animation:giPulse 2.2s ease-in-out infinite}
+#gi .gi-start::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg);animation:giShine 3.2s ease-in-out infinite 1s}
+#gi .gi-start .gi-tri{width:0;height:0;border-left:14px solid #1A0E06;border-top:9px solid transparent;border-bottom:9px solid transparent}
+@keyframes giPulse{50%{box-shadow:0 0 0 9px rgba(255,202,122,.12),0 14px 40px rgba(215,131,42,.6),inset 0 -4px 0 rgba(107,42,20,.35)}}
+@keyframes giShine{0%{left:-60%}35%,100%{left:130%}}
+#gi .gi-more{background:none;border:1px solid rgba(243,234,211,.35);border-radius:999px;padding:14px 24px;font-size:19px;color:#F3EAD3}
+#gi .gi-more:hover{border-color:#FFCA7A}
+#gi .gi-hint{margin:14px 0 0;font-size:14px;color:#9FB6BE;opacity:0}
+#gi .gi-hint kbd{font:600 12px/1 system-ui,sans-serif;border:1px solid rgba(243,234,211,.4);border-bottom-width:3px;border-radius:5px;padding:3px 6px;margin:0 3px;color:#F3EAD3}
+#gi .gi-back{margin:10px 0 0;font-size:16px;color:#FFCA7A;opacity:0}
+#gi.play .gi-pre{animation:giUp 1s ease .3s forwards}
+#gi.play h1.gi-title{animation:giSlam .9s cubic-bezier(.2,1.6,.4,1) 3.3s forwards}
+#gi.play .gi-tag{animation:giUp 1s ease 4s forwards}
+#gi.play .gi-cta{animation:giUp 1s ease 4.4s forwards}
+#gi.play .gi-hint,#gi.play .gi-back{animation:giUp 1s ease 4.8s forwards}
+#gi.shake .gi-hero{animation:giShake .45s linear}
+@keyframes giUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes giSlam{0%{opacity:0;transform:scale(2.2);filter:blur(14px)}60%{opacity:1;filter:none}100%{opacity:1;transform:none}}
+@keyframes giShake{15%{transform:translate(-8px,4px)}30%{transform:translate(7px,-5px)}45%{transform:translate(-5px,-3px)}60%{transform:translate(4px,5px)}80%{transform:translate(-2px,2px)}}
+#gi .gi-down{position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);background:none;border:0;color:#CFE0E6;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.8}
+#gi .gi-down i{width:22px;height:34px;border:2px solid currentColor;border-radius:12px;position:relative}
+#gi .gi-down i::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:7px;margin-left:-2px;border-radius:2px;background:currentColor;animation:giWheel 1.6s ease-in-out infinite}
+@keyframes giWheel{60%{transform:translateY(9px);opacity:0}}
+/* feature sections: the game's own paper and ink */
+#gi .gi-body{background:#F0F2ED;color:#17222F}
+#gi .gi-sec{padding:clamp(64px,9vw,120px) 0;border-top:1px solid #C6CFC8;overflow:hidden}
+#gi .gi-kick{display:inline-block;margin:0 0 10px;padding:4px 12px 2px;border-radius:999px;background:#17222F;color:#F0F2ED;font-size:14px;letter-spacing:.04em}
+#gi h2{margin:0;font:400 clamp(36px,5vw,64px)/1.12 "Rozha One","Tiro Devanagari Hindi",serif;color:#17222F;text-wrap:balance}
+#gi .gi-lead{margin:14px 0 0;max-width:38em;font-size:clamp(19px,1.9vw,23px);line-height:1.7;color:#344553}
+#gi .gi-rv{opacity:0;transform:translateY(30px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+#gi .gi-rv.in{opacity:1;transform:none}
+/* roles: a dealt hand of cards */
+#gi .gi-roles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:clamp(30px,4vw,48px);perspective:1400px}
+#gi .gi-role{position:relative;height:250px;border:0;padding:0;background:none;transform-style:preserve-3d;
+  transform:translateY(120px) rotate(var(--rot,0deg)) rotateY(0deg);opacity:0;transition:transform .8s cubic-bezier(.2,1.2,.4,1),opacity .5s;transition-delay:calc(var(--i)*90ms)}
+#gi .gi-roles.in .gi-role{transform:none;opacity:1}
+#gi .gi-roles.in .gi-role:hover,#gi .gi-roles.in .gi-role:focus-visible,#gi .gi-roles.in .gi-role.flip{transform:rotateY(180deg);transition-delay:0s}
+#gi .gi-face{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;text-align:left;padding:16px;display:flex;flex-direction:column}
+#gi .gi-front{background:linear-gradient(170deg,#fff 0%,color-mix(in srgb,var(--t) 16%,#fff) 100%);border:2px solid color-mix(in srgb,var(--t) 55%,#fff);box-shadow:0 12px 26px rgba(23,34,47,.12)}
+#gi .gi-front svg{width:100%;height:120px;flex:none}
+#gi .gi-front b{display:block;margin-top:8px;font:400 26px/1.2 "Rozha One","Tiro Devanagari Hindi",serif;color:var(--t)}
+#gi .gi-front span{display:block;margin-top:4px;font-size:16px;line-height:1.45;color:#344553}
+#gi .gi-lock{position:absolute;top:12px;right:12px;background:#17222F;color:#FFCA7A;border-radius:999px;padding:3px 10px 1px;font-size:13px}
+#gi .gi-back-face{transform:rotateY(180deg);background:var(--t);color:#fff;justify-content:center;font-size:17px;line-height:1.55}
+#gi .gi-back-face b{font:400 24px/1.2 "Rozha One","Tiro Devanagari Hindi",serif;margin-bottom:8px}
+#gi .gi-note{margin:18px 0 0;font-size:15px;color:#4E5F6D}
+/* nights: six doors */
+#gi .gi-nights{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-top:clamp(30px,4vw,48px)}
+#gi .gi-night{text-align:center}
+#gi .gi-door{position:relative;aspect-ratio:3/4.4;border-radius:999px 999px 8px 8px;overflow:hidden;border:3px solid #8F7C50;perspective:600px;
+  background:radial-gradient(70% 60% at 50% 70%,var(--glow),#2A1E14 90%);box-shadow:0 14px 28px rgba(23,34,47,.2)}
+#gi .gi-leaf{position:absolute;inset:0;transform-origin:left center;background:linear-gradient(90deg,#6F6040,#8F7C50 50%,#6F6040);transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+#gi .gi-leaf::before{content:"";position:absolute;inset:12% 18% 8%;border:2px solid rgba(255,230,180,.25);border-radius:999px 999px 4px 4px}
+#gi .gi-leaf::after{content:"";position:absolute;right:16%;top:55%;width:8px;height:8px;border-radius:50%;background:#E2B24A}
+#gi .gi-nights.in .gi-night:not(.shut) .gi-leaf{transform:rotateY(-80deg);transition-delay:calc(.3s + var(--i)*180ms)}
+#gi .gi-night.shut .gi-door{filter:grayscale(.5)}
+#gi .gi-night.shut .gi-door::after{content:"";position:absolute;left:50%;top:48%;width:26px;height:22px;margin:-6px 0 0 -13px;border-radius:4px;background:#17222F;box-shadow:0 -12px 0 -4px transparent}
+#gi .gi-night.shut .gi-door::before{content:"";position:absolute;left:50%;top:48%;width:16px;height:18px;margin:-20px 0 0 -8px;border:4px solid #17222F;border-bottom:0;border-radius:10px 10px 0 0;z-index:2}
+#gi .gi-night b{display:block;margin-top:10px;font:400 19px/1.25 "Rozha One","Tiro Devanagari Hindi",serif;color:#17222F}
+#gi .gi-night span{display:block;margin-top:4px;font-size:14.5px;line-height:1.45;color:#4E5F6D}
+#gi .gi-night em{display:block;margin-top:6px;font-style:normal;font-size:13px;color:#A5311F}
+/* map */
+#gi .gi-mapgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:center;margin-top:clamp(24px,4vw,40px)}
+#gi .gi-map{position:relative;border-radius:18px;overflow:hidden;background:#9DC2D4;box-shadow:0 26px 60px rgba(23,34,47,.25),0 0 0 1px #8F7C50;aspect-ratio:1/1.05}
+#gi .gi-map canvas{width:100%;height:100%;display:block}
+#gi .gi-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#gi .gi-stats div{background:#fff;border:1px solid #C6CFC8;border-radius:16px;padding:18px 18px 16px;box-shadow:0 8px 20px rgba(23,34,47,.06)}
+#gi .gi-stats b{display:block;font:400 clamp(46px,5vw,70px)/1 "Rozha One","Tiro Devanagari Hindi",serif;color:#216761}
+#gi .gi-stats span{display:block;margin-top:6px;font-size:16px;color:#4E5F6D}
+/* missions */
+#gi .gi-missions{display:grid;gap:14px;margin-top:clamp(28px,4vw,44px);max-width:860px}
+#gi .gi-m{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 16px;align-items:center;background:#fff;border:1px solid #C6CFC8;border-radius:16px;padding:16px 18px}
+#gi .gi-m i{grid-row:span 2;width:46px;height:46px;border-radius:12px;background:var(--c);display:grid;place-items:center;color:#fff;font:400 22px/1 "Rozha One",serif;font-style:normal}
+#gi .gi-m b{font:400 21px/1.3 "Rozha One","Tiro Devanagari Hindi",serif;color:#17222F}
+#gi .gi-m span{grid-column:2;font-size:16px;color:#4E5F6D;line-height:1.45}
+#gi .gi-m em{grid-row:1/span 2;grid-column:3;font-style:normal;font-size:14px;color:var(--c);font-weight:600}
+#gi .gi-bar{grid-column:2/4;height:10px;border-radius:10px;background:#E4E9E5;overflow:hidden}
+#gi .gi-bar u{display:block;height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 55%,#fff));transition:width 1.8s cubic-bezier(.2,.7,.2,1)}
+#gi .gi-missions.in .gi-bar u{width:var(--w)}
+#gi .gi-seal{display:flex;align-items:center;gap:18px;margin-top:22px;max-width:860px}
+#gi .gi-seal svg{width:78px;height:78px;flex:none;transform:scale(0) rotate(-40deg);transition:transform .6s cubic-bezier(.3,1.6,.5,1) 1.6s}
+#gi .gi-missions.in ~ .gi-seal svg{transform:none}
+#gi .gi-seal p{margin:0;font-size:18px;line-height:1.6;color:#344553}
+#gi .gi-mani{font:400 26px/1 "Rozha One",serif;color:#86590A}
+/* emblems */
+#gi .gi-sec.dark{background:radial-gradient(70% 70% at 50% 30%,#2A1C10,#120C07 80%);color:#F3EAD3;border-top:0}
+#gi .gi-sec.dark h2{color:#FFE3A1}
+#gi .gi-sec.dark .gi-lead{color:#D8CBAE}
+#gi .gi-sec.dark .gi-kick{background:#FFCA7A;color:#1A0E06}
+#gi .gi-emb{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;margin-top:clamp(30px,4vw,48px);perspective:900px}
+#gi .gi-e{text-align:center}
+#gi .gi-coin{width:min(100%,140px);aspect-ratio:1/1;margin:0 auto;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#FFF1C4,#E8B94F 40%,#9A6420 80%,#6B4214);box-shadow:0 0 0 4px #6B4214,0 0 34px rgba(255,190,90,.35),inset 0 -8px 16px rgba(80,40,10,.5);
+  animation:giSpin 6s ease-in-out infinite;animation-delay:calc(var(--i)*-1s)}
+#gi .gi-coin svg{width:62%;height:62%}
+@keyframes giSpin{0%,20%{transform:rotateY(0)}50%,70%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
+#gi .gi-e b{display:block;margin-top:14px;font:400 21px/1.2 "Rozha One","Tiro Devanagari Hindi",serif;color:#FFE3A1}
+#gi .gi-e span{display:block;margin-top:6px;font-size:14.5px;line-height:1.5;color:#CDBF9F}
+/* little games */
+#gi .gi-games{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:clamp(30px,4vw,48px)}
+#gi .gi-g{border-radius:18px;overflow:hidden;background:#fff;border:1px solid #C6CFC8;box-shadow:0 10px 24px rgba(23,34,47,.08);transition:transform .3s}
+#gi .gi-g:hover{transform:translateY(-6px) rotate(-1deg)}
+#gi .gi-g svg{display:block;width:100%;aspect-ratio:4/3}
+#gi .gi-g b{display:block;padding:12px 14px 14px;font:400 21px/1.2 "Rozha One","Tiro Devanagari Hindi",serif;color:#17222F}
+/* final */
+#gi .gi-final{position:relative;text-align:center;padding:clamp(80px,11vw,140px) 0;background:radial-gradient(60% 70% at 50% 100%,rgba(201,73,47,.45),transparent 70%),linear-gradient(180deg,#0B2530,#07131B);color:#F3EAD3;overflow:hidden}
+#gi .gi-final h2{color:#FFF4DA;text-shadow:0 0 30px rgba(255,160,60,.45)}
+#gi .gi-final p{margin:14px auto 0;max-width:34em;font-size:clamp(18px,1.8vw,22px);color:#D8CBAE}
+#gi .gi-final .gi-cta{opacity:1}
+/* sticky start */
+#gi .gi-float{position:fixed;right:max(14px,3vw);bottom:max(14px,env(safe-area-inset-bottom));z-index:5;transform:translateY(140%);transition:transform .5s cubic-bezier(.2,1.2,.4,1)}
+#gi .gi-float.on{transform:none}
+#gi .gi-float .gi-start{padding:14px 24px 12px;font-size:21px}
+@media (max-width:900px){
+  #gi .gi-roles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #gi .gi-nights{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #gi .gi-mapgrid{grid-template-columns:minmax(0,1fr)}
+  #gi .gi-emb{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #gi .gi-games{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  #gi .gi-role{height:236px}
+  #gi .gi-front svg{height:100px}
+  #gi .gi-front b{font-size:22px}
+  #gi .gi-front span{font-size:14.5px}
+  #gi .gi-m{grid-template-columns:auto minmax(0,1fr)}
+  #gi .gi-m em{grid-row:auto;grid-column:2}
+  #gi .gi-hint{display:none}
+  #gi .gi-float .gi-start{padding:12px 18px 10px;font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  #gi *,#gi *::before,#gi *::after{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01s!important;transition-delay:0s!important}
+}
+</style>
+<div id="gi" role="dialog" aria-modal="true" aria-labelledby="giTitle" lang="hi">
+  <section class="gi-hero">
+    <canvas class="gi-cv" id="giCv" aria-hidden="true"></canvas>
+    <div class="gi-top"><a class="gi-home" href="/">← मनु विश्रांति</a><button class="gi-pill" id="giSnd" type="button" aria-pressed="false">आवाज़</button></div>
+    <div class="gi-center">
+      <p class="gi-pre">सुंदरकांड पर बना एक खेल</p>
+      <h1 class="gi-title" id="giTitle">लंका की खोज</h1>
+      <p class="gi-tag">समुद्र पार करो, लंका में घूमो, और वो बातें ढूँढो जो बहुत कम लोगों ने सुनी हैं।</p>
+      <div class="gi-cta"><button class="gi-start" type="button" data-go><span class="gi-tri" aria-hidden="true"></span><span class="gi-lbl">खेल शुरू करो</span></button><button class="gi-more" type="button" id="giMore">अंदर क्या है</button></div>
+      <p class="gi-back" id="giBackLine" hidden></p>
+      <p class="gi-hint">शुरू करने के लिए <kbd>Enter</kbd> दबाओ</p>
+    </div>
+    <button class="gi-down" type="button" id="giDown"><i aria-hidden="true"></i>नीचे देखो</button>
+  </section>
+  <div class="gi-body" id="giBody"></div>
+  <div class="gi-float" id="giFloat"><button class="gi-start" type="button" data-go><span class="gi-tri" aria-hidden="true"></span><span class="gi-lbl">खेल शुरू करो</span></button></div>
+</div>
+<script>/* the title screen stays away from automated checks unless asked for with ?intro=1 */
+(function(){var force=/[?&]intro=1/.test(location.search);if(navigator.webdriver&&!force){var g=document.getElementById('gi');if(g)g.remove();}})();</script>
+<!-- title screen: end -->
+
 <div id="app">
  <header id="bar">
   <span class="brand">लंका की खोज</span>
@@ -13860,5 +14041,199 @@ document.getElementById("lamp").onclick=()=>{
  setCalm(!!save.calm);}
 catchUp();foldLbl();tabs();showPanel("story");miniBuild();roleTint();(save.rolePicked?front():roleScreen());fitLater();
 </script>
+<!-- title screen script: start -->
+<script>
+(function(){
+  var gi=document.getElementById('gi');if(!gi)return;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  try{if(typeof save!=='undefined'&&save.calm)reduce=true}catch(e){}
+  var DPR=Math.min(window.devicePixelRatio||1,2);
+  var $=function(s,r){return (r||gi).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||gi).querySelectorAll(s))};
+  function G(name,fb){try{var v=eval(name);return v==null?fb:v}catch(e){return fb}}
+  var ROLES=G('ROLE',{}),NIGHTSL=G('NIGHTS',[]),CH=G('CHINH',{}),KH=G('KHEL',{}),PL=G('PLACES',{});
+  var CIN=G('COAST_IN',[]),CLK=G('COAST_LK',[]),BN=G('BRIDGE_N',[]),BS=G('BRIDGE_S',[]),CITY=G('CITY',[]);
+  var SV=G('save',null);
+  var DG='०१२३४५६७८९';function dev(n){return String(n).replace(/[0-9]/g,function(d){return DG[+d]})}
+
+  /* ---------- returning player ---------- */
+  if(SV&&SV.rolePicked&&ROLES[SV.role]){
+    $$('.gi-lbl').forEach(function(l){l.textContent='जारी रखो'});
+    var bl=$('#giBackLine');bl.hidden=false;bl.textContent='तुम '+ROLES[SV.role].n+' बनकर चल रहे हो। जहाँ छोड़ा था, खेल वहीं से चलेगा।';
+  }
+
+  /* ---------- sound, off until asked ---------- */
+  var AC=null,MG=null,son=false;
+  function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=0;MG.connect(AC.destination)}catch(e){}}return AC}
+  function tone(f,type,dur,vol,to,delay){if(!son||!ac())return;var n=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,n);
+    if(to)o.frequency.exponentialRampToValueAtTime(to,n+dur*.8);g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(vol||.2,n+.02);g.gain.exponentialRampToValueAtTime(.0001,n+dur);o.connect(g);g.connect(MG);o.start(n);o.stop(n+dur+.05)}
+  function noise(dur,f0,f1,vol,delay){if(!son||!ac())return;var n=AC.currentTime+(delay||0),len=Math.floor(AC.sampleRate*dur),b=AC.createBuffer(1,len,AC.sampleRate),d=b.getChannelData(0);
+    for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.5);var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='lowpass';
+    f.frequency.setValueAtTime(f0,n);f.frequency.exponentialRampToValueAtTime(f1,n+dur);g.gain.value=vol||.4;s.connect(f);f.connect(g);g.connect(MG);s.start(n)}
+  var SFX={leap:function(){noise(2,300,3200,.25);tone(220,'sine',2,.08,660)},boom:function(){noise(1.4,1200,80,.7);tone(70,'sine',1.6,.5,40)},
+    title:function(){[196,294,392,587].forEach(function(f,i){tone(f,'triangle',2.6,.08,null,i*.03)})},
+    go:function(){tone(523,'sine',.25,.15);tone(784,'sine',.4,.15,null,.12);tone(1046,'sine',.9,.12,null,.24)},
+    card:function(){tone(880+Math.random()*200,'triangle',.18,.05)}};
+  $('#giSnd').addEventListener('click',function(){son=!son;this.setAttribute('aria-pressed',son?'true':'false');if(!ac())return;if(AC.state==='suspended')AC.resume();MG.gain.setTargetAtTime(son?.6:0,AC.currentTime,.2)});
+
+  /* ---------- the sections, built from the game's own data ---------- */
+  function fig(k,t){
+    var body='<ellipse cx="100" cy="112" rx="46" ry="6" fill="#17222F" opacity=".12"/>',p='';
+    var h='<circle cx="100" cy="40" r="13" fill="'+t+'"/>',b='<path d="M84 104 C84 76 88 60 100 58 C112 60 116 76 116 104 Z" fill="'+t+'"/>';
+    if(k==='jigyasu')p='<path d="M113 66 L134 38" stroke="'+t+'" stroke-width="7" stroke-linecap="round"/><circle cx="138" cy="32" r="9" fill="#FFCA7A"/><circle cx="138" cy="32" r="18" fill="#FFCA7A" opacity=".25"/>';
+    if(k==='yatri')p='<path d="M40 104 L62 70 L84 104Z M118 104 L146 60 L174 104Z" fill="'+t+'" opacity=".18"/><path d="M122 46 L122 108" stroke="#6F6040" stroke-width="5" stroke-linecap="round"/>';
+    if(k==='kathapremi')p='<path d="M78 74 L100 80 L122 74 L122 94 L100 100 L78 94 Z" fill="#fff" stroke="'+t+'" stroke-width="3"/><path d="M100 80 L100 100" stroke="'+t+'" stroke-width="2"/>';
+    if(k==='balak'){h='<circle cx="100" cy="56" r="11" fill="'+t+'"/>';b='<path d="M88 106 C88 84 91 72 100 70 C109 72 112 84 112 106 Z" fill="'+t+'"/>';p='<path d="M132 30 q8 -8 16 0 q8 -8 16 0" fill="none" stroke="'+t+'" stroke-width="4" stroke-linecap="round"/><path d="M110 80 L128 44" stroke="'+t+'" stroke-width="6" stroke-linecap="round"/>'}
+    if(k==='yoddha')p='<path d="M116 62 h26 v22 c0 14 -13 22 -13 22 s-13 -8 -13 -22z" fill="#fff" stroke="'+t+'" stroke-width="4"/><path d="M129 66 v34" stroke="'+t+'" stroke-width="3"/>';
+    if(k==='shastri')p='<rect x="72" y="76" width="56" height="12" rx="3" fill="#E9D9A8" stroke="#8F7C50" stroke-width="2"/><path d="M78 82 h44" stroke="#8F7C50" stroke-width="1.5"/>';
+    if(k==='sadhak'){b='<path d="M86 94 C86 72 90 60 100 58 C110 60 114 72 114 94 Z" fill="'+t+'"/><ellipse cx="100" cy="100" rx="30" ry="9" fill="'+t+'"/>';p='<circle cx="100" cy="40" r="22" fill="none" stroke="#FFCA7A" stroke-width="3" opacity=".8"/>'}
+    if(k==='raja')p='<path d="M86 30 L90 16 L96 26 L100 12 L104 26 L110 16 L114 30 Z" fill="#E2B24A" stroke="#86590A" stroke-width="2"/>';
+    return '<svg viewBox="0 0 200 120" aria-hidden="true">'+body+b+h+p+'</svg>';
+  }
+  var ICON={
+    gada:'<circle cx="50" cy="32" r="18"/><path d="M42 18v28M50 14v36M58 18v28"/><path d="M50 50v40M44 60h12M44 74h12"/>',
+    kodanda:'<path d="M30 12 Q86 50 30 88"/><path d="M30 12 L30 88"/><path d="M24 12h12M24 88h12"/>',
+    surya:'<circle cx="50" cy="50" r="15"/>'+Array.apply(null,Array(12)).map(function(_,i){var a=i*Math.PI/6;return '<path d="M'+(50+Math.cos(a)*22).toFixed(1)+' '+(50+Math.sin(a)*22).toFixed(1)+'L'+(50+Math.cos(a)*36).toFixed(1)+' '+(50+Math.sin(a)*36).toFixed(1)+'"/>'}).join('')+'<circle cx="45" cy="47" r="1.5"/><circle cx="55" cy="47" r="1.5"/><path d="M45 55 q5 4 10 0"/>',
+    chudamani:[0,72,144,216,288].map(function(r){return '<ellipse cx="50" cy="32" rx="9" ry="18" transform="rotate('+r+' 50 50)"/>'}).join('')+'<circle cx="50" cy="50" r="8" fill="#5A3208"/>',
+    mudrika:'<ellipse cx="50" cy="60" rx="26" ry="22"/><path d="M50 22 l10 12 -10 12 -10 -12z" fill="#5A3208"/>',
+    veena:'<path d="M20 80 L80 20"/><circle cx="24" cy="76" r="13"/><circle cx="76" cy="24" r="11"/><path d="M40 54l6 6M48 46l6 6M56 38l6 6"/>'
+  };
+  var GAME={
+    chalang:'<rect width="160" height="120" fill="#0E3A44"/><path d="M0 92 q10 -5 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 V120 H0Z" fill="#216761"/><path d="M0 70 L0 120 L34 120 L30 86 Z M160 66 L160 120 L126 120 L132 84 Z" fill="#D9D2B4"/><path id="giArc" d="M26 80 Q80 -10 134 78" fill="none" stroke="#FFCA7A" stroke-width="1.5" stroke-dasharray="3 5" opacity=".6"/><circle r="6" fill="#FFE3A1"><animateMotion dur="2.2s" repeatCount="indefinite" path="M26 80 Q80 -10 134 78" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".4 0 .6 1"/></circle>',
+    chhat:'<rect width="160" height="120" fill="#1B1020"/><circle cx="130" cy="22" r="10" fill="#F6E7C3" opacity=".8"/><path d="M0 120 V84 L18 70 L36 84 V120Z M40 120 V78 L60 60 L80 78 V120Z M84 120 V88 L100 74 L116 88 V120Z M120 120 V76 L140 58 L160 76 V120Z" fill="#3A2A2A"/><g><path d="M0 -14 C6 -6 8 -2 0 6 C-8 -2 -6 -6 0 -14Z" fill="#FF8A3A"/><path d="M0 -6 C3 -2 3 0 0 4 C-3 0 -3 -2 0 -6Z" fill="#FFE3A1"/><animateTransform attributeName="transform" type="translate" dur="2.4s" repeatCount="indefinite" values="18,66;60,56;100,70;140,54;140,54" keyTimes="0;.25;.5;.75;1"/></g>',
+    chhaya:'<rect width="160" height="120" fill="#EDE7D6"/><g fill="#17222F"><path d="M64 96 C64 70 70 58 80 56 C90 58 96 70 96 96Z M80 34 a10 10 0 1 1 0.1 0" opacity="0"><animate attributeName="opacity" values="1;1;0;0;0;0;1" keyTimes="0;.3;.34;.64;.66;.96;1" dur="4.5s" repeatCount="indefinite"/></path><path d="M50 96 L70 60 L90 70 L110 50 L112 96Z" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0;0" keyTimes="0;.32;.36;.62;.66;.96;1" dur="4.5s" repeatCount="indefinite"/></path><path d="M60 96 C60 60 100 60 100 96Z M76 52 L84 52 L80 30Z" opacity="0"><animate attributeName="opacity" values="0;0;0;0;1;1;0" keyTimes="0;.3;.62;.64;.68;.96;1" dur="4.5s" repeatCount="indefinite"/></path></g><text x="128" y="44" font-size="30" fill="#A5311F" font-family="serif">?</text>',
+    diya:'<rect width="160" height="120" fill="#140E08"/>'+[20,50,80,110,140].map(function(x,i){return '<path d="M'+(x-12)+' 92 q12 12 24 0 q-12 4 -24 0z" fill="#C8912A"/><g opacity="0"><circle cx="'+x+'" cy="80" r="14" fill="#FFB24A" opacity=".25"/><path d="M'+x+' 72 c5 6 5 10 0 14 c-5 -4 -5 -8 0 -14z" fill="#FFE3A1"/><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;'+(.1+i*.15).toFixed(2)+';'+(.12+i*.15).toFixed(2)+';.92;1" dur="4s" repeatCount="indefinite"/></g>'}).join('')
+  };
+  var open1=['jigyasu','yatri','kathapremi','balak','yoddha'];
+  var h='';
+  h+='<section class="gi-sec"><div class="gi-wrap"><span class="gi-kick gi-rv">पहला क़दम</span><h2 class="gi-rv">तुम कौन होकर चलोगे?</h2>';
+  h+='<p class="gi-lead gi-rv">आठ भूमिकाएँ। हर भूमिका को लंका कुछ अलग दिखाती है, और हर एक की अपनी जगहें हैं जो किसी और को नहीं दिखतीं।</p><div class="gi-roles" id="giRoles">';
+  Object.keys(ROLES).forEach(function(k,i){var R=ROLES[k],shut=open1.indexOf(k)<0;
+    h+='<button class="gi-role" type="button" style="--t:'+R.tint+';--i:'+i+';--rot:'+((i%2?1:-1)*(3+i%3*2))+'deg" aria-label="'+R.n+': '+R.t+'"><span class="gi-face gi-front">'+fig(k,R.tint)+'<b>'+R.n+'</b><span>'+R.t+'</span>'+(shut?'<i class="gi-lock">खेलते खेलते खुलेगी</i>':'')+'</span><span class="gi-face gi-back-face"><b>'+R.n+'</b>'+R.x+'</span></button>'});
+  h+='</div><p class="gi-note gi-rv">किसी कार्ड को छूओ, तो वह पलटकर बताएगा कि यह भूमिका किस तरफ़ ले जाती है।</p></div></section>';
+  h+='<section class="gi-sec"><div class="gi-wrap"><span class="gi-kick gi-rv">रातें</span><h2 class="gi-rv">छह रातें, हर रात चार प्रहर</h2><p class="gi-lead gi-rv">साँझ से भोर तक, और नक्शे की रोशनी भी उसी के साथ बदलती है।</p><div class="gi-nights" id="giNights">';
+  var glows=['#FFB24A','#FF7A3A','#9DC2D4','#5FB3AA','#E06A58','#C0A8EF'];
+  var NBY={};NIGHTSL.forEach(function(N){NBY[N.id]=N});
+  NIGHTSL.forEach(function(N,i){var first=(N.about||'').split('।')[0]+'।';var shut=!!N.needs;var after=shut&&NBY[N.needs]?String(NBY[N.needs].name).split(':').pop().trim():'';
+    h+='<div class="gi-night'+(shut?' shut':'')+'" style="--i:'+i+';--glow:'+glows[i%6]+'"><div class="gi-door"><span class="gi-leaf"></span></div><b>'+N.name+'</b><span>'+first+'</span>'+(shut?'<em>'+(after?after+' के बाद खुलेगी':'खेलते खेलते खुलेगी')+'</em>':'')+'</div>'});
+  h+='</div></div></section>';
+  var nPl=Object.keys(PL).length||96;
+  h+='<section class="gi-sec"><div class="gi-wrap"><span class="gi-kick gi-rv">नक्शा</span><h2 class="gi-rv">नक्शे पर '+nPl+' जगहें</h2><p class="gi-lead gi-rv">हर जगह एक दरवाज़ा है। अंदर जाओ, तो उस पल की कथा खुलती है, और यह भी कि दूसरे ग्रंथों ने वही पल कैसे कहा।</p>';
+  h+='<div class="gi-mapgrid"><div class="gi-map gi-rv" id="giMapBox"><canvas id="giMap"></canvas></div><div class="gi-stats gi-rv" id="giStats"><div><b data-n="41">41</b><span>रामकथाएँ, भारत और दुनिया भर से</span></div><div><b data-n="'+nPl+'">'+nPl+'</b><span>जगहें</span></div><div><b data-n="108">108</b><span>पल</span></div><div><b data-n="'+(NIGHTSL.length||6)+'">'+(NIGHTSL.length||6)+'</b><span>रातें</span></div></div></div></div></section>';
+  h+='<section class="gi-sec"><div class="gi-wrap"><span class="gi-kick gi-rv">मुहिम</span><h2 class="gi-rv">काम पूरा करो, इनाम पाओ</h2><p class="gi-lead gi-rv">एक साथ तीन मुहिमें चलती हैं, छोटी, बड़ी और पूरे सफ़र वाली।</p><div class="gi-missions" id="giMis">';
+  h+='<div class="gi-m" style="--c:#216761;--w:75%"><i>१</i><b>प्रहर की मुहिम</b><em>३ / ४</em><span>दो जगहें, दो कथाएँ, दो खोजें और एक अलग रास्ता।</span><div class="gi-bar"><u></u></div></div>';
+  h+='<div class="gi-m" style="--c:#A5311F;--w:45%"><i>२</i><b>रात की मुहिम</b><em>हर भूमिका की अपनी</em><span>हर भूमिका को हर रात अपना एक काम मिलता है।</span><div class="gi-bar"><u></u></div></div>';
+  h+='<div class="gi-m" style="--c:#86590A;--w:25%"><i>३</i><b>सफ़र की मुहिम</b><em>असली इनाम</em><span>हर प्रहर में एक जगह और, और एक दीया जो रात में एक बार बची हुई खोज की तरफ़ इशारा करता है।</span><div class="gi-bar"><u></u></div></div></div>';
+  h+='<div class="gi-seal"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="34" fill="#A5311F"/><circle cx="40" cy="40" r="27" fill="none" stroke="#F3D7C9" stroke-width="2" stroke-dasharray="3 4"/><path d="M40 22 l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1z" fill="#F3D7C9"/></svg><p>भोर से पहले रात की मुहिम पूरी हुई, तो मुहर मिलती है। और आज की मुहिम हर दिन बदलती है, जो <span class="gi-mani">मणि</span> देती है।</p></div></div></section>';
+  h+='<section class="gi-sec dark"><div class="gi-wrap"><span class="gi-kick gi-rv">चिह्न</span><h2 class="gi-rv">छह चिह्न जीतो</h2><p class="gi-lead gi-rv">मुहिम पूरी होने पर तुम्हारी भूमिका का चिह्न अपनी रोशनी में घूमता हुआ सामने आता है।</p><div class="gi-emb">';
+  Object.keys(CH).forEach(function(k,i){h+='<div class="gi-e gi-rv" style="--i:'+i+'"><div class="gi-coin"><svg viewBox="0 0 100 100" fill="none" stroke="#5A3208" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICON[k]||'')+'</svg></div><b>'+CH[k].n+'</b><span>'+CH[k].x+'</span></div>'});
+  h+='</div></div></section>';
+  h+='<section class="gi-sec"><div class="gi-wrap"><span class="gi-kick gi-rv">आराम के लिए</span><h2 class="gi-rv">चार छोटे खेल</h2><p class="gi-lead gi-rv">इनमें पढ़ना नहीं है। जब आँखें थकें, एक खेल खेल लो। सबसे अच्छा नतीजा पोथी में लिखा रहता है।</p><div class="gi-games">';
+  Object.keys(KH).forEach(function(k){h+='<div class="gi-g gi-rv"><svg viewBox="0 0 160 120" aria-hidden="true">'+(GAME[k]||'')+'</svg><b>'+KH[k]+'</b></div>'});
+  h+='</div></div></section>';
+  h+='<section class="gi-final"><div class="gi-wrap"><h2>लंका जाग रही है</h2><p>जहाँ छोड़ोगे, खेल वहीं से शुरू होगा। सब इसी फ़ोन या कंप्यूटर पर सहेजा रहता है।</p><div class="gi-cta" style="margin-top:30px"><button class="gi-start" type="button" data-go><span class="gi-tri" aria-hidden="true"></span><span class="gi-lbl">'+($('.gi-lbl').textContent)+'</span></button></div></div></section>';
+  $('#giBody').innerHTML=h;
+
+  /* ---------- a map drawn from the game's own coastline ---------- */
+  function proj(box,w,hh,pad){var k=Math.cos(8*Math.PI/180),sx=w/((box[3]-box[1])*k),sy=hh/(box[0]-box[2]),s=Math.max(sx,sy)*(pad||1),
+    cx=(box[1]+box[3])/2,cy=(box[0]+box[2])/2;return function(la,lo){return [w/2+(lo-cx)*k*s,hh/2+(cy-la)*s]}}
+  function poly(c,P,pts){var q=pts.map(function(x){return P(x[0],x[1])}),n=q.length;if(n<3)return;var m=function(a,b){return [(a[0]+b[0])/2,(a[1]+b[1])/2]};var s0=m(q[n-1],q[0]);c.moveTo(s0[0],s0[1]);
+    for(var i=0;i<n;i++){var nx=m(q[i],q[(i+1)%n]);c.quadraticCurveTo(q[i][0],q[i][1],nx[0],nx[1])}c.closePath()}
+  function pts(){return Object.keys(PL).map(function(k){return [PL[k].la,PL[k].lo]}).filter(function(p){return p[0]&&p[1]})}
+  var P0=[8.38,77.53],P1=CITY.length?[CITY.reduce(function(a,c){return a+c[0]},0)/CITY.length,CITY.reduce(function(a,c){return a+c[1]},0)/CITY.length]:[7.82,80.79];
+  var HILLS=G('HILLS',[]);
+
+  /* hero: dusk over the sea, a leap, a city waking */
+  var cv=$('#giCv'),cx=cv.getContext('2d'),W,H,PR,t0=0,raf=0,heroOn=true,lights=[],embers=[],trail=[],marks={};
+  function hlay(){var r=cv.getBoundingClientRect();W=r.width;H=r.height;cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
+    var portrait=W/H<.9;PR=proj(portrait?[10.2,78.9,5.6,81.9]:[12.6,74.2,5.0,85.4],W,H,1);
+    lights=pts().map(function(p,i){var q=PR(p[0],p[1]);return {x:q[0],y:q[1],d:i,tw:Math.random()*6.28}}).filter(function(l){return l.x>-20&&l.x<W+20&&l.y>-20&&l.y<H+20});}
+  function qb(a,c,b,u){var v=1-u;return [v*v*a[0]+2*v*u*c[0]+u*u*b[0],v*v*a[1]+2*v*u*c[1]+u*u*b[1]]}
+  function hframe(now){
+    raf=0;var t=now-t0;cx.setTransform(DPR,0,0,DPR,0,0);
+    var night=Math.min(1,Math.max(0,(t-2600)/1600));
+    var g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,night<1?'rgb('+Math.round(58-44*night)+','+Math.round(62-32*night)+','+Math.round(78-26*night)+')':'#0E1E2A');g.addColorStop(1,'rgb('+Math.round(14-7*night)+','+Math.round(58-40*night)+','+Math.round(68-41*night)+')');
+    cx.fillStyle=g;cx.fillRect(0,0,W,H);
+    cx.strokeStyle='rgba(255,255,255,'+(.07-.03*night)+')';cx.lineWidth=1;
+    for(var y=20;y<H;y+=34){cx.beginPath();for(var x=-20;x<=W+20;x+=20){var yy=y+Math.sin(x/60+t/900+y)*3;x===-20?cx.moveTo(x,yy):cx.lineTo(x,yy)}cx.stroke()}
+    var sh=Math.round(217-120*night),land='rgb('+sh+','+Math.round(210-118*night)+','+Math.round(180-100*night)+')';
+    cx.fillStyle=land;cx.strokeStyle='#8F7C50';cx.lineWidth=2;
+    if(CIN.length){cx.beginPath();poly(cx,PR,CIN);cx.fill();cx.stroke()}
+    if(CLK.length){cx.beginPath();poly(cx,PR,CLK);cx.fill();cx.stroke()}
+    if(BN.length&&BS.length){cx.beginPath();poly(cx,PR,BN.concat(BS));cx.fillStyle='rgba(217,210,180,'+(.5-.3*night)+')';cx.fill()}
+    HILLS.forEach(function(hl){var q=PR(hl[0],hl[1]),r=hl[2]*(PR(8,80)[1]-PR(8.1,80)[1])*.6;var hg2=cx.createRadialGradient(q[0]-r*.2,q[1]-r*.3,0,q[0],q[1],r);hg2.addColorStop(0,'rgba(120,110,80,'+(.45-.2*night)+')');hg2.addColorStop(1,'rgba(120,110,80,0)');cx.fillStyle=hg2;cx.beginPath();cx.ellipse(q[0],q[1],r,r*.75,0,0,7);cx.fill()});
+    cx.save();cx.globalCompositeOperation='lighter';cx.strokeStyle='rgba(157,194,212,'+(.25+.15*Math.sin(t/700))+')';cx.lineWidth=6;cx.filter='blur(3px)';if(CLK.length){cx.beginPath();poly(cx,PR,CLK);cx.stroke()}cx.restore();
+    if(t<2600){var dusk=cx.createRadialGradient(W*.2,H*.1,0,W*.2,H*.1,Math.max(W,H));dusk.addColorStop(0,'rgba(255,150,70,.35)');dusk.addColorStop(1,'rgba(255,150,70,0)');cx.fillStyle=dusk;cx.fillRect(0,0,W,H)}
+    cx.globalCompositeOperation='lighter';
+    var a=PR(P0[0],P0[1]),b=PR(P1[0],P1[1]),c=[(a[0]+b[0])/2,Math.min(a[1],b[1])-H*.42];
+    var u=(t-900)/1900;
+    if(u>0&&u<1.15){var e=Math.min(1,u);e=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;var p=qb(a,c,b,e);trail.push(p);if(trail.length>40)trail.shift();
+      for(var i=0;i<trail.length;i++){var al=i/trail.length;cx.fillStyle='rgba(255,200,110,'+al*.7+')';cx.beginPath();cx.arc(trail[i][0],trail[i][1],1+al*5,0,7);cx.fill()}
+      if(u<1){var hg=cx.createRadialGradient(p[0],p[1],0,p[0],p[1],40);hg.addColorStop(0,'rgba(255,250,230,1)');hg.addColorStop(.25,'rgba(255,190,90,.8)');hg.addColorStop(1,'rgba(255,140,40,0)');cx.fillStyle=hg;cx.fillRect(p[0]-40,p[1]-40,80,80);
+        if(Math.random()<.8)embers.push({x:p[0],y:p[1],vx:(Math.random()-.5)*1.2,vy:Math.random()*1.2,l:1,s:1+Math.random()*2})}}
+    if(t>2800){var ft=(t-2800)/900;if(ft<1){var r=ft*Math.max(W,H)*.5;var fg=cx.createRadialGradient(b[0],b[1],0,b[0],b[1],r);fg.addColorStop(0,'rgba(255,230,180,'+(1-ft)*.9+')');fg.addColorStop(1,'rgba(255,160,60,0)');cx.fillStyle=fg;cx.fillRect(0,0,W,H);
+        cx.strokeStyle='rgba(255,210,140,'+(1-ft)+')';cx.lineWidth=3;cx.beginPath();cx.arc(b[0],b[1],r*.6,0,7);cx.stroke()}
+      lights.forEach(function(l,i){var on=Math.min(1,Math.max(0,(t-2900-i*18)/300));if(!on)return;var tw=.6+.4*Math.sin(t/500+l.tw);
+        var lg=cx.createRadialGradient(l.x,l.y,0,l.x,l.y,9);lg.addColorStop(0,'rgba(255,230,160,'+on*tw+')');lg.addColorStop(1,'rgba(255,170,70,0)');cx.fillStyle=lg;cx.fillRect(l.x-9,l.y-9,18,18);
+        cx.fillStyle='rgba(255,245,215,'+on+')';cx.fillRect(l.x-1,l.y-1,2,2)});
+      if(Math.random()<.4)embers.push({x:b[0]+(Math.random()-.5)*60,y:b[1]+(Math.random()-.5)*30,vx:(Math.random()-.5)*.4,vy:-(.3+Math.random()*.8),l:1,s:1+Math.random()*1.5})}
+    for(var j=embers.length-1;j>=0;j--){var m=embers[j];m.x+=m.vx;m.y+=m.vy;m.l-=.012;if(m.l<=0){embers.splice(j,1);continue}cx.fillStyle='rgba(255,170,80,'+m.l*.8+')';cx.beginPath();cx.arc(m.x,m.y,m.s,0,7);cx.fill()}
+    cx.globalCompositeOperation='source-over';
+    var vg=cx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');cx.fillStyle=vg;cx.fillRect(0,0,W,H);
+    var cg=cx.createLinearGradient(0,H*.25,0,H*.75);cg.addColorStop(0,'rgba(7,19,27,0)');cg.addColorStop(.5,'rgba(7,19,27,'+.45*Math.min(1,t/3500)+')');cg.addColorStop(1,'rgba(7,19,27,0)');cx.fillStyle=cg;cx.fillRect(0,0,W,H);
+    function at(k,ms,fn){if(!marks[k]&&t>=ms){marks[k]=1;fn()}}
+    at('leap',900,function(){SFX.leap()});
+    at('boom',2800,function(){SFX.boom();gi.classList.remove('shake');void gi.offsetWidth;gi.classList.add('shake')});
+    at('title',3300,function(){SFX.title()});
+    if(heroOn&&!gi.classList.contains('gone')&&!reduce)raf=requestAnimationFrame(hframe);
+  }
+
+  /* the map section: every place pinned, popping in */
+  var mc=$('#giMap'),mx=mc.getContext('2d'),mW,mH,MP,mpins=[],mt0=0,mraf=0;
+  function mlay(){var r=mc.getBoundingClientRect();mW=r.width;mH=r.height;mc.width=Math.round(mW*DPR);mc.height=Math.round(mH*DPR);MP=proj([13.9,75.4,5.6,82.4],mW,mH,1);
+    mpins=pts().map(function(p){var q=MP(p[0],p[1]);return {x:q[0],y:q[1]}}).sort(function(a,b){return a.y-b.y})}
+  function mframe(now){
+    mraf=0;var t=now-mt0;mx.setTransform(DPR,0,0,DPR,0,0);mx.fillStyle='#9DC2D4';mx.fillRect(0,0,mW,mH);
+    mx.strokeStyle='rgba(255,255,255,.3)';for(var y=16;y<mH;y+=26){mx.beginPath();for(var x=0;x<=mW;x+=16){var yy=y+Math.sin(x/40+t/800+y)*2;x?mx.lineTo(x,yy):mx.moveTo(x,yy)}mx.stroke()}
+    mx.fillStyle='#D9D2B4';mx.strokeStyle='#8F7C50';mx.lineWidth=2;
+    if(CIN.length){mx.beginPath();poly(mx,MP,CIN);mx.fill();mx.stroke()}if(CLK.length){mx.beginPath();poly(mx,MP,CLK);mx.fill();mx.stroke()}
+    if(CITY.length){mx.beginPath();poly(mx,MP,CITY);mx.fillStyle='rgba(165,49,31,.25)';mx.fill()}
+    var a=MP(P0[0],P0[1]),b=MP(P1[0],P1[1]),c=[(a[0]+b[0])/2,Math.min(a[1],b[1])-mH*.18];var u=Math.min(1,t/1600);
+    mx.setLineDash([3,7]);mx.strokeStyle='#A5311F';mx.lineWidth=3;mx.beginPath();mx.moveTo(a[0],a[1]);for(var s=0;s<=u;s+=.02){var q=qb(a,c,b,s);mx.lineTo(q[0],q[1])}mx.stroke();mx.setLineDash([]);
+    mpins.forEach(function(p,i){var k=Math.min(1,Math.max(0,(t-600-i*22)/260));if(!k)return;var sc=k<1?1+Math.sin(k*Math.PI)*.6:1,r=4*sc;
+      mx.fillStyle='rgba(23,34,47,.25)';mx.beginPath();mx.ellipse(p.x,p.y+2,r,r*.5,0,0,7);mx.fill();
+      mx.fillStyle=i%9===0?'#E2B24A':'#A5311F';mx.beginPath();mx.arc(p.x,p.y-r,r,0,7);mx.fill();mx.fillStyle='#fff';mx.beginPath();mx.arc(p.x,p.y-r,r*.4,0,7);mx.fill()});
+    if(t<600+mpins.length*22+800&&!gi.classList.contains('gone'))mraf=requestAnimationFrame(mframe);
+  }
+  function mstatic(){mt0=performance.now()-99999;mframe(performance.now())}
+
+  /* ---------- reveals and counters ---------- */
+  function count(el){$$('b[data-n]',el).forEach(function(b){var n=+b.dataset.n,s=performance.now();(function st(now){var u=Math.min(1,(now-s)/1500);b.textContent=Math.round(n*(1-Math.pow(1-u,3)));if(u<1)requestAnimationFrame(st)})(s)})}
+  var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var el=e.target;el.classList.add('in');io.unobserve(el);
+    if(el.id==='giStats')count(el);if(el.id==='giMapBox'){mlay();if(reduce)mstatic();else{mt0=performance.now();mframe(mt0)}}
+    if(el.id==='giRoles'&&!reduce)$$('.gi-role',el).forEach(function(r,i){setTimeout(SFX.card,i*90)})})},{root:gi,threshold:.2}):null;
+  $$('.gi-rv,#giRoles,#giNights,#giMis').forEach(function(el){if(io&&!reduce)io.observe(el);else{el.classList.add('in')}});
+  if(!io||reduce){count($('#giStats'));mlay();mstatic()}
+  $$('.gi-role').forEach(function(b){b.addEventListener('click',function(){b.classList.toggle('flip');SFX.card()})});
+  new IntersectionObserver(function(es){heroOn=es[0].isIntersecting;$('#giFloat').classList.toggle('on',!heroOn);if(heroOn&&!raf&&!reduce)raf=requestAnimationFrame(hframe)},{root:gi,threshold:.25}).observe($('.gi-hero'));
+
+  /* ---------- into the game ---------- */
+  function start(){
+    if(gi.classList.contains('gone'))return;SFX.go();gi.classList.add('gone');
+    setTimeout(function(){if(raf)cancelAnimationFrame(raf);gi.remove();var a=document.getElementById('app');if(a){a.setAttribute('tabindex','-1');a.focus({preventScroll:true})}},950);
+  }
+  $$('[data-go]').forEach(function(b){b.addEventListener('click',start)});
+  $('#giMore').addEventListener('click',function(){$('#giBody').scrollIntoView({behavior:reduce?'auto':'smooth'})});
+  $('#giDown').addEventListener('click',function(){$('#giBody').scrollIntoView({behavior:reduce?'auto':'smooth'})});
+  document.addEventListener('keydown',function k(e){if(!document.body.contains(gi)){document.removeEventListener('keydown',k);return}
+    if((e.key==='Enter'||e.key===' ')&&(e.target===document.body||e.target===gi)){e.preventDefault();start()}});
+  window.addEventListener('resize',function(){hlay();if(reduce){t0=performance.now()-9000;hframe(performance.now())}});
+
+  hlay();
+  if(reduce){gi.classList.add('play');t0=performance.now()-9000;marks={leap:1,boom:1,title:1};hframe(performance.now())}
+  else{requestAnimationFrame(function(){t0=performance.now();gi.classList.add('play');raf=requestAnimationFrame(hframe)})}
+  gi.focus&&gi.setAttribute('tabindex','-1');
+})();
+</script>
+<!-- title screen script: end -->
 </body>
 </html>
