@@ -17,23 +17,33 @@ Every detour belongs to a single role, none shared, and every role has its own i
 nights: jigyasu 10, kathapremi 10, yoddha 10, yatri 9, balak 9, shastri 9, sadhak 9, raja 8.
 
 ## The home page (`/`)
-The artist page for Manu Vishranti (मनु विश्रांति), one self-contained file.
-- **Hero.** The name in Devanagari on one line, the credit line ध्यान साधक, लेखक और शोधकर्ता, one English
-  line, and what the two words of the name mean
-- **The work.** One panel per body of work, each dressed as its own world: The Five Wounds in black and
-  gold with the key art, the six titles and the launch window; लंका की खोज on a palm leaf with its numbers
-  (41 tellings, 6 nights, 96 places, 108 moments) and a play button; सपनों वाला जंगल as a real comic
-  spread from the book (the cover, the voice-taken burst panel that flips through the book's panels when
-  scrolled into view, two dream panels, the pangolin's question, and a moving strip of the twenty dream
-  animals), linking to its own page; नेति नेति as a dark ink field with a red margin rule, like its
-  cover, with the five study volumes, linking to its own page
-- **About.** His portrait, the back cover bio he chose (the school register, the ten rupee note), and
-  one paragraph on the diary and the game
-- **His portrait.** From his own photo, only toned and cropped, never retouched: classic black and white,
-  the background dropped into shadow, head and shoulders. Two tones: indigo into moonlight for the home
-  page, warm silver on black for The Five Wounds. Originals in `img/`
-- The jungle comic is listed at his word (Sep 2026). The maths novels carry the name Manav Sharma and
-  stay off this page unless he says otherwise
+The artist page for Manu Vishranti (मनु विश्रांति), one self-contained file with no build step. Images are
+real files: `img/five-wounds-keyart.webp`, `img/manu-vishranti.jpg`, and the comic and novel images from
+their own folders.
+- **Opening, the lamp (about 6 seconds).** A spark falls in the dark and lights a clay lamp; embers rise;
+  light passes across the name मनु विश्रांति, then MANU VISHRANTI and the credit ध्यान साधक, लेखक और
+  शोधकर्ता. Four sparks fly from the flame, one to each world, and each card lights as its spark lands.
+  Skip, replay and sound (off until turned on). Reduced motion rests on the lit lamp
+- **Four doors, one per audience.** कोई एक दुनिया चुनिए. Each card carries its own look and says who it is
+  for: The Five Wounds (literary fiction, English), लंका की खोज (खेल), सपनों वाला जंगल (कॉमिक, बच्चों के
+  लिए), नेति नेति (ध्यान डायरी). Cards tilt and catch light under the pointer
+- **One world at a time.** Choosing a card wipes the screen in that world's colour and shows only that
+  world, so a child who came for the comic never scrolls past the novels, and the reverse. Each world has
+  its own address (#five-wounds, #lanka-ki-khoj, #sapnon-wala-jangal, #neti-neti), its own opening, a
+  link to its full page and a way back to all worlds. No script: everything shows in one column
+  - The Five Wounds: black and gold, letterbox bars close, the key art sharpens, a light sweep, the title
+    tracks in letter by letter; the six books with their accent colours; a film strip of six approved
+    scenes with their captions; Walnut and the launch window
+  - लंका की खोज: night sea, a golden arc leaps from the shore to Lanka, 96 lights come on across the
+    island, the numbers count up (41, 6, 96, 108); on phones the scene sits at the foot of the screen
+  - सपनों वाला जंगल: a spinning comic burst, the book's panels slam in, the voice panel flips through the
+    book, the title drops in word by word; the two rules and the moving strip of dream animals
+  - नेति नेति: a red margin rule draws down, one point of light gathers into a seated figure, the crown
+    opens into dawn, then the title; the four parts with their questions from the book and the five
+    study volumes
+- **About.** The portrait (indigo tone) with a light sweep, the back cover bio he chose, what the two words
+  of the name mean
+- The maths novels carry the name Manav Sharma and stay off this page unless he says otherwise
 - Hindi on the page is written natively, in plain spoken words; no कॉपी, no बैठक
 
 ## सपनों वाला जंगल (`/comic/SapnonWalaJangal`)
@@ -219,7 +229,7 @@ the eyes want a rest.
 - `novel/TheFiveWounds/index.html`: The Five Wounds site
 - `novel/TheFiveWounds/img/`: its 17 scenes, 11 objects and the link preview image
 - `PROJECT_BRIEF.md`: this file
-- `index.html`: the home page, the artist page for Manu Vishranti
+- `index.html`: the home page, the artist page for Manu Vishranti (edited directly, no template)
 - `favicon.svg`: the lamp icon every page uses
 - `img/`: his portrait in both tones and the home page link preview
 - `comic/SapnonWalaJangal/index.html` and its `img/`: the comic's page
