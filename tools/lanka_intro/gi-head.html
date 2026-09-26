@@ -135,6 +135,7 @@
 #gi .gi-final .gi-cta{opacity:1}
 /* sticky start */
 #gi .gi-float{position:fixed;right:max(14px,3vw);bottom:max(14px,env(safe-area-inset-bottom));z-index:5;transform:translateY(140%);transition:transform .5s cubic-bezier(.2,1.2,.4,1)}
+#gi .gi-float:not(.on){visibility:hidden;transition:transform .5s,visibility 0s .5s}
 #gi .gi-float.on{transform:none}
 #gi .gi-float .gi-start{padding:14px 24px 12px;font-size:21px}
 @media (max-width:900px){

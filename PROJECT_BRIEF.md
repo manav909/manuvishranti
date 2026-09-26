@@ -34,10 +34,7 @@ their own folders.
   - The Five Wounds: black and gold, letterbox bars close, the key art sharpens, a light sweep, the title
     tracks in letter by letter; the six books with their accent colours; a film strip of six approved
     scenes with their captions; Walnut and the launch window
-  - लंका की खोज: daylight, in the game's own map colours (pale sea, sand land with a brown coast, tide
-    green, fire red), so it never looks like the dark diary card. The map unfolds, the title is revealed
-    with a tide green rule, a red pin travels the dotted crossing from India's tip to Lanka, and 96
-    places pop up on the island; the numbers count up (41, 6, 96, 108). The page bar turns light here
+  - लंका की खोज: the game's own intro, the same one as /game/LankaKiKhoj (see that section)
   - सपनों वाला जंगल: a spinning comic burst, the book's panels slam in, the voice panel flips through the
     book, the title drops in word by word; the two rules and the moving strip of dream animals
   - नेति नेति: a red margin rule draws down, one point of light gathers into a seated figure, the crown
@@ -181,9 +178,15 @@ here.
   game's own line for each; the four little games as looping tiles
 - A floating start button follows the reader down. Sound is off until turned on. Reduced motion, or the
   game's own हरकत कम, rests on the finished frame
+- **The same intro on the home page.** The home page's लंका की खोज world (#lanka-ki-khoj) is this intro,
+  placed between the markers `<!-- lk-world -->`, `/* lk-world css */` and `<!-- lk-world script -->` in
+  `index.html`. It starts when the world opens and replays each time it is opened again; the home page's
+  sound button drives its sound. The home card is built in the same run (`<!-- lk-card -->` and
+  `/* lk-card css */`): the game's real coastline at night, a comet crossing from Mahendra hill again and
+  again, the city glowing as it lands, every place a twinkling light, and the title in fire
 - **Data.** Every name, count and line comes from the game: `tools/lanka_intro/dump.js` reads ROLE, NIGHTS,
   CHINH, KHEL, PLACES, the coastline, CITY and HILLS out of the running game into JSON, and
-  `tools/lanka_intro/buildlk.py` builds the page from that JSON and the title screen parts. Whenever the
+  `tools/lanka_intro/buildlk.py` builds the page, the home world and the home card from that JSON and the title screen parts. Whenever the
   game's roles, nights, emblems, little games or places change, run both again so this page stays in step
 
 ## The little games
