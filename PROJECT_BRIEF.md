@@ -134,6 +134,13 @@ One more scene for Book Four, the wedding at twenty past eleven, is written and 
   large beside the lead line, then the six volumes as 3D books that rise in one after another and turn
   toward the pointer, each with its number, title and line. Covers live in `img/covers/` as WebP. The home
   page's Five Wounds world shows the same six covers in place of the old list
+- **The backs.** Any book on the shelf (and the set cover) can be taken down: it comes forward on its front,
+  then turns over to its back cover text, typeset from the printed backs word for word, in the back's own
+  colour. Arrows move along the shelf, Esc puts it back. Each book has its own address,
+  `/novel/TheFiveWounds#book-<slug>`, and the home page's covers link straight to them. Peacetime's back
+  has not arrived, so its back shows only its line from the contents until it does
+- On the printed backs (Sep 2026) every volume carries the same ISBN, 978-811923221-5, and the price is
+  still ₹xxx; each volume needs its own ISBN and price before print
 - Covers still to be replaced when clean files arrive: Clean Hands, All the Summers at Once and The House
   of Auspicious Hours carry the Walnut Publication proof watermark; Peacetime is only 329 px wide
 

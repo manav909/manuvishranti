@@ -151,6 +151,32 @@ button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(
 .shelfrow .bk{opacity:0;transform:translateY(60px);transition:opacity 1s ease,transform 1.2s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*110ms)}
 .shelfrow.in .bk,.static .shelfrow .bk{opacity:1;transform:none}
 .bk.set .b3{transform:rotateY(-18deg)}
+/* a book taken off the shelf: front, then its back */
+.bk{cursor:pointer}
+.bk:focus-visible{outline:2px solid var(--foil);outline-offset:8px}
+.bk .turn{display:inline-block;margin-top:8px;font:500 12px/1 "EB Garamond",serif;letter-spacing:.18em;text-transform:uppercase;color:var(--c);opacity:.8}
+.bkm{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:rgba(0,0,0,.86);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .4s}
+.bkm.on{opacity:1}
+.bkm[hidden]{display:none}
+.bkm-stage{perspective:1800px}
+.bkm-book{--w:min(430px,76vw,calc(70vh * .647));position:relative;width:var(--w);aspect-ratio:621/960;transform-style:preserve-3d;cursor:pointer;
+  transform:rotateY(-28deg) scale(.82);opacity:0;transition:transform 1.1s cubic-bezier(.2,.8,.2,1),opacity .5s;container-type:inline-size}
+.bkm.on .bkm-book{transform:rotateY(0) scale(1);opacity:1}
+.bkm.on .bkm-book.back{transform:rotateY(180deg)}
+.bkm-front,.bkm-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:2px 5px 5px 2px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.bkm-front img{width:100%;height:100%;object-fit:cover;display:block}
+.bkm-back{transform:rotateY(180deg);display:flex;flex-direction:column;padding:9cqi 9cqi 7cqi;background:var(--bg);color:var(--ink)}
+.bkm-back::before{content:"";position:absolute;top:0;bottom:0;right:0;width:4%;background:linear-gradient(270deg,rgba(255,255,255,.14),rgba(0,0,0,.28) 60%,transparent)}
+.bkm-no{margin:0;font:500 2.7cqi/1 "EB Garamond",serif;letter-spacing:.28em;text-transform:uppercase;opacity:.7}
+.bkm-back h3{margin:2cqi 0 0;font:italic 400 6.4cqi/1.1 "EB Garamond",serif}
+.bkm-tag{margin:1.2cqi 0 0;font:italic 400 3.4cqi/1.3 "EB Garamond",serif;opacity:.8}
+.bkm-blurb{margin:5cqi 0 0;font:400 4.25cqi/1.5 "Lora","EB Garamond",serif;text-align:justify;hyphens:auto}
+.bkm-by{margin:auto 0 0;padding-top:4cqi;border-top:1px solid color-mix(in srgb,var(--ink) 25%,transparent);font:500 3.2cqi/1 "EB Garamond",serif;letter-spacing:.3em;text-align:center}
+.bkm-bar{position:fixed;left:0;right:0;bottom:max(18px,env(safe-area-inset-bottom));display:flex;justify-content:center;align-items:center;gap:12px;color:var(--bone2);font-size:15px}
+.bkm button{background:rgba(0,0,0,.55);color:var(--bone);border:1px solid rgba(236,226,200,.35);border-radius:999px;padding:8px 16px;font:inherit;font-size:15px;cursor:pointer}
+.bkm button:hover{border-color:var(--foil)}
+.bkm .bkm-x{position:fixed;top:max(14px,env(safe-area-inset-top));right:max(14px,3vw)}
+@media (prefers-reduced-motion:reduce){.bkm-book{transition:none}}
 @media (max-width:980px){.shelfrow{grid-template-columns:repeat(3,minmax(0,1fr))}#shelf .sh-top{grid-template-columns:minmax(0,1fr)}.bk.set{max-width:320px}}
 @media (max-width:560px){.shelfrow{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 18px}.bk span.tx{font-size:15px}}
 @media (prefers-reduced-motion:reduce){.shelfrow .bk{opacity:1;transform:none;transition:none}.bk .b3{transition:none}}
@@ -300,7 +326,7 @@ footer p{max-width:62ch}
 
 <section id="shelf" aria-labelledby="shelf-h">
   <div class="sh-top">
-    <figure class="bk set" style="--c:var(--foil)"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/the-five-wounds.webp" alt="The cover of The Five Wounds by Manu Vishranti: five gold leaves on one stem" loading="lazy" width="720" height="1113"><span class="glare"></span></div></figure>
+    <figure class="bk set" style="--c:var(--foil)" role="button" tabindex="0" data-b="6" aria-label="The Five Wounds: turn the book over and read the back"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/the-five-wounds.webp" alt="The cover of The Five Wounds by Manu Vishranti: five gold leaves on one stem" loading="lazy" width="720" height="1113"><span class="glare"></span></div></figure>
     <div>
       <h2 id="shelf-h">The books</h2>
       <p class="sh-lead">Five novels and a companion volume. One family, thirty years, and the small arrangements that hold a house together until somebody asks what they cost.</p>
@@ -308,18 +334,24 @@ footer p{max-width:62ch}
     </div>
   </div>
   <div class="shelfrow" id="shelfrow">
-      <figure class="bk" style="--c:var(--B1);--i:0"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/clean-hands.webp" alt="The cover of Clean Hands by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
-        <figcaption><span class="no">Book One</span><b>Clean Hands</b><span class="tx">A surgeon with an unbroken record and a locked room.</span></figcaption></figure>
-      <figure class="bk" style="--c:var(--B2);--i:1"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/peacetime.webp" alt="The cover of Peacetime by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
-        <figcaption><span class="no">Book Two</span><b>Peacetime</b><span class="tx">A woman who counted a whole town and left one line in a register.</span></figcaption></figure>
-      <figure class="bk" style="--c:var(--B3);--i:2"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/all-the-summers-at-once.webp" alt="The cover of All the Summers at Once by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
-        <figcaption><span class="no">Book Three</span><b>All the Summers at Once</b><span class="tx">A postmaster carrying the letter he chose not to deliver.</span></figcaption></figure>
-      <figure class="bk" style="--c:var(--B4);--i:3"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/the-house-of-auspicious-hours.webp" alt="The cover of The House of Auspicious Hours by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
-        <figcaption><span class="no">Book Four</span><b>The House of Auspicious Hours</b><span class="tx">A family that buys its life in sanctioned hours.</span></figcaption></figure>
-      <figure class="bk" style="--c:var(--B5);--i:4"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/dead-letter.webp" alt="The cover of Dead Letter by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
-        <figcaption><span class="no">Book Five</span><b>Dead Letter</b><span class="tx">A man with no surname, looking for the word that is his.</span></figcaption></figure>
-      <figure class="bk" style="--c:var(--B6);--i:5"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/the-third-woman.webp" alt="The cover of The Third Woman by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
-        <figcaption><span class="no">Companion</span><b>The Third Woman</b><span class="tx">And the wife who was told last, who wrote all of it down.</span></figcaption></figure>
+      <figure class="bk" style="--c:var(--B1);--i:0" role="button" tabindex="0" data-b="0" aria-label="Clean Hands: turn the book over and read the back"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/clean-hands.webp" alt="The cover of Clean Hands by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
+        <figcaption><span class="no">Book One</span><b>Clean Hands</b><span class="tx">A surgeon with an unbroken record and a locked room.</span><span class="turn">Read the back</span></figcaption></figure>
+      <figure class="bk" style="--c:var(--B2);--i:1" role="button" tabindex="0" data-b="1" aria-label="Peacetime: turn the book over and read the back"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/peacetime.webp" alt="The cover of Peacetime by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
+        <figcaption><span class="no">Book Two</span><b>Peacetime</b><span class="tx">A woman who counted a whole town and left one line in a register.</span><span class="turn">Read the back</span></figcaption></figure>
+      <figure class="bk" style="--c:var(--B3);--i:2" role="button" tabindex="0" data-b="2" aria-label="All the Summers at Once: turn the book over and read the back"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/all-the-summers-at-once.webp" alt="The cover of All the Summers at Once by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
+        <figcaption><span class="no">Book Three</span><b>All the Summers at Once</b><span class="tx">A postmaster carrying the letter he chose not to deliver.</span><span class="turn">Read the back</span></figcaption></figure>
+      <figure class="bk" style="--c:var(--B4);--i:3" role="button" tabindex="0" data-b="3" aria-label="The House of Auspicious Hours: turn the book over and read the back"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/the-house-of-auspicious-hours.webp" alt="The cover of The House of Auspicious Hours by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
+        <figcaption><span class="no">Book Four</span><b>The House of Auspicious Hours</b><span class="tx">A family that buys its life in sanctioned hours.</span><span class="turn">Read the back</span></figcaption></figure>
+      <figure class="bk" style="--c:var(--B5);--i:4" role="button" tabindex="0" data-b="4" aria-label="Dead Letter: turn the book over and read the back"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/dead-letter.webp" alt="The cover of Dead Letter by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
+        <figcaption><span class="no">Book Five</span><b>Dead Letter</b><span class="tx">A man with no surname, looking for the word that is his.</span><span class="turn">Read the back</span></figcaption></figure>
+      <figure class="bk" style="--c:var(--B6);--i:5" role="button" tabindex="0" data-b="5" aria-label="The Third Woman: turn the book over and read the back"><div class="b3"><img src="/novel/TheFiveWounds/img/covers/the-third-woman.webp" alt="The cover of The Third Woman by Manu Vishranti" loading="lazy" width="621" height="960"><span class="glare"></span></div>
+        <figcaption><span class="no">Companion</span><b>The Third Woman</b><span class="tx">And the wife who was told last, who wrote all of it down.</span><span class="turn">Read the back</span></figcaption></figure>
+  </div>
+  <div class="bkm" id="bkm" hidden role="dialog" aria-modal="true" aria-labelledby="bkmT">
+    <button class="bkm-x" type="button" id="bkmX">Close</button>
+    <div class="bkm-stage"><div class="bkm-book" id="bkmBook" tabindex="0"><div class="bkm-front"><img id="bkmImg" alt=""></div>
+      <div class="bkm-back"><p class="bkm-no" id="bkmNo"></p><h3 id="bkmT"></h3><p class="bkm-tag" id="bkmTag"></p><p class="bkm-blurb" id="bkmBlurb"></p><p class="bkm-by">MANU VISHRANTI</p></div></div></div>
+    <div class="bkm-bar"><button type="button" id="bkmP">&larr;</button><span id="bkmHint">Tap the book to turn it over</span><button type="button" id="bkmN">&rarr;</button></div>
   </div>
 </section>
 
@@ -561,6 +593,29 @@ if(animated){
     b.addEventListener('pointermove',function(e){if(e.pointerType==='touch')return;var q=b.getBoundingClientRect(),x=(e.clientX-q.left)/q.width-.5,y=(e.clientY-q.top)/q.height-.5;
       t.style.transform='rotateY('+(x*22-6).toFixed(1)+'deg) rotateX('+(-y*10).toFixed(1)+'deg) translateY(-10px)'});
     b.addEventListener('pointerleave',function(){t.style.transform=''})});
+})();
+</script>
+<script>
+(function(){var BOOKS=[{"slug": "clean-hands", "no": "Book One", "t": "Clean Hands", "bg": "#10263F", "ink": "#EDE6D6", "c": "--B1", "tag": "The first of five", "b": "Dev Mehra has four hundred surgeries behind him and not one death, and the steel frame in the hospital lobby says so. What it does not say is how the record was built: by never touching a patient he might lose. Across the river, in a worn hospital with a wall of photographs, another surgeon has been taking the ones Dev sends away. When a schoolteacher collapses in her classroom and her name reaches both hospitals on the same afternoon, twenty years of arrangement begin to come apart, one transfer form at a time."}, {"slug": "peacetime", "no": "Book Two", "t": "Peacetime", "bg": "#4F1830", "ink": "#F1E3D8", "c": "--B2", "tag": "", "b": "A woman who counted a whole town and left one line in a register."}, {"slug": "all-the-summers-at-once", "no": "Book Three", "t": "All the Summers at Once", "bg": "#A85F2F", "ink": "#FBF1E4", "c": "--B3", "tag": "", "b": "For forty years Prem Babu made certain that other people’s words arrived. One letter did not, and he is the reason it did not. Now, with ten months left and a house gone quiet, he sets out to find the child that letter was addressed to, who is a grown man somewhere and does not know he was ever written to. What Prem Babu learns on the way is that a wrong address, maintained long enough and with enough care, becomes a kind of love, and that it still has to be answered for."}, {"slug": "the-house-of-auspicious-hours", "no": "Book Four", "t": "The House of Auspicious Hours", "bg": "#4A0D14", "ink": "#F3E6DA", "c": "--B4", "tag": "", "b": "In the Malhotra house, time is a bazaar. Three generations have bought their whole lives in the sanctioned hours of one family almanac: marriages, businesses, the day a child may be born. Then the son who was born in the family’s first ambiguous hour discovers that the astrologer they have trusted for twenty years has been blind, and inventing the sky out of mercy. Not whether fate is real, but what a family is using it to hold up, and what falls when you take it away. The longest and the loudest of the five."}, {"slug": "dead-letter", "no": "Book Five", "t": "Dead Letter", "bg": "#EFE8DF", "ink": "#1C1712", "c": "--B5", "tag": "", "b": "Ashu has no surname and has never needed one. For eleven years he has been the man four hundred families rang at two in the morning, the one who could find the form that was refused and the ambulance that could not be found. Thirteen months after his uncle dies, a registered letter arrives, posted before that death and paid for in advance. Five letters, each with its own condition, and the fifth burns the others if he asks for it. The final wound closes the quintet on a single word written into a register."}, {"slug": "the-third-woman", "no": "Companion", "t": "The Third Woman", "bg": "#374B2E", "ink": "#EFE8D6", "c": "--B6", "tag": "The Diary of Nandita Mehra", "b": "There is a person in every family who is told last. For eight years, first in the back pages of a household ledger and then in six red account books bought one at each Diwali, Nandita Mehra kept an account of a family that told her nothing. She ruled columns for what was owed and what was received. She wrote one line a night about one other person and never rubbed out the ones she got wrong. Her diary crosses all five novels from a seat nobody thought to look at. A companion volume, not a sixth novel."}, {"slug": "the-five-wounds", "no": "The complete series", "t": "The Five Wounds", "bg": "#43250F", "ink": "#F3E3C0", "c": "--foil", "tag": "", "b": "Five novels and one companion volume. One family, thirty years, and the small arrangements that hold a house together until somebody asks what they cost. A surgeon with an unbroken record and a locked room. A woman who counted a whole town and left one line in a register. A postmaster carrying the letter he chose not to deliver. A family that buys its life in sanctioned hours. A man with no surname, looking for the word that is his. And the wife who was told last, who wrote all of it down. The complete series in one edition."}];
+  var m=document.getElementById('bkm'),bk=document.getElementById('bkmBook'),cur=0,last=null,t1=0;
+  var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function fill(i){var b=BOOKS[i];cur=i;document.getElementById('bkmImg').src='/novel/TheFiveWounds/img/covers/'+b.slug+'.webp';document.getElementById('bkmImg').alt='The cover of '+b.t;
+    document.getElementById('bkmNo').textContent=b.no;document.getElementById('bkmT').textContent=b.t;var tg=document.getElementById('bkmTag');tg.textContent=b.tag;tg.hidden=!b.tag;
+    document.getElementById('bkmBlurb').textContent=b.b;bk.style.setProperty('--bg',b.bg);bk.style.setProperty('--ink',b.ink)}
+  function open(i,fromHash){last=document.activeElement;fill(i);bk.classList.remove('back');m.hidden=false;void m.offsetWidth;m.classList.add('on');document.body.style.overflow='hidden';
+    clearTimeout(t1);t1=setTimeout(function(){bk.classList.add('back')},rm?0:900);bk.focus({preventScroll:true});
+    if(!fromHash)history.replaceState(null,'','#book-'+BOOKS[i].slug)}
+  function close(){m.classList.remove('on');document.body.style.overflow='';clearTimeout(t1);setTimeout(function(){m.hidden=true},rm?0:400);
+    history.replaceState(null,'',location.pathname);if(last&&last.focus)last.focus({preventScroll:true})}
+  function go(d){var n=(cur+d+BOOKS.length)%BOOKS.length;bk.classList.remove('back');setTimeout(function(){fill(n);history.replaceState(null,'','#book-'+BOOKS[n].slug);t1=setTimeout(function(){bk.classList.add('back')},rm?0:500)},rm?0:450)}
+  document.querySelectorAll('.bk[data-b]').forEach(function(f){var i=+f.dataset.b;f.addEventListener('click',function(){open(i)});f.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open(i)}})});
+  bk.addEventListener('click',function(){clearTimeout(t1);bk.classList.toggle('back')});
+  bk.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();bk.classList.toggle('back')}});
+  document.getElementById('bkmX').addEventListener('click',close);document.getElementById('bkmP').addEventListener('click',function(){go(-1)});document.getElementById('bkmN').addEventListener('click',function(){go(1)});
+  m.addEventListener('click',function(e){if(e.target===m)close()});
+  document.addEventListener('keydown',function(e){if(m.hidden)return;if(e.key==='Escape')close();if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});
+  function fromHash(){var h=location.hash.replace('#book-','');if(!h||h===location.hash)return;for(var i=0;i<BOOKS.length;i++)if(BOOKS[i].slug===h){var sh=document.getElementById('shelf');if(sh)sh.scrollIntoView();open(i,true);return}}
+  window.addEventListener('load',function(){setTimeout(fromHash,300)});
 })();
 </script>
 </body>
