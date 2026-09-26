@@ -40,8 +40,10 @@ their own folders.
   - नेति नेति: a red margin rule draws down, one point of light gathers into a seated figure, the crown
     opens into dawn, then the title; the four parts with their questions from the book and the five
     study volumes
-- **About.** The portrait (indigo tone) with a light sweep, the back cover bio he chose, what the two words
-  of the name mean
+- **About.** The portrait sits in the dark and a lamp lights his face as it comes into view; on a computer
+  the light follows the pointer (Move the lamp), on a phone it drifts slowly. Beside it: मनु विश्रांति, the
+  three roles ध्यान साधक, लेखक, शोधकर्ता popping in, the back cover line appearing phrase by phrase, the
+  bio, what the two words of the name mean, and four small doors to the four worlds
 - The maths novels carry the name Manav Sharma and stay off this page unless he says otherwise
 - Hindi on the page is written natively, in plain spoken words; no कॉपी, no बैठक
 
@@ -143,6 +145,10 @@ One more scene for Book Four, the wedding at twenty past eleven, is written and 
   still ₹xxx; each volume needs its own ISBN and price before print
 - Covers still to be replaced when clean files arrive: Clean Hands, All the Summers at Once and The House
   of Auspicious Hours carry the Walnut Publication proof watermark; Peacetime is only 329 px wide
+- **About the author (Sep 2026).** Its own section before the footer, replacing the small block that sat
+  in the footer: the black and silver portrait rises into its frame, a gold hairline frame settles behind it
+  and a light passes across; the name in Bodoni; the back cover line arriving phrase by phrase in gold; the
+  bio; a link home. `tools/make_live_fivewounds.py` builds the live page from the prototype
 
 ## The pictures, and what they are for
 The game itself is the map, the written page and the detours: that is where it is played, and nothing

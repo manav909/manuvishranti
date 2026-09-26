@@ -152,22 +152,50 @@ p,li,h1,h2,h3,figcaption{text-wrap:pretty}
 @keyframes ignite{0%{filter:brightness(2.2) blur(2px)}100%{filter:none}}
 @keyframes sweep{from{background-position:100% 0}to{background-position:0 0}}
 
-/* about */
-.about{position:relative;padding:clamp(80px,11vw,140px) 0;border-top:1px solid rgba(236,230,218,.08);
-  background:radial-gradient(60% 50% at 20% 30%,rgba(90,110,200,.12),transparent 70%)}
-.about .wrap{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(30px,5vw,80px);align-items:center}
-.portrait{position:relative;margin:0;border-radius:6px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
-.portrait img{width:100%;height:auto}
-.portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,236,200,.22) 50%,transparent 65%);background-size:300% 100%;background-position:100% 0;mix-blend-mode:screen}
-.about.in .portrait::after{animation:sweep 2.4s ease .3s forwards}
-.about h2{margin:0;font:400 clamp(40px,5vw,64px)/1.1 var(--bodoni);color:var(--moon)}
-.about .open{margin:18px 0 0;font:italic 400 clamp(22px,2.2vw,28px)/1.5 var(--latin);color:var(--flame)}
-.about p{margin:16px 0 0;color:#CFCAD8}
+/* about: the portrait under a lamp */
+@property --lr{syntax:"<percentage>";inherits:true;initial-value:0%}
+@property --lx{syntax:"<percentage>";inherits:true;initial-value:50%}
+@property --ly{syntax:"<percentage>";inherits:true;initial-value:34%}
+.about{position:relative;padding:clamp(90px,12vw,160px) 0;border-top:1px solid rgba(236,230,218,.08);overflow:hidden;
+  background:radial-gradient(55% 60% at 22% 40%,rgba(232,184,107,.10),transparent 70%),radial-gradient(60% 50% at 80% 70%,rgba(90,110,200,.10),transparent 70%)}
+.about .wrap{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(34px,6vw,90px);align-items:center}
+.portrait{position:relative;margin:0;border-radius:8px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.6);aspect-ratio:4/5;cursor:crosshair;
+  --lr:0%;transition:--lr 2.4s cubic-bezier(.2,.8,.2,1) .4s}
+.portrait.in{--lr:62%}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pt-dark{filter:brightness(.22) saturate(.5)}
+.pt-lit{-webkit-mask-image:radial-gradient(circle at var(--lx) var(--ly),#000 0,rgba(0,0,0,.9) calc(var(--lr)*.35),transparent var(--lr));mask-image:radial-gradient(circle at var(--lx) var(--ly),#000 0,rgba(0,0,0,.9) calc(var(--lr)*.35),transparent var(--lr));
+  filter:sepia(.18) saturate(1.1) brightness(1.06)}
+.portrait::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--lx) var(--ly),rgba(255,200,120,.16),transparent calc(var(--lr)*.8))}
+.portrait.drift{animation:drift 14s ease-in-out infinite}
+@keyframes drift{0%,100%{--lx:50%;--ly:34%}30%{--lx:38%;--ly:46%}65%{--lx:60%;--ly:30%}}
+.pt-hint{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font:500 12px/1 var(--latin);letter-spacing:.2em;text-transform:uppercase;color:rgba(236,230,218,.55);opacity:0;transition:opacity 1s 2.6s}
+.portrait.in .pt-hint{opacity:1}
+.portrait.moved .pt-hint{opacity:0;transition-delay:0s}
+.portrait.drift .pt-hint{display:none}
+.ab-k{margin:0 0 8px;font:500 13px/1 var(--latin);letter-spacing:.34em;text-transform:uppercase;color:var(--ash)}
+.about h2{margin:0;font:400 clamp(52px,6.4vw,92px)/1.08 var(--devdisp);color:var(--moon);white-space:nowrap}
+.roles{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.roles li{padding:6px 14px 4px;border:1px solid rgba(232,184,107,.45);border-radius:999px;font:400 17px/1.3 var(--deva);color:var(--flame);opacity:0;transform:translateY(10px) scale(.9);transition:opacity .6s,transform .6s cubic-bezier(.3,1.5,.5,1);transition-delay:calc(.6s + var(--i)*.18s)}
+.about-t.in .roles li{opacity:1;transform:none}
+.about .open{margin:26px 0 0;font:italic 400 clamp(23px,2.4vw,31px)/1.45 var(--latin);color:var(--flame)}
+.about .open span{opacity:0;filter:blur(6px);transition:opacity 1s,filter 1s;transition-delay:calc(1.2s + var(--i)*.5s)}
+.about-t.in .open span{opacity:1;filter:none}
+.ab-p{margin:16px 0 0;color:#CFCAD8}
 .names{margin:30px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .names div{border-top:1px solid rgba(236,230,218,.14);padding-top:12px}
 .names dt{font:400 26px/1.2 var(--devdisp);color:var(--lamp)}
 .names dt span{font:italic 400 16px/1 var(--latin);color:var(--ash);margin-left:8px}
 .names dd{margin:6px 0 0;color:var(--ash);font-size:17px}
+.ab-worlds{margin:34px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ab-worlds p{grid-column:1/-1;margin:0 0 2px;font:500 13px/1 var(--latin);letter-spacing:.24em;text-transform:uppercase;color:var(--ash)}
+.ab-worlds a{position:relative;display:flex;align-items:flex-end;min-height:84px;border-radius:10px;overflow:hidden;text-decoration:none;background:#0B0D14;box-shadow:0 0 0 1px rgba(var(--g),.35) inset;transition:transform .3s,box-shadow .3s}
+.ab-worlds a:hover{transform:translateY(-3px);box-shadow:0 0 0 1.5px rgba(var(--g),.9) inset,0 0 24px rgba(var(--g),.3)}
+.ab-worlds img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%;opacity:.55}
+.ab-worlds span{position:relative;padding:8px 10px;font-size:14px;line-height:1.2;color:var(--moon);text-shadow:0 1px 6px #000}
+.ab-worlds [lang="hi"] span{font-family:var(--deva);font-size:15px}
+.w-lk-dot,.w-nn-dot{position:absolute;inset:0;background:radial-gradient(circle at 70% 35%,#FFB24A 0 3px,rgba(255,178,74,.35) 4px,transparent 22px),linear-gradient(160deg,#0B2530,#07131B)}
+.w-nn-dot{background:radial-gradient(circle at 50% 38%,#FFF3D6 0 3px,rgba(255,220,160,.35) 5px,transparent 24px),linear-gradient(90deg,transparent 14px,#B5432F 14px 15.5px,transparent 15.5px),#0B0D14}
 footer{padding:36px 0 max(40px,env(safe-area-inset-bottom));border-top:1px solid rgba(236,230,218,.08);color:var(--dim);font-size:15px}
 footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
@@ -524,6 +552,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .portal{min-height:clamp(200px,30vh,300px)}
   .about .wrap{grid-template-columns:minmax(0,1fr)}
   .portrait{max-width:420px}
+  .ab-worlds{grid-template-columns:repeat(2,minmax(0,1fr))}
     .spread{grid-template-columns:minmax(0,1fr)}
   .jcover{aspect-ratio:1459/1500;min-height:0}
 }
@@ -540,11 +569,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .jright{gap:6px}
   .spread{gap:6px;padding:6px}
   .names{grid-template-columns:minmax(0,1fr)}
+  .about h2{font-size:clamp(44px,13vw,64px)}
   .mark span{display:none}
   .btn{padding:7px 11px;font-size:14px}
 }
 @media (prefers-reduced-motion:reduce){
-  .mtrack,.burst,.nnart::after{animation:none!important}
+  .mtrack,.burst,.nnart::after,.portrait.drift{animation:none!important}
+  .portrait{--lr:62%;transition:none}
+  .roles li,.about .open span{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
   .js .rv:not(.in){opacity:1;transform:none}
 }
 </style>
@@ -604,16 +636,24 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
   <section class="about" id="about" aria-labelledby="about-h">
     <div class="wrap">
-      <figure class="portrait rv"><img src="/img/manu-vishranti.jpg" alt="Manu Vishranti, a black and white portrait" width="960" height="1200" loading="lazy"></figure>
-      <div class="rv">
-        <h2 id="about-h">About</h2>
-        <p class="open">A school register, a ten rupee note, a question asked every Sunday for twenty four years.</p>
-        <p>Manu Vishranti writes about the small objects a family uses to carry what it cannot say aloud. He works in English and in Hindi, building each version from the ground up rather than translating, on the understanding that a language is a way of noticing and not a set of equivalents. He also writes on meditation. The Five Wounds, five novels and one companion volume, is his first published work of fiction.</p>
-        <p>His meditation diary puts his own notebook lines beside the scriptures, one line at a time, and lets each verse agree, disagree or answer. His game walks a player through forty one tellings of the Sundar Kand, and his comic lets every animal in a dry forest dream of another. This site keeps all of it in one place.</p>
+      <figure class="portrait rv" id="lampPortrait"><img class="pt-dark" src="/img/manu-vishranti.jpg" alt="Manu Vishranti, a black and white portrait" width="960" height="1200" loading="lazy"><img class="pt-lit" src="/img/manu-vishranti.jpg" alt="" aria-hidden="true" width="960" height="1200" loading="lazy"><span class="pt-hint" aria-hidden="true">Move the lamp</span></figure>
+      <div class="about-t">
+        <p class="ab-k">About</p>
+        <h2 id="about-h" lang="hi">मनु विश्रांति</h2>
+        <ul class="roles" lang="hi"><li style="--i:0">ध्यान साधक</li><li style="--i:1">लेखक</li><li style="--i:2">शोधकर्ता</li></ul>
+        <p class="open"><span style="--i:0">A school register,</span> <span style="--i:1">a ten rupee note,</span> <span style="--i:2">a question asked every Sunday for twenty four years.</span></p>
+        <p class="ab-p">Manu Vishranti writes about the small objects a family uses to carry what it cannot say aloud. He works in English and in Hindi, building each version from the ground up rather than translating, on the understanding that a language is a way of noticing and not a set of equivalents. He also writes on meditation. The Five Wounds, five novels and one companion volume, is his first published work of fiction.</p>
+        <p class="ab-p">His meditation diary puts his own notebook lines beside the scriptures, one line at a time, and lets each verse agree, disagree or answer. His game walks a player through forty one tellings of the Sundar Kand, and his comic lets every animal in a dry forest dream of another. This site keeps all of it in one place.</p>
         <dl class="names">
           <div><dt lang="hi">मनु <span>Manu</span></dt><dd>The one who thinks. In the old stories, the first of us.</dd></div>
           <div><dt lang="hi">विश्रांति <span>Vishranti</span></dt><dd>Rest. The moment the mind settles back into itself.</dd></div>
         </dl>
+        <div class="ab-worlds"><p>Four worlds so far</p>
+          <a href="#five-wounds" style="--g:216,180,106"><img src="/img/five-wounds-keyart.webp" alt="" loading="lazy"><span>The Five Wounds</span></a>
+          <a href="#lanka-ki-khoj" lang="hi" style="--g:255,170,80"><i class="w-lk-dot"></i><span>लंका की खोज</span></a>
+          <a href="#sapnon-wala-jangal" lang="hi" style="--g:244,197,66"><img src="/comic/SapnonWalaJangal/img/cover-art.webp" alt="" loading="lazy"><span>सपनों वाला जंगल</span></a>
+          <a href="#neti-neti" lang="hi" style="--g:232,184,107"><i class="w-nn-dot"></i><span>नेति नेति</span></a>
+        </div>
       </div>
     </div>
   </section>
@@ -1165,6 +1205,14 @@ window.LKI=function(){
     })(st);
   }
 
+
+  /* the portrait under a lamp */
+  (function(){var p=document.getElementById('lampPortrait');if(!p)return;var t=p.parentNode.querySelector('.about-t');if(t)t.classList.add('rv');
+    var fine=matchMedia('(hover: hover) and (pointer: fine)').matches;if(!fine&&!reduce)p.classList.add('drift');
+    p.addEventListener('pointermove',function(e){if(e.pointerType==='touch')return;var r=p.getBoundingClientRect();p.classList.add('moved');
+      p.style.setProperty('--lx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');p.style.setProperty('--ly',((e.clientY-r.top)/r.height*100).toFixed(1)+'%')});
+    p.addEventListener('pointerleave',function(){p.style.removeProperty('--lx');p.style.removeProperty('--ly')});
+  })();
   /* ---------- reveal on scroll ---------- */
   var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);if(e.target.id==='lkStats')count(e.target)}})},{threshold:.15}):null;
   function observe(root){$$('.rv',root).forEach(function(el){if(io&&!reduce)io.observe(el);else{el.classList.add('in');if(el.id==='lkStats')count(el)}})}
