@@ -113,35 +113,33 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--lamp);outline-offse
 .lk .cta:hover{background:var(--leafink);color:var(--leaf)}
 
 /* सपनों वाला जंगल */
-.jn{grid-template-columns:minmax(0,1fr);background:
-    radial-gradient(circle at 1.5px 1.5px,rgba(26,26,26,.13) 1.4px,transparent 1.6px) 0 0/11px 11px,
-    #FFF3D1;color:#1A1A1A;border:4px solid #1A1A1A}
-.jn .body{padding:clamp(28px,4vw,56px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
-.jn .eyebrow{color:#2E7D4F;font:700 15px/1.3 "Baloo 2",var(--deva);letter-spacing:.02em;text-transform:none}
-.jn h3{margin:0;white-space:nowrap;font:800 clamp(34px,4.7vw,66px)/1.05 "Baloo 2",var(--devdisp);color:#1A1A1A}
-.jn .sub{margin:6px 0 0;font:600 clamp(19px,1.9vw,24px)/1.35 "Baloo 2",var(--deva);color:#2E7D4F}
-.jn .lede{margin:18px 0 0;font:400 clamp(19px,1.7vw,22px)/1.7 var(--deva);text-wrap:pretty}
-.jn .true{margin:12px 0 0;font:600 17px/1.5 "Baloo 2",var(--deva);color:#B4441E}
-.jn .gloss{margin:12px 0 0;font:italic 400 16px/1.4 var(--latin);color:#5A5040}
-.jn .cast{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
-.jn .cast li{font:600 16px/1 "Baloo 2",var(--deva);padding:8px 12px 7px;border:2px solid #1A1A1A;background:#fff;border-radius:999px}
-.strip{display:grid;gap:14px}
-.frame2{position:relative;border:3px solid #1A1A1A;min-height:170px;padding:18px 18px 16px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
-.frame2.n1{background:radial-gradient(circle at 18% 30%,#fff 1px,transparent 2px) 0 0/46px 38px,radial-gradient(circle at 70% 60%,rgba(255,255,255,.8) 1px,transparent 2px) 0 0/61px 47px,#243A6B}
-.frame2.n2{background:radial-gradient(120% 90% at 50% 110%,#7FD0B5 0 38%,#3F9E86 60%,#1F5E63 100%)}
-.cap{position:absolute;top:0;left:0;background:#FFE27A;border-right:3px solid #1A1A1A;border-bottom:3px solid #1A1A1A;padding:6px 12px 4px;font:700 15px/1.2 "Baloo 2",var(--deva)}
-.bal{position:relative;align-self:flex-start;max-width:86%;background:#fff;border:3px solid #1A1A1A;border-radius:48%/42%;padding:14px 22px 12px;font:800 clamp(19px,1.8vw,23px)/1.3 "Baloo 2",var(--deva);text-align:center;text-wrap:balance}
-.bal::after{content:"";position:absolute;bottom:-17px;left:26%;width:22px;height:22px;background:#fff;border-right:3px solid #1A1A1A;border-bottom:3px solid #1A1A1A;transform:skewX(-28deg) rotate(38deg)}
-.frame2.n2 .bal{align-self:flex-end}
-.frame2.n2 .bal::after{left:auto;right:26%;transform:skewX(28deg) rotate(52deg)}
-.who{margin-top:24px;font:600 15px/1.2 "Baloo 2",var(--deva);color:#fff}
-.frame2.n2 .who{align-self:flex-end}
-.jn .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:3px solid #1A1A1A;background:#fff}
-.jn .stats div{padding:12px 14px;border-right:3px solid #1A1A1A}
-.jn .stats div:last-child{border-right:0}
-.jn .stats b{display:block;font:800 clamp(30px,3.2vw,42px)/1 "Baloo 2",var(--devdisp);color:#B4441E;font-variant-numeric:tabular-nums}
-.jn .stats span{font:600 15px/1.25 "Baloo 2",var(--deva)}
-
+.jn{grid-template-columns:minmax(0,1fr);background:#0D0A1F;color:#F4F0FF;border:0;
+  box-shadow:0 0 0 4px #000,0 0 0 7px #F4C542,0 30px 70px rgba(0,0,0,.5)}
+.jn a{text-decoration:none}
+.spread{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.5fr);gap:10px;padding:10px;background:#000}
+.jp{position:relative;margin:0;overflow:hidden;border:3px solid #fff;background:#111}
+.jp img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.jn:hover .jp img{transform:scale(1.03)}
+.jcover{aspect-ratio:auto;min-height:100%}
+.jcover img{position:absolute;inset:0;object-position:50% 0}
+.jright{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto;gap:10px}
+.jright .wide{grid-column:1/-1}
+.jflip{aspect-ratio:1429/496}
+.j2{aspect-ratio:4/3}
+.jq{aspect-ratio:1453/618}
+.jinfo{display:grid;grid-template-columns:minmax(0,1.3fr) auto;gap:18px 28px;align-items:center;padding:22px clamp(18px,3vw,34px) 18px}
+.jinfo .eyebrow{color:#9B7BF4;font:700 15px/1.3 "Baloo 2",var(--deva);letter-spacing:.02em;text-transform:none;margin:0 0 6px}
+.jinfo h3{margin:0;font:800 clamp(36px,4.6vw,60px)/1.05 "Baloo 2",var(--devdisp);color:#F4C542;white-space:nowrap}
+.jinfo .sub{margin:4px 0 0;font:600 clamp(17px,1.7vw,21px)/1.4 "Baloo 2",var(--deva);color:#DCD5F5}
+.jinfo .lede{margin:12px 0 0;font:500 clamp(17px,1.5vw,19px)/1.6 var(--deva);color:#C9C2EA;max-width:52ch;text-wrap:pretty}
+.jgo{display:inline-flex;align-items:center;gap:10px;background:#F4C542;color:#15100A;border:4px solid #000;box-shadow:6px 6px 0 #000;padding:14px 22px 11px;font:800 20px/1 "Baloo 2",var(--deva);white-space:nowrap;transition:transform .2s,box-shadow .2s}
+.jgo:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 #000}
+.marq{overflow:hidden;border-top:4px solid #000;background:#1B1640;padding:12px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.mtrack{display:flex;gap:10px;width:max-content;animation:marq 60s linear infinite}
+.jn:hover .mtrack{animation-play-state:paused}
+.mtrack img{width:72px;height:88px;object-fit:cover;border:3px solid #fff;flex:none}
+@keyframes marq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.mtrack{animation:none}}
 /* नेति नेति */
 .nn{grid-template-columns:minmax(0,1fr);background:var(--ink);color:#E9E4DA}
 .nn::before{content:"";position:absolute;top:0;bottom:0;left:clamp(40px,7vw,96px);width:1.5px;background:var(--margin);opacity:.85}
@@ -184,7 +182,10 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
   .fw figure::after{background:linear-gradient(180deg,transparent 60%,var(--fw-bg))}
   .fw .body{padding:8px 22px 30px}
   .fw li{grid-template-columns:minmax(0,1fr)}
-  .lk .body,.nn .body,.jn .body{grid-template-columns:minmax(0,1fr)}
+  .lk .body,.nn .body{grid-template-columns:minmax(0,1fr)}
+  .spread{grid-template-columns:minmax(0,1fr)}
+  .jcover{aspect-ratio:1459/1500;min-height:0}
+  .jinfo{grid-template-columns:minmax(0,1fr)}
   .lk .body{padding:30px 38px}
   .about{grid-template-columns:minmax(0,1fr)}
   .portrait{width:min(78%,320px)}
@@ -195,8 +196,9 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
   .lk{background:repeating-linear-gradient(0deg,transparent 0 38px,rgba(62,38,16,.09) 38px 39px),linear-gradient(90deg,#5B3A1E 0 10px,var(--leaf) 10px calc(100% - 10px),#5B3A1E calc(100% - 10px))}
   .lk .body{padding:26px 26px}
   .nn::before{left:22px}
-  .jn .body{padding:24px 20px}
-  .bal{max-width:100%}
+  .jinfo h3{white-space:normal}
+  .jright{gap:6px}
+  .spread{gap:6px;padding:6px}
   .nn .body{padding:26px 20px 28px 42px}
 }
 </style>
@@ -263,28 +265,27 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
       </article>
 
       <article class="work jn" aria-labelledby="jn-h" lang="hi">
-        <div class="body">
-          <div>
-            <p class="eyebrow">कॉमिक · बच्चों के लिए · हिंदी में</p>
-            <h3 id="jn-h">सपनों वाला जंगल</h3>
-            <p class="sub">जहाँ हर जानवर किसी और का सपना देखता है</p>
-            <p class="lede">एक सूखा जंगल, जहाँ पानी घट रहा है। हर रात कोई एक जानवर सोता है, और सपने में दुनिया के किसी दूर कोने का जानवर उससे मिलने आता है। नियम एक ही है: ताक़त माँगोगे तो मिल जाएगी, पर चलेगी नहीं। सीख लोगे, तो तुम्हारे पास भी रहेगी और उसके पास भी।</p>
-            <p class="true">हर जानवर के बारे में जो लिखा है, वो सच है।</p>
-            <ul class="cast" aria-label="जंगल के जानवर">
-              <li>मोर</li><li>हथिनी</li><li>भालू</li><li>कछुआ</li><li>काला पंछी</li><li>गिद्ध</li><li>अजगर</li><li>बाघिन</li><li>चींटीखोर</li>
-            </ul>
-            <p class="gloss" lang="en">A comic for children, in Hindi. Thirty nights in a dry forest, and every animal dreams of another.</p>
-          </div>
-          <div class="strip" aria-label="किताब का एक पल">
-            <div class="frame2 n1"><span class="cap">रात</span><p class="bal">मुझे अपनी ताक़त दे दो!</p><span class="who">जंगल का जानवर</span></div>
-            <div class="frame2 n2"><p class="bal">दे नहीं सकता,<br>पर सिखा सकता हूँ।</p><span class="who">सपने वाला दूर का जानवर</span></div>
-            <div class="stats">
-              <div><b>30</b><span>रातें</span></div>
-              <div><b>9</b><span>जंगल के जानवर</span></div>
-              <div><b>20</b><span>सपनों के जानवर</span></div>
+        <a href="/comic/SapnonWalaJangal" aria-label="सपनों वाला जंगल: कॉमिक खोलिए">
+          <div class="spread">
+            <figure class="jp jcover"><img src="/comic/SapnonWalaJangal/img/cover.webp" alt="सपनों वाला जंगल की जिल्द: हथिनी, बाघिन, भालू, मोर, गिद्ध, अजगर, कछुआ और चींटीखोर" loading="lazy"></figure>
+            <div class="jright">
+              <figure class="jp jflip wide"><img id="jflipimg" src="/comic/SapnonWalaJangal/img/s-awaaz.webp" alt="काला पंछी चिल्लाता है: उसकी आवाज़ चली गई!" loading="lazy"></figure>
+              <figure class="jp j2"><img src="/comic/SapnonWalaJangal/img/d02.webp" alt="सपने में ऑक्टोपस की आँख" loading="lazy"></figure>
+              <figure class="jp j2"><img src="/comic/SapnonWalaJangal/img/d00.webp" alt="बर्फ़ में हथिनी: हाँ, मैं सबसे बड़ी हूँ, फिर भी डरी हुई हूँ।" loading="lazy"></figure>
+              <figure class="jp jq wide"><img src="/comic/SapnonWalaJangal/img/c-sawal.webp" alt="चींटीखोर सोचता है: सबके पास कुछ न कुछ है। मेरे पास क्या है?" loading="lazy"></figure>
             </div>
           </div>
-        </div>
+          <div class="jinfo">
+            <div>
+              <p class="eyebrow">कॉमिक · बच्चों के लिए · हिंदी में</p>
+              <h3 id="jn-h">सपनों वाला जंगल</h3>
+              <p class="sub">जहाँ हर जानवर किसी और का सपना देखता है</p>
+              <p class="lede">एक सूखा जंगल और तीस रातें। हर रात कोई जानवर सोता है, और सपने में दुनिया के किसी दूर कोने का जानवर उससे मिलने आता है। ताक़त माँगोगे तो चलेगी नहीं। सीख लोगे, तो काम आएगी।</p>
+            </div>
+            <span class="jgo">कॉमिक खोलिए <span class="ar" aria-hidden="true">&rarr;</span></span>
+          </div>
+          <div class="marq" aria-hidden="true"><div class="mtrack"><img src="/comic/SapnonWalaJangal/img/af00.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af01.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af02.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af03.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af04.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af05.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af06.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af07.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af08.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af09.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af10.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af11.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af12.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af13.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af14.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af15.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af16.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af17.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af18.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af19.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af00.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af01.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af02.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af03.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af04.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af05.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af06.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af07.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af08.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af09.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af10.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af11.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af12.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af13.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af14.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af15.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af16.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af17.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af18.webp" alt="" loading="lazy"><img src="/comic/SapnonWalaJangal/img/af19.webp" alt="" loading="lazy"></div></div>
+        </a>
       </article>
 
       <article class="work nn" aria-labelledby="nn-h" lang="hi">
@@ -330,5 +331,12 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
     <span lang="hi">मनु विश्रांति</span>
   </footer>
 </div>
+<script>
+(function(){var im=document.getElementById('jflipimg');if(!im||!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+var F=[];for(var i=0;i<27;i++)F.push('/comic/SapnonWalaJangal/img/f'+(i<10?'0':'')+i+'.webp');var done=false,end=im.src;
+var io=new IntersectionObserver(function(es){if(done||!es[0].isIntersecting)return;done=true;io.disconnect();
+  F.forEach(function(u){var p=new Image();p.src=u});var k=0,d=150;(function step(){if(k>=16){im.src=end;return}im.src=F[(k*5)%F.length];k++;d=Math.max(55,d*.86);setTimeout(step,d)})();},{threshold:.45});
+io.observe(im);})();
+</script>
 </body>
 </html>

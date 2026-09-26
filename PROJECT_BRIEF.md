@@ -22,11 +22,11 @@ The artist page for Manu Vishranti (मनु विश्रांति), one 
   line, and what the two words of the name mean
 - **The work.** One panel per body of work, each dressed as its own world: The Five Wounds in black and
   gold with the key art, the six titles and the launch window; लंका की खोज on a palm leaf with its numbers
-  (41 tellings, 6 nights, 96 places, 108 moments) and a play button; सपनों वाला जंगल as a comic page
-  (black frames, halftone dots, two speech balloons carrying the book's own line दे नहीं सकता, पर सिखा
-  सकता हूँ, its nine forest animals and its numbers: 30 nights, 9 forest animals, 20 dream animals),
-  set in Baloo 2, the font its balloons are lettered in, with no ending given away; नेति नेति as a dark
-  ink field with a red margin rule, like its cover, with the five study volumes
+  (41 tellings, 6 nights, 96 places, 108 moments) and a play button; सपनों वाला जंगल as a real comic
+  spread from the book (the cover, the voice-taken burst panel that flips through the book's panels when
+  scrolled into view, two dream panels, the pangolin's question, and a moving strip of the twenty dream
+  animals), linking to its own page; नेति नेति as a dark ink field with a red margin rule, like its
+  cover, with the five study volumes
 - **About.** His portrait, the back cover bio he chose (the school register, the ten rupee note), and
   one paragraph on the diary and the game
 - **His portrait.** From his own photo, only toned and cropped, never retouched: classic black and white,
@@ -35,6 +35,24 @@ The artist page for Manu Vishranti (मनु विश्रांति), one 
 - The jungle comic is listed at his word (Sep 2026). The maths novels carry the name Manav Sharma and
   stay off this page unless he says otherwise
 - Hindi on the page is written natively, in plain spoken words; no कॉपी, no बैठक
+
+## सपनों वाला जंगल (`/comic/SapnonWalaJangal`)
+The comic's own page, Hindi throughout, built only from the book's own art (cut from the 79 page PDF).
+- **Opening.** A Marvel style title sequence: 28 of the book's panels flip past faster and faster, the
+  title then fills with living panels over a dim flicker, and the golden title box (the cover's own)
+  slams in over the cover art. Sound is off until the visitor turns it on (flips, a rise, a boom, all
+  made in the browser). A replay button; reduced motion or no script rests on the finished title
+- **Sections.** यह हमारा जंगल है (the setup, in the book's own words); जंगल के नौ जानवर (each animal's
+  introduction panel and one line); the pangolin's question, answered only by the book; सपनों का एक ही
+  नियम (ask versus learn, and the first night's burst panel); हर रात, एक सपना (a reel of dream panels,
+  then the twenty real animals with their true facts typeset); किताब के कुछ पन्ने (a page turner over
+  pages 2 to 6, 12 and 16); जंगल से एक वादा (the book's closing right and wrong pairs); the numbers
+- **Spoilers.** Nothing past the early nights: no ending, no pangolin's answer, nobody lost. The
+  crocodile card's closing line about loss is left out
+- **Dashes.** The fact cards in the book PDF still carry long dashes, so the site never shows those
+  card images; their text is set by hand with a colon style name and fact instead
+- **Credit.** The book's cover still reads मानव शर्मा; the author box is cropped out of every image here
+- Images: `comic/SapnonWalaJangal/img/`, WebP; `share.jpg` is the link preview
 
 ## The Five Wounds (`/novel/TheFiveWounds`)
 The site for the series by Manu Vishranti: *Clean Hands*, *Peacetime*, *All the Summers at Once*,
@@ -169,6 +187,7 @@ the eyes want a rest.
 - The game answers at manuvishranti.com/lanka_ki_khoj
 - The home page answers at manuvishranti.com
 - The Five Wounds answers at manuvishranti.com/novel/TheFiveWounds
+- The comic answers at manuvishranti.com/comic/SapnonWalaJangal
 - Publish = push to `main`. Vercel rebuilds automatically
 
 ## Files
@@ -179,6 +198,7 @@ the eyes want a rest.
 - `index.html`: the home page, the artist page for Manu Vishranti
 - `favicon.svg`: the lamp icon every page uses
 - `img/`: his portrait in both tones and the home page link preview
+- `comic/SapnonWalaJangal/index.html` and its `img/`: the comic's page
 
 ## The checks
 50 file checks run on the extracted script before anything is published (`runall.sh`, which counts a

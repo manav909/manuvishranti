@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>सपनों वाला जंगल</title>
+<meta name="description" content="सपनों वाला जंगल: बच्चों के लिए हिंदी में एक रंगीन कॉमिक। एक सूखा जंगल, तीस रातें, और हर रात कोई जानवर दुनिया के किसी दूर कोने के जानवर का सपना देखता है।">
+<link rel="canonical" href="https://manuvishranti.com/comic/SapnonWalaJangal">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="book">
+<meta property="og:site_name" content="मनु विश्रांति">
+<meta property="og:title" content="सपनों वाला जंगल">
+<meta property="og:description" content="जहाँ हर जानवर किसी और का सपना देखता है। बच्चों के लिए हिंदी में एक रंगीन कॉमिक।">
+<meta property="og:url" content="https://manuvishranti.com/comic/SapnonWalaJangal">
+<meta property="og:image" content="https://manuvishranti.com/comic/SapnonWalaJangal/img/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#120E2A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --night:#120E2A; --night2:#1B1640; --dream:#9B7BF4; --dream2:#5B3FC0;
+  --gold:#F4C542; --gold2:#E9A91E; --ink:#15100A; --paper:#FFF6DC; --leaf:#2E8B57; --sun:#FF7A1A;
+  --moon:#F4F0FF; --soft:#C9C2EA;
+  --f:"Baloo 2","Noto Sans Devanagari","Mangal",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--night)}
+body{margin:0;background:var(--night);color:var(--moon);font:500 19px/1.6 var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.wrap{width:min(100%,1240px);margin:0 auto;padding-inline:max(16px,4vw)}
+
+/* top bar */
+.bar{position:fixed;z-index:50;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) max(16px,3vw) 12px;pointer-events:none}
+.bar>*{pointer-events:auto}
+.home{font:700 17px/1 var(--f);text-decoration:none;background:rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.25);padding:9px 14px 7px;border-radius:999px;backdrop-filter:blur(6px)}
+.ctl{display:flex;gap:8px}
+.ctl button{cursor:pointer;background:rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.25);padding:8px 14px 6px;border-radius:999px;font-size:15px;font-weight:700;backdrop-filter:blur(6px)}
+.ctl button:hover,.home:hover{border-color:var(--gold)}
+
+/* INTRO */
+#intro{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden;background:#000;isolation:isolate}
+.bg{position:absolute;inset:0;z-index:0}
+.bg img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.bg::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 60% at 50% 45%,rgba(0,0,0,0),rgba(0,0,0,.55) 100%),
+  linear-gradient(180deg,rgba(18,14,42,.35) 0%,rgba(18,14,42,0) 35%,rgba(18,14,42,.2) 70%,var(--night) 100%)}
+#flip{position:absolute;inset:0;z-index:2;background:#000;opacity:0;pointer-events:none}
+#flip img{width:100%;height:100%;object-fit:cover;will-change:transform}
+@media (orientation:portrait){#intro.flipping #flip img{object-fit:contain}}
+#flip::after{content:"";position:absolute;inset:clamp(8px,1.4vw,18px);border:clamp(3px,.5vw,6px) solid #fff;pointer-events:none;mix-blend-mode:overlay}
+#flash{position:absolute;inset:0;z-index:3;background:#fff;opacity:0;pointer-events:none}
+.title{position:absolute;inset:0;z-index:4;display:grid;place-items:center;align-content:center;gap:clamp(12px,2.2vh,22px);padding:0 16px;text-align:center}
+.tbox{position:relative;display:inline-block;padding:clamp(14px,2.2vw,26px) clamp(22px,4vw,56px) clamp(10px,1.8vw,20px);border-radius:18px;
+  background:linear-gradient(180deg,#FFD65E,var(--gold) 45%,var(--gold2));border:clamp(3px,.45vw,6px) solid var(--ink);
+  box-shadow:0 10px 0 var(--ink),0 30px 60px rgba(0,0,0,.6)}
+.tbox h1{margin:0;font:800 clamp(46px,9.4vw,150px)/1.02 var(--f);letter-spacing:-.01em;color:var(--ink);white-space:nowrap}
+.tbox .tsub{margin:.1em 0 0;font:700 clamp(15px,1.9vw,27px)/1.3 var(--f);color:#7A3A0A}
+.tag{margin:0;display:inline-block;background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 16px 4px;font:600 clamp(14px,1.4vw,17px)/1.3 var(--f);color:var(--moon)}
+.cue{position:absolute;z-index:5;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);font:600 15px/1 var(--f);color:var(--soft);text-align:center;text-decoration:none}
+.cue::after{content:"";display:block;margin:10px auto 0;width:22px;height:22px;border-right:3px solid currentColor;border-bottom:3px solid currentColor;transform:rotate(45deg);animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(6px) rotate(45deg)}}
+.load{position:absolute;z-index:6;inset:0;display:none;place-items:center;background:#000;font:700 18px/1 var(--f);color:var(--soft)}
+.load i{display:block;width:180px;height:4px;margin-top:14px;background:#222;border-radius:4px;overflow:hidden}
+.load i b{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+
+/* intro states (set by script); without script the page rests on the finished title */
+#intro.run .load{display:grid}
+#intro.flipping #flip{opacity:1}
+#intro.flipping .title,#intro.flipping .cue,#intro.flipping .bg{opacity:0}
+#intro.clip .bg{opacity:0}
+#intro.clip #flip{opacity:.13;filter:blur(3px)}
+#intro.clip .cue,#intro.clip .tsub,#intro.clip .tag{opacity:0}
+#intro.clip .tbox{background:transparent;border-color:transparent;box-shadow:none}
+#intro.clip .tbox h1{color:transparent;-webkit-text-stroke:0;background-size:cover;background-position:center;-webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 0 26px rgba(255,214,94,.35)) drop-shadow(0 6px 0 rgba(0,0,0,.7));transform:scale(2.4);transition:none}
+#intro.clip.zoom .tbox h1{transform:scale(1);transition:transform 1.45s cubic-bezier(.12,.75,.2,1)}
+#intro.done .tbox{animation:slam .5s cubic-bezier(.2,1.6,.4,1) both}
+#intro.done .bg{animation:fadein 1.1s ease both}
+#intro.done .tsub{animation:fadein .6s .35s ease both}
+#intro.done .tag{animation:fadein .6s .6s ease both}
+#intro.done .cue{animation:fadein .6s 1s ease both}
+@keyframes slam{0%{transform:scale(1.7) rotate(-4deg);opacity:0}60%{opacity:1}100%{transform:none;opacity:1}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+
+/* sections */
+section.s{position:relative;padding-block:clamp(64px,11vh,120px)}
+.cap{display:inline-block;margin:0 0 clamp(20px,3vh,32px);background:var(--paper);color:var(--ink);border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);
+  padding:8px 20px 4px;font:800 clamp(26px,3.6vw,44px)/1.15 var(--f);transform:rotate(-1.2deg)}
+.lede{margin:0 0 clamp(24px,4vh,40px);max-width:40ch;font:600 clamp(19px,1.9vw,24px)/1.55 var(--f);color:var(--moon);text-wrap:pretty}
+.panel{position:relative;margin:0;border:4px solid #000;background:#000;overflow:hidden;box-shadow:0 0 0 3px rgba(255,255,255,.9),0 22px 50px rgba(0,0,0,.55)}
+.panel img{width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+button.panel{padding:0;cursor:zoom-in;display:block;width:100%}
+.panel:hover img{transform:scale(1.04)}
+
+/* jungle */
+.jungle{background:linear-gradient(180deg,var(--night),#16233A 40%,#1C3326)}
+.jgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.jgrid .big{aspect-ratio:1434/505}
+.say{display:grid;gap:14px}
+.box{background:var(--paper);color:var(--ink);border:4px solid #000;padding:14px 18px 12px;font:700 clamp(17px,1.5vw,20px)/1.5 var(--f);box-shadow:5px 5px 0 #000;text-wrap:pretty}
+.box b{color:#B4441E}
+.strips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
+.strips .panel{aspect-ratio:1434/245}
+
+/* cast */
+.cast{background:radial-gradient(ellipse at 50% 0%,#2B5A3A 0%,#1C3326 45%,#141B24 100%)}
+.cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.card{display:flex;flex-direction:column;gap:0;background:#000;border:4px solid #000;box-shadow:0 0 0 3px #fff,8px 10px 0 3px rgba(0,0,0,.5);transform:rotate(var(--r,0deg));transition:transform .25s}
+.card:hover{transform:rotate(0) translateY(-4px) scale(1.02)}
+.card .panel{border:0;box-shadow:none;aspect-ratio:4/3.1}
+.card .who{display:flex;flex-direction:column;gap:2px;background:var(--paper);color:var(--ink);padding:12px 16px 12px;border-top:4px solid #000}
+.card .who b{font:800 clamp(22px,2vw,28px)/1.1 var(--f)}
+.card .who span{font:600 16px/1.45 var(--f);color:#3B2A14}
+.q{margin:28px auto 0;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:22px;align-items:center}
+.q .panel{aspect-ratio:1453/618}
+.q p{margin:0;font:800 clamp(26px,3vw,40px)/1.25 var(--f);color:var(--gold);text-wrap:balance}
+.q small{display:block;margin-top:10px;font:600 17px/1.5 var(--f);color:var(--soft)}
+
+/* rule */
+.rule{background:linear-gradient(180deg,#141B24,#2A1830)}
+.rgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
+.rc{display:flex;flex-direction:column;border:4px solid #000;background:var(--paper);color:var(--ink);box-shadow:0 0 0 3px #fff,10px 12px 0 rgba(0,0,0,.5)}
+.rc .panel{border:0;border-bottom:4px solid #000;box-shadow:none;aspect-ratio:653/233}
+.rc .t{padding:16px 20px 18px}
+.rc h3{margin:0 0 6px;font:800 clamp(28px,3vw,40px)/1.1 var(--f)}
+.rc.ask h3{color:#C0391B}
+.rc.learn h3{color:#1F7A48}
+.rc p{margin:0;font:600 clamp(17px,1.6vw,21px)/1.55 var(--f);text-wrap:pretty}
+.boom{margin-top:30px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:center}
+.boom .panel{aspect-ratio:1429/496}
+.boom p{margin:0;font:800 clamp(24px,2.6vw,34px)/1.3 var(--f);text-wrap:balance}
+.boom small{display:block;margin-top:8px;font:600 17px/1.5 var(--f);color:var(--soft)}
+
+/* dreams */
+.dreams{background:radial-gradient(1px 1px at 12% 18%,#fff 50%,transparent 51%) 0 0/190px 170px,radial-gradient(1.5px 1.5px at 70% 60%,rgba(255,255,255,.8) 50%,transparent 51%) 0 0/260px 230px,
+  radial-gradient(ellipse at 50% 30%,#3A2A8C 0%,#20174F 45%,var(--night) 100%)}
+.reel{display:grid;grid-auto-flow:column;grid-auto-columns:min(78vw,560px);gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 22px;margin-inline:calc(-1 * max(16px,4vw));padding-inline:max(16px,4vw);scrollbar-color:var(--dream) transparent}
+.reel .panel{scroll-snap-align:center;aspect-ratio:16/10;border-color:#1b0f3c;box-shadow:0 0 0 3px var(--dream),0 0 40px rgba(155,123,244,.35)}
+.real{margin-top:clamp(40px,7vh,70px)}
+.real h3{margin:0 0 6px;font:800 clamp(24px,2.8vw,36px)/1.2 var(--f);color:var(--gold)}
+.real>p{margin:0 0 22px;color:var(--soft);font-weight:600}
+.agrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.an{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:start;background:rgba(255,246,220,.97);color:var(--ink);border:3px solid #000;padding:10px;box-shadow:5px 5px 0 rgba(0,0,0,.55)}
+.an img{width:96px;height:118px;object-fit:cover;border:2px solid #000}
+.an b{display:block;font:800 18px/1.2 var(--f);margin-bottom:4px}
+.an span{display:block;font:500 14.5px/1.5 var(--f);color:#3B2A14;text-wrap:pretty}
+
+/* pages */
+.pages{background:linear-gradient(180deg,var(--night),#1A1238)}
+.book{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:clamp(10px,2vw,26px);align-items:center;justify-items:center}
+.leaf{perspective:1600px;width:min(100%,560px)}
+.leaf img{width:100%;aspect-ratio:1459/2167;object-fit:cover;border:4px solid #000;box-shadow:0 0 0 3px #fff,0 30px 70px rgba(0,0,0,.6);transform-origin:left center;background:#000}
+.leaf img.turn{animation:turn .45s cubic-bezier(.3,.7,.3,1)}
+.leaf img.back{transform-origin:right center;animation:turnb .45s cubic-bezier(.3,.7,.3,1)}
+@keyframes turn{0%{transform:rotateY(-70deg);opacity:.2}100%{transform:none;opacity:1}}
+@keyframes turnb{0%{transform:rotateY(70deg);opacity:.2}100%{transform:none;opacity:1}}
+.nav{cursor:pointer;width:clamp(48px,6vw,64px);height:clamp(48px,6vw,64px);border-radius:50%;background:var(--gold);color:var(--ink);border:4px solid #000;box-shadow:4px 4px 0 #000;font:800 28px/1 var(--f)}
+.nav:disabled{opacity:.35;cursor:default}
+.pno{margin:16px 0 0;text-align:center;font:700 17px/1 var(--f);color:var(--soft)}
+.thumbs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px}
+.thumbs button{cursor:pointer;width:52px;padding:0;border:3px solid transparent;background:none;opacity:.6}
+.thumbs button[aria-current="true"]{border-color:var(--gold);opacity:1}
+
+/* vada */
+.vada{background:linear-gradient(180deg,#1A1238,#12291F)}
+.vgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;background:#000;border:4px solid #000;box-shadow:0 0 0 3px #fff}
+.pair img{width:100%;aspect-ratio:718/306;object-fit:cover}
+
+footer{padding-block:clamp(60px,10vh,100px);background:#0B0A18;text-align:center}
+.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:0 0 28px;padding:0;list-style:none}
+.stats li{background:var(--paper);color:var(--ink);border:4px solid #000;box-shadow:5px 5px 0 var(--gold2);padding:10px 18px 8px;min-width:130px}
+.stats b{display:block;font:800 40px/1 var(--f);color:#C0391B}
+.stats span{font:700 16px/1.3 var(--f)}
+footer p{margin:0 auto 22px;max-width:44ch;color:var(--soft);font-weight:600}
+.back{display:inline-block;text-decoration:none;background:var(--gold);color:var(--ink);border:4px solid #000;box-shadow:5px 5px 0 #000;padding:12px 24px 9px;font:800 19px/1 var(--f)}
+.back:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #000}
+
+/* lightbox */
+dialog{padding:0;border:0;background:transparent;max-width:min(96vw,1400px);max-height:92vh}
+dialog::backdrop{background:rgba(5,4,15,.88)}
+dialog img{max-width:min(96vw,1400px);max-height:86vh;width:auto;height:auto;border:4px solid #000;box-shadow:0 0 0 3px #fff}
+dialog button{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);right:16px;cursor:pointer;background:var(--gold);color:var(--ink);border:3px solid #000;border-radius:999px;padding:8px 16px 6px;font:800 16px/1 var(--f)}
+
+/* pop in (visible at rest; script only adds the motion) */
+.js .pop{opacity:0;transform:translateY(26px) scale(.97)}
+.js .pop.in{opacity:1;transform:none;transition:opacity .6s ease,transform .6s cubic-bezier(.2,1.3,.4,1)}
+
+@media (max-width:980px){
+  .jgrid,.q,.boom{grid-template-columns:minmax(0,1fr)}
+  .strips{grid-template-columns:minmax(0,1fr)}
+  .cgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .agrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  body{font-size:18px}
+  .cgrid,.rgrid,.vgrid,.agrid{grid-template-columns:minmax(0,1fr)}
+  .card{--r:0deg!important}
+  .book{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  .leaf{grid-column:1/-1;grid-row:1}
+  .book .nav{grid-row:2}
+  .ctl button{padding:7px 11px 5px;font-size:14px}
+  .home{font-size:15px;padding:8px 12px 6px}
+}
+@media (prefers-reduced-motion:reduce){
+  .cue::after{animation:none}
+  .js .pop{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <a class="home" href="/">← मनु विश्रांति</a>
+  <div class="ctl">
+    <button type="button" id="snd" aria-pressed="false">आवाज़ चालू</button>
+    <button type="button" id="replay">फिर से चलाएँ</button>
+  </div>
+</div>
+
+<header id="intro" aria-label="सपनों वाला जंगल">
+  <div class="bg"><img src="/comic/SapnonWalaJangal/img/cover-art.webp" alt="जंगल के सारे जानवर एक साथ: हथिनी, बाघिन, भालू, मोर, गिद्ध, अजगर, कछुआ और चींटीखोर" fetchpriority="high"></div>
+  <div id="flip" aria-hidden="true"><img id="fimg" alt=""></div>
+  <div id="flash" aria-hidden="true"></div>
+  <div class="title">
+    <div class="tbox"><h1 id="ttl">सपनों वाला जंगल</h1><p class="tsub">जहाँ हर जानवर किसी और का सपना देखता है</p></div>
+    <p class="tag">बच्चों के लिए रंगीन कॉमिक · हिंदी में</p>
+  </div>
+  <a class="cue" href="#jungle">नीचे चलिए</a>
+  <div class="load" aria-hidden="true"><div>जंगल जाग रहा है…<i><b id="lbar"></b></i></div></div>
+</header>
+
+<main>
+<section class="s jungle" id="jungle" aria-labelledby="j-h">
+  <div class="wrap">
+    <h2 class="cap" id="j-h">यह हमारा जंगल है।</h2>
+    <div class="jgrid">
+      <button class="panel big pop" type="button" data-full="/comic/SapnonWalaJangal/img/s-jungle.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/s-jungle.webp" alt="काला पंछी जंगल के ऊपर उड़ता है और कहता है: यह हमारा जंगल है।"></button>
+      <div class="say">
+        <p class="box pop">पहले इस जंगल में सब कुछ भरा हुआ था। <b>अब पानी घट रहा है,</b> गिद्ध कम हो रहे हैं, और सड़क से कुत्ते आने लगे हैं।</p>
+        <p class="box pop">सब डरे हुए हैं। हर जानवर मन ही मन यही सोच रहा है: <b>काश मेरे पास भी कोई ताक़त होती।</b></p>
+        <p class="box pop">आज रात से सपने शुरू होंगे। हर रात कोई सोएगा, और <b>सपने में बहुत दूर का कोई जानवर</b> उससे मिलेगा।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s cast" id="cast" aria-labelledby="c-h">
+  <div class="wrap">
+    <h2 class="cap" id="c-h">जंगल के नौ जानवर</h2>
+    <p class="lede">काला पंछी सबसे मिलवाता है। हर किसी के पास कोई न कोई ख़ूबी है।</p>
+    <div class="cgrid">
+      <article class="card pop" style="--r:-1deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-kalapanchhi.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-kalapanchhi.webp" alt="काला पंछी: और यह मैं हूँ। मुझे सब पता रहता है।"></button><div class="who"><b>काला पंछी</b><span>सबको सबसे मिलवाता है। उसे सब पता रहता है।</span></div></article>
+      <article class="card pop" style="--r:.8deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-hathini.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-hathini.webp" alt="हथिनी: पर जब मैं पैर ज़मीन पर रखती हूँ, तो मुझे पता चल जाता है कि कोई आ रहा है।"></button><div class="who"><b>हथिनी</b><span>सबसे बड़ी। पैरों से सुन लेती है कि कोई आ रहा है।</span></div></article>
+      <article class="card pop" style="--r:-.6deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-bhalu.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-bhalu.webp" alt="भालू: मैं बाघ से भी भिड़ जाता हूँ।"></button><div class="who"><b>भालू</b><span>बहुत ताक़तवर। बाघ से भी भिड़ जाता है।</span></div></article>
+      <article class="card pop" style="--r:.7deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-kachhua.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-kachhua.webp" alt="कछुआ, डूबते सूरज के सामने: मैं रोज़ गिनता हूँ।"></button><div class="who"><b>कछुआ</b><span>सबसे पुराना, चालीस साल का। रोज़ सबको गिनता है।</span></div></article>
+      <article class="card pop" style="--r:-1deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-mor.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-mor.webp" alt="मोर: पर ख़तरा सबसे पहले मैं देखता हूँ, और चिल्लाकर सबको बता देता हूँ।"></button><div class="who"><b>मोर</b><span>सबसे सुंदर। ख़तरा सबसे पहले वही देखता है।</span></div></article>
+      <article class="card pop" style="--r:.6deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-ajgar.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-ajgar.webp" alt="अजगर: इसलिए मैं कभी भागता नहीं। मुझे भूख ही नहीं लगती।"></button><div class="who"><b>अजगर</b><span>महीनों तक बिना खाए रह लेता है।</span></div></article>
+      <article class="card pop" style="--r:-.7deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-giddh.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-giddh.webp" alt="गिद्ध: पर तुम सब मुझसे दूर खड़े रहते हो।"></button><div class="who"><b>गिद्ध</b><span>जंगल साफ़ रखता है। फिर भी सब उससे दूर रहते हैं।</span></div></article>
+      <article class="card pop" style="--r:1deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-baghin.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-baghin.webp" alt="बाघिन: इस जंगल में मुझसे कोई नहीं लड़ता।"></button><div class="who"><b>बाघिन</b><span>इस जंगल में उससे कोई नहीं लड़ता।</span></div></article>
+      <article class="card pop" style="--r:-.5deg"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/c-chintikhor.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-chintikhor.webp" alt="चींटीखोर: मैं... चींटियाँ खाता हूँ।"></button><div class="who"><b>चींटीखोर</b><span>सब कहते हैं, यह कोई नहीं है।</span></div></article>
+    </div>
+    <div class="q">
+      <button class="panel pop" type="button" data-full="/comic/SapnonWalaJangal/img/c-sawal.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/c-sawal.webp" alt="सारे जानवर पानी के पास, और चींटीखोर सोचता है: सबके पास कुछ न कुछ है। मेरे पास क्या है?"></button>
+      <p class="pop">“सबके पास कुछ न कुछ है। मेरे पास क्या है?”<small>इसका जवाब किताब में है।</small></p>
+    </div>
+  </div>
+</section>
+
+<section class="s rule" id="rule" aria-labelledby="r-h">
+  <div class="wrap">
+    <h2 class="cap" id="r-h">सपनों का एक ही नियम</h2>
+    <div class="rgrid">
+      <article class="rc ask pop"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/r5.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/r5.webp" alt="काला पंछी चिल्लाता है"></button>
+        <div class="t"><h3>माँगोगे तो…</h3><p>अगर तुम उससे उसकी ताक़त माँग लो, तो वह उससे छिन जाएगी और तुम्हारे पास आ जाएगी। पर तुम उसे चला नहीं पाओगे, क्योंकि चलाना सीखने से आता है।</p></div></article>
+      <article class="rc learn pop"><button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/r6.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/r6.webp" alt="कछुआ धीरे धीरे चलता है"></button>
+        <div class="t"><h3>सीखोगे तो…</h3><p>और अगर तुम सीख लो कि वह कैसे जीता है, तो वह बात उसके पास भी रहेगी, और तुम्हारे पास भी आ जाएगी। तब वह काम भी करेगी।</p></div></article>
+    </div>
+    <div class="boom">
+      <button class="panel pop" type="button" data-full="/comic/SapnonWalaJangal/img/s-awaaz.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/s-awaaz.webp" alt="काला पंछी चिल्लाता है: उसकी आवाज़ चली गई!"></button>
+      <p class="pop">पहली ही रात एक जानवर माँग लेता है, सीखता नहीं।<small>ध्यान से देखना कि फिर क्या होता है।</small></p>
+    </div>
+  </div>
+</section>
+
+<section class="s dreams" id="dreams" aria-labelledby="d-h">
+  <div class="wrap">
+    <h2 class="cap" id="d-h">हर रात, एक सपना</h2>
+    <p class="lede">सपनों में दुनिया भर के जानवर आते हैं: बर्फ़ से, गहरे समुंदर से, रेगिस्तान से, हिमालय के ऊपर से।</p>
+    <div class="reel" id="reel" tabindex="0" aria-label="सपनों के पल, दाएँ खिसकाइए">
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d00.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d00.webp" alt="बर्फ़ में हथिनी की बड़ी आँख: हाँ, मैं सबसे बड़ी हूँ, फिर भी डरी हुई हूँ।"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d01.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d01.webp" alt="गहरे समुंदर की चमकती मछली"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d02.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d02.webp" alt="ऑक्टोपस की आँख"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d03.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d03.webp" alt="ज़मीन के नीचे बिल वाला चूहा"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d04.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d04.webp" alt="उल्लू की बड़ी आँखें"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d05.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d05.webp" alt="मधुमक्खी का छत्ता"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d06.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d06.webp" alt="हिमालय के ऊपर उड़ता हंस"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d07.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d07.webp" alt="अंधेरी गुफा में चमगादड़"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d08.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d08.webp" alt="बर्फ़ीली आँधी में पेंगुइन"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d09.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d09.webp" alt="हरा साँप"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d10.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d10.webp" alt="समुंदर में चमकती जेलीफ़िश"></button>
+      <button class="panel" type="button" data-full="/comic/SapnonWalaJangal/img/d11.webp"><img loading="lazy" src="/comic/SapnonWalaJangal/img/d11.webp" alt="मगरमच्छ की आँख"></button>
+    </div>
+    <div class="real">
+      <h3>ये सब सचमुच हैं</h3>
+      <p>सपनों के बीस जानवर, और उनके बारे में सच्ची बातें।</p>
+      <div class="agrid" id="agrid"></div>
+    </div>
+  </div>
+</section>
+
+<section class="s pages" id="pages" aria-labelledby="p-h">
+  <div class="wrap">
+    <h2 class="cap" id="p-h">किताब के कुछ पन्ने</h2>
+    <div class="book">
+      <button class="nav" type="button" id="prev" aria-label="पिछला पन्ना">‹</button>
+      <div class="leaf" id="leaf"><img id="leafimg" src="/comic/SapnonWalaJangal/img/page02.webp" alt="किताब का पन्ना 2" loading="lazy"></div>
+      <button class="nav" type="button" id="next" aria-label="अगला पन्ना">›</button>
+    </div>
+    <p class="pno" id="pno">पन्ना 2</p>
+    <div class="thumbs" id="thumbs"></div>
+  </div>
+</section>
+
+<section class="s vada" id="vada" aria-labelledby="v-h">
+  <div class="wrap">
+    <h2 class="cap" id="v-h">जंगल से एक वादा</h2>
+    <p class="lede">किताब के आख़िर में, हर बच्चे के लिए।</p>
+    <div class="vgrid">
+      <div class="pair pop"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v0a.webp" alt="सही: जंगल इनका घर है"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v0b.webp" alt="ग़लत: कचरा मत छोड़ो"></div>
+      <div class="pair pop"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v1a.webp" alt="सही: इसके पंख इसी पर अच्छे लगते हैं"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v1b.webp" alt="ग़लत: पंख मत नोचो"></div>
+      <div class="pair pop"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v2a.webp" alt="सही: यह दीमक खाता है"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v2b.webp" alt="ग़लत: इसे मत मारो"></div>
+      <div class="pair pop"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v3a.webp" alt="सही: यह जंगल साफ़ रखता है"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v3b.webp" alt="ग़लत: अंडे मत उठाओ"></div>
+      <div class="pair pop"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v4a.webp" alt="सही: यह चींटियाँ खाता है"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v4b.webp" alt="ग़लत: इसे मत पकड़ो"></div>
+      <div class="pair pop"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v5a.webp" alt="सही: पानी सबका है"><img loading="lazy" src="/comic/SapnonWalaJangal/img/v5b.webp" alt="ग़लत: पानी सूखा तो कोई नहीं बचेगा"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <ul class="stats">
+      <li><b>30</b><span>रातें</span></li>
+      <li><b>9</b><span>जंगल के जानवर</span></li>
+      <li><b>20</b><span>सपनों के जानवर</span></li>
+      <li><b>79</b><span>रंगीन पन्ने</span></li>
+    </ul>
+    <p>इस किताब में हर जानवर के बारे में जो लिखा है, वो सच है।</p>
+    <a class="back" href="/">मनु विश्रांति के सारे काम →</a>
+  </div>
+</footer>
+
+<dialog id="lb" aria-label="बड़ी तस्वीर"><button type="button" id="lbx">बंद करें</button><img id="lbimg" alt=""></dialog>
+
+<script>
+(function(){
+document.documentElement.classList.add('js');
+const IMG='/comic/SapnonWalaJangal/img/';
+
+/* the twenty real animals */
+const AN=[
+ ['ज़मीनी गिलहरी','रहती है उत्तर के बर्फ़ीले मैदानों में। सर्दी में इसका शरीर बर्फ़ से भी ठंडा हो जाता है, और यह फिर भी नहीं जमती।'],
+ ['गहरे समुंदर की मछली','रहती है समुंदर की सबसे गहरी तह में, जहाँ रोशनी पहुँचती ही नहीं। यह देखती नहीं, बस पानी की हलचल महसूस करती है।'],
+ ['ऑक्टोपस','रहता है दुनिया भर के समुंदरों में। आठ हाथ, हर हाथ पर छोटे चूसने वाले। यह रंग बदलकर पत्थर जैसा हो जाता है।'],
+ ['स्लॉथ','रहता है दक्षिण अमेरिका के बरसाती जंगलों में। दिन भर पेड़ से उलटा लटका रहता है और नीचे हफ़्ते में एक बार उतरता है।'],
+ ['बिल वाला चूहा','रहता है पूर्वी अफ़्रीका में, ज़मीन के नीचे। बहुत कम हवा में जी लेता है। अकेले रहने पर इसे ठंड लगने लगती है।'],
+ ['जमने वाला मेंढक','रहता है उत्तरी अमेरिका के ठंडे जंगलों में। सर्दी में पूरा जम जाता है, दिल तक रुक जाता है, और गरमी आते ही जी उठता है।'],
+ ['उल्लू','रहता है दुनिया भर में। इसके पंख इतने नरम होते हैं कि उड़ते वक़्त कोई आवाज़ ही नहीं होती।'],
+ ['कंगारू चूहा','रहता है अमेरिका के रेगिस्तान में। यह जीवन भर पानी नहीं पीता। जो बीज खाता है, पानी उसी में से निकाल लेता है।'],
+ ['समुद्री कछुआ','रहता है गरम समुंदरों में। हज़ारों किलोमीटर तैरकर उसी किनारे लौटता है जहाँ यह पैदा हुआ था।'],
+ ['मधुमक्खी','रहती है दुनिया भर में। यह बोल नहीं सकती, इसलिए नाचकर बताती है कि फूल किस तरफ़ हैं और कितनी दूर हैं।'],
+ ['कौआ','रहता है दुनिया भर के शहरों और गाँवों में। यह चेहरे याद रखता है, और अपने बच्चों को भी बता देता है।'],
+ ['पहाड़ पार करने वाला हंस','यह हिमालय के आर पार उड़ता है, दुनिया के सबसे ऊँचे पहाड़ों के ऊपर से, जहाँ साँस लेना भी मुश्किल है।'],
+ ['दीमक','रहती है भारत समेत गरम देशों में। ये मिट्टी की ऊँची बाँबी बनाती हैं जिसमें हवा आने जाने के अपने रास्ते होते हैं।'],
+ ['चमगादड़','रहता है दुनिया भर में। यह बोलता है और अपनी लौटती आवाज़ सुनकर अंधेरे में रास्ता बना लेता है।'],
+ ['पेंगुइन','रहता है दक्षिण के बर्फ़ीले किनारे पर। नर पेंगुइन महीनों बिना खाए खड़ा रहता है, अंडे को अपने पैरों पर रखकर।'],
+ ['बहुत बूढ़ी शार्क','रहती है उत्तर के ठंडे समुंदर में। यह सैकड़ों साल जीती है। रीढ़ वाले जानवरों में सबसे लंबी उम्र इसी की होती है।'],
+ ['गरमी देखने वाला साँप','रहता है एशिया के जंगलों में। आँखों के पास के गड्ढों से यह गरमी देख लेता है, इसलिए अंधेरे में भी शिकार ढूँढ़ लेता है।'],
+ ['हरा घोंघा','रहता है समुंदर के उथले पानी में। यह पत्तों से हरा रंग ले लेता है और फिर धूप से ही अपना खाना बना लेता है।'],
+ ['जेलीफ़िश','रहती है समुंदर में। चोट लगने पर यह वापस बच्ची बन जाती है और फिर से बड़ी होती है।'],
+ ['मगरमच्छ','रहता है भारत की नदियों में। यह घंटों बिना हिले पानी में पड़ा रह सकता है।']];
+const ag=document.getElementById('agrid');
+ag.innerHTML=AN.map((a,i)=>'<div class="an pop"><img loading="lazy" src="'+IMG+'af'+String(i).padStart(2,'0')+'.webp" alt="'+a[0]+'"><div><b>'+a[0]+'</b><span>'+a[1]+'</span></div></div>').join('');
+
+/* lightbox */
+const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg');
+document.addEventListener('click',e=>{const b=e.target.closest('[data-full]');if(!b)return;const im=b.querySelector('img');lbimg.src=b.dataset.full;lbimg.alt=im?im.alt:'';try{lb.showModal()}catch(_){}});
+document.getElementById('lbx').onclick=()=>lb.close();
+lb.addEventListener('click',e=>{if(e.target===lb)lb.close()});
+
+/* pop in */
+const pops=[...document.querySelectorAll('.pop')];
+if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}}),{rootMargin:'0px 0px -8% 0px'});pops.forEach(p=>io.observe(p))}else pops.forEach(p=>p.classList.add('in'));
+
+/* pages */
+const PG=[2,3,4,5,6,12,16];let pi=0;
+const leafimg=document.getElementById('leafimg'),pno=document.getElementById('pno'),th=document.getElementById('thumbs'),prev=document.getElementById('prev'),next=document.getElementById('next');
+th.innerHTML=PG.map((n,i)=>'<button type="button" aria-label="पन्ना '+n+'"><img loading="lazy" src="'+IMG+'page'+String(n).padStart(2,'0')+'.webp" alt=""></button>').join('');
+function show(i,dir){if(i<0||i>=PG.length)return;pi=i;const n=PG[i];leafimg.classList.remove('turn','back');void leafimg.offsetWidth;leafimg.src=IMG+'page'+String(n).padStart(2,'0')+'.webp';leafimg.alt='किताब का पन्ना '+n;
+  if(dir)leafimg.classList.add(dir>0?'turn':'back');pno.textContent='पन्ना '+n;prev.disabled=i===0;next.disabled=i===PG.length-1;
+  [...th.children].forEach((b,j)=>b.setAttribute('aria-current',j===i?'true':'false'))}
+prev.onclick=()=>show(pi-1,-1);next.onclick=()=>show(pi+1,1);
+[...th.children].forEach((b,j)=>b.onclick=()=>show(j,j>pi?1:-1));
+leafimg.parentElement.addEventListener('keydown',e=>{if(e.key==='ArrowRight')show(pi+1,1);if(e.key==='ArrowLeft')show(pi-1,-1)});
+let sx=null;leafimg.addEventListener('pointerdown',e=>{sx=e.clientX});leafimg.addEventListener('pointerup',e=>{if(sx===null)return;const d=e.clientX-sx;if(Math.abs(d)>40)show(pi+(d<0?1:-1),d<0?1:-1);sx=null});
+leafimg.style.cursor='zoom-in';leafimg.addEventListener('click',()=>{lbimg.src=leafimg.src;lbimg.alt=leafimg.alt;try{lb.showModal()}catch(_){}});
+show(0,0);
+
+/* sound, only when asked for */
+let ac=null,on=false;const snd=document.getElementById('snd');
+function ctx(){if(!ac){const A=window.AudioContext||window.webkitAudioContext;if(A)ac=new A()}return ac}
+function tick(v){if(!on||!ctx())return;const t=ac.currentTime,b=ac.createBuffer(1,ac.sampleRate*.05,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);
+  const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=1800+Math.random()*1400;g.gain.value=.18*(v||1);s.connect(f).connect(g).connect(ac.destination);s.start(t)}
+function boom(){if(!on||!ctx())return;const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(38,t+.9);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.7,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+1.2);o.connect(g).connect(ac.destination);o.start(t);o.stop(t+1.3);
+  const b=ac.createBuffer(1,ac.sampleRate*.5,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
+  const s=ac.createBufferSource(),g2=ac.createGain();s.buffer=b;g2.gain.value=.35;s.connect(g2).connect(ac.destination);s.start(t)}
+function rise(ms){if(!on||!ctx())return;const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='sawtooth';o.frequency.setValueAtTime(90,t);o.frequency.exponentialRampToValueAtTime(420,t+ms/1000);
+  const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=900;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.08,t+ms/1000*.8);g.gain.exponentialRampToValueAtTime(.0001,t+ms/1000);
+  o.connect(f).connect(g).connect(ac.destination);o.start(t);o.stop(t+ms/1000+.05)}
+snd.onclick=()=>{on=!on;snd.setAttribute('aria-pressed',on);snd.textContent=on?'आवाज़ बंद':'आवाज़ चालू';if(on){ctx();ac&&ac.resume&&ac.resume();play()}};
+
+/* the opening */
+const intro=document.getElementById('intro'),fimg=document.getElementById('fimg'),flash=document.getElementById('flash'),ttl=document.getElementById('ttl'),lbar=document.getElementById('lbar');
+const FR=Array.from({length:28},(_,i)=>IMG+'f'+String(i).padStart(2,'0')+'.webp');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timers=[],loaded=null;
+function later(fn,ms){timers.push(setTimeout(fn,ms))}
+function clear(){timers.forEach(clearTimeout);timers=[]}
+function preload(){if(loaded)return loaded;let n=0;loaded=Promise.race([
+  Promise.all(FR.map(u=>new Promise(r=>{const i=new Image();i.onload=i.onerror=()=>{n++;lbar.style.width=(n/FR.length*100)+'%';r()};i.src=u;(i.decode?i.decode().catch(()=>{}):0)}))),
+  new Promise(r=>setTimeout(r,4500))]);return loaded}
+function finish(){clear();intro.className='done';ttl.style.backgroundImage='';boom()}
+function play(){
+  if(reduce){intro.className='';return}
+  clear();intro.className='run';
+  preload().then(()=>{
+    intro.className='flipping';
+    let t=0,d=210;
+    FR.forEach((u,i)=>{
+      later(()=>{fimg.src=u;const s=1.04+Math.random()*.1,x=(Math.random()-.5)*5,r=(Math.random()-.5)*2.4;fimg.style.transform='translate('+x+'%,0) scale('+s+') rotate('+r+'deg)';
+        tick(1-i/FR.length*.5);if(i%6===5){flash.style.transition='none';flash.style.opacity=.55;requestAnimationFrame(()=>{flash.style.transition='opacity .18s';flash.style.opacity=0})}},t);
+      t+=d;d=Math.max(48,d*.88);
+    });
+    rise(t+1500);
+    later(()=>{intro.className='clip';let k=0;const BR=[0,1,2,4,5,8,19,23,24,25,3,6];const cyc=()=>{const u=FR[BR[k%BR.length]];ttl.style.backgroundImage='url('+u+')';fimg.src=u;fimg.style.transform='scale(1.08)';tick(.35);k++};cyc();
+      requestAnimationFrame(()=>requestAnimationFrame(()=>intro.classList.add('zoom')));
+      for(let j=1;j<17;j++)later(cyc,j*90);
+      later(()=>{flash.style.transition='none';flash.style.opacity=1;requestAnimationFrame(()=>{flash.style.transition='opacity .5s';flash.style.opacity=0});finish()},1550);
+    },t);
+  });
+}
+document.getElementById('replay').onclick=()=>{scrollTo({top:0,behavior:'instant'});play()};
+play();
+})();
+</script>
+</body>
+</html>
