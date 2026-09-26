@@ -130,6 +130,13 @@ Rules for this site, all standing:
 Parked: the buy layer (store buttons, read the first pages, a launch reminder) waits on the store links.
 One more scene for Book Four, the wedding at twenty past eleven, is written and optional.
 
+- **The books (the final covers, Sep 2026).** A shelf after the contents: the set cover (five gold leaves)
+  large beside the lead line, then the six volumes as 3D books that rise in one after another and turn
+  toward the pointer, each with its number, title and line. Covers live in `img/covers/` as WebP. The home
+  page's Five Wounds world shows the same six covers in place of the old list
+- Covers still to be replaced when clean files arrive: Clean Hands, All the Summers at Once and The House
+  of Auspicious Hours carry the Walnut Publication proof watermark; Peacetime is only 329 px wide
+
 ## The pictures, and what they are for
 The game itself is the map, the written page and the detours: that is where it is played, and nothing
 is folded away or replaced. Beside it sit optional 3D scenes, reached only when the player asks. One
