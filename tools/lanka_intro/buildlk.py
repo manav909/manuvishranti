@@ -1,3 +1,5 @@
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 import re
 head=open('gi-head.html').read(); foot=open('gi-foot.html').read(); data=open('lkdata.json').read()
 style=re.search(r'<style>(.*?)</style>',head,re.S).group(1)
@@ -27,10 +29,9 @@ script=script[:a]+"""  function start(e){
 """+script[b:]
 script=R("(e.target===document.body||e.target===gi)","(e.target===document.body||e.target===document.documentElement)",script)
 script=R("  gi.focus&&gi.setAttribute('tabindex','-1');\n","  window.addEventListener('pageshow',function(ev){if(ev.persisted)gi.classList.remove('gone')});\n",script)
-m=re.search(r"\bPL\b(?!\")",script.replace("\"PL\"",""));print("PLCHK",m and script.replace("\"PL\"","")[m.start()-80:m.end()+40])
+m=re.search(r"\bPL\b(?!\")",script.replace("\"PL\"",""));0 and print("PLCHK",m and script.replace("\"PL\"","")[m.start()-80:m.end()+40])
 assert 'eval(' not in script
 tpl=open('lkpage.tpl').read()
 page=tpl.replace('/*STYLE*/',style).replace('<!--BODY-->',body).replace('/*SCRIPT*/',script)
-open('/home/claude/manuvishranti/game/LankaKiKhoj/index.html','w').write(page)
-open('lkpage.js','w').write(script)
+open('../../game/LankaKiKhoj/index.html','w').write(page)
 print(len(page),len(re.findall('[–—]',page)))
