@@ -10,8 +10,52 @@ covering 41 tellings from India and beyond, 6 playable nights, 108 moments, 259 
 12 stories told inside the story, 14 side by side differences, 22 badges, 32 titles and 15 original lines
 in their own script, all with citations.
 
+Second live experience: **The Five Wounds** at `/novel/TheFiveWounds`, the promotional site for Manu Vishranti's
+five-novel series and its companion volume. It has its own section below and shares nothing with the game.
+
 Every detour belongs to a single role, none shared, and every role has its own in every one of the six
 nights: jigyasu 10, kathapremi 10, yoddha 10, yatri 9, balak 9, shastri 9, sadhak 9, raja 8.
+
+## The Five Wounds (`/novel/TheFiveWounds`)
+The site for the series by Manu Vishranti: *Clean Hands*, *Peacetime*, *All the Summers at Once*,
+*The House of Auspicious Hours*, *Dead Letter*, and the companion volume *The Third Woman*.
+Published by Walnut Publication, coming the last week of October 2026.
+
+How the page runs, top to bottom:
+- **Opening.** A drop of water, rings, a ruled diary page with Nandita's own drawings, a line written in
+  green ink, then the cover title and the byline. Skippable, with a sound button that is off until pressed
+- **The series, line by line.** One line per book
+- **The roll call, book by book.** A chapter card for each book (no reading-level seals), then its
+  characters as white and silver pencil portraits on black, then its scenes as wide film frames with a
+  title and one line, then a panel of the things that book keeps. 46 panels in one pinned scroll
+- **Key art.** The whole family in one drawing, under "Every one of them is carrying something."
+- **Footer.** Series, publisher and launch window, and a note that every face is invented
+
+What each book carries: *Clean Hands* 5 scenes and 3 kept things, *Peacetime* 4 and 3,
+*All the Summers at Once* 3 and 2, *The House of Auspicious Hours* 1 and 1, *Dead Letter* 4 and 1,
+*The Third Woman* its kept thing only (Nandita's drawings carry that book in the opening).
+
+Stack: one HTML file plus an image folder. The 17 portraits, the diary drawings, the cover and the key
+art are embedded in `index.html`; the 17 scenes and 11 objects are separate WebP files in `img/`, and
+their paths are absolute (`/novel/TheFiveWounds/img/...`) so the page works with or without the closing
+slash. Motion is GSAP 3.13.0 with ScrollTrigger from jsDelivr; with reduced motion, or if GSAP does not
+load, the page falls back to a plain stacked layout. `img/share.jpg` is the 1200 x 630 link preview.
+
+Rules for this site, all standing:
+- No em dashes or en dashes anywhere
+- Every drawing is fine pencil and ink, monochrome with one accent colour per character, and no
+  character may resemble any real person
+- No disturbing scenes of any kind
+- Every scene is a moment from the books that readers should carry away, with its reason recorded;
+  no invented or filler scenes
+- Roll-call portraits are white and silver pencil on pure black paper. Myra is 14 and must look it
+- The surname Adatia never appears on the site
+- Captions are written for readers who have not read the books: no deaths, no endings
+- Drawings are made in ChatGPT from the image packs, reviewed, and only approved ones are published.
+  The packs, the approved originals and the build files live in the handoff kit, not in this repo
+
+Parked: the buy layer (store buttons, read the first pages, a launch reminder) waits on the store links.
+One more scene for Book Four, the wedding at twenty past eleven, is written and optional.
 
 ## The pictures, and what they are for
 The game itself is the map, the written page and the detours: that is where it is played, and nothing
@@ -100,17 +144,20 @@ the eyes want a rest.
 - Host: Vercel (static). Framework preset: Other. Build command: none. Output directory: repo root
 - Domain: manuvishranti.com (apex + www)
 - The game answers at manuvishranti.com/lanka_ki_khoj
+- The Five Wounds answers at manuvishranti.com/novel/TheFiveWounds
 - Publish = push to `main`. Vercel rebuilds automatically
 
 ## Files
 - `lanka_ki_khoj/index.html`: the game, complete and standalone
+- `novel/TheFiveWounds/index.html`: The Five Wounds site
+- `novel/TheFiveWounds/img/`: its 17 scenes, 11 objects and the link preview image
 - `PROJECT_BRIEF.md`: this file
 - root `index.html`: not made yet, kept free for the home page
 
 ## The checks
 50 file checks run on the extracted script before anything is published (`runall.sh`, which counts a
 crashed check as a failure, never a pass), plus these browser checks:
-- `puranatest.py`: the game as built, eleven things in a row — map, places, tellings, reading page,
+- `puranatest.py`: the game as built, eleven things in a row: map, places, tellings, reading page,
   detours, notebook, letter, road bar, trail, corner map, and a night played to its dawn
 - `bahav.py`: the whole journey from the first screen to standing in a place, and it fails if a veil is
   left covering the screen, a screen is open with nothing to press, or there is no way on after a door
@@ -145,6 +192,8 @@ Checks worth naming, each added after a real fault was found:
 - Verify before publishing: `node --check` on the extracted script, plus the test suite
 - Commit messages: plain ASCII, single quotes
 - Stage finals in outputs, then one paste-able command
+- The Five Wounds ships as one zip, `the_five_wounds_site.zip`, holding `novel/TheFiveWounds/` and this
+  brief, unzipped over the repo root
 
 ## The unbreakable rule
 Whenever anything is added, removed or renamed - a scene, a place, a character, a find, a line, a citation,
