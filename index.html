@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Manu Vishranti</title>
-<meta name="description" content="Manu Vishranti (मनु विश्रांति): meditator, writer and researcher. The Five Wounds, five novels and a companion volume; नेति नेति, a meditation diary in four books; and लंका की खोज, a Hindi game on the Sundar Kand.">
+<meta name="description" content="Manu Vishranti (मनु विश्रांति): meditator, writer and researcher. The Five Wounds, five novels and a companion volume; लंका की खोज, a Hindi game on the Sundar Kand; सपनों वाला जंगल, a Hindi comic for children; and नेति नेति, a meditation diary in four books.">
 <link rel="canonical" href="https://manuvishranti.com/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="profile">
 <meta property="og:site_name" content="Manu Vishranti">
 <meta property="og:title" content="Manu Vishranti">
-<meta property="og:description" content="Novels, a meditation diary and a game, in English and in Hindi.">
+<meta property="og:description" content="Novels, a comic, a meditation diary and a game, in English and in Hindi.">
 <meta property="og:url" content="https://manuvishranti.com/">
 <meta property="og:image" content="https://manuvishranti.com/img/share-home.jpg">
 <meta property="og:image:width" content="1200">
@@ -22,11 +22,12 @@
  "workExample":[
   {"@type":"BookSeries","name":"The Five Wounds","url":"https://manuvishranti.com/novel/TheFiveWounds","publisher":{"@type":"Organization","name":"Walnut Publication"}},
   {"@type":"VideoGame","name":"लंका की खोज","inLanguage":"hi","url":"https://manuvishranti.com/lanka_ki_khoj"},
-  {"@type":"Book","name":"नेति नेति: एक ध्यान यात्रा","inLanguage":"hi"}]}
+  {"@type":"Book","name":"नेति नेति: एक ध्यान यात्रा","inLanguage":"hi"},
+  {"@type":"Book","name":"सपनों वाला जंगल","genre":"Comic","inLanguage":"hi","audience":{"@type":"PeopleAudience","audienceType":"children"}}]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Rozha+One&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Baloo+2:wght@600;800&family=Rozha+One&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme:dark;
@@ -111,6 +112,36 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--lamp);outline-offse
 .lk .cta{color:var(--leafink);font-family:var(--deva);font-size:19px}
 .lk .cta:hover{background:var(--leafink);color:var(--leaf)}
 
+/* सपनों वाला जंगल */
+.jn{grid-template-columns:minmax(0,1fr);background:
+    radial-gradient(circle at 1.5px 1.5px,rgba(26,26,26,.13) 1.4px,transparent 1.6px) 0 0/11px 11px,
+    #FFF3D1;color:#1A1A1A;border:4px solid #1A1A1A}
+.jn .body{padding:clamp(28px,4vw,56px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+.jn .eyebrow{color:#2E7D4F;font:700 15px/1.3 "Baloo 2",var(--deva);letter-spacing:.02em;text-transform:none}
+.jn h3{margin:0;white-space:nowrap;font:800 clamp(34px,4.7vw,66px)/1.05 "Baloo 2",var(--devdisp);color:#1A1A1A}
+.jn .sub{margin:6px 0 0;font:600 clamp(19px,1.9vw,24px)/1.35 "Baloo 2",var(--deva);color:#2E7D4F}
+.jn .lede{margin:18px 0 0;font:400 clamp(19px,1.7vw,22px)/1.7 var(--deva);text-wrap:pretty}
+.jn .true{margin:12px 0 0;font:600 17px/1.5 "Baloo 2",var(--deva);color:#B4441E}
+.jn .gloss{margin:12px 0 0;font:italic 400 16px/1.4 var(--latin);color:#5A5040}
+.jn .cast{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.jn .cast li{font:600 16px/1 "Baloo 2",var(--deva);padding:8px 12px 7px;border:2px solid #1A1A1A;background:#fff;border-radius:999px}
+.strip{display:grid;gap:14px}
+.frame2{position:relative;border:3px solid #1A1A1A;min-height:170px;padding:18px 18px 16px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.frame2.n1{background:radial-gradient(circle at 18% 30%,#fff 1px,transparent 2px) 0 0/46px 38px,radial-gradient(circle at 70% 60%,rgba(255,255,255,.8) 1px,transparent 2px) 0 0/61px 47px,#243A6B}
+.frame2.n2{background:radial-gradient(120% 90% at 50% 110%,#7FD0B5 0 38%,#3F9E86 60%,#1F5E63 100%)}
+.cap{position:absolute;top:0;left:0;background:#FFE27A;border-right:3px solid #1A1A1A;border-bottom:3px solid #1A1A1A;padding:6px 12px 4px;font:700 15px/1.2 "Baloo 2",var(--deva)}
+.bal{position:relative;align-self:flex-start;max-width:86%;background:#fff;border:3px solid #1A1A1A;border-radius:48%/42%;padding:14px 22px 12px;font:800 clamp(19px,1.8vw,23px)/1.3 "Baloo 2",var(--deva);text-align:center;text-wrap:balance}
+.bal::after{content:"";position:absolute;bottom:-17px;left:26%;width:22px;height:22px;background:#fff;border-right:3px solid #1A1A1A;border-bottom:3px solid #1A1A1A;transform:skewX(-28deg) rotate(38deg)}
+.frame2.n2 .bal{align-self:flex-end}
+.frame2.n2 .bal::after{left:auto;right:26%;transform:skewX(28deg) rotate(52deg)}
+.who{margin-top:24px;font:600 15px/1.2 "Baloo 2",var(--deva);color:#fff}
+.frame2.n2 .who{align-self:flex-end}
+.jn .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:3px solid #1A1A1A;background:#fff}
+.jn .stats div{padding:12px 14px;border-right:3px solid #1A1A1A}
+.jn .stats div:last-child{border-right:0}
+.jn .stats b{display:block;font:800 clamp(30px,3.2vw,42px)/1 "Baloo 2",var(--devdisp);color:#B4441E;font-variant-numeric:tabular-nums}
+.jn .stats span{font:600 15px/1.25 "Baloo 2",var(--deva)}
+
 /* नेति नेति */
 .nn{grid-template-columns:minmax(0,1fr);background:var(--ink);color:#E9E4DA}
 .nn::before{content:"";position:absolute;top:0;bottom:0;left:clamp(40px,7vw,96px);width:1.5px;background:var(--margin);opacity:.85}
@@ -153,7 +184,7 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
   .fw figure::after{background:linear-gradient(180deg,transparent 60%,var(--fw-bg))}
   .fw .body{padding:8px 22px 30px}
   .fw li{grid-template-columns:minmax(0,1fr)}
-  .lk .body,.nn .body{grid-template-columns:minmax(0,1fr)}
+  .lk .body,.nn .body,.jn .body{grid-template-columns:minmax(0,1fr)}
   .lk .body{padding:30px 38px}
   .about{grid-template-columns:minmax(0,1fr)}
   .portrait{width:min(78%,320px)}
@@ -164,6 +195,8 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
   .lk{background:repeating-linear-gradient(0deg,transparent 0 38px,rgba(62,38,16,.09) 38px 39px),linear-gradient(90deg,#5B3A1E 0 10px,var(--leaf) 10px calc(100% - 10px),#5B3A1E calc(100% - 10px))}
   .lk .body{padding:26px 26px}
   .nn::before{left:22px}
+  .jn .body{padding:24px 20px}
+  .bal{max-width:100%}
   .nn .body{padding:26px 20px 28px 42px}
 }
 </style>
@@ -180,7 +213,7 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
     <div>
       <p class="latin">Manu Vishranti</p>
       <p class="credit" lang="hi">ध्यान साधक, लेखक और शोधकर्ता</p>
-      <p class="say">Meditator, writer and researcher. He makes novels, a meditation diary and a game, in English and in Hindi, and keeps all of it under one name.</p>
+      <p class="say">Meditator, writer and researcher. He makes novels, a comic for children, a meditation diary and a game, in English and in Hindi, and keeps all of it under one name.</p>
     </div>
     <dl class="names">
       <div><dt lang="hi">मनु <span>Manu</span></dt><dd>The one who thinks. In the old stories, the first of us.</dd></div>
@@ -189,7 +222,7 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
   </section>
 
   <section id="work" aria-labelledby="work-h">
-    <div class="head"><h2 id="work-h">The work</h2><p>Three worlds so far</p></div>
+    <div class="head"><h2 id="work-h">The work</h2><p>Four worlds so far</p></div>
     <div class="works">
 
       <article class="work fw" aria-labelledby="fw-h">
@@ -229,6 +262,31 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
         </div>
       </article>
 
+      <article class="work jn" aria-labelledby="jn-h" lang="hi">
+        <div class="body">
+          <div>
+            <p class="eyebrow">कॉमिक · बच्चों के लिए · हिंदी में</p>
+            <h3 id="jn-h">सपनों वाला जंगल</h3>
+            <p class="sub">जहाँ हर जानवर किसी और का सपना देखता है</p>
+            <p class="lede">एक सूखा जंगल, जहाँ पानी घट रहा है। हर रात कोई एक जानवर सोता है, और सपने में दुनिया के किसी दूर कोने का जानवर उससे मिलने आता है। नियम एक ही है: ताक़त माँगोगे तो मिल जाएगी, पर चलेगी नहीं। सीख लोगे, तो तुम्हारे पास भी रहेगी और उसके पास भी।</p>
+            <p class="true">हर जानवर के बारे में जो लिखा है, वो सच है।</p>
+            <ul class="cast" aria-label="जंगल के जानवर">
+              <li>मोर</li><li>हथिनी</li><li>भालू</li><li>कछुआ</li><li>काला पंछी</li><li>गिद्ध</li><li>अजगर</li><li>बाघिन</li><li>चींटीखोर</li>
+            </ul>
+            <p class="gloss" lang="en">A comic for children, in Hindi. Thirty nights in a dry forest, and every animal dreams of another.</p>
+          </div>
+          <div class="strip" aria-label="किताब का एक पल">
+            <div class="frame2 n1"><span class="cap">रात</span><p class="bal">मुझे अपनी ताक़त दे दो!</p><span class="who">जंगल का जानवर</span></div>
+            <div class="frame2 n2"><p class="bal">दे नहीं सकता,<br>पर सिखा सकता हूँ।</p><span class="who">सपने वाला दूर का जानवर</span></div>
+            <div class="stats">
+              <div><b>30</b><span>रातें</span></div>
+              <div><b>9</b><span>जंगल के जानवर</span></div>
+              <div><b>20</b><span>सपनों के जानवर</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
       <article class="work nn" aria-labelledby="nn-h" lang="hi">
         <div class="body">
           <div>
@@ -263,7 +321,7 @@ footer{border-top:1px solid var(--rule);padding-block:26px 40px;color:var(--ash)
     <div class="bio">
       <p>A school register, a ten rupee note, a question asked every Sunday for twenty four years.</p>
       <p>Manu Vishranti writes about the small objects a family uses to carry what it cannot say aloud. He works in English and in Hindi, building each version from the ground up rather than translating, on the understanding that a language is a way of noticing and not a set of equivalents. He also writes on meditation. The Five Wounds, five novels and one companion volume, is his first published work of fiction.</p>
-      <p>His meditation diary puts his own notebook lines beside the scriptures, one line at a time, and lets each verse agree, disagree or answer. His game walks a player through forty one tellings of the Sundar Kand. This site keeps all of it in one place.</p>
+      <p>His meditation diary puts his own notebook lines beside the scriptures, one line at a time, and lets each verse agree, disagree or answer. His game walks a player through forty one tellings of the Sundar Kand, and his comic lets every animal in a dry forest dream of another. This site keeps all of it in one place.</p>
     </div>
   </section>
 

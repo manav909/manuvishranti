@@ -22,15 +22,18 @@ The artist page for Manu Vishranti (मनु विश्रांति), one 
   line, and what the two words of the name mean
 - **The work.** One panel per body of work, each dressed as its own world: The Five Wounds in black and
   gold with the key art, the six titles and the launch window; लंका की खोज on a palm leaf with its numbers
-  (41 tellings, 6 nights, 96 places, 108 moments) and a play button; नेति नेति as a dark ink field with a
-  red margin rule, like its cover, with the five study volumes
+  (41 tellings, 6 nights, 96 places, 108 moments) and a play button; सपनों वाला जंगल as a comic page
+  (black frames, halftone dots, two speech balloons carrying the book's own line दे नहीं सकता, पर सिखा
+  सकता हूँ, its nine forest animals and its numbers: 30 nights, 9 forest animals, 20 dream animals),
+  set in Baloo 2, the font its balloons are lettered in, with no ending given away; नेति नेति as a dark
+  ink field with a red margin rule, like its cover, with the five study volumes
 - **About.** His portrait, the back cover bio he chose (the school register, the ten rupee note), and
   one paragraph on the diary and the game
 - **His portrait.** From his own photo, only toned and cropped, never retouched: classic black and white,
   the background dropped into shadow, head and shoulders. Two tones: indigo into moonlight for the home
   page, warm silver on black for The Five Wounds. Originals in `img/`
-- Only works published as Manu Vishranti are listed. The jungle comic and the maths novels carry the
-  name Manav Sharma and stay off this page unless he says otherwise
+- The jungle comic is listed at his word (Sep 2026). The maths novels carry the name Manav Sharma and
+  stay off this page unless he says otherwise
 - Hindi on the page is written natively, in plain spoken words; no कॉपी, no बैठक
 
 ## The Five Wounds (`/novel/TheFiveWounds`)
