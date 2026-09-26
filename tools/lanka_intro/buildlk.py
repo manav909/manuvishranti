@@ -41,7 +41,8 @@ import json,math
 D=json.loads(data)
 hstyle=style.replace('html,body{margin:0;background:#07131B}\nhtml{scroll-behavior:smooth}\n','')
 hstyle+='\n#gi .gi-top{display:none}\n#gi .gi-float{z-index:30}\n.w-lk{background:#07131B}\n.lk-end{background:#07131B;color:#CFE0E6;padding:0 0 70px}\n.lk-end .w-end{margin-top:0;border-top-color:rgba(243,234,211,.15)}\n.lk-direct{color:#FFCA7A;text-decoration:none;font:400 19px/1 var(--deva)}\n.w-lk .allw{color:#CFE0E6}\n'
-hbody=body
+hbody=body.replace('<h1 class="gi-title" id="giTitle">','<h2 class="gi-title" id="giTitle">').replace('लंका की खोज</h1>','लंका की खोज</h2>')
+hstyle=hstyle.replace('h1.gi-title','.gi-title')
 hscript=script
 hscript=R("document.addEventListener('keydown',function k(e){if(!document.body.contains(gi)){document.removeEventListener('keydown',k);return}",
           "document.addEventListener('keydown',function k(e){if(!gi.offsetParent)return;",hscript)

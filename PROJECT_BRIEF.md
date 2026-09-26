@@ -281,6 +281,34 @@ the eyes want a rest.
 - `img/`: his portrait in both tones and the home page link preview
 - `comic/SapnonWalaJangal/index.html` and its `img/`: the comic's page
 - `diary/NetiNeti/index.html` and its `img/`: the diary's page
+- `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.txt`, `404.html`: search and answer engine files,
+  written by `tools/seo/files.py`
+- `tools/seo/`: `common.py` (site constants, the Person and publisher, JSON-LD and FAQ helpers),
+  `apply.py` (writes each page's head block and visible FAQ), `files.py` (the root files above)
+
+## Search and answer engines (SEO, GEO)
+- Canonical host is the apex, https://manuvishranti.com. Every page carries a canonical link, a full
+  description, Open Graph and Twitter card tags, and one JSON-LD `@graph`
+- One shared Person (`https://manuvishranti.com/#person`) is referenced by every page, so engines join
+  the four works to one author. Publisher for The Five Wounds is Walnut Publication
+- Graph per page: home = WebSite + ProfilePage + Person, with the four works as their own nodes; The Five Wounds =
+  BookSeries + six Book entries with their back cover text; comic = Book (children, 79 pages);
+  diary = Book (Hindi, four parts); game front page and the game itself = VideoGame. Every inner page
+  has a BreadcrumbList; every page with a visible FAQ has a FAQPage (the game itself has neither FAQ)
+- Every page except the game ends with a visible FAQ (six questions, `<details>`), in the page's own language and look.
+  The FAQPage JSON-LD repeats those answers word for word, never text that is not on the page
+- Idempotent markers: the head block sits between `<!-- seo:start -->` and `<!-- seo:end -->`, the FAQ
+  between `<!-- faq:start -->` and `<!-- faq:end -->`. Rerunning replaces them, never doubles them
+- Exactly one h1 per page. The home page's Lanka world is built with an h2 title for that reason
+- The game's own body is never touched; only its head gained the seo block
+- `robots.txt` allows every crawler by name, AI search bots included. `llms.txt` is the short map for
+  answer engines, `llms-full.txt` the full facts. `sitemap.xml` lists every page with its images
+- To change a question, a description or a date: edit `tools/seo/apply.py` (or `common.py` for
+  `TODAY`), then run `python3 tools/seo/apply.py && python3 tools/seo/files.py`. `apply.py` rebuilds the
+  game front page and the home Lanka world through `tools/lanka_intro/buildlk.py`, and the Five Wounds
+  page through `tools/make_live_fivewounds.py`
+- Still to add when they exist: real per book ISBNs in the Book entries, and `sameAs` links (Goodreads,
+  Amazon author page, publisher page, social profiles) on the Person
 
 ## The checks
 50 file checks run on the extracted script before anything is published (`runall.sh`, which counts a

@@ -4,7 +4,7 @@ s=open(src).read()
 URL='https://manuvishranti.com/novel/TheFiveWounds'
 DESC='The Five Wounds by Manu Vishranti: five novels and a companion diary following one Indian family across sixty years, from a surgeon with clean hands to a man with no surname. Published by Walnut Publication, coming the last week of October 2026.'
 old_t='<title>The Five Wounds: Opening and Cast (Prototype 1)</title>'; assert s.count(old_t)==1
-head=f'''<title>The Five Wounds by Manu Vishranti</title>
+head=f'''<title>The Five Wounds by Manu Vishranti: five novels and a companion volume</title>
 <meta name="description" content="{DESC}">
 <link rel="canonical" href="{URL}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">

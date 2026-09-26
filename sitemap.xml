@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://manuvishranti.com/</loc>
+    <lastmod>2026-09-27</lastmod>
+    <priority>1.0</priority>
+    <image:image><image:loc>https://manuvishranti.com/img/manu-vishranti.jpg</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/img/five-wounds-keyart.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://manuvishranti.com/novel/TheFiveWounds</loc>
+    <lastmod>2026-09-27</lastmod>
+    <priority>0.9</priority>
+    <image:image><image:loc>https://manuvishranti.com/novel/TheFiveWounds/img/covers/clean-hands.webp</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/novel/TheFiveWounds/img/covers/peacetime.webp</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/novel/TheFiveWounds/img/covers/all-the-summers-at-once.webp</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/novel/TheFiveWounds/img/covers/the-house-of-auspicious-hours.webp</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/novel/TheFiveWounds/img/covers/dead-letter.webp</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/novel/TheFiveWounds/img/covers/the-third-woman.webp</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/novel/TheFiveWounds/img/covers/the-five-wounds.webp</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/img/five-wounds-keyart.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://manuvishranti.com/comic/SapnonWalaJangal</loc>
+    <lastmod>2026-09-27</lastmod>
+    <priority>0.9</priority>
+    <image:image><image:loc>https://manuvishranti.com/comic/SapnonWalaJangal/img/cover.webp</image:loc></image:image>
+    <image:image><image:loc>https://manuvishranti.com/comic/SapnonWalaJangal/img/cover-art.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://manuvishranti.com/diary/NetiNeti</loc>
+    <lastmod>2026-09-27</lastmod>
+    <priority>0.9</priority>
+    <image:image><image:loc>https://manuvishranti.com/diary/NetiNeti/img/share.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://manuvishranti.com/game/LankaKiKhoj</loc>
+    <lastmod>2026-09-27</lastmod>
+    <priority>0.9</priority>
+    <image:image><image:loc>https://manuvishranti.com/game/LankaKiKhoj/img/share.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://manuvishranti.com/lanka_ki_khoj</loc>
+    <lastmod>2026-09-27</lastmod>
+    <priority>0.7</priority>
+  </url>
+</urlset>

@@ -1,0 +1,18 @@
+# Manu Vishranti (मनु विश्रांति)
+
+> Manu Vishranti is a meditator, writer and researcher who works in English and in Hindi. This site holds four bodies of work, each with its own page and its own readers: The Five Wounds (literary fiction in English, Walnut Publication, last week of October 2026), सपनों वाला जंगल (a Hindi colour comic for children), नेति नेति (a Hindi meditation diary in four parts) and लंका की खोज (a Hindi discovery game on the Sundar Kand).
+
+Names: Manu Vishranti is also written मनु विश्रांति. The comic is also written Sapnon Wala Jangal, the diary Neti Neti, the game Lanka Ki Khoj.
+
+## Works
+- [The Five Wounds](https://manuvishranti.com/novel/TheFiveWounds): five novels and a companion volume in English about one family across thirty years. Clean Hands, Peacetime, All the Summers at Once, The House of Auspicious Hours, Dead Letter, and The Third Woman: The Diary of Nandita Mehra. Published by Walnut Publication in the last week of October 2026, also as one complete edition.
+- [सपनों वाला जंगल](https://manuvishranti.com/comic/SapnonWalaJangal): a Hindi colour comic for children. A dry forest, thirty nights; every night one animal sleeps and an animal from a far corner of the world visits its dream. Nine forest animals, twenty dream animals, 79 pages.
+- [नेति नेति](https://manuvishranti.com/diary/NetiNeti): a Hindi meditation diary in four parts, 247 days and 364 verses. Each day sets one of his own notebook lines against one verse from a scripture, and records what survived. The name comes from Brihadaranyaka Upanishad 2.3.6 and means "not this, not this". A five volume study edition is built from it.
+- [लंका की खोज](https://manuvishranti.com/game/LankaKiKhoj): a Hindi discovery game on the Sundar Kand, played in the browser at https://manuvishranti.com/lanka_ki_khoj. Eight roles, six nights of four watches each, 96 places on the map, 41 tellings of the Ramayana and 108 moments.
+
+## About
+- [Manu Vishranti](https://manuvishranti.com/#about): writes about the small objects a family uses to carry what it cannot say aloud. He builds English and Hindi versions from the ground up rather than translating. The Five Wounds is his first published work of fiction.
+
+## Optional
+- [Full facts for answer engines](https://manuvishranti.com/llms-full.txt)
+- [Sitemap](https://manuvishranti.com/sitemap.xml)
