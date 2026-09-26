@@ -64,8 +64,11 @@ The diary's own page, Hindi throughout, built only from the diary's own words.
   sound buttons (a drone and a bell, off until turned on). Reduced motion or no script rests on the title
 - **Sections.** यह डायरी कैसे बनी (preface lines on a ruled page with the red margin); हर दिन, तीन
   चीज़ें (a drawn page with the three bands and the three outcomes from his own sentence: गिरी, खुली छोड़ी,
-  किस हद तक सही); चार भाग (days per part, every chapter, and each chapter's खुला रहा line on tap, then
-  his where to start sentence); the name (अथात आदेशो नेति नेति and his line on what the name means);
+  किस हद तक सही); चार भाग (a tab per part with a ring that closes inward from part one to four;
+  each part shows its own opening verse from the book, its one line question, a strip of its days, and
+  a row of doors, one per chapter. Opening a door shows that chapter page from the book: the everyday
+  hook, his line, the texts it was set against and what stayed open. Sentences using बैठक or कॉपी are
+  left out or cut to the exact part without them, marked with …; then his where to start sentence); the name (अथात आदेशो नेति नेति and his line on what the name means);
   यह किताब किसके लिए है; the numbers (4 parts, 247 days, 364 verses, 230 of his own lines) and the back
   cover lines; the five study volumes; Katha 1.3.14 from the first part's back cover, at dawn
 - **Rules held.** His lines are quoted exactly and marked as his; the site's own connecting lines are

@@ -175,25 +175,82 @@ h2{margin:0;font:400 clamp(40px,5.4vw,70px)/1.12 var(--disp);color:var(--moon)}
 .how .his em{font-style:normal;color:var(--gold2)}
 
 /* four parts */
-.parts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:clamp(36px,5vw,56px)}
-.part{position:relative;border:1px solid rgba(236,230,218,.14);border-radius:6px;padding:26px 20px 18px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0));
-  overflow:hidden}
-.part::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 50% 0%,var(--glow),transparent 70%);opacity:.5;pointer-events:none}
-.part:nth-child(1){--glow:rgba(120,140,220,.22)}
-.part:nth-child(2){--glow:rgba(150,110,200,.22)}
-.part:nth-child(3){--glow:rgba(232,184,107,.24)}
-.part:nth-child(4){--glow:rgba(181,67,47,.24)}
-.part .n{display:block;font:400 76px/1 var(--deva);color:var(--gold);opacity:.9}
-.part .which{display:block;margin-top:8px;font:400 15px/1.3 var(--deva);color:var(--rose);letter-spacing:.06em}
-.part h3{margin:4px 0 0;font:400 clamp(24px,2.2vw,30px)/1.25 var(--disp);color:var(--moon);min-height:2.5em}
-.part .days{display:block;margin:6px 0 14px;font:400 17px/1.3 var(--deva);color:var(--ash)}
-.part ol{list-style:none;margin:0;padding:0;border-top:1px solid rgba(236,230,218,.12)}
-.part li{border-bottom:1px solid rgba(236,230,218,.08)}
-.part details summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;font:400 18px/1.4 var(--deva)}
-.part details summary::-webkit-details-marker{display:none}
-.part details summary::after{content:"+";font:400 18px/1 var(--latin);color:var(--gold);transition:transform .3s}
-.part details[open] summary::after{transform:rotate(45deg)}
-.part details p{margin:0 0 12px;font:400 17px/1.6 var(--hand);color:var(--gold2)}
+.bh{margin-top:clamp(36px,5vw,56px)}
+.bh-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.bh-tab{display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(236,230,218,.12);border-radius:10px;padding:12px 14px;
+  transition:border-color .4s,background .4s,transform .4s}
+.bh-tab:hover{border-color:rgba(232,184,107,.45)}
+.bh-tab[aria-selected="true"]{border-color:var(--gold);background:rgba(232,184,107,.08)}
+.bh-ring{width:44px;height:44px;flex:none}
+.bh-ring circle{stroke:rgba(236,230,218,.28);stroke-width:1.4;transition:stroke .4s,fill .4s}
+.bh-ring circle:last-child{fill:rgba(236,230,218,.28);stroke:none}
+.bh-ring circle.on{stroke:var(--gold);stroke-width:2.6;filter:drop-shadow(0 0 4px rgba(232,184,107,.7))}
+.bh-ring circle.on:last-child{fill:var(--gold)}
+.bh-tab[aria-selected="false"] .bh-ring circle.on{stroke:var(--gold2);opacity:.7}
+.bh-tx{display:flex;flex-direction:column;min-width:0}
+.bh-tw{font:400 13px/1.3 var(--deva);color:var(--rose);letter-spacing:.05em}
+.bh-tname{font:400 clamp(17px,1.5vw,20px)/1.3 var(--disp);color:var(--moon)}
+.bh-stage{position:relative;margin-top:14px;border-radius:14px;border:1px solid rgba(236,230,218,.1);overflow:hidden;
+  background:radial-gradient(90% 70% at 85% 0%,var(--tint,rgba(90,110,200,.18)),transparent 65%),linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0));
+  transition:background 1s}
+.bh-stage[data-p="1"]{--tint:rgba(140,100,210,.2)}
+.bh-stage[data-p="2"]{--tint:rgba(232,170,90,.2)}
+.bh-stage[data-p="3"]{--tint:rgba(200,90,70,.22)}
+.bh-part{padding:clamp(24px,4vw,48px)}
+.js .bh-part{display:none}
+.js .bh-part.on{display:block;animation:bhIn .8s cubic-bezier(.2,.7,.2,1)}
+@keyframes bhIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.bh-head{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:start}
+.bh-num{display:block;font:400 clamp(64px,8vw,104px)/.9 var(--deva);color:transparent;-webkit-text-stroke:1.2px var(--gold);opacity:.8}
+.bh-q h3{margin:10px 0 0;font:400 clamp(34px,4.2vw,56px)/1.1 var(--disp);color:var(--moon)}
+.bh-ask{margin:14px 0 0;font:400 clamp(22px,2.2vw,28px)/1.55 var(--deva);color:var(--gold2)}
+.bh-sira{border-left:1.5px solid var(--margin);padding:4px 0 4px 20px}
+.bh-skt{margin:0;font:400 clamp(22px,2.4vw,30px)/1.5 var(--skt);color:var(--moon)}
+.bh-src{margin:4px 0 0;font:400 14px/1.4 var(--deva);color:var(--dim)}
+.bh-mean{margin:10px 0 0;font:italic 400 18px/1.6 var(--deva);color:var(--ash)}
+.bh-his{margin:12px 0 0;font:400 18px/1.6 var(--deva);color:var(--rose)}
+.bh-strip{display:flex;gap:6px;height:22px;margin:clamp(30px,4vw,44px) 0 0}
+.bh-seg{position:relative;cursor:pointer;color:rgba(236,230,218,.3);border-radius:2px;
+  background:repeating-linear-gradient(90deg,currentColor 0 1.5px,transparent 1.5px calc(100% / var(--n)));transition:color .4s}
+.bh-seg::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;border-radius:2px;background:currentColor;opacity:.5}
+.bh-seg:hover{color:rgba(236,230,218,.6)}
+.bh-seg.on{color:var(--gold)}
+.bh-count{margin:14px 0 0;font:400 16px/1.5 var(--deva);color:var(--ash)}
+.bh-doors{display:flex;gap:clamp(8px,1.4vw,16px);margin-top:22px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.bh-door{flex:1 0 96px;min-width:96px;max-width:150px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:0;cursor:pointer;text-align:center}
+.bh-arch{position:relative;display:block;width:100%;aspect-ratio:3/4;max-height:150px;border-radius:999px 999px 4px 4px;border:1px solid rgba(232,184,107,.35);overflow:hidden;perspective:500px;
+  background:radial-gradient(70% 60% at 50% 70%,rgba(255,226,170,.95),rgba(232,150,90,.55) 45%,rgba(60,30,30,.9) 100%)}
+.bh-leaf{position:absolute;inset:0;transform-origin:left center;transition:transform 1s cubic-bezier(.2,.8,.2,1),filter 1s;
+  background:linear-gradient(90deg,#1A1D2C,#232739 60%,#1A1D2C),#1D2030;box-shadow:inset 0 0 0 1px rgba(232,184,107,.18)}
+.bh-leaf::before{content:"";position:absolute;inset:14% 18% 10% 18%;border-radius:999px 999px 3px 3px;border:1px solid rgba(232,184,107,.22)}
+.bh-leaf::after{content:"";position:absolute;right:14%;top:56%;width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.8}
+.bh-door:hover .bh-leaf{transform:rotateY(-22deg)}
+.bh-door.on .bh-leaf{transform:rotateY(-78deg);filter:brightness(.7)}
+.bh-door.on .bh-arch{border-color:var(--gold);box-shadow:0 0 28px rgba(232,184,107,.35)}
+.bh-dn{font:400 12px/1 var(--deva);color:var(--rose);letter-spacing:.08em;margin-top:4px}
+.bh-dname{font:400 16px/1.3 var(--deva);color:var(--moon);min-height:2.6em;display:flex;align-items:flex-start;justify-content:center}
+.bh-door.on .bh-dname{color:var(--gold2)}
+.bh-dd{font:400 13px/1 var(--deva);color:var(--dim)}
+.bh-rooms{margin-top:18px;position:relative}
+.bh-room{position:relative;background:var(--paper);color:var(--pencil);border-radius:4px;padding:clamp(24px,3.4vw,40px) clamp(20px,4vw,52px) clamp(22px,3vw,34px) calc(clamp(40px,6vw,76px) + 18px);
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 41px,var(--line) 41px,var(--line) 42px);box-shadow:0 26px 70px rgba(0,0,0,.5)}
+.bh-room::before{content:"";position:absolute;top:0;bottom:0;left:clamp(40px,6vw,76px);width:1.5px;background:var(--margin);opacity:.8}
+.js .bh-room{display:none}
+.js .bh-room.on{display:block;animation:bhRoom .7s cubic-bezier(.2,.7,.2,1)}
+@keyframes bhRoom{from{opacity:0;transform:translateY(10px) scale(.99);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+html:not(.js) .bh-room+.bh-room{margin-top:16px}
+.bh-meta{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;font:400 14px/1.4 var(--deva);color:#7A6F5C;letter-spacing:.04em}
+.bh-meta b{font:400 clamp(22px,2.2vw,28px)/1.2 var(--disp);color:#1E1D26;letter-spacing:0}
+.bh-hook{margin:16px 0 0;font:400 clamp(23px,2.5vw,32px)/1.55 var(--deva);color:#15141C;text-wrap:pretty}
+.bh-page{position:relative;margin:18px 0 0;font:400 clamp(19px,1.8vw,22px)/1.8 var(--deva);color:#3A3440}
+.bh-page::before{content:"“";position:absolute;left:-.62em;top:-.1em;font:400 2em/1 var(--disp);color:var(--margin);opacity:.55}
+.bh-texts{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:22px 0 0}
+.bh-tl{font:400 13px/1.3 var(--deva);color:#7A6F5C;letter-spacing:.05em;margin-right:4px}
+.bh-chip{font:400 15px/1.2 var(--deva);color:#5A3A18;border:1px solid rgba(107,74,30,.35);border-radius:999px;padding:6px 12px;background:rgba(255,255,255,.35)}
+.bh-open{margin:22px 0 0;padding-top:14px;border-top:1px dashed rgba(43,42,51,.2);font:400 clamp(18px,1.7vw,21px)/1.6 var(--hand);color:#28305A}
+.bh-open b{font:400 13px/1 var(--deva);color:var(--margin);border:1.5px solid var(--margin);border-radius:4px;padding:4px 8px;margin-right:10px;display:inline-block;transform:rotate(-3deg);vertical-align:2px;letter-spacing:.04em}
+html:not(.js) .bh-tabs{display:none}
+html:not(.js) .bh-part+.bh-part{border-top:1px solid rgba(236,230,218,.1)}
 .enter{margin:clamp(30px,4vw,44px) 0 0;max-width:46em;font-size:clamp(19px,1.8vw,22px);color:var(--moon)}
 .enter::before{content:"";display:block;width:48px;height:1.5px;background:var(--margin);margin-bottom:16px}
 
@@ -257,7 +314,7 @@ footer{padding:70px 0 max(50px,env(safe-area-inset-bottom));border-top:1px solid
 .js .rv.in{opacity:1;transform:none}
 
 @media (max-width:980px){
-  .parts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bh-head{grid-template-columns:minmax(0,1fr)}
   .three,.study{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:620px){
@@ -265,8 +322,14 @@ footer{padding:70px 0 max(50px,env(safe-area-inset-bottom));border-top:1px solid
   .hero::after{left:18px}
   .scribe{font-size:clamp(19px,5.4vw,24px)}
   .scribe span{display:block;width:max-content;margin:0 auto}
-  .parts{grid-template-columns:minmax(0,1fr)}
-  .part h3{min-height:0}
+  .bh-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .bh-tab{padding:10px;gap:8px}
+  .bh-ring{width:34px;height:34px}
+  .bh-part{padding:22px 16px}
+  .bh-door{flex:0 0 84px;min-width:84px}
+  .bh-room{padding:22px 16px 20px 44px}
+  .bh-room::before{left:28px}
+  .bh-page::before{left:-.5em}
   .nums{grid-template-columns:repeat(2,minmax(0,1fr))}
   .page{padding:30px 18px 30px 50px}
   .page::before{left:30px}
@@ -352,56 +415,254 @@ footer{padding:70px 0 max(50px,env(safe-area-inset-bottom));border-top:1px solid
   <div class="wrap">
     <p class="kick rv">दो सौ सैंतालीस दिन</p>
     <h2 id="bhaag-h" class="rv">चार भाग</h2>
-    <p class="lead rv">हर अध्याय के आख़िर में एक पंक्ति है, कि उसमें क्या खुला रह गया। किसी अध्याय का नाम छूकर वह पंक्ति देखिए।</p>
-    <div class="parts">
-      <article class="part rv" lang="hi">
-        <span class="n">१</span><span class="which">पहला भाग</span>
-        <h3>मृत्यु और काल</h3><span class="days">पैंसठ दिन</span>
-        <ol>
-          <li><details><summary>सहायक</summary><p>खुला रहा, ये सहायक कौन हैं।</p></details></li>
-          <li><details><summary>मृत्यु का नाम</summary><p>खुला रहा, समय की इकाई घटती क्यों जा रही है।</p></details></li>
-          <li><details><summary>प्रकृति का लेनदेन</summary><p>खुला रहा, प्रकृति अपने इलाज में कहाँ तक जा सकती है।</p></details></li>
-          <li><details><summary>जो काल के बाहर खड़े हैं</summary><p>खुला रहा, ठहराव, जिसका नाम किसी ग्रंथ में नहीं मिला।</p></details></li>
-          <li><details><summary>हिसाब</summary><p>खुला रहा, वह सूचकांक, जो मेरे पन्ने पर सिर्फ़ एक योजना की तरह पड़ा है।</p></details></li>
-          <li><details><summary>बचे हुए पन्ने</summary><p>खुला रहा, किसी जगह के असर की सीमा कहाँ ख़त्म होती है।</p></details></li>
-          <li><details><summary>आख़िरी नियम</summary><p>खुला रहा, उस नाप तक पहुँचने का तरीक़ा।</p></details></li>
-        </ol>
-      </article>
-      <article class="part rv" lang="hi">
-        <span class="n">२</span><span class="which">दूसरा भाग</span>
-        <h3>छाया और प्राण</h3><span class="days">बासठ दिन</span>
-        <ol>
-          <li><details><summary>छाया</summary><p>खुला रहा, यह छाया ग्रहों तक जाती है या नहीं।</p></details></li>
-          <li><details><summary>मालिकाना</summary><p>खुला रहा, दोनों से बनी तीसरी दुनिया किसकी होती है।</p></details></li>
-          <li><details><summary>यह मैं नहीं हूँ</summary><p>खुला रहा, तो देखभाल करने वाला कौन है।</p></details></li>
-          <li><details><summary>धक्का</summary><p>खुला रहा, उस पल पास कोई विचार न हो तो क्या होता है।</p></details></li>
-          <li><details><summary>नेति</summary><p>खुला रहा, कणों वाली बात, जो मुझे कहीं नहीं मिली।</p></details></li>
-        </ol>
-      </article>
-      <article class="part rv" lang="hi">
-        <span class="n">३</span><span class="which">तीसरा भाग</span>
-        <h3>प्रकाश, आत्मा और ध्वनि</h3><span class="days">अस्सी दिन</span>
-        <ol>
-          <li><details><summary>लौटाव</summary><p>खुला रहा, जलाने वाली आग एक ही तरफ़ क्यों माँगी गई है।</p></details></li>
-          <li><details><summary>माँग</summary><p>खुला रहा, ऊपर की जगह ख़ाली रह जाने वाला डर, जो पन्ने पर तीन बार लौटता है।</p></details></li>
-          <li><details><summary>आत्मा</summary><p>खुला रहा, आत्माएँ एक हैं या अनेक। यह तीन बार पूछा गया और तीनों बार खुला रहा।</p></details></li>
-          <li><details><summary>तीन माँएँ</summary><p>खुला रहा, बीच वाली का ब्योरा।</p></details></li>
-          <li><details><summary>तरंग</summary><p>खुला रहा, हम ख़ुद जलने वाले पिंड हैं या नहीं।</p></details></li>
-          <li><details><summary>ध्वनि</summary><p>खुला रहा, बीज मंत्र और छंद का फ़र्क़, जो पहले भाग से लटका हुआ है।</p></details></li>
-          <li><details><summary>मंडल</summary><p>खुला रहा, इसी पन्ने की तीसरी पंक्ति, जिसका जवाब मैंने नहीं दिया।</p></details></li>
-        </ol>
-      </article>
-      <article class="part rv" lang="hi">
-        <span class="n">४</span><span class="which">चौथा भाग</span>
-        <h3>आयाम</h3><span class="days">चालीस दिन</span>
-        <ol>
-          <li><details><summary>आयाम</summary><p>खुला रहा, पाँचवाँ आयाम, जो तीसरे दिन उठा और चौबीसवें तक खुला ही रहा।</p></details></li>
-          <li><details><summary>धुरी</summary><p>खुला रहा, दूसरी तरफ़ का अनुभव कैसे हो।</p></details></li>
-          <li><details><summary>खुले वादे</summary><p>खुला रहा, छान्दोग्य का पाँचवाँ अध्याय, आज भी।</p></details></li>
-          <li><details><summary>कोष</summary><p>खुला रहा, चक्रों के देवताओं की सूची, जो इन ग्रंथों में है ही नहीं।</p></details></li>
-          <li><details><summary>भीतर के चार</summary><p>खुला रहा, प्रज्ञा में टिके रहने का तरीक़ा।</p></details></li>
-        </ol>
-      </article>
+    <p class="lead rv">चारों भाग एक सीढ़ी की तरह उतरते हैं। पहले में बात बाहर है, काल में। दूसरे में वह पास आ जाती है, छाया और प्राण में। तीसरे में भीतर, आत्मा और ध्वनि में। और चौथे में सवाल गिनने वाले पर आ जाता है।</p>
+    <div class="bh rv" id="bh">
+      <div class="bh-tabs" role="tablist" aria-label="चार भाग">
+        <button class="bh-tab" role="tab" id="bh-t0" aria-controls="bh-p0" aria-selected="true" data-p="0"><svg class="bh-ring" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" class="on" fill="none"/><circle cx="26" cy="26" r="16.5" class="" fill="none"/><circle cx="26" cy="26" r="10" class="" fill="none"/><circle cx="26" cy="26" r="3.5" class="" /></svg><span class="bh-tx"><span class="bh-tw">पहला भाग</span><span class="bh-tname">मृत्यु और काल</span></span></button>
+        <button class="bh-tab" role="tab" id="bh-t1" aria-controls="bh-p1" aria-selected="false" data-p="1"><svg class="bh-ring" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" class="" fill="none"/><circle cx="26" cy="26" r="16.5" class="on" fill="none"/><circle cx="26" cy="26" r="10" class="" fill="none"/><circle cx="26" cy="26" r="3.5" class="" /></svg><span class="bh-tx"><span class="bh-tw">दूसरा भाग</span><span class="bh-tname">छाया और प्राण</span></span></button>
+        <button class="bh-tab" role="tab" id="bh-t2" aria-controls="bh-p2" aria-selected="false" data-p="2"><svg class="bh-ring" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" class="" fill="none"/><circle cx="26" cy="26" r="16.5" class="" fill="none"/><circle cx="26" cy="26" r="10" class="on" fill="none"/><circle cx="26" cy="26" r="3.5" class="" /></svg><span class="bh-tx"><span class="bh-tw">तीसरा भाग</span><span class="bh-tname">प्रकाश, आत्मा और ध्वनि</span></span></button>
+        <button class="bh-tab" role="tab" id="bh-t3" aria-controls="bh-p3" aria-selected="false" data-p="3"><svg class="bh-ring" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" class="" fill="none"/><circle cx="26" cy="26" r="16.5" class="" fill="none"/><circle cx="26" cy="26" r="10" class="" fill="none"/><circle cx="26" cy="26" r="3.5" class="on" /></svg><span class="bh-tx"><span class="bh-tw">चौथा भाग</span><span class="bh-tname">आयाम</span></span></button>
+      </div>
+      <div class="bh-stage">
+        <article class="bh-part on" id="bh-p0" role="tabpanel" aria-labelledby="bh-t0" data-p="0" lang="hi">
+          <div class="bh-head">
+            <div class="bh-q"><span class="bh-num" aria-hidden="true">१</span><h3>मृत्यु और काल</h3><p class="bh-ask">कौन मारता है, कौन सिर्फ़ ज़रिया है, और इस सबका कोई नाप है या नहीं।</p></div>
+            <div class="bh-sira"><p class="bh-skt" lang="sa">सर्वे कालात्मकाः सर्प कालात्मकमिदं जगत्॥</p><p class="bh-src">महाभारत, अनुशासन पर्व १.५३</p><p class="bh-mean">सब कालात्मक हैं। यह सारा जगत् कालात्मक है।</p></div>
+          </div>
+          <div class="bh-strip" aria-hidden="true"><span class="bh-seg on" data-d="0" style="--n:5;flex:5"></span><span class="bh-seg" data-d="1" style="--n:8;flex:8"></span><span class="bh-seg" data-d="2" style="--n:8;flex:8"></span><span class="bh-seg" data-d="3" style="--n:12;flex:12"></span><span class="bh-seg" data-d="4" style="--n:12;flex:12"></span><span class="bh-seg" data-d="5" style="--n:14;flex:14"></span><span class="bh-seg" data-d="6" style="--n:6;flex:6"></span></div>
+          <p class="bh-count">६५ दिन, सात अध्याय। हर अध्याय एक दरवाज़ा है, कोई भी खोलिए।</p>
+          <div class="bh-doors">
+            <button class="bh-door on" type="button" data-d="0" aria-controls="bh-r0-0" aria-pressed="true"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">एक</span><span class="bh-dname">सहायक</span><span class="bh-dd">५ दिन</span></button>
+            <button class="bh-door" type="button" data-d="1" aria-controls="bh-r0-1" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">दो</span><span class="bh-dname">मृत्यु का नाम</span><span class="bh-dd">८ दिन</span></button>
+            <button class="bh-door" type="button" data-d="2" aria-controls="bh-r0-2" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">तीन</span><span class="bh-dname">प्रकृति का लेनदेन</span><span class="bh-dd">८ दिन</span></button>
+            <button class="bh-door" type="button" data-d="3" aria-controls="bh-r0-3" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">चार</span><span class="bh-dname">जो काल के बाहर खड़े हैं</span><span class="bh-dd">१२ दिन</span></button>
+            <button class="bh-door" type="button" data-d="4" aria-controls="bh-r0-4" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">पाँच</span><span class="bh-dname">हिसाब</span><span class="bh-dd">१२ दिन</span></button>
+            <button class="bh-door" type="button" data-d="5" aria-controls="bh-r0-5" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">छह</span><span class="bh-dname">बचे हुए पन्ने</span><span class="bh-dd">१४ दिन</span></button>
+            <button class="bh-door" type="button" data-d="6" aria-controls="bh-r0-6" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">सात</span><span class="bh-dname">आख़िरी नियम</span><span class="bh-dd">६ दिन</span></button>
+          </div>
+          <div class="bh-rooms">
+            <div class="bh-room on" id="bh-r0-0" data-d="0">
+              <p class="bh-meta"><span>अध्याय एक</span><b>सहायक</b><span>दिन १ से ५</span></p>
+              <p class="bh-hook">किसी के मरने पर कारण ढूँढ़ लिया जाता है, बीमारी, हादसा, कोई आदमी, और कारण मिलते ही बात बंद कर दी जाती है।</p>
+              <p class="bh-page">जो कभी नहीं गिना जाता वह यह है कि उस एक मौत के पीछे कितने हाथ थे और उनमें से कोई अपनी मर्ज़ी से नहीं चला था।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">महाभारत, अनुशासन पर्व</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> ये सहायक कौन हैं।</p>
+            </div>
+            <div class="bh-room" id="bh-r0-1" data-d="1">
+              <p class="bh-meta"><span>अध्याय दो</span><b>मृत्यु का नाम</b><span>दिन ६ से १३</span></p>
+              <p class="bh-hook">जिसने कुछ ग़लत नहीं किया वह तीस में चला जाता है…</p>
+              <p class="bh-page">मेरे पन्नों पर देह के लिए एक और शब्द लिखा है, यंत्र, और उस शब्द से मुझे बरसों झेंप होती रही, क्योंकि उसमें उम्र किसी काम की नहीं रह जाती।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">महाभारत, शांति पर्व</span><span class="bh-chip">गीता</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> समय की इकाई घटती क्यों जा रही है।</p>
+            </div>
+            <div class="bh-room" id="bh-r0-2" data-d="2">
+              <p class="bh-meta"><span>अध्याय तीन</span><b>प्रकृति का लेनदेन</b><span>दिन १४ से २१</span></p>
+              <p class="bh-hook">हवा, पानी, अन्न और दवा, हम रोज़ लेते हैं और मान चुके हैं कि यह मुफ़्त है, क्योंकि इसका बिल कभी हाथ में नहीं आता।</p>
+              <p class="bh-page">मेरे पन्नों पर इसका पूरा लेनदेन तीन पंक्तियों में लिखा है और उन तीनों पर मुझे कभी शक नहीं हुआ, इसीलिए वे सबसे ख़तरनाक थीं।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, तीसरा अध्याय</span><span class="bh-chip">ईशोपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> प्रकृति अपने इलाज में कहाँ तक जा सकती है।</p>
+            </div>
+            <div class="bh-room" id="bh-r0-3" data-d="3">
+              <p class="bh-meta"><span>अध्याय चार</span><b>जो काल के बाहर खड़े हैं</b><span>दिन २२ से ३३</span></p>
+              <p class="bh-hook">एक गुरु जो कहता है, दूसरा उसी को काट देता है, और दोनों अपने रास्ते को इकलौता बताते हैं, इसलिए सीखने वाला कहीं का नहीं रहता।</p>
+              <p class="bh-page">मेरे पन्नों पर तीन नाम सवाल की तरह पड़े थे, अष्टावक्र, हनुमान और नर नारायण, और मैंने उन्हें बरसों नहीं खोला क्योंकि डर था कि खुलने पर वे कुछ और निकलेंगे।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">माण्डूक्य उपनिषद्</span><span class="bh-chip">कठोपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> ठहराव, जिसका नाम किसी ग्रंथ में नहीं मिला।</p>
+            </div>
+            <div class="bh-room" id="bh-r0-4" data-d="4">
+              <p class="bh-meta"><span>अध्याय पाँच</span><b>हिसाब</b><span>दिन ३४ से ४५</span></p>
+              <p class="bh-hook">जो बुरा समय चल रहा है वह किए का फल है या सिर्फ़ इत्तेफ़ाक़, इसका जवाब हर जगह टाल दिया जाता है, और आदमी दोनों के बीच लटका रहता है।</p>
+              <p class="bh-page">नाप के नाम भी हम नरम चुनते हैं, संतुलन, निःस्वार्थ, दक्षता, और भला लगना किसी बात का सबूत नहीं है।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, चौथा, छठा और अठारहवाँ अध्याय</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> वह सूचकांक, जो मेरे पन्ने पर सिर्फ़ एक योजना की तरह पड़ा है।</p>
+            </div>
+            <div class="bh-room" id="bh-r0-5" data-d="5">
+              <p class="bh-meta"><span>अध्याय छह</span><b>बचे हुए पन्ने</b><span>दिन ४६ से ५९</span></p>
+              <p class="bh-hook">बड़ी मान्यताओं पर हम बहस करते हैं और छोटी को जाँचने लायक़ ही नहीं समझते, जबकि रोज़ के फ़ैसले वही चलाती हैं।</p>
+              <p class="bh-page">इस डायरी का नियम था कि कोई पंक्ति छूटे नहीं, इसलिए सबसे साधारण वाली अंत तक बचती चली गईं, और उनमें से एक तो मेरे पन्ने पर सिर्फ़ एक वाक्य की थी।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, नवाँ, दसवाँ और सत्रहवाँ अध्याय</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> किसी जगह के असर की सीमा कहाँ ख़त्म होती है।</p>
+            </div>
+            <div class="bh-room" id="bh-r0-6" data-d="6">
+              <p class="bh-meta"><span>अध्याय सात</span><b>आख़िरी नियम</b><span>दिन ६० से ६५</span></p>
+              <p class="bh-hook">…आदमी यह नहीं जान पाता कि कुछ हुआ भी या वह अपने को बहला रहा है, क्योंकि इस काम का कोई नाप किसी ने नहीं दिया।</p>
+              <p class="bh-page">मेरे पन्ने पर वह नाप लिखा हुआ है, और मैं उसे अंत तक टालता रहा, क्योंकि नाप लिख देने के बाद अपने को उस पर रखना पड़ता है।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, चौदहवाँ अध्याय</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> उस नाप तक पहुँचने का तरीक़ा।</p>
+            </div>
+          </div>
+        </article>
+        <article class="bh-part" id="bh-p1" role="tabpanel" aria-labelledby="bh-t1" data-p="1" lang="hi">
+          <div class="bh-head">
+            <div class="bh-q"><span class="bh-num" aria-hidden="true">२</span><h3>छाया और प्राण</h3><p class="bh-ask">कौन उजाला करता है, कौन लेता है, और बीच में क्या आ जाता है।</p></div>
+            <div class="bh-sira"><p class="bh-skt" lang="sa">छायामयः पुरुषः।</p><p class="bh-src">बृहदारण्यक उपनिषद् ३.९.१४</p><p class="bh-mean">छाया से बना हुआ आदमी। पूछा गया कि इसकी देवता कौन है। उत्तर आया, मृत्यु।</p><p class="bh-his">मेरे पन्नों के सिरे पर यही दो शब्द लिखे हैं, और मैंने उन्हें बिना जाने जोड़ा था।</p></div>
+          </div>
+          <div class="bh-strip" aria-hidden="true"><span class="bh-seg on" data-d="0" style="--n:13;flex:13"></span><span class="bh-seg" data-d="1" style="--n:13;flex:13"></span><span class="bh-seg" data-d="2" style="--n:13;flex:13"></span><span class="bh-seg" data-d="3" style="--n:11;flex:11"></span><span class="bh-seg" data-d="4" style="--n:12;flex:12"></span></div>
+          <p class="bh-count">६२ दिन, पाँच अध्याय। हर अध्याय एक दरवाज़ा है, कोई भी खोलिए।</p>
+          <div class="bh-doors">
+            <button class="bh-door on" type="button" data-d="0" aria-controls="bh-r1-0" aria-pressed="true"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">एक</span><span class="bh-dname">छाया</span><span class="bh-dd">१३ दिन</span></button>
+            <button class="bh-door" type="button" data-d="1" aria-controls="bh-r1-1" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">दो</span><span class="bh-dname">मालिकाना</span><span class="bh-dd">१३ दिन</span></button>
+            <button class="bh-door" type="button" data-d="2" aria-controls="bh-r1-2" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">तीन</span><span class="bh-dname">यह मैं नहीं हूँ</span><span class="bh-dd">१३ दिन</span></button>
+            <button class="bh-door" type="button" data-d="3" aria-controls="bh-r1-3" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">चार</span><span class="bh-dname">धक्का</span><span class="bh-dd">११ दिन</span></button>
+            <button class="bh-door" type="button" data-d="4" aria-controls="bh-r1-4" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">पाँच</span><span class="bh-dname">नेति</span><span class="bh-dd">१२ दिन</span></button>
+          </div>
+          <div class="bh-rooms">
+            <div class="bh-room on" id="bh-r1-0" data-d="0">
+              <p class="bh-meta"><span>अध्याय एक</span><b>छाया</b><span>दिन १ से १३</span></p>
+              <p class="bh-hook">छाया को हमने हमेशा धूप वाली चीज़ समझा, जबकि किसी भी कंपन का रुक जाना छाया है, और वह सीधे प्राणों पर पड़ती है।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">मार्कण्डेय पुराण</span><span class="bh-chip">प्रश्नोपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> यह छाया ग्रहों तक जाती है या नहीं।</p>
+            </div>
+            <div class="bh-room" id="bh-r1-1" data-d="1">
+              <p class="bh-meta"><span>अध्याय दो</span><b>मालिकाना</b><span>दिन १४ से २६</span></p>
+              <p class="bh-hook">दो लोगों के साथ रहने की तकलीफ़ को हम स्वभाव का फ़र्क़ कह देते हैं, और जो असल में बँट रहा होता है उस पर बात ही नहीं होती।</p>
+              <p class="bh-page">मेरे पन्नों पर लिखा है कि बँटता स्थान और समय का मालिकाना है, और उसके लिए दो में से किसी एक की दुनिया को बिगड़ना पड़ता है।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">बृहदारण्यक उपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> दोनों से बनी तीसरी दुनिया किसकी होती है।</p>
+            </div>
+            <div class="bh-room" id="bh-r1-2" data-d="2">
+              <p class="bh-meta"><span>अध्याय तीन</span><b>यह मैं नहीं हूँ</b><span>दिन २७ से ३९</span></p>
+              <p class="bh-hook">मेरा घर, मेरी देह, मेरा नाम, यह कहते हुए कभी किसी को रुकना नहीं पड़ता, और यही सबसे कम जाँचा हुआ वाक्य है।</p>
+              <p class="bh-page">मेरे चौथे पन्नों का पहला वाक्य ही इनकार का है, कि मैं मालिक नहीं हूँ, देखभाल करने वाला हूँ, और यह लिखना आसान था, इस पर टिकना नहीं।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, सातवाँ और पंद्रहवाँ अध्याय</span><span class="bh-chip">तैत्तिरीय उपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> तो देखभाल करने वाला कौन है।</p>
+            </div>
+            <div class="bh-room" id="bh-r1-3" data-d="3">
+              <p class="bh-meta"><span>अध्याय चार</span><b>धक्का</b><span>दिन ४० से ५०</span></p>
+              <p class="bh-hook">…उठने का बल कहाँ से आता है यह कोई नहीं बताता।</p>
+              <p class="bh-page">बीच में एक दिन ऐसा है जिसका जवाब मेरे पास नहीं था और वह जवाब के बिना ही छपा है।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, दूसरे से अठारहवें अध्याय तक</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> उस पल पास कोई विचार न हो तो क्या होता है।</p>
+            </div>
+            <div class="bh-room" id="bh-r1-4" data-d="4">
+              <p class="bh-meta"><span>अध्याय पाँच</span><b>नेति</b><span>दिन ५१ से ६२</span></p>
+              <p class="bh-hook">शनि, साढ़ेसाती और कालसर्प का डर बिकता है, महँगे उपाय बताए जाते हैं, और डर वहीं का वहीं रहता है।</p>
+              <p class="bh-page">मेरे पन्नों पर शनि छाया का पुत्र है, यानी किसी के काल पर पड़ी एक नपी हुई अवधि का नाम, और यह मैंने बिना जाने लिखा था।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">पुराण</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> कणों वाली बात, जो मुझे कहीं नहीं मिली।</p>
+            </div>
+          </div>
+        </article>
+        <article class="bh-part" id="bh-p2" role="tabpanel" aria-labelledby="bh-t2" data-p="2" lang="hi">
+          <div class="bh-head">
+            <div class="bh-q"><span class="bh-num" aria-hidden="true">३</span><h3>प्रकाश, आत्मा और ध्वनि</h3><p class="bh-ask">जो उधार लिया गया है उसे वापस कैसे माँगा जाता है।</p></div>
+            <div class="bh-sira"><p class="bh-skt" lang="sa">अत्रायं पुरुषः स्वयंज्योतिर्भवति।</p><p class="bh-src">बृहदारण्यक उपनिषद् ४.३.९</p><p class="bh-mean">यहाँ यह पुरुष स्वयं ज्योति हो जाता है।</p></div>
+          </div>
+          <div class="bh-strip" aria-hidden="true"><span class="bh-seg on" data-d="0" style="--n:14;flex:14"></span><span class="bh-seg" data-d="1" style="--n:15;flex:15"></span><span class="bh-seg" data-d="2" style="--n:15;flex:15"></span><span class="bh-seg" data-d="3" style="--n:10;flex:10"></span><span class="bh-seg" data-d="4" style="--n:12;flex:12"></span><span class="bh-seg" data-d="5" style="--n:5;flex:5"></span><span class="bh-seg" data-d="6" style="--n:9;flex:9"></span></div>
+          <p class="bh-count">८० दिन, सात अध्याय। हर अध्याय एक दरवाज़ा है, कोई भी खोलिए।</p>
+          <div class="bh-doors">
+            <button class="bh-door on" type="button" data-d="0" aria-controls="bh-r2-0" aria-pressed="true"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">एक</span><span class="bh-dname">लौटाव</span><span class="bh-dd">१४ दिन</span></button>
+            <button class="bh-door" type="button" data-d="1" aria-controls="bh-r2-1" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">दो</span><span class="bh-dname">माँग</span><span class="bh-dd">१५ दिन</span></button>
+            <button class="bh-door" type="button" data-d="2" aria-controls="bh-r2-2" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">तीन</span><span class="bh-dname">आत्मा</span><span class="bh-dd">१५ दिन</span></button>
+            <button class="bh-door" type="button" data-d="3" aria-controls="bh-r2-3" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">चार</span><span class="bh-dname">तीन माँएँ</span><span class="bh-dd">१० दिन</span></button>
+            <button class="bh-door" type="button" data-d="4" aria-controls="bh-r2-4" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">पाँच</span><span class="bh-dname">तरंग</span><span class="bh-dd">१२ दिन</span></button>
+            <button class="bh-door" type="button" data-d="5" aria-controls="bh-r2-5" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">छह</span><span class="bh-dname">ध्वनि</span><span class="bh-dd">५ दिन</span></button>
+            <button class="bh-door" type="button" data-d="6" aria-controls="bh-r2-6" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">सात</span><span class="bh-dname">मंडल</span><span class="bh-dd">९ दिन</span></button>
+          </div>
+          <div class="bh-rooms">
+            <div class="bh-room on" id="bh-r2-0" data-d="0">
+              <p class="bh-meta"><span>अध्याय एक</span><b>लौटाव</b><span>दिन १ से १४</span></p>
+              <p class="bh-hook">दिखने की चाह को अहंकार कहकर शर्मिंदा कर दिया जाता है, और उसका कोई हिसाब कहीं नहीं मिलता।</p>
+              <p class="bh-page">मेरे पन्नों पर यह चाह एक लेनदेन है, कि दिखने के लिए प्रकाश उधार लिया जाता है और वह उधार वापस माँगा जाता है, और इसी एक बात से मैंने अस्तित्व, कर्म और मोक्ष, सब बाँध रखा था।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">बृहदारण्यक उपनिषद्, चौथा अध्याय</span><span class="bh-chip">ईशोपनिषद्, सत्रहवाँ मंत्र</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> जलाने वाली आग एक ही तरफ़ क्यों माँगी गई है।</p>
+            </div>
+            <div class="bh-room" id="bh-r2-1" data-d="1">
+              <p class="bh-meta"><span>अध्याय दो</span><b>माँग</b><span>दिन १५ से २९</span></p>
+              <p class="bh-hook">जिसके पीछे भीड़ हो जाती है उसका अपना बढ़ना रुक जाता है, यह देखा हुआ है और इसका कारण कहीं लिखा नहीं मिलता।</p>
+              <p class="bh-page">मेरे पन्ने पर कारण साफ़ लिखा है, कि माँग एक बोझ है और जितनी बढ़े उतनी क़ीमत, और यह मेरे लिखे का सबसे साफ़ हिस्सा था, शायद इसीलिए सबसे कमज़ोर।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">श्वेताश्वतर उपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> ऊपर की जगह ख़ाली रह जाने वाला डर, जो पन्ने पर तीन बार लौटता है।</p>
+            </div>
+            <div class="bh-room" id="bh-r2-2" data-d="2">
+              <p class="bh-meta"><span>अध्याय तीन</span><b>आत्मा</b><span>दिन ३० से ४४</span></p>
+              <p class="bh-hook">आत्मा अजर है, अमर है, और कर्म उसे छूता नहीं, यह सब सुना हुआ है, और इसके आगे पूछो तो बात टाल दी जाती है।</p>
+              <p class="bh-page">सूची देखिए तो शरीर देखता है, सीखता है, कमाता है, जन्मता है, मरता है, और आत्मा के खाने में कुछ लिखा ही नहीं जाता।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, दूसरा अध्याय</span><span class="bh-chip">कठोपनिषद्</span><span class="bh-chip">माण्डूक्य उपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> आत्माएँ एक हैं या अनेक। यह तीन बार पूछा गया और तीनों बार खुला रहा।</p>
+            </div>
+            <div class="bh-room" id="bh-r2-3" data-d="3">
+              <p class="bh-meta"><span>अध्याय चार</span><b>तीन माँएँ</b><span>दिन ४५ से ५४</span></p>
+              <p class="bh-hook">जिसका कोई गया है वह सबसे पहले यही जानना चाहता है कि वह अब है कहाँ, और उसे जो तसल्ली दी जाती है वह अक्सर उलटा काम करती है।</p>
+              <p class="bh-page">मेरे पन्नों पर जन्म की पूरी प्रक्रिया में तीन माँएँ हैं, ऊपर एक चाहने वाली, बीच में एक काम करने वाली, नीचे एक गोद, और इस ढाँचे का नाम किसी ग्रंथ में नहीं है।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">ऐतरेय उपनिषद्</span><span class="bh-chip">माण्डूक्य उपनिषद्</span><span class="bh-chip">महाभारत, शांति पर्व</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> बीच वाली का ब्योरा।</p>
+            </div>
+            <div class="bh-room" id="bh-r2-4" data-d="4">
+              <p class="bh-meta"><span>अध्याय पाँच</span><b>तरंग</b><span>दिन ५५ से ६६</span></p>
+              <p class="bh-hook">कुंडली पर या तो अंधा भरोसा है या पूरा मज़ाक़, और बीच में खड़े आदमी के लिए कोई भाषा नहीं है।</p>
+              <p class="bh-page">मेरे पन्नों पर ख़ाना सिर्फ़ मोटा अंदाज़ा देता है और असल बात हर देह की अपनी बनावट में है, यानी वही तरंग दो लोगों पर एक जैसी नहीं पड़ती।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता</span><span class="bh-chip">कठोपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> हम ख़ुद जलने वाले पिंड हैं या नहीं।</p>
+            </div>
+            <div class="bh-room" id="bh-r2-5" data-d="5">
+              <p class="bh-meta"><span>अध्याय छह</span><b>ध्वनि</b><span>दिन ६७ से ७१</span></p>
+              <p class="bh-hook">जप, मंत्र और आरती घर घर में चलते हैं, और कोई यह नहीं बताता कि ये काम कैसे करते हैं, सिर्फ़ यह बताया जाता है कि करो।</p>
+              <p class="bh-page">मेरे पन्नों पर ध्वनि वह नहीं है जो हम निकालते हैं, वह है जो हम हैं, और चक्र उसी की गाँठें हैं।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">मुण्डक उपनिषद्</span><span class="bh-chip">छान्दोग्य उपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> बीज मंत्र और छंद का फ़र्क़, जो पहले भाग से लटका हुआ है।</p>
+            </div>
+            <div class="bh-room" id="bh-r2-6" data-d="6">
+              <p class="bh-meta"><span>अध्याय सात</span><b>मंडल</b><span>दिन ७२ से ८०</span></p>
+              <p class="bh-hook">आदमी कमाता है, जमा करता है, थकता जाता है, और इस थकान को ज़िम्मेदारी का नाम दे देता है।</p>
+              <p class="bh-page">मेरे पन्नों पर यह पूरा जीवन आमदनी और ख़र्च की तरह लिखा है, और उसमें से एक बात निकली जो मेरे ही पुराने लिखे से टकराती है, कि जमा करना अपने आप में घिसाव है।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">महाभारत, शांति पर्व</span><span class="bh-chip">मुण्डक उपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> इसी पन्ने की तीसरी पंक्ति, जिसका जवाब मैंने नहीं दिया।</p>
+            </div>
+          </div>
+        </article>
+        <article class="bh-part" id="bh-p3" role="tabpanel" aria-labelledby="bh-t3" data-p="3" lang="hi">
+          <div class="bh-head">
+            <div class="bh-q"><span class="bh-num" aria-hidden="true">४</span><h3>आयाम</h3><p class="bh-ask">वे जगहें जो पहले तीनों में खुली छोड़ दी गई थीं।</p></div>
+            <div class="bh-sira"><p class="bh-skt" lang="sa">न त्वं श्रेष्ठोऽसि नो व्यान</p><p class="bh-src">महाभारत, अश्वमेधिक पर्व २३.१५</p><p class="bh-mean">तू हममें श्रेष्ठ नहीं है, व्यान।</p><p class="bh-his">हर एक अपने को सबसे बड़ा कहता है, और हर एक को यही सुनना पड़ता है।</p></div>
+          </div>
+          <div class="bh-strip" aria-hidden="true"><span class="bh-seg on" data-d="0" style="--n:10;flex:10"></span><span class="bh-seg" data-d="1" style="--n:12;flex:12"></span><span class="bh-seg" data-d="2" style="--n:7;flex:7"></span><span class="bh-seg" data-d="3" style="--n:4;flex:4"></span><span class="bh-seg" data-d="4" style="--n:7;flex:7"></span></div>
+          <p class="bh-count">४० दिन, पाँच अध्याय। हर अध्याय एक दरवाज़ा है, कोई भी खोलिए।</p>
+          <div class="bh-doors">
+            <button class="bh-door on" type="button" data-d="0" aria-controls="bh-r3-0" aria-pressed="true"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">एक</span><span class="bh-dname">आयाम</span><span class="bh-dd">१० दिन</span></button>
+            <button class="bh-door" type="button" data-d="1" aria-controls="bh-r3-1" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">दो</span><span class="bh-dname">धुरी</span><span class="bh-dd">१२ दिन</span></button>
+            <button class="bh-door" type="button" data-d="2" aria-controls="bh-r3-2" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">तीन</span><span class="bh-dname">खुले वादे</span><span class="bh-dd">७ दिन</span></button>
+            <button class="bh-door" type="button" data-d="3" aria-controls="bh-r3-3" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">चार</span><span class="bh-dname">कोष</span><span class="bh-dd">४ दिन</span></button>
+            <button class="bh-door" type="button" data-d="4" aria-controls="bh-r3-4" aria-pressed="false"><span class="bh-arch" aria-hidden="true"><span class="bh-leaf"></span></span><span class="bh-dn">पाँच</span><span class="bh-dname">भीतर के चार</span><span class="bh-dd">७ दिन</span></button>
+          </div>
+          <div class="bh-rooms">
+            <div class="bh-room on" id="bh-r3-0" data-d="0">
+              <p class="bh-meta"><span>अध्याय एक</span><b>आयाम</b><span>दिन १ से १०</span></p>
+              <p class="bh-hook">इतने बड़े ब्रह्मांड के सामने अपने एक छोटे से काम का कोई अर्थ नहीं दिखता…</p>
+              <p class="bh-page">…मैं पहली बार अपने को एक बहुत बड़ी देह के भीतर एक कोशिका की तरह रख देता हूँ।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">ऋग्वेद, पुरुष सूक्त</span><span class="bh-chip">छान्दोग्य उपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> पाँचवाँ आयाम, जो तीसरे दिन उठा और चौबीसवें तक खुला ही रहा।</p>
+            </div>
+            <div class="bh-room" id="bh-r3-1" data-d="1">
+              <p class="bh-meta"><span>अध्याय दो</span><b>धुरी</b><span>दिन ११ से २२</span></p>
+              <p class="bh-hook">ये कथाएँ हमें बचपन से सुनाई गईं और इनसे सवाल पूछना लगभग अपराध बना दिया गया, इसलिए ये कभी खुलीं नहीं।</p>
+              <p class="bh-page">पूछने लायक़ सवाल छोटे ही हैं, कि रावण राम से क्या ले सकता था, और सोने का हिरन असल में किसकी चाह थी।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">रामायण, युद्धकांड</span><span class="bh-chip">गीता</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> दूसरी तरफ़ का अनुभव कैसे हो।</p>
+            </div>
+            <div class="bh-room" id="bh-r3-2" data-d="2">
+              <p class="bh-meta"><span>अध्याय तीन</span><b>खुले वादे</b><span>दिन २३ से २९</span></p>
+              <p class="bh-hook">किताबें अपने ही छोड़े हुए सवाल भूल जाती हैं और पाठक को कभी यह नहीं बताया जाता कि यहाँ बात अधूरी रह गई थी।</p>
+              <p class="bh-page">तीन भागों में मैंने कई बार लिखा कि इसका जवाब कहीं और है और वह जगह अभी खोली नहीं है, और वे वादे निभे नहीं थे।</p>
+              <p class="bh-open"><b>खुला रहा,</b> छान्दोग्य का पाँचवाँ अध्याय, आज भी।</p>
+            </div>
+            <div class="bh-room" id="bh-r3-3" data-d="3">
+              <p class="bh-meta"><span>अध्याय चार</span><b>कोष</b><span>दिन ३० से ३३</span></p>
+              <p class="bh-hook">जो आदमी संवेदनशील है वह बाहर का अन्याय देखकर टूटता है, और उसे सलाह दो ही मिलती हैं, सब छोड़ दो या सब सह लो।</p>
+              <p class="bh-page">मेरे बाक़ी पन्ने अपने लिए लिखे गए हैं, यह अकेला पन्ना किसी और से बात कर रहा है, और इसमें एक घेरा है जिसे साथ लेकर चला जा सकता है।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, छठा और अठारहवाँ अध्याय</span><span class="bh-chip">कठोपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> चक्रों के देवताओं की सूची, जो इन ग्रंथों में है ही नहीं।</p>
+            </div>
+            <div class="bh-room" id="bh-r3-4" data-d="4">
+              <p class="bh-meta"><span>अध्याय पाँच</span><b>भीतर के चार</b><span>दिन ३४ से ४०</span></p>
+              <p class="bh-hook">जिस बुद्धि से आदमी ने सब हल किया है, किसी बड़े संकट में वही बेकार हो जाती है, और उसके आगे का नक़्शा किसी के पास नहीं।</p>
+              <p class="bh-page">यहाँ पहली बार आयाम बाहर नहीं, भीतर गिने गए हैं, बुद्धि, पहचान, स्मृति और शुद्ध प्रज्ञा, और हमने इन्हें कभी अलग नहीं किया था।</p>
+              <div class="bh-texts"><span class="bh-tl">किसके सामने रखा गया</span><span class="bh-chip">गीता, पंद्रहवाँ और अठारहवाँ अध्याय</span><span class="bh-chip">श्वेताश्वतर उपनिषद्</span></div>
+              <p class="bh-open"><b>खुला रहा,</b> प्रज्ञा में टिके रहने का तरीक़ा।</p>
+            </div>
+          </div>
+        </article>
+      </div>
     </div>
     <p class="enter rv">जिसे काल और मृत्यु ने पकड़ा है वह पहले भाग से शुरू करे, जिसे रिश्तों ने दूसरे से, जिसे अपनी ही बनाई व्यवस्था ने तीसरे से, और जिसे यह सवाल है कि मैं इस सब में हूँ कहाँ, चौथे से।</p>
   </div>
@@ -464,7 +725,7 @@ footer{padding:70px 0 max(50px,env(safe-area-inset-bottom));border-top:1px solid
 
 <section class="sec close" id="utho" aria-labelledby="utho-h">
   <div class="wrap">
-    <p class="kick rv" id="utho-h">पहले भाग के पिछले पन्ने पर</p>
+    <p class="kick rv" id="utho-h">आख़िर में, एक सुबह</p>
     <p class="sk rv" lang="sa"><span>उत्तिष्ठत जाग्रत प्राप्य वरान्निबोधत।</span><span>क्षुरस्य धारा निशिता दुरत्यया</span><span>दुर्गं पथस्तत्कवयो वदन्ति॥</span></p>
     <p class="src rv">कठोपनिषद् १.३.१४</p>
     <p class="mean rv">उठो, जागो, और श्रेष्ठ जनों के पास जाकर समझो। ज्ञानी कहते हैं, यह रास्ता छुरे की तेज़ धार जैसा है, जिस पर चलना कठिन है।</p>
@@ -702,6 +963,34 @@ footer{padding:70px 0 max(50px,env(safe-area-inset-bottom));border-top:1px solid
 
   skipB.addEventListener('click',function(){finish(true);kick()});
   againB.addEventListener('click',function(){window.scrollTo(0,0);start()});
+
+
+  /* four parts: tabs and doors */
+  (function(){
+    var bh=document.getElementById('bh');if(!bh)return;
+    var stage=bh.querySelector('.bh-stage'),tabs=bh.querySelectorAll('.bh-tab');
+    function door(part,d){
+      part.querySelectorAll('.bh-door').forEach(function(b){var on=+b.dataset.d===d;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false')});
+      part.querySelectorAll('.bh-seg').forEach(function(s){s.classList.toggle('on',+s.dataset.d===d)});
+      part.querySelectorAll('.bh-room').forEach(function(r){r.classList.toggle('on',+r.dataset.d===d)});
+      var b=part.querySelector('.bh-door.on'),row=part.querySelector('.bh-doors');
+      if(b&&row&&row.scrollWidth>row.clientWidth){row.scrollTo({left:b.offsetLeft-row.offsetLeft-row.clientWidth/2+b.offsetWidth/2,behavior:reduce?'auto':'smooth'})}
+    }
+    function show(p){
+      tabs.forEach(function(t){t.setAttribute('aria-selected',+t.dataset.p===p?'true':'false');t.tabIndex=+t.dataset.p===p?0:-1});
+      bh.querySelectorAll('.bh-part').forEach(function(a){a.classList.toggle('on',+a.dataset.p===p)});
+      stage.setAttribute('data-p',p);
+    }
+    tabs.forEach(function(t){
+      t.addEventListener('click',function(){show(+t.dataset.p)});
+      t.addEventListener('keydown',function(e){var k=e.key,p=+t.dataset.p;
+        if(k==='ArrowRight'||k==='ArrowLeft'){e.preventDefault();p=(p+(k==='ArrowRight'?1:3))%4;show(p);tabs[p].focus()}});
+    });
+    bh.querySelectorAll('.bh-part').forEach(function(part){
+      part.addEventListener('click',function(e){var el=e.target.closest('.bh-door,.bh-seg');if(el)door(part,+el.dataset.d)});
+    });
+    show(0);
+  })();
 
   /* reveals */
   var rvs=document.querySelectorAll('.rv');
