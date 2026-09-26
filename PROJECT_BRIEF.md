@@ -34,8 +34,10 @@ their own folders.
   - The Five Wounds: black and gold, letterbox bars close, the key art sharpens, a light sweep, the title
     tracks in letter by letter; the six books with their accent colours; a film strip of six approved
     scenes with their captions; Walnut and the launch window
-  - लंका की खोज: night sea, a golden arc leaps from the shore to Lanka, 96 lights come on across the
-    island, the numbers count up (41, 6, 96, 108); on phones the scene sits at the foot of the screen
+  - लंका की खोज: daylight, in the game's own map colours (pale sea, sand land with a brown coast, tide
+    green, fire red), so it never looks like the dark diary card. The map unfolds, the title is revealed
+    with a tide green rule, a red pin travels the dotted crossing from India's tip to Lanka, and 96
+    places pop up on the island; the numbers count up (41, 6, 96, 108). The page bar turns light here
   - सपनों वाला जंगल: a spinning comic burst, the book's panels slam in, the voice panel flips through the
     book, the title drops in word by word; the two rules and the moving strip of dream animals
   - नेति नेति: a red margin rule draws down, one point of light gathers into a seated figure, the crown
