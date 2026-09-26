@@ -26,7 +26,7 @@ The artist page for Manu Vishranti (मनु विश्रांति), one 
   spread from the book (the cover, the voice-taken burst panel that flips through the book's panels when
   scrolled into view, two dream panels, the pangolin's question, and a moving strip of the twenty dream
   animals), linking to its own page; नेति नेति as a dark ink field with a red margin rule, like its
-  cover, with the five study volumes
+  cover, with the five study volumes, linking to its own page
 - **About.** His portrait, the back cover bio he chose (the school register, the ten rupee note), and
   one paragraph on the diary and the game
 - **His portrait.** From his own photo, only toned and cropped, never retouched: classic black and white,
@@ -53,6 +53,26 @@ The comic's own page, Hindi throughout, built only from the book's own art (cut 
   card images; their text is set by hand with a colon style name and fact instead
 - **Credit.** The book's cover still reads मानव शर्मा; the author box is cropped out of every image here
 - Images: `comic/SapnonWalaJangal/img/`, WebP; `share.jpg` is the link preview
+
+## नेति नेति (`/diary/NetiNeti`)
+The diary's own page, Hindi throughout, built only from the diary's own words.
+- **Opening.** About nine seconds, drawn live in the browser: one breathing point of light in the dark;
+  it bursts and gathers into a seated meditator made of points; light opens from the crown and the sky
+  turns to dawn; his line जो पंक्ति ध्यान में उतरी उसे उसी दिन उतार लेता रहा। writes itself in his hand;
+  यह भी नहीं। twice, and the figure lets go into the air; the same points form नेति नेति, which settles
+  into the gold title with एक ध्यान यात्रा, the Brihadaranyaka line (२.३.६) and his credit. Skip, replay and
+  sound buttons (a drone and a bell, off until turned on). Reduced motion or no script rests on the title
+- **Sections.** यह डायरी कैसे बनी (preface lines on a ruled page with the red margin); हर दिन, तीन
+  चीज़ें (a drawn page with the three bands and the three outcomes from his own sentence: गिरी, खुली छोड़ी,
+  किस हद तक सही); चार भाग (days per part, every chapter, and each chapter's खुला रहा line on tap, then
+  his where to start sentence); the name (अथात आदेशो नेति नेति and his line on what the name means);
+  यह किताब किसके लिए है; the numbers (4 parts, 247 days, 364 verses, 230 of his own lines) and the back
+  cover lines; the five study volumes; Katha 1.3.14 from the first part's back cover, at dawn
+- **Rules held.** His lines are quoted exactly and marked as his; the site's own connecting lines are
+  set apart in small italic. Nothing is put in a scripture's mouth; each verse carries its number. No
+  बैठक or बैठना, no कॉपी. The enlightenment is shown, never claimed in words
+- The home page panel links here (डायरी खोलिए)
+- Images: `diary/NetiNeti/img/share.jpg` is the link preview
 
 ## The Five Wounds (`/novel/TheFiveWounds`)
 The site for the series by Manu Vishranti: *Clean Hands*, *Peacetime*, *All the Summers at Once*,
@@ -188,6 +208,7 @@ the eyes want a rest.
 - The home page answers at manuvishranti.com
 - The Five Wounds answers at manuvishranti.com/novel/TheFiveWounds
 - The comic answers at manuvishranti.com/comic/SapnonWalaJangal
+- The diary answers at manuvishranti.com/diary/NetiNeti
 - Publish = push to `main`. Vercel rebuilds automatically
 
 ## Files
@@ -199,6 +220,7 @@ the eyes want a rest.
 - `favicon.svg`: the lamp icon every page uses
 - `img/`: his portrait in both tones and the home page link preview
 - `comic/SapnonWalaJangal/index.html` and its `img/`: the comic's page
+- `diary/NetiNeti/index.html` and its `img/`: the diary's page
 
 ## The checks
 50 file checks run on the extracted script before anything is published (`runall.sh`, which counts a

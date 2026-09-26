@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>नेति नेति · मनु विश्रांति</title>
+<meta name="description" content="नेति नेति, एक ध्यान यात्रा। मनु विश्रांति की ध्यान डायरी, चार भागों में। हर दिन उनकी अपनी एक पंक्ति, उसके सामने किसी ग्रंथ का एक श्लोक, और नीचे हिसाब कि क्या बचा।">
+<link rel="canonical" href="https://manuvishranti.com/diary/NetiNeti">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="book">
+<meta property="og:site_name" content="मनु विश्रांति">
+<meta property="og:title" content="नेति नेति · एक ध्यान यात्रा">
+<meta property="og:description" content="ध्यान की एक डायरी, चार भागों में। दो सौ सैंतालीस दिन, तीन सौ चौंसठ श्लोक।">
+<meta property="og:url" content="https://manuvishranti.com/diary/NetiNeti">
+<meta property="og:image" content="https://manuvishranti.com/diary/NetiNeti/img/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0D14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&family=Kalam:wght@300;400&family=Rozha+One&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Sanskrit&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Book","name":"नेति नेति","alternateName":"Neti Neti","inLanguage":"hi","genre":"ध्यान डायरी","url":"https://manuvishranti.com/diary/NetiNeti","author":{"@type":"Person","name":"Manu Vishranti","alternateName":"मनु विश्रांति","url":"https://manuvishranti.com/"}}
+</script>
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#0B0D14; --ink2:#12162A; --moon:#ECE6DA; --ash:#9EA3B0; --dim:#6E7385;
+  --gold:#E8B86B; --gold2:#F5D9A0; --margin:#B5432F; --rose:#E3A596;
+  --paper:#EFE7D6; --paper2:#E6DCC6; --pencil:#2B2A33; --line:rgba(60,70,110,.16);
+  --disp:"Rozha One","Tiro Devanagari Hindi",serif;
+  --deva:"Tiro Devanagari Hindi","Noto Serif Devanagari",serif;
+  --skt:"Tiro Devanagari Sanskrit","Tiro Devanagari Hindi",serif;
+  --hand:"Kalam","Tiro Devanagari Hindi",cursive;
+  --latin:"EB Garamond",Georgia,serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--ink);scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--moon);font:400 20px/1.75 var(--deva);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+p,h1,h2,h3,li,blockquote{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+.wrap{width:min(100%,1120px);margin:0 auto;padding-inline:max(16px,5vw)}
+.nw{white-space:nowrap}
+.en{font-family:var(--latin);font-style:italic}
+
+/* top bar */
+.bar{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:max(12px,env(safe-area-inset-top)) max(16px,3vw) 12px;pointer-events:none}
+.bar>*{pointer-events:auto}
+.home{font:400 17px/1 var(--deva);text-decoration:none;color:var(--ash);padding:8px 2px;transition:color .3s}
+.home:hover{color:var(--moon)}
+.ctrl{display:flex;gap:8px}
+.btn{background:rgba(11,13,20,.55);border:1px solid rgba(236,230,218,.22);border-radius:999px;padding:7px 14px;font:400 15px/1 var(--deva);cursor:pointer;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:border-color .3s,background .3s}
+.btn:hover{border-color:var(--gold)}
+.btn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold2)}
+.btn[hidden]{display:none}
+
+/* hero and opening */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:grid;place-items:center;overflow:hidden;isolation:isolate;
+  background:radial-gradient(120% 80% at 50% 110%,#141A33 0%,var(--ink) 60%)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;opacity:0;transition:opacity 3.2s ease;
+  background:
+    radial-gradient(70% 55% at 50% 100%,rgba(232,150,90,.42) 0%,rgba(181,67,47,.22) 35%,rgba(0,0,0,0) 70%),
+    linear-gradient(to top,#3A1E2A 0%,#1D1A36 38%,#0E1122 72%,var(--ink) 100%)}
+.hero.dawn::before{opacity:1}
+.hero::after{content:"";position:absolute;left:clamp(26px,7vw,96px);top:0;bottom:0;width:1.5px;background:var(--margin);opacity:0;z-index:-1;
+  transform:scaleY(0);transform-origin:top;transition:transform 2.2s cubic-bezier(.2,.7,.2,1),opacity 1.2s}
+.hero.final::after{opacity:.7;transform:scaleY(1)}
+#stage{position:absolute;inset:0;width:100%;height:100%;z-index:-1;display:block}
+
+.scribe{position:absolute;left:50%;top:64%;transform:translateX(-50%);width:max-content;max-width:92vw;margin:0;
+  font:400 clamp(20px,2.6vw,32px)/1.45 var(--hand);color:var(--gold2);text-align:center;white-space:nowrap;opacity:0;pointer-events:none;
+  text-shadow:0 0 18px rgba(232,184,107,.45)}
+.scribe span{display:inline-block;clip-path:inset(-20% 100% -20% 0);position:relative}
+.hero.write .scribe{opacity:1;transition:opacity .4s}
+.hero.write .scribe span{animation:writeon .95s linear forwards}
+.hero.write .scribe span+span{animation-delay:.95s}
+.hero.write .scribe span::after{content:"";position:absolute;top:50%;left:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;
+  background:#FFF3D6;box-shadow:0 0 12px 4px rgba(255,220,160,.8);opacity:0;animation:pen .95s linear forwards}
+.hero.write .scribe span+span::after{animation-delay:.95s}
+.hero.unwrite .scribe{opacity:0;transition:opacity 1s;filter:blur(3px)}
+@keyframes writeon{to{clip-path:inset(-20% 0 -20% 0)}}
+@keyframes pen{0%{left:0;opacity:1}96%{opacity:1}100%{left:100%;opacity:0}}
+
+.nahin{position:absolute;left:50%;margin:0;transform:translate(-50%,0);font:400 clamp(26px,3.6vw,46px)/1.2 var(--deva);color:var(--moon);
+  opacity:0;pointer-events:none;letter-spacing:.02em;white-space:nowrap}
+.nahin.a{top:62%}
+.nahin.b{top:13%}
+.nahin.on{animation:nahin 1.7s ease forwards}
+@keyframes nahin{0%{opacity:0;filter:blur(8px);transform:translate(-50%,10px)}28%{opacity:1;filter:blur(0);transform:translate(-50%,0)}
+  70%{opacity:.9;filter:blur(0)}100%{opacity:0;filter:blur(10px);transform:translate(-50%,-14px)}}
+
+.title{position:relative;text-align:center;padding:120px 16px 110px;max-width:100%}
+.eyebrow{margin:0 0 6px;font:400 16px/1.4 var(--deva);color:var(--rose);letter-spacing:.08em}
+h1{margin:0;font:400 clamp(76px,15vw,196px)/1.02 var(--disp);color:var(--gold);white-space:nowrap;
+  background:linear-gradient(180deg,#FBE7BF 0%,#E8B86B 55%,#B8843F 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 28px rgba(232,184,107,.28))}
+.sub{margin:8px 0 0;font:italic 400 clamp(22px,2.6vw,32px)/1.3 var(--deva);color:var(--moon)}
+.skt{margin:26px auto 0;font:400 clamp(18px,1.8vw,22px)/1.5 var(--skt);color:var(--ash)}
+.skt small{display:block;font:400 14px/1.4 var(--deva);color:var(--dim);letter-spacing:.04em;margin-top:2px}
+.by{margin:26px 0 0;font:400 20px/1.4 var(--deva);color:var(--moon)}
+.by small{display:block;font:400 15px/1.4 var(--deva);color:var(--ash)}
+.by .en{display:block;font-size:15px;color:var(--dim);margin-top:6px}
+.cue{position:absolute;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;
+  text-decoration:none;color:var(--ash);font:400 14px/1 var(--deva)}
+.cue::after{content:"";width:1px;height:38px;background:linear-gradient(var(--gold),transparent);animation:drip 2.4s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* before the opening finishes */
+.js .hero:not(.final) .title>*{opacity:0}
+.js .hero:not(.final) .cue{opacity:0}
+.hero .title>*,.hero .cue{transition:opacity 1.2s ease,transform 1.2s ease,filter 1.2s ease}
+.js .hero:not(.final) h1{filter:blur(10px) drop-shadow(0 0 28px rgba(232,184,107,.28))}
+.hero.final .title>:nth-child(1){transition-delay:.5s}
+.hero.final .title>:nth-child(3){transition-delay:.5s}
+.hero.final .title>:nth-child(4){transition-delay:1s}
+.hero.final .title>:nth-child(5){transition-delay:1.4s}
+.hero.final .cue{transition-delay:2s}
+
+/* sections */
+section{position:relative}
+.sec{padding:clamp(80px,11vw,150px) 0}
+.kick{margin:0 0 10px;font:400 15px/1.4 var(--deva);color:var(--rose);letter-spacing:.1em}
+h2{margin:0;font:400 clamp(40px,5.4vw,70px)/1.12 var(--disp);color:var(--moon)}
+.lead{margin:18px 0 0;max-width:40em;color:var(--ash);font-size:clamp(19px,1.8vw,22px)}
+
+/* the diary page */
+.page{position:relative;margin-top:clamp(36px,5vw,60px);background:var(--paper);color:var(--pencil);border-radius:3px;
+  padding:clamp(34px,5vw,64px) clamp(22px,5vw,72px) clamp(34px,5vw,60px) calc(clamp(40px,7vw,96px) + clamp(20px,3vw,40px));
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 43px,var(--line) 43px,var(--line) 44px);
+  box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04)}
+.page::before{content:"";position:absolute;top:0;bottom:0;left:clamp(40px,7vw,96px);width:1.5px;background:var(--margin);opacity:.8}
+.page::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:3px;
+  background:radial-gradient(120% 90% at 0% 0%,rgba(255,255,255,.35),transparent 50%),radial-gradient(140% 100% at 100% 100%,rgba(120,90,50,.14),transparent 60%)}
+.page p{margin:0 0 22px;font:400 clamp(20px,1.9vw,23px)/1.9 var(--deva)}
+.page p:last-child{margin-bottom:0}
+.page .his{position:relative}
+.page .his::before{content:"“";position:absolute;left:-.62em;top:-.12em;font:400 2em/1 var(--disp);color:var(--margin);opacity:.55}
+.page .note{font:italic 400 18px/1.6 var(--deva);color:#6A6252}
+.page .hand{font:400 clamp(21px,2vw,25px)/1.7 var(--hand);color:#28305A}
+.page .big{font:400 clamp(24px,2.4vw,30px)/1.6 var(--deva);color:#1E1D26}
+
+/* three things */
+.three{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(30px,5vw,70px);align-items:center;margin-top:clamp(36px,5vw,60px)}
+.sheet{position:relative;background:var(--paper);border-radius:3px;padding:26px 22px 26px 64px;color:var(--pencil);
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 31px,var(--line) 31px,var(--line) 32px);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.sheet::before{content:"";position:absolute;top:0;bottom:0;left:46px;width:1.5px;background:var(--margin);opacity:.8}
+.band{position:relative;padding:14px 0 18px;border-bottom:1px dashed rgba(43,42,51,.22)}
+.band:last-child{border-bottom:0}
+.band b{display:block;font:400 14px/1.3 var(--deva);color:var(--margin);letter-spacing:.06em;margin-bottom:10px}
+.band i{display:block;height:9px;border-radius:9px;margin:10px 0;background:#3B3A46;opacity:.72;transform:scaleX(0);transform-origin:left;transition:transform 1.1s cubic-bezier(.3,.7,.2,1)}
+.band.mine i{background:#2A3570;height:8px;border-radius:12px 4px 12px 4px}
+.band.verse i{margin-inline:auto;background:#6B4A1E;transform-origin:center}
+.band.verse .num{display:block;text-align:center;font:400 14px/1 var(--skt);color:#6B4A1E;margin-top:8px}
+.in .band i{transform:scaleX(1)}
+.band:nth-child(2) i{transition-delay:.6s}
+.band:nth-child(3) i{transition-delay:1.2s}
+.stamps{display:flex;flex-wrap:wrap;gap:10px 12px;margin-top:16px}
+.stamp{font:400 15px/1 var(--deva);color:var(--margin);border:1.5px solid var(--margin);border-radius:4px;padding:6px 10px;background:rgba(239,231,214,.92);
+  transform:rotate(-4deg) scale(1.6);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.stamp:nth-child(2){transform:rotate(3deg) scale(1.6)}
+.in .stamp{opacity:1;transform:rotate(-4deg) scale(1)}
+.in .stamp:nth-child(2){transform:rotate(3deg) scale(1)}
+.in .stamp:nth-child(1){transition-delay:2s}
+.in .stamp:nth-child(2){transition-delay:2.35s}
+.in .stamp:nth-child(3){transition-delay:2.7s}
+.how p{margin:0 0 18px;font-size:clamp(19px,1.8vw,22px)}
+.how .his{color:var(--moon)}
+.how .his em{font-style:normal;color:var(--gold2)}
+
+/* four parts */
+.parts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:clamp(36px,5vw,56px)}
+.part{position:relative;border:1px solid rgba(236,230,218,.14);border-radius:6px;padding:26px 20px 18px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0));
+  overflow:hidden}
+.part::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 50% 0%,var(--glow),transparent 70%);opacity:.5;pointer-events:none}
+.part:nth-child(1){--glow:rgba(120,140,220,.22)}
+.part:nth-child(2){--glow:rgba(150,110,200,.22)}
+.part:nth-child(3){--glow:rgba(232,184,107,.24)}
+.part:nth-child(4){--glow:rgba(181,67,47,.24)}
+.part .n{display:block;font:400 76px/1 var(--deva);color:var(--gold);opacity:.9}
+.part .which{display:block;margin-top:8px;font:400 15px/1.3 var(--deva);color:var(--rose);letter-spacing:.06em}
+.part h3{margin:4px 0 0;font:400 clamp(24px,2.2vw,30px)/1.25 var(--disp);color:var(--moon);min-height:2.5em}
+.part .days{display:block;margin:6px 0 14px;font:400 17px/1.3 var(--deva);color:var(--ash)}
+.part ol{list-style:none;margin:0;padding:0;border-top:1px solid rgba(236,230,218,.12)}
+.part li{border-bottom:1px solid rgba(236,230,218,.08)}
+.part details summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;font:400 18px/1.4 var(--deva)}
+.part details summary::-webkit-details-marker{display:none}
+.part details summary::after{content:"+";font:400 18px/1 var(--latin);color:var(--gold);transition:transform .3s}
+.part details[open] summary::after{transform:rotate(45deg)}
+.part details p{margin:0 0 12px;font:400 17px/1.6 var(--hand);color:var(--gold2)}
+.enter{margin:clamp(30px,4vw,44px) 0 0;max-width:46em;font-size:clamp(19px,1.8vw,22px);color:var(--moon)}
+.enter::before{content:"";display:block;width:48px;height:1.5px;background:var(--margin);margin-bottom:16px}
+
+/* the name */
+.name{text-align:center;overflow:hidden;background:
+  radial-gradient(60% 70% at 50% 60%,rgba(232,184,107,.12),transparent 70%),linear-gradient(180deg,var(--ink),#141225 50%,var(--ink))}
+.name .sk{margin:26px 0 0;font:400 clamp(40px,7vw,96px)/1.25 var(--skt);color:var(--gold2);text-wrap:balance}
+.name .sk span{display:inline-block;opacity:1}
+.js .name .sk span{opacity:0;transform:translateY(20px);filter:blur(8px);transition:opacity 1s,transform 1s,filter 1s}
+.js .name.in .sk span{opacity:1;transform:none;filter:none}
+.js .name.in .sk span:nth-child(2){transition-delay:.35s}
+.js .name.in .sk span:nth-child(3){transition-delay:.7s}
+.js .name.in .sk span:nth-child(4){transition-delay:1.05s}
+.name .src{margin:8px 0 0;font:400 16px/1.4 var(--deva);color:var(--dim)}
+.name .mean{margin:24px 0 0;font:400 clamp(26px,3vw,36px)/1.4 var(--deva);color:var(--moon)}
+.name .his{margin:40px auto 0;max-width:34em;font:400 clamp(20px,2vw,24px)/1.8 var(--deva);color:var(--ash)}
+.name .his strong{font-weight:400;color:var(--moon)}
+
+/* who */
+.who .page p{font-size:clamp(20px,1.9vw,23px)}
+.who .page .not{color:#7A3A2C}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:clamp(34px,5vw,50px) 0 0;padding:0;list-style:none}
+.nums li{text-align:center;padding:26px 8px;border-top:1px solid rgba(236,230,218,.14);border-bottom:1px solid rgba(236,230,218,.14)}
+.nums b{display:block;font:400 clamp(52px,6.4vw,90px)/1 var(--deva);color:var(--gold)}
+.nums span{display:block;margin-top:10px;font:400 17px/1.3 var(--deva);color:var(--ash)}
+.proof{margin:clamp(34px,5vw,50px) auto 0;max-width:38em;text-align:center;font:400 clamp(21px,2.1vw,26px)/1.7 var(--deva);color:var(--moon)}
+.proof+.proof{margin-top:14px;color:var(--rose)}
+
+/* study edition */
+.study{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(30px,5vw,70px);align-items:start}
+.vols{list-style:none;margin:0;padding:0;counter-reset:v}
+.vols li{counter-increment:v;display:grid;grid-template-columns:4.4em minmax(0,1fr);align-items:baseline;padding:14px 0;border-top:1px solid rgba(236,230,218,.14);font:400 clamp(21px,2vw,25px)/1.4 var(--deva)}
+.vols li:last-child{border-bottom:1px solid rgba(236,230,218,.14)}
+.vols li::before{content:"खंड " counter(v,devanagari);font-size:15px;color:var(--rose);white-space:nowrap}
+
+/* dawn close */
+.close{text-align:center;overflow:hidden;background:linear-gradient(180deg,var(--ink) 0%,#16152C 40%,#3A1E2A 82%,#5A2A26 100%)}
+.close::after{content:"";position:absolute;left:50%;bottom:-38vw;width:90vw;height:76vw;transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(closest-side,rgba(245,217,160,.55),rgba(232,150,90,.2) 50%,transparent 75%);pointer-events:none;z-index:0}
+.close .wrap{position:relative;z-index:1}
+.close .sk{margin:22px auto 0;max-width:22em;font:400 clamp(26px,3.6vw,46px)/1.55 var(--skt);color:var(--gold2)}
+.close .sk span{display:block}
+.close .src{margin:10px 0 0;font:400 16px/1.4 var(--deva);color:var(--ash)}
+.close .mean{margin:26px auto 0;max-width:30em;font:400 clamp(20px,2vw,24px)/1.7 var(--deva);color:var(--moon)}
+
+/* footer */
+footer{padding:70px 0 max(50px,env(safe-area-inset-bottom));border-top:1px solid rgba(236,230,218,.1)}
+.foot{display:grid;grid-template-columns:auto minmax(0,1fr);gap:28px;align-items:center}
+.foot img{width:110px;height:138px;object-fit:cover;border-radius:3px;filter:grayscale(1) contrast(1.05)}
+.foot h3{margin:0;font:400 30px/1.2 var(--disp)}
+.foot p{margin:4px 0 0;color:var(--ash);font-size:17px}
+.foot nav{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px 22px;font-size:17px}
+.foot nav a{text-decoration:none;border-bottom:1px solid rgba(232,184,107,.4);padding-bottom:2px}
+.foot nav a:hover{color:var(--gold2)}
+.copy{margin-top:36px;font:400 14px/1.5 var(--latin);color:var(--dim)}
+
+/* reveal */
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+
+@media (max-width:980px){
+  .parts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .three,.study{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:620px){
+  body{font-size:19px}
+  .hero::after{left:18px}
+  .scribe{font-size:clamp(19px,5.4vw,24px)}
+  .scribe span{display:block;width:max-content;margin:0 auto}
+  .parts{grid-template-columns:minmax(0,1fr)}
+  .part h3{min-height:0}
+  .nums{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .page{padding:30px 18px 30px 50px}
+  .page::before{left:30px}
+  .page .his::before{left:-.5em}
+  .sheet{padding:22px 16px 22px 50px}
+  .sheet::before{left:34px}
+  .stamp{font-size:13px;padding:5px 8px}
+  .foot{grid-template-columns:minmax(0,1fr)}
+  .home{font-size:16px}
+  .btn{padding:7px 12px;font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .rv,.js .name .sk span{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+  .band i,.stamp{transition:none!important}
+  .cue::after{animation:none}
+}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js')</script>
+
+<header class="bar">
+  <a class="home" href="/">← मनु विश्रांति</a>
+  <div class="ctrl">
+    <button class="btn" id="snd" type="button" aria-pressed="false">आवाज़</button>
+    <button class="btn" id="skip" type="button">आगे बढ़िए</button>
+    <button class="btn" id="again" type="button" hidden>फिर से देखिए</button>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="hero" aria-labelledby="title">
+  <canvas id="stage" aria-hidden="true"></canvas>
+  <p class="scribe" aria-hidden="true"><span>जो पंक्ति ध्यान में उतरी</span> <span>उसे उसी दिन उतार लेता रहा।</span></p>
+  <p class="nahin a" aria-hidden="true">यह भी नहीं।</p>
+  <p class="nahin b" aria-hidden="true">यह भी नहीं।</p>
+  <div class="title">
+    <p class="eyebrow">एक ध्यान डायरी · चार भाग</p>
+    <h1 id="title">नेति नेति</h1>
+    <p class="sub">एक ध्यान यात्रा</p>
+    <p class="skt" lang="sa">अथात आदेशो नेति नेति<small lang="hi">बृहदारण्यक उपनिषद् २.३.६</small></p>
+    <p class="by">मनु विश्रांति<small>ध्यान साधक, लेखक और शोधकर्ता</small><span class="en" lang="en">A meditation diary in four parts. In Hindi.</span></p>
+  </div>
+  <a class="cue" href="#bani">डायरी खोलिए</a>
+</section>
+
+<section class="sec" id="bani" aria-labelledby="bani-h">
+  <div class="wrap">
+    <p class="kick rv">पहले पन्ने से</p>
+    <h2 id="bani-h" class="rv">यह डायरी कैसे बनी</h2>
+    <div class="page rv">
+      <p class="hand">जो पंक्ति ध्यान में उतरी उसे उसी दिन उतार लेता रहा।</p>
+      <p class="his">धीरे धीरे उन्हीं पन्नों से एक पूरा हिसाब बन गया। काल क्या है, देह किस नियम से चलती है, प्रकृति क्या देती है और क्या वापस लेती है। मैंने उसी हिसाब से जन्म, कर्म, मृत्यु और मोक्ष, सब बाँध रखा था।</p>
+      <p class="his">दिक़्क़त यह थी कि मैं उसे सच मान चुका था। जो अपने आप उतर आए, उस पर शक करना कठिन होता है, और मेरे पास यह जानने का कोई तरीक़ा नहीं था कि यह सचमुच कुछ है या सिर्फ़ मेरा अपना बनाया हुआ ढाँचा है जिसे मैं बरसों से दोहरा रहा हूँ।</p>
+      <p class="note">फिर हर पंक्ति किसी ग्रंथ के एक श्लोक के सामने रखी गई।</p>
+      <p class="his">कभी वह मेरी बात के साथ खड़ा हुआ, कभी उसने उसे काट दिया, और कई बार उसने वही बात इतनी साफ़ कह दी कि मेरा पूरा पन्ना बेकार हो गया।</p>
+      <p class="his big">मैंने अपनी किसी पंक्ति को बचाया नहीं। जो गिरी उसे गिरा हुआ लिखा, जो अधूरी रह गई उसे खुला छोड़ा, और जो सही निकली उसके आगे भी यह लिखा कि वह किस हद तक सही है।</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="din" aria-labelledby="din-h" style="padding-top:0">
+  <div class="wrap">
+    <p class="kick rv">पढ़ने का तरीक़ा</p>
+    <h2 id="din-h" class="rv">हर दिन, तीन चीज़ें</h2>
+    <div class="three">
+      <div class="sheet rv" aria-hidden="true">
+        <div class="band mine"><b>मेरी पंक्ति</b><i style="width:92%"></i><i style="width:64%"></i></div>
+        <div class="band verse"><b>उस दिन का श्लोक</b><i style="width:78%"></i><i style="width:70%"></i><span class="num">॥ संख्या ॥</span><i style="width:88%;height:6px;opacity:.4"></i></div>
+        <div class="band"><b>हिसाब</b><i style="width:96%"></i><i style="width:90%"></i><i style="width:52%"></i>
+          <div class="stamps"><span class="stamp">गिरी</span><span class="stamp">खुली छोड़ी</span><span class="stamp">किस हद तक सही</span></div></div>
+      </div>
+      <div class="how rv">
+        <p class="his">हर दिन तीन चीज़ें हैं। <em>ऊपर</em> वह पंक्ति जो मेरे पन्ने पर पहले से पड़ी थी। <em>बीच में</em> वह श्लोक जो उस दिन सामने आया, अपनी संख्या और अपने अर्थ के साथ। <em>नीचे</em> मेरा हिसाब, कि उस भिड़ंत में से क्या बचा।</p>
+        <p class="his">संस्कृत जानना ज़रूरी नहीं। हर श्लोक के नीचे उसका अर्थ है। हर पाठ और संख्या छपी हुई प्रति से मिलाई गई है, और जो न मिला वह छपा नहीं।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="bhaag" aria-labelledby="bhaag-h" style="padding-top:0">
+  <div class="wrap">
+    <p class="kick rv">दो सौ सैंतालीस दिन</p>
+    <h2 id="bhaag-h" class="rv">चार भाग</h2>
+    <p class="lead rv">हर अध्याय के आख़िर में एक पंक्ति है, कि उसमें क्या खुला रह गया। किसी अध्याय का नाम छूकर वह पंक्ति देखिए।</p>
+    <div class="parts">
+      <article class="part rv" lang="hi">
+        <span class="n">१</span><span class="which">पहला भाग</span>
+        <h3>मृत्यु और काल</h3><span class="days">पैंसठ दिन</span>
+        <ol>
+          <li><details><summary>सहायक</summary><p>खुला रहा, ये सहायक कौन हैं।</p></details></li>
+          <li><details><summary>मृत्यु का नाम</summary><p>खुला रहा, समय की इकाई घटती क्यों जा रही है।</p></details></li>
+          <li><details><summary>प्रकृति का लेनदेन</summary><p>खुला रहा, प्रकृति अपने इलाज में कहाँ तक जा सकती है।</p></details></li>
+          <li><details><summary>जो काल के बाहर खड़े हैं</summary><p>खुला रहा, ठहराव, जिसका नाम किसी ग्रंथ में नहीं मिला।</p></details></li>
+          <li><details><summary>हिसाब</summary><p>खुला रहा, वह सूचकांक, जो मेरे पन्ने पर सिर्फ़ एक योजना की तरह पड़ा है।</p></details></li>
+          <li><details><summary>बचे हुए पन्ने</summary><p>खुला रहा, किसी जगह के असर की सीमा कहाँ ख़त्म होती है।</p></details></li>
+          <li><details><summary>आख़िरी नियम</summary><p>खुला रहा, उस नाप तक पहुँचने का तरीक़ा।</p></details></li>
+        </ol>
+      </article>
+      <article class="part rv" lang="hi">
+        <span class="n">२</span><span class="which">दूसरा भाग</span>
+        <h3>छाया और प्राण</h3><span class="days">बासठ दिन</span>
+        <ol>
+          <li><details><summary>छाया</summary><p>खुला रहा, यह छाया ग्रहों तक जाती है या नहीं।</p></details></li>
+          <li><details><summary>मालिकाना</summary><p>खुला रहा, दोनों से बनी तीसरी दुनिया किसकी होती है।</p></details></li>
+          <li><details><summary>यह मैं नहीं हूँ</summary><p>खुला रहा, तो देखभाल करने वाला कौन है।</p></details></li>
+          <li><details><summary>धक्का</summary><p>खुला रहा, उस पल पास कोई विचार न हो तो क्या होता है।</p></details></li>
+          <li><details><summary>नेति</summary><p>खुला रहा, कणों वाली बात, जो मुझे कहीं नहीं मिली।</p></details></li>
+        </ol>
+      </article>
+      <article class="part rv" lang="hi">
+        <span class="n">३</span><span class="which">तीसरा भाग</span>
+        <h3>प्रकाश, आत्मा और ध्वनि</h3><span class="days">अस्सी दिन</span>
+        <ol>
+          <li><details><summary>लौटाव</summary><p>खुला रहा, जलाने वाली आग एक ही तरफ़ क्यों माँगी गई है।</p></details></li>
+          <li><details><summary>माँग</summary><p>खुला रहा, ऊपर की जगह ख़ाली रह जाने वाला डर, जो पन्ने पर तीन बार लौटता है।</p></details></li>
+          <li><details><summary>आत्मा</summary><p>खुला रहा, आत्माएँ एक हैं या अनेक। यह तीन बार पूछा गया और तीनों बार खुला रहा।</p></details></li>
+          <li><details><summary>तीन माँएँ</summary><p>खुला रहा, बीच वाली का ब्योरा।</p></details></li>
+          <li><details><summary>तरंग</summary><p>खुला रहा, हम ख़ुद जलने वाले पिंड हैं या नहीं।</p></details></li>
+          <li><details><summary>ध्वनि</summary><p>खुला रहा, बीज मंत्र और छंद का फ़र्क़, जो पहले भाग से लटका हुआ है।</p></details></li>
+          <li><details><summary>मंडल</summary><p>खुला रहा, इसी पन्ने की तीसरी पंक्ति, जिसका जवाब मैंने नहीं दिया।</p></details></li>
+        </ol>
+      </article>
+      <article class="part rv" lang="hi">
+        <span class="n">४</span><span class="which">चौथा भाग</span>
+        <h3>आयाम</h3><span class="days">चालीस दिन</span>
+        <ol>
+          <li><details><summary>आयाम</summary><p>खुला रहा, पाँचवाँ आयाम, जो तीसरे दिन उठा और चौबीसवें तक खुला ही रहा।</p></details></li>
+          <li><details><summary>धुरी</summary><p>खुला रहा, दूसरी तरफ़ का अनुभव कैसे हो।</p></details></li>
+          <li><details><summary>खुले वादे</summary><p>खुला रहा, छान्दोग्य का पाँचवाँ अध्याय, आज भी।</p></details></li>
+          <li><details><summary>कोष</summary><p>खुला रहा, चक्रों के देवताओं की सूची, जो इन ग्रंथों में है ही नहीं।</p></details></li>
+          <li><details><summary>भीतर के चार</summary><p>खुला रहा, प्रज्ञा में टिके रहने का तरीक़ा।</p></details></li>
+        </ol>
+      </article>
+    </div>
+    <p class="enter rv">जिसे काल और मृत्यु ने पकड़ा है वह पहले भाग से शुरू करे, जिसे रिश्तों ने दूसरे से, जिसे अपनी ही बनाई व्यवस्था ने तीसरे से, और जिसे यह सवाल है कि मैं इस सब में हूँ कहाँ, चौथे से।</p>
+  </div>
+</section>
+
+<section class="sec name rv" id="naam" aria-labelledby="naam-h">
+  <div class="wrap">
+    <p class="kick">यह नाम कहाँ से आया</p>
+    <h2 id="naam-h" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">नाम</h2>
+    <p class="sk" lang="sa"><span>अथात</span> <span>आदेशो</span> <span>नेति</span> <span>नेति</span></p>
+    <p class="src">बृहदारण्यक उपनिषद् २.३.६</p>
+    <p class="mean">यह नहीं, यह नहीं।</p>
+    <p class="his"><strong>इसी काम का नाम नेति नेति है। जो हाथ आए उसके आगे यह कहना कि यह भी नहीं, और फिर आगे चलना।</strong></p>
+  </div>
+</section>
+
+<section class="sec who" id="kiske" aria-labelledby="kiske-h">
+  <div class="wrap">
+    <p class="kick rv">पढ़ने से पहले</p>
+    <h2 id="kiske-h" class="rv">यह किताब किसके लिए है</h2>
+    <div class="page rv">
+      <p class="his">यह उसके लिए है जिसके पास अपनी कोई बात है। जिसने कभी कुछ ऐसा सोचा या महसूस किया हो जो उसे सच लगा, पर जिसे वह आज तक किसी के सामने रख नहीं सका।</p>
+      <p class="his">यह उसके लिए भी है जो ग्रंथ पढ़ना चाहता है और श्रद्धा से शुरू नहीं कर पाता। यहाँ श्लोक पूजा के लिए नहीं, जाँच के लिए खोले गए हैं, और वे उसी में खरे उतरे हैं।</p>
+      <p class="his not">यह उसके लिए नहीं है जो उत्तर लेने आया है। यहाँ किसी बात का अंत नहीं है, कई सवाल खुले छोड़े गए हैं, और गिरी हुई पंक्तियाँ भी छपी हुई हैं।</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="ginti" aria-labelledby="ginti-h" style="padding-top:0">
+  <div class="wrap">
+    <p class="kick rv">पूरी डायरी</p>
+    <h2 id="ginti-h" class="rv">गिनती में</h2>
+    <ul class="nums rv">
+      <li><b data-n="4">४</b><span>भाग</span></li>
+      <li><b data-n="247">२४७</b><span>दिन</span></li>
+      <li><b data-n="364">३६४</b><span>श्लोक</span></li>
+      <li><b data-n="230">२३०</b><span>अपनी पंक्तियाँ</span></li>
+    </ul>
+    <p class="proof rv">यहाँ कोई दावा बिना संख्या के नहीं छपा। हर पाठ छपी हुई प्रति से मिलाया गया है, और जो नहीं मिला वह छपा ही नहीं।</p>
+    <p class="proof rv">और जो पंक्तियाँ ग्रंथ के सामने गिर गईं, वे भी इसी किताब में हैं, गिरी हुई।</p>
+  </div>
+</section>
+
+<section class="sec" id="khand" aria-labelledby="khand-h" style="padding-top:0">
+  <div class="wrap study">
+    <div class="rv">
+      <p class="kick">अध्ययन संस्करण</p>
+      <h2 id="khand-h">पाँच खंड</h2>
+      <p class="lead">इन्हीं किताबों से बना पाँच खंडों का अध्ययन संस्करण, हर खंड अपने आप में पूरा।</p>
+    </div>
+    <ol class="vols rv">
+      <li>मृत्यु और काल</li>
+      <li>छाया, प्राण और डर</li>
+      <li>प्रकाश, आत्मा और ध्वनि</li>
+      <li>आयाम और शब्द</li>
+      <li>काम, घर और चोट</li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec close" id="utho" aria-labelledby="utho-h">
+  <div class="wrap">
+    <p class="kick rv" id="utho-h">पहले भाग के पिछले पन्ने पर</p>
+    <p class="sk rv" lang="sa"><span>उत्तिष्ठत जाग्रत प्राप्य वरान्निबोधत।</span><span>क्षुरस्य धारा निशिता दुरत्यया</span><span>दुर्गं पथस्तत्कवयो वदन्ति॥</span></p>
+    <p class="src rv">कठोपनिषद् १.३.१४</p>
+    <p class="mean rv">उठो, जागो, और श्रेष्ठ जनों के पास जाकर समझो। ज्ञानी कहते हैं, यह रास्ता छुरे की तेज़ धार जैसा है, जिस पर चलना कठिन है।</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <img src="/img/manu-vishranti-black.jpg" alt="मनु विश्रांति" width="110" height="138" loading="lazy">
+      <div>
+        <h3>मनु विश्रांति</h3>
+        <p>ध्यान साधक, लेखक और शोधकर्ता</p>
+        <nav aria-label="और काम">
+          <a href="/">सारा काम</a>
+          <a href="/novel/TheFiveWounds" lang="en">The Five Wounds</a>
+          <a href="/comic/SapnonWalaJangal">सपनों वाला जंगल</a>
+        </nav>
+      </div>
+    </div>
+    <p class="copy" lang="en">© Manu Vishranti. manuvishranti.com</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var hero=document.getElementById('hero'), cv=document.getElementById('stage'), ctx=cv.getContext('2d');
+  var h1=document.getElementById('title');
+  var skipB=document.getElementById('skip'), againB=document.getElementById('again'), sndB=document.getElementById('snd');
+  var nA=hero.querySelector('.nahin.a'), nB=hero.querySelector('.nahin.b');
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var DPR=Math.min(window.devicePixelRatio||1,2);
+  var W=0,H=0,S=1,CX=0,CY=0;
+  var P=[], N=0, figT=[], titT=[];
+  var t0=0, running=false, finished=false, raf=0, visible=true, marks={};
+
+  /* timeline, milliseconds */
+  var T={burst:900,formed:2900,bloom:3600,dawn:3700,write:4500,unwrite:6300,n1:6900,release:6700,n2:7500,titled:8900,final:8700,ambient:9800,drift:10600};
+
+  function ease(x){return x<0?0:x>1?1:(x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2)}
+  function eout(x){return x<0?0:x>1?1:1-Math.pow(1-x,3)}
+  function clamp(x){return x<0?0:x>1?1:x}
+
+  function sprite(r,g,b){
+    var c=document.createElement('canvas');c.width=c.height=32;var x=c.getContext('2d');
+    var gr=x.createRadialGradient(16,16,0,16,16,16);
+    gr.addColorStop(0,'rgba('+r+','+g+','+b+',1)');gr.addColorStop(.25,'rgba('+r+','+g+','+b+',.75)');gr.addColorStop(1,'rgba('+r+','+g+','+b+',0)');
+    x.fillStyle=gr;x.fillRect(0,0,32,32);return c;
+  }
+  var SIL=sprite(226,230,240), GOLD=sprite(245,205,140);
+
+  function figurePath(){
+    var p=new Path2D();
+    p.arc(200,100,28,0,Math.PI*2);
+    p.moveTo(188,122);p.lineTo(212,122);p.lineTo(214,146);p.lineTo(186,146);p.closePath();
+    p.moveTo(150,152);p.quadraticCurveTo(200,134,250,152);p.lineTo(262,252);p.quadraticCurveTo(200,268,138,252);p.closePath();
+    p.moveTo(152,156);p.quadraticCurveTo(116,200,126,250);p.lineTo(170,262);p.quadraticCurveTo(146,214,168,176);p.closePath();
+    p.moveTo(248,156);p.quadraticCurveTo(284,200,274,250);p.lineTo(230,262);p.quadraticCurveTo(254,214,232,176);p.closePath();
+    p.ellipse(200,282,120,30,0,0,Math.PI*2);
+    p.ellipse(200,258,34,11,0,0,Math.PI*2);
+    return p;
+  }
+  function sample(drawFn,w,h,gap,jit){
+    var c=document.createElement('canvas');c.width=Math.ceil(w);c.height=Math.ceil(h);var x=c.getContext('2d');
+    drawFn(x);var d=x.getImageData(0,0,c.width,c.height).data,out=[];
+    for(var y=0;y<c.height;y+=gap)for(var i=0;i<c.width;i+=gap){
+      if(d[(y*c.width+i)*4+3]>120)out.push([i+(Math.random()-.5)*jit,y+(Math.random()-.5)*jit]);
+    }
+    return out;
+  }
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0,t=a[i];a[i]=a[j];a[j]=t}return a}
+
+  function layout(){
+    var r=hero.getBoundingClientRect();W=r.width;H=r.height;
+    cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
+    S=Math.min(W*.86,H*.64)/400;CX=W/2;CY=H*.42;
+    /* figure points in page space */
+    var sc=S*DPR>1.2?2:1, g=Math.max(3,Math.round(4.2/Math.max(S,.6)));
+    var pts=sample(function(x){x.fillStyle='#fff';x.fill(figurePath())},400,400,g,g*.8);
+    var edge=sample(function(x){x.strokeStyle='#fff';x.lineWidth=2.4;x.stroke(figurePath())},400,400,2,1.4);
+    pts=shuffle(pts.concat(shuffle(edge).slice(0,Math.round(edge.length*.55))));
+    figT=pts.map(function(p){return [CX+(p[0]-200)*S,CY+(p[1]-200)*S]});
+    /* title points from the real heading's box */
+    var hr=h1.getBoundingClientRect(), fs=parseFloat(getComputedStyle(h1).fontSize);
+    var ox=hr.left-r.left, oy=hr.top-r.top, tw=hr.width, th=hr.height;
+    var tg=Math.max(2,Math.round(fs/34));
+    var tp=sample(function(x){x.font='400 '+fs+'px "Rozha One"';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#fff';
+      var m=x.measureText('नेति नेति');var a=m.actualBoundingBoxAscent||fs*.6,d=m.actualBoundingBoxDescent||fs*.2;
+      x.fillText('नेति नेति',tw/2,th/2+(a-d)/2);},tw,th,tg,tg*.6);
+    titT=shuffle(tp).map(function(p){return [ox+p[0],oy+p[1]]});
+    var want=W<700?1100:1700;
+    N=Math.min(want,Math.max(figT.length,titT.length,600));
+    P=[];
+    for(var i=0;i<N;i++){
+      var f=figT[i%figT.length], tt=titT[i%titT.length], a=Math.random()*Math.PI*2, rr=(.25+Math.random()*.75)*Math.max(W,H)*.55;
+      var ua=Math.random()*Math.PI*2, ur=(.2+Math.random()*.8)*Math.max(W,H)*.5;
+      P.push({f:f,t:tt,
+        c1:[CX+Math.cos(a)*rr,CY+Math.sin(a)*rr*.8],
+        c2:[W/2+Math.cos(ua)*ur,H*.18+Math.sin(ua)*ur*.35-Math.random()*H*.2],
+        d:Math.random()*.35, d2:Math.random()*.3, s:(.7+Math.random()*1.1), tw:Math.random()*6.28,
+        amb:i<(W<700?140:240), vx:(Math.random()-.5)*.18, vy:-(.05+Math.random()*.22), x:0,y:0});
+    }
+  }
+  function bez(a,c,b,u){var v=1-u;return [v*v*a[0]+2*v*u*c[0]+u*u*b[0], v*v*a[1]+2*v*u*c[1]+u*u*b[1]]}
+
+  function draw(now){
+    var t=now-t0;
+    ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+    var gold=clamp((t-T.bloom)/1100);
+    var crown=[CX,CY+(72-200)*S];
+
+    /* the first point of light */
+    if(t<T.burst+500){
+      var k=t<T.burst?.5+.5*Math.sin(t/180):1-clamp((t-T.burst)/500);
+      var rad=(10+10*k)*(t<T.burst?clamp(t/500):1);
+      ctx.globalAlpha=Math.min(1,.4+k*.6);ctx.drawImage(SIL,CX-rad*2,CY-rad*2,rad*4,rad*4);
+    }
+    /* crown bloom and rays */
+    if(t>T.bloom&&t<T.titled+900){
+      var bu=eout((t-T.bloom)/1300), fade=1-clamp((t-T.release)/1600);
+      var R=bu*Math.max(W,H)*.7, al=(bu<1?.55*Math.sin(bu*Math.PI*.5+.2):.3)*fade;
+      var gr=ctx.createRadialGradient(crown[0],crown[1],0,crown[0],crown[1],R);
+      gr.addColorStop(0,'rgba(255,236,196,'+al+')');gr.addColorStop(.2,'rgba(245,200,130,'+al*.55+')');gr.addColorStop(1,'rgba(232,150,90,0)');
+      ctx.globalAlpha=1;ctx.fillStyle=gr;ctx.fillRect(0,0,W,H);
+      var nR=18, rot=t/9000;
+      ctx.save();ctx.translate(crown[0],crown[1]);
+      for(var q=0;q<nR;q++){
+        var an=rot+q*Math.PI*2/nR, len=R*(q%2?.8:1.05);
+        var lg=ctx.createLinearGradient(0,0,Math.cos(an)*len,Math.sin(an)*len);
+        lg.addColorStop(0,'rgba(255,226,170,'+(.16*fade)+')');lg.addColorStop(1,'rgba(255,226,170,0)');
+        ctx.fillStyle=lg;ctx.beginPath();ctx.moveTo(0,0);
+        ctx.lineTo(Math.cos(an-.035)*len,Math.sin(an-.035)*len);ctx.lineTo(Math.cos(an+.035)*len,Math.sin(an+.035)*len);ctx.closePath();ctx.fill();
+      }
+      ctx.restore();
+    }
+    /* particles */
+    var breath=1+.018*Math.sin((t-T.formed)/650);
+    var gu=(t-T.burst)/(T.formed-T.burst), ru=(t-T.release)/(T.titled-T.release);
+    var fadeOut=clamp((t-T.ambient+400)/1200);
+    for(var i=0;i<N;i++){
+      var p=P[i],x,y,al=1;
+      if(t<T.burst){continue}
+      else if(t<T.release){
+        var u=ease(clamp((gu-p.d)/(1-.35)));
+        if(u<1){var b=bez([CX,CY],p.c1,p.f,u);x=b[0];y=b[1];al=clamp(u*3)}
+        else{x=CX+(p.f[0]-CX)*breath;y=CY+(p.f[1]-CY)*breath}
+      }
+      else if(t<T.drift){
+        var u2=ease(clamp((ru-p.d2)/(1-.3)));
+        var b2=bez(p.f,p.c2,p.t,u2);x=b2[0];y=b2[1];
+        if(u2>=1){x+=Math.sin(t/300+p.tw)*.4;y+=Math.cos(t/340+p.tw)*.4}
+        al=1-(p.amb?fadeOut*.55:fadeOut);
+      }
+      else{
+        if(!p.amb)continue;
+        if(!p.x){p.x=p.t[0];p.y=p.t[1]}
+        p.x+=p.vx+Math.sin(t/2000+p.tw)*.08;p.y+=p.vy;
+        if(p.y<-10){p.y=H+10;p.x=Math.random()*W}
+        if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;
+        x=p.x;y=p.y;al=.3+.25*Math.sin(t/700+p.tw)*.9;
+        if(t<T.drift+1200)al*=.45+.55*clamp((t-T.drift)/1200);
+      }
+      var sz=p.s*(W<700?4.2:5.2);
+      if(gold<1){ctx.globalAlpha=al*(1-gold)*.9;ctx.drawImage(SIL,x-sz/2,y-sz/2,sz,sz)}
+      if(gold>0){ctx.globalAlpha=al*gold*.9;ctx.drawImage(GOLD,x-sz/2,y-sz/2,sz,sz)}
+    }
+    ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+
+    /* cues along the timeline */
+    function at(k,fn){if(!marks[k]&&t>=T[k]){marks[k]=1;fn()}}
+    at('dawn',function(){hero.classList.add('dawn')});
+    at('bloom',function(){bell()});
+    at('write',function(){hero.classList.add('write')});
+    at('unwrite',function(){hero.classList.add('unwrite')});
+    at('n1',function(){nA.classList.add('on')});
+    at('n2',function(){nB.classList.add('on')});
+    at('final',function(){finish(false)});
+  }
+
+  function loop(now){
+    raf=0;if(!visible&&finished)return;
+    draw(now);
+    raf=requestAnimationFrame(loop);
+  }
+  function kick(){if(!raf)raf=requestAnimationFrame(loop)}
+
+  function finish(jump){
+    hero.classList.add('final','dawn');finished=true;
+    skipB.hidden=true;againB.hidden=false;
+    if(jump){
+      marks={dawn:1,bloom:1,write:1,unwrite:1,n1:1,n2:1,final:1};
+      hero.classList.remove('write');hero.classList.add('unwrite');
+      nA.classList.remove('on');nB.classList.remove('on');
+      t0=performance.now()-T.drift-1300;
+      P.forEach(function(p){p.x=Math.random()*W;p.y=Math.random()*H});
+    }
+  }
+  function start(){
+    marks={};finished=false;
+    hero.classList.remove('final','dawn','write','unwrite');nA.classList.remove('on');nB.classList.remove('on');
+    skipB.hidden=false;againB.hidden=true;
+    P.forEach(function(p){p.x=0;p.y=0});
+    t0=performance.now();kick();drone(true);
+  }
+
+  /* sound: off by default */
+  var AC=null, master=null, droneNodes=null, soundOn=false;
+  function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=.0;master.connect(AC.destination)}catch(e){AC=null}}return AC}
+  function drone(on){
+    if(!soundOn||!ac())return;
+    if(droneNodes)return;
+    var g=AC.createGain();g.gain.value=0;g.connect(master);
+    var o=[110,165,220.5].map(function(f,i){var s=AC.createOscillator();s.type='sine';s.frequency.value=f;var gg=AC.createGain();gg.gain.value=[.5,.28,.12][i];s.connect(gg);gg.connect(g);s.start();return s});
+    var l=AC.createOscillator();l.frequency.value=.12;var lg=AC.createGain();lg.gain.value=.25;l.connect(lg);lg.connect(g.gain);l.start();
+    g.gain.setTargetAtTime(.5,AC.currentTime,1.5);
+    droneNodes={g:g,o:o.concat([l])};
+  }
+  function bell(){
+    if(!soundOn||!ac())return;var n=AC.currentTime;
+    [[528,.5,6],[1056,.18,4],[1584,.1,3],[792,.14,5]].forEach(function(p){
+      var o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=p[0];
+      g.gain.setValueAtTime(0,n);g.gain.linearRampToValueAtTime(p[1],n+.02);g.gain.exponentialRampToValueAtTime(.0001,n+p[2]);
+      o.connect(g);g.connect(master);o.start(n);o.stop(n+p[2]+.1);
+    });
+  }
+  sndB.addEventListener('click',function(){
+    soundOn=!soundOn;sndB.setAttribute('aria-pressed',soundOn?'true':'false');
+    if(!ac())return;
+    if(AC.state==='suspended')AC.resume();
+    master.gain.setTargetAtTime(soundOn?.09:0,AC.currentTime,.4);
+    if(soundOn){drone(true);if(!finished&&performance.now()-t0<T.bloom+400)marks.bloom=0}
+  });
+
+  skipB.addEventListener('click',function(){finish(true);kick()});
+  againB.addEventListener('click',function(){window.scrollTo(0,0);start()});
+
+  /* reveals */
+  var rvs=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window&&!reduce){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);if(e.target.classList.contains('nums'))count(e.target)}})},{threshold:.18,rootMargin:'0px 0px -6% 0px'});
+    rvs.forEach(function(el){io.observe(el)});
+  } else rvs.forEach(function(el){el.classList.add('in')});
+
+  var DG='०१२३४५६७८९';
+  function dev(n){return String(n).replace(/[0-9]/g,function(d){return DG[+d]})}
+  function count(el){
+    el.querySelectorAll('b[data-n]').forEach(function(b){
+      var n=+b.getAttribute('data-n'),s=performance.now();
+      (function step(now){var u=eout((now-s)/1600);b.textContent=dev(Math.round(n*u));if(u<1)requestAnimationFrame(step)})(s);
+    });
+  }
+
+  /* the opening */
+  function go(){
+    layout();
+    if(reduce||window.scrollY>H*.6){finish(true);if(!reduce)kick();return}
+    start();
+  }
+  if(reduce){hero.classList.add('final','dawn');skipB.hidden=true;againB.hidden=true;return}
+  var ready=document.fonts&&document.fonts.load?Promise.race([
+    Promise.all([document.fonts.load('400 100px "Rozha One"','नेति'),document.fonts.load('400 30px "Kalam"','पंक्ति')]),
+    new Promise(function(r){setTimeout(r,1800)})]):Promise.resolve();
+  ready.then(go,go);
+
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){visible=es[0].isIntersecting;
+      if(visible)kick();
+      if(droneNodes&&AC)droneNodes.g.gain.setTargetAtTime(visible?.5:0,AC.currentTime,.8);
+    }).observe(hero);
+  }
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){
+    var w=hero.getBoundingClientRect().width;if(Math.abs(w-W)<2&&finished)return;
+    layout();if(finished){P.forEach(function(p){p.x=Math.random()*W;p.y=Math.random()*H})}
+  },200)});
+})();
+</script>
+</body>
+</html>
