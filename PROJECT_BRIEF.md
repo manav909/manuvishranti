@@ -24,8 +24,11 @@ The artist page for Manu Vishranti (मनु विश्रांति), one 
   gold with the key art, the six titles and the launch window; लंका की खोज on a palm leaf with its numbers
   (41 tellings, 6 nights, 96 places, 108 moments) and a play button; नेति नेति as a dark ink field with a
   red margin rule, like its cover, with the five study volumes
-- **About.** The back cover bio he chose (the school register, the ten rupee note), and one paragraph on
-  the diary and the game
+- **About.** His portrait, the back cover bio he chose (the school register, the ten rupee note), and
+  one paragraph on the diary and the game
+- **His portrait.** From his own photo, only toned and cropped, never retouched: classic black and white,
+  the background dropped into shadow, head and shoulders. Two tones: indigo into moonlight for the home
+  page, warm silver on black for The Five Wounds. Originals in `img/`
 - Only works published as Manu Vishranti are listed. The jungle comic and the maths novels carry the
   name Manav Sharma and stay off this page unless he says otherwise
 - Hindi on the page is written natively, in plain spoken words; no कॉपी, no बैठक
@@ -45,7 +48,8 @@ How the page runs, top to bottom:
   an epigraph), then its characters as white and silver pencil portraits on black, then its scenes as wide film frames with a
   title and one line, then a panel of the things that book keeps. 52 panels in one pinned scroll
 - **Key art.** The whole family in one drawing, under "Every one of them is carrying something."
-- **Footer.** Series, publisher and launch window, and a note that every face is invented
+- **Footer.** About the author, with his portrait on black and the back cover bio; then series,
+  publisher, launch window, a link home, and a note that every face in the books is invented
 
 What each book carries: *Clean Hands* 5 scenes and 3 kept things, *Peacetime* 4 and 3,
 *All the Summers at Once* 3 and 2, *The House of Auspicious Hours* 1 and 1, *Dead Letter* 4 and 1,
@@ -171,6 +175,7 @@ the eyes want a rest.
 - `PROJECT_BRIEF.md`: this file
 - `index.html`: the home page, the artist page for Manu Vishranti
 - `favicon.svg`: the lamp icon every page uses
+- `img/`: his portrait in both tones and the home page link preview
 
 ## The checks
 50 file checks run on the extracted script before anything is published (`runall.sh`, which counts a
